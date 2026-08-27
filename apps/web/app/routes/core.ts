@@ -216,6 +216,14 @@ export const coreRoutes: RouteConfigEntry[] = [
               "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/intake/page.tsx"
             ),
           ]),
+
+          // Dashboard (Metabase embed) - Pespo
+          layout("./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/layout.tsx", [
+            route(
+              ":workspaceSlug/projects/:projectId/dashboard",
+              "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/page.tsx"
+            ),
+          ]),
         ]),
 
         // Project Archives - Issues, Cycles, Modules

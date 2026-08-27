@@ -118,6 +118,11 @@ class Project(BaseModel):
     # external_id for imports
     external_source = models.CharField(max_length=255, null=True, blank=True)
     external_id = models.CharField(max_length=255, blank=True, null=True)
+    # Pespo: dashboard Metabase embutido pro projeto (configurado via admin).
+    # dashboard_id = id do dashboard no Metabase; cliente_id = valor travado
+    # no parâmetro "cliente" do embed (mesmo mecanismo do portal-cliente).
+    metabase_dashboard_id = models.CharField(max_length=255, blank=True, null=True)
+    metabase_cliente_id = models.CharField(max_length=255, blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
         # Track if timezone is provided, if so, don't override it with the workspace timezone when saving

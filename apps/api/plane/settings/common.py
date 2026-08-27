@@ -568,3 +568,9 @@ if ENABLE_DRF_SPECTACULAR:
     REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
     INSTALLED_APPS.append("drf_spectacular")
     from .openapi import SPECTACULAR_SETTINGS  # noqa: F401
+
+# Pespo: embed de dashboards do Metabase por projeto (mesmo mecanismo do
+# portal-cliente — assinatura JWT com o secret do embed estático).
+METABASE_SITE_URL = os.environ.get("METABASE_SITE_URL")
+METABASE_SECRET_KEY = os.environ.get("METABASE_SECRET_KEY")
+METABASE_TOKEN_EXPIRES_MIN = int(os.environ.get("METABASE_TOKEN_EXPIRES_MIN", "10"))

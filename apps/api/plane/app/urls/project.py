@@ -18,6 +18,7 @@ from plane.app.views import (
     UserProjectRolesEndpoint,
     ProjectArchiveUnarchiveEndpoint,
     ProjectMemberPreferenceEndpoint,
+    ProjectMetabaseEmbedEndpoint,
 )
 
 
@@ -128,5 +129,10 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/preferences/member/<uuid:member_id>/",
         ProjectMemberPreferenceEndpoint.as_view(),
         name="project-member-preference",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/metabase-embed/",
+        ProjectMetabaseEmbedEndpoint.as_view(),
+        name="project-metabase-embed",
     ),
 ]
