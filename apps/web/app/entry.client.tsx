@@ -11,6 +11,8 @@ import { HydratedRouter } from "react-router/dom";
 import polyfills from "@/lib/polyfills";
 
 void polyfills;
+// cache-bust: force a fresh content hash for this entry chunk on deploy
+// (Cloudflare was serving a stale cached copy of this file across redeploys)
 
 startTransition(() => {
   hydrateRoot(
