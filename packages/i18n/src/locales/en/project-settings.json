@@ -176,6 +176,21 @@
       "current": "Current estimate system",
       "select": "Select an estimate system"
     },
+    "dashboard": {
+      "label": "Dashboard",
+      "heading": "Dashboard",
+      "description": "Link a Metabase dashboard to this project. It shows up in the \"Dashboard\" tab for everyone with access to the project, including guests.",
+      "dashboard_id": "Metabase dashboard ID",
+      "dashboard_id_placeholder": "e.g. 2",
+      "cliente_id": "\"cliente\" parameter value",
+      "cliente_id_placeholder": "e.g. empresa_a",
+      "cliente_id_description": "Must match the value used by the \"cliente\" filter configured on the dashboard inside Metabase.",
+      "save": "Save",
+      "saved": "Dashboard configuration saved.",
+      "save_error": "Could not save the dashboard configuration.",
+      "not_configured": "No dashboard configured yet.",
+      "preview": "Preview"
+    },
     "automations": {
       "label": "Automations",
       "heading": "Automations",

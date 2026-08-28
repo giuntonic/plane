@@ -176,6 +176,21 @@
       "current": "Sistema de estimativas atual",
       "select": "Selecione um sistema de estimativas"
     },
+    "dashboard": {
+      "label": "Dashboard",
+      "heading": "Dashboard",
+      "description": "Vincule um dashboard do Metabase a este projeto. Ele aparece na aba \"Dashboard\" pra todo mundo com acesso ao projeto, inclusive convidados.",
+      "dashboard_id": "ID do dashboard no Metabase",
+      "dashboard_id_placeholder": "ex.: 2",
+      "cliente_id": "Valor do parâmetro \"cliente\"",
+      "cliente_id_placeholder": "ex.: empresa_a",
+      "cliente_id_description": "Precisa ser igual ao valor usado no filtro \"cliente\" configurado no dashboard dentro do Metabase.",
+      "save": "Salvar",
+      "saved": "Configuração do dashboard salva.",
+      "save_error": "Não foi possível salvar a configuração do dashboard.",
+      "not_configured": "Nenhum dashboard configurado ainda.",
+      "preview": "Pré-visualizar"
+    },
     "automations": {
       "label": "Automações",
       "heading": "Automações",
