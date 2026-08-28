@@ -1,10 +1,13 @@
 /**
  * Marcação visual de peça — pins numerados em imagem (posição x/y em %)
- * ou comentários por timestamp em vídeo. Sem tabela nova: cada marcação
- * vira um comentário no próprio work item, com a posição codificada no
- * texto (mesmo formato usado pelo portal-cliente, que fala com o Plane
- * via API pública — os dois lêem/escrevem o mesmo texto, então uma
- * marcação feita aqui aparece lá e vice-versa).
+ * ou comentários por timestamp em vídeo, além do botão de aprovação.
+ * Sem tabela nova: cada marcação/aprovação vira um comentário no próprio
+ * work item, com a informação codificada no texto (mesmo formato usado
+ * pelo portal-cliente, que fala com o Plane via API pública — os dois
+ * lêem/escrevem o mesmo texto, então uma marcação feita aqui aparece lá
+ * e vice-versa). A aprovação também é escutada por um webhook do Plane
+ * -> n8n, que replica o evento pro Postgres do portal-cliente pra
+ * aparecer no dashboard do Metabase.
  */
 
 import React, { useMemo, useRef, useState } from "react";
@@ -40,6 +43,14 @@ function formatTime(totalSeconds: number): string {
 
 const PIN_IMAGE_REGEX = /^📍 Marca[cç][aã]o de (.+?) em \(([\d.]+)%, ([\d.]+)%\): (.*)$/;
 const PIN_VIDEO_REGEX = /^🎬 Marca[cç][aã]o de (.+?) em (\d+:\d{2}(?::\d{2})?): (.*)$/;
+// Aprovação — mesmo truque das marcações: vira um comentário no formato
+// fixo abaixo. O n8n escuta o webhook de comentário do Plane e usa esse
+// mesmo regex pra refletir a aprovação no dashboard do Metabase.
+const APPROVAL_REGEX = /^✅ Pe[cç]a aprovada por (.+?) em (\d{2}\/\d{2}\/\d{4})$/;
+
+function formatDateBR(d: Date): string {
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
 
 interface ImagePin {
   id: string;
@@ -88,6 +99,7 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
   const [newImagePins, setNewImagePins] = useState<NewImagePin[]>([]);
   const [newVideoPins, setNewVideoPins] = useState<NewVideoPin[]>([]);
   const [saving, setSaving] = useState(false);
+  const [approving, setApproving] = useState(false);
   const nextLocalId = useRef(0);
   const imgRef = useRef<HTMLImageElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -119,7 +131,30 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comments.length]);
 
+  const latestApproval = useMemo(() => {
+    let found: { autor: string; data: string; updatedAt: string } | null = null;
+    for (const c of comments) {
+      const m = (c!.comment_stripped || "").trim().match(APPROVAL_REGEX);
+      if (!m) continue;
+      if (!found || new Date(c!.updated_at) > new Date(found.updatedAt)) {
+        found = { autor: m[1], data: m[2], updatedAt: c!.updated_at };
+      }
+    }
+    return found;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [comments.length]);
+
   const authorName = currentUser?.display_name || currentUser?.email || "Alguém";
+
+  const handleApprove = async () => {
+    setApproving(true);
+    try {
+      const raw = `✅ Peça aprovada por ${authorName} em ${formatDateBR(new Date())}`;
+      await createComment(workspaceSlug, projectId, issueId, { comment_html: `<p>${raw}</p>` });
+    } finally {
+      setApproving(false);
+    }
+  };
 
   const handleImageClick = (ev: React.MouseEvent<HTMLDivElement>) => {
     if (disabled || ev.target !== imgRef.current) return;
@@ -172,6 +207,21 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
 
   return (
     <div className="flex flex-col gap-3 px-1.5 pb-2">
+      {latestApproval ? (
+        <div className="flex items-center gap-2 rounded-md border border-green-500/30 bg-green-500/10 px-3 py-2">
+          <span className="text-16">✅</span>
+          <p className="text-13 text-secondary">
+            <span className="font-medium text-primary">Aprovada</span> por {latestApproval.autor} em{" "}
+            {latestApproval.data}
+          </p>
+        </div>
+      ) : (
+        !disabled && (
+          <Button variant="primary" size="sm" onClick={handleApprove} loading={approving} disabled={approving} className="self-start">
+            Aprovar peça
+          </Button>
+        )
+      )}
       {kind === "imagem" && (
         <>
           <p className="text-13 text-tertiary">Clique na imagem pra deixar uma marcação.</p>
