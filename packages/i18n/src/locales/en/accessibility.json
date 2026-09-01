@@ -21,7 +21,9 @@
       "close_project_menu": "Close project menu",
       "collapse_sidebar": "Collapse sidebar",
       "expand_sidebar": "Expand sidebar",
-      "edition_badge": "Open paid plans' modal"
+      "edition_badge": "Instance version",
+      "open_workspace_menu": "Open workspace menu",
+      "close_workspace_menu": "Close workspace menu"
     },
     "auth_forms": {
       "clear_email": "Clear email",
