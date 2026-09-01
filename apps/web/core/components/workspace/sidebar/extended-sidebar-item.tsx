@@ -21,7 +21,6 @@ import { DragHandle, DropIndicator } from "@plane/ui";
 import { cn } from "@plane/utils";
 // components
 import { SidebarNavItem } from "@/components/sidebar/sidebar-navigation";
-import { UpgradeBadge } from "@/components/workspace/upgrade-badge";
 // hooks
 import { useAppTheme } from "@/hooks/store/use-app-theme";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
@@ -201,20 +200,15 @@ export const ExtendedSidebarItem = observer(function ExtendedSidebarItem(props: 
             </div>
           </Link>
           <div className="flex items-center gap-2">
-            {item.key === "active_cycles" && (
-              <div className="flex-shrink-0">
-                <UpgradeBadge />
-              </div>
-            )}
             {isPinned ? (
-              <Tooltip tooltipContent="Unpin">
+              <Tooltip tooltipContent={t("unpin")}>
                 <PinOff
                   className="size-3.5 flex-shrink-0 text-placeholder outline-none hover:text-tertiary"
                   onClick={() => unPinNavigationItem(item.key)}
                 />
               </Tooltip>
             ) : (
-              <Tooltip tooltipContent="Pin">
+              <Tooltip tooltipContent={t("pin")}>
                 <Pin
                   className="size-3.5 flex-shrink-0 text-placeholder outline-none hover:text-tertiary"
                   onClick={() => pinNavigationItem(item.key)}
