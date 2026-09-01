@@ -7,6 +7,8 @@
 import type { Extensions } from "@tiptap/core";
 // types
 import type { IEditorProps } from "@/types";
+// local imports
+import { ClapshotEmbedExtension } from "../clapshot-embed";
 
 export type TCoreAdditionalExtensionsProps = Pick<
   IEditorProps,
@@ -15,5 +17,5 @@ export type TCoreAdditionalExtensionsProps = Pick<
 
 export const CoreEditorAdditionalExtensions = (props: TCoreAdditionalExtensionsProps): Extensions => {
   const {} = props;
-  return [];
+  return [ClapshotEmbedExtension()];
 };

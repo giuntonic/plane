@@ -5,5 +5,7 @@
  */
 
 import type { Extensions } from "@tiptap/core";
+// local imports
+import { ClapshotEmbedExtensionConfig } from "../clapshot-embed";
 
-export const CoreEditorAdditionalExtensionsWithoutProps: Extensions = [];
+export const CoreEditorAdditionalExtensionsWithoutProps: Extensions = [ClapshotEmbedExtensionConfig];

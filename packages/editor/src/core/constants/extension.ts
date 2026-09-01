@@ -9,6 +9,8 @@ export enum CORE_EXTENSIONS {
   BOLD = "bold",
   BULLET_LIST = "bulletList",
   CALLOUT = "calloutComponent",
+  // Pespo: embed de vídeo (Clapshot) dentro de descrições/páginas/comentários.
+  CLAPSHOT_EMBED = "clapshotEmbedComponent",
   CHARACTER_COUNT = "characterCount",
   CODE_BLOCK = "codeBlock",
   CODE_INLINE = "code",
@@ -74,4 +76,5 @@ export const BLOCK_NODE_TYPES = [
   CORE_EXTENSIONS.CUSTOM_IMAGE,
   CORE_EXTENSIONS.CALLOUT,
   CORE_EXTENSIONS.WORK_ITEM_EMBED,
+  CORE_EXTENSIONS.CLAPSHOT_EMBED,
 ];
