@@ -75,7 +75,9 @@ function DashboardSettingsPage({ params }: Route.ComponentProps) {
     }
   };
 
-  const pageTitle = projectDetails?.name ? `${projectDetails?.name} - Dashboard` : undefined;
+  const pageTitle = projectDetails?.name
+    ? `${projectDetails?.name} - ${t("project_settings.dashboard.label")}`
+    : undefined;
 
   if (workspaceUserInfo && !canPerformProjectAdminActions) {
     return <NotAuthorizedView section="settings" isProjectView className="h-auto" />;

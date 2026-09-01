@@ -26,6 +26,7 @@
       "default_assignee_description": "Select the default assignee for the project.",
       "project_subscribers": "Project subscribers",
       "project_subscribers_description": "Select members who will receive notifications for this project.",
+      "guest_access": "Guest access",
       "guest_super_permissions": {
         "title": "Grant view access to all work items for guest users:",
         "sub_heading": "This will allow guests to have view access to all the project work items."
@@ -43,6 +44,22 @@
       "empty_state": {
         "title": "No states available for the {groupKey} group",
         "description": "Please create a new state"
+      },
+      "toasts": {
+        "created": "State created successfully.",
+        "already_exists": "State with that name already exists. Please try again with another name.",
+        "create_error": "State could not be created. Please try again.",
+        "updated": "State updated successfully.",
+        "update_error": "State could not be updated. Please try again.",
+        "already_exists_update": "Another state exists with the same name. Please try again with another name."
+      },
+      "delete_modal": {
+        "title": "Delete State",
+        "confirmation": "Are you sure you want to delete state- {name}? All of the data related to the state will be permanently removed. This action cannot be undone.",
+        "has_work_items_error": "This state contains some work items within it, please move them to some other state to delete this state.",
+        "delete_error": "State could not be deleted. Please try again.",
+        "cannot_delete_default": "Cannot delete the default state.",
+        "cannot_have_empty_group": "Cannot have an empty group."
       }
     },
     "labels": {
@@ -53,6 +70,11 @@
       "label_max_char": "Label name should not exceed 255 characters",
       "toast": {
         "error": "Error while updating the label"
+      },
+      "delete": {
+        "title": "Delete Label",
+        "confirmation": "Are you sure you want to delete {name}? This will remove the label from all the work item and from any views where the label is being filtered upon.",
+        "error": "Label could not be deleted. Please try again."
       }
     },
     "estimates": {
@@ -128,6 +150,16 @@
             "title": "Error",
             "message": "Something went wrong"
           }
+        },
+        "deleted": {
+          "success": {
+            "title": "Estimate deleted",
+            "message": "Estimate has been removed from your project."
+          },
+          "error": {
+            "title": "Estimate creation failed",
+            "message": "We were unable to delete the estimate, please try again."
+          }
         }
       },
       "validation": {
@@ -174,7 +206,12 @@
       },
       "switch": "Switch estimate system",
       "current": "Current estimate system",
-      "select": "Select an estimate system"
+      "select": "Select an estimate system",
+      "delete_modal": {
+        "title": "Delete Estimate System",
+        "confirmation": "Deleting the estimate {name} system will remove it from all work items permanently. This action cannot be undone. If you add estimates again, you will need to update all the work items.",
+        "delete": "Delete Estimate"
+      }
     },
     "dashboard": {
       "label": "Dashboard",
@@ -536,6 +573,7 @@
           }
         }
       }
-    }
+    },
+    "sidebar_title": "Project settings"
   }
 }

@@ -32,9 +32,16 @@
   "add_new": "Add new",
   "remove_selected": "Remove selected",
   "first_name": "First name",
+  "first_name_placeholder": "Enter your first name",
+  "first_name_required": "Please enter first name",
   "last_name": "Last name",
+  "last_name_placeholder": "Enter your last name",
   "email": "Email",
+  "email_placeholder": "Enter your email",
+  "email_required": "Email is required.",
   "display_name": "Display name",
+  "display_name_placeholder": "Enter your display name",
+  "display_name_required": "Display name is required.",
   "role": "Role",
   "timezone": "Timezone",
   "avatar": "Avatar",
@@ -145,6 +152,7 @@
   "drafts": "Drafts",
   "projects": "Projects",
   "views": "Views",
+  "all_views": "All Views",
   "archives": "Archives",
   "settings": "Settings",
   "failed_to_move_favorite": "Failed to move favorite",
@@ -422,7 +430,15 @@
     "states": "States",
     "state": "State",
     "state_groups": "State groups",
-    "state_group": "State group",
+    "state_group": {
+      "backlog": "Backlog",
+      "unstarted": "Unstarted",
+      "started": "Started",
+      "completed": "Completed",
+      "cancelled": "Canceled",
+      "not_started": "Not started",
+      "working_on": "Working on"
+    },
     "priorities": "Priorities",
     "priority": "Priority",
     "team_project": "Team project",
@@ -433,6 +449,7 @@
     "modules": "Modules",
     "labels": "Labels",
     "label": "Label",
+    "select_labels": "Select labels",
     "admins": "Admins",
     "users": "Users",
     "guests": "Guests",
@@ -452,6 +469,8 @@
     "load_more": "Load more",
     "activity": "Activity",
     "analytics": "Analytics",
+    "analytics_for": "Analytics for {name}",
+    "in_entity": "in {name}",
     "dates": "Dates",
     "success": "Success!",
     "something_went_wrong": "Something went wrong",
@@ -699,6 +718,7 @@
     "applying": "Applying",
     "overview": "Overview",
     "no_of": "No. of {entity}",
+    "count": "Count",
     "resolved": "Resolved",
     "get_started": "Get started",
     "worklogs": "Worklogs",
@@ -717,7 +737,75 @@
     "developer": "Developer",
     "work_structure": "Work structure",
     "execution": "Execution",
-    "administration": "Administration"
+    "administration": "Administration",
+    "state_group_filter_title": "State group",
+    "days": {
+      "sunday": "Sunday",
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
+    },
+    "start_of_week": {
+      "title": "First day of the week",
+      "description": "This will change how all calendars in your app look.",
+      "updated": "First day of the week updated successfully",
+      "update_failed": "Update failed"
+    },
+    "timezone_updated_successfully": "Timezone updated successfully",
+    "failed_to_update_timezone": "Failed to update timezone",
+    "language_updated_successfully": "Language updated successfully",
+    "failed_to_update_language": "Failed to update language",
+    "select_a_language": "Select a language",
+    "suspended": "Suspended",
+    "role_required": "Role is required.",
+    "member_role_update_error": "An error occurred while updating member role. Please try again.",
+    "select_role": "Select role",
+    "select_co_worker": "Select co-worker",
+    "cannot_change_role_yet": "You can’t change this role yet.",
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "months_short": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may_short": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    },
+    "days_short": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
+    "week_view": "Week view",
+    "month_layout": "Month layout",
+    "week_layout": "Week layout",
+    "due_date_before_start_date_error": "Due date cannot be before the start date of the work item."
   },
   "chart": {
     "x_axis": "X-axis",
@@ -780,6 +868,12 @@
     },
     "update": {
       "label": "Update View"
+    },
+    "toasts": {
+      "created": "View created successfully.",
+      "create_error": "View could not be created. Please try again.",
+      "updated": "View updated successfully.",
+      "update_error": "View could not be updated. Please try again."
     }
   },
   "role_details": {
@@ -867,5 +961,149 @@
       "description": "Export work items to a JSON file.",
       "short_description": "Export as json"
     }
+  },
+  "issue_activity": {
+    "created_work_item_via": "created the work item via ",
+    "created_work_item": " created the work item.",
+    "deleted_work_item": " deleted a work item.",
+    "assignee": {
+      "added": "added a new assignee ",
+      "removed": "removed the assignee ",
+      "to": " to ",
+      "from": " from "
+    },
+    "attachment": {
+      "added": "uploaded a new attachment",
+      "removed": "removed an attachment",
+      "to": " to ",
+      "from": " from "
+    },
+    "archived_at": {
+      "restored": "restored the work item",
+      "archived": "archived the work item"
+    },
+    "cycle": {
+      "added": "added this work item to the cycle ",
+      "updated": "set the cycle to ",
+      "removed": "removed the work item from the cycle "
+    },
+    "description": {
+      "updated": "updated the description",
+      "of": " of "
+    },
+    "estimate": {
+      "set": "set the estimate point to ",
+      "removed": "removed the estimate point",
+      "to": " to ",
+      "from": " from "
+    },
+    "inbox": {
+      "declined": "declined this work item from intake.",
+      "snoozed": "snoozed this work item.",
+      "accepted": "accepted this work item from intake.",
+      "declined_duplicate": "declined this work item from intake by marking a duplicate work item.",
+      "updated_status": "updated intake work item status."
+    },
+    "label": {
+      "added": "added a new label ",
+      "removed": "removed the label ",
+      "to": " to ",
+      "from": " from "
+    },
+    "link": {
+      "added": "added ",
+      "updated": "updated the ",
+      "removed": "removed this ",
+      "link_word": "link",
+      "to": " to ",
+      "from": " from "
+    },
+    "module": {
+      "added": "added this work item to the module ",
+      "updated": "set the module to ",
+      "removed": "removed the work item from the module "
+    },
+    "name": {
+      "set": "set the name to "
+    },
+    "parent": {
+      "set": "set the parent to ",
+      "removed": "removed the parent ",
+      "for": " for ",
+      "from": " from "
+    },
+    "priority": {
+      "set": "set the priority to ",
+      "for": " for "
+    },
+    "relation": {
+      "blocking_added": "marked this work item is blocking work item ",
+      "blocking_removed": "removed the blocking work item ",
+      "blocked_by_added": "marked this work item is being blocked by ",
+      "blocked_by_removed": "removed this work item being blocked by work item ",
+      "duplicate_added": "marked this work item as duplicate of ",
+      "duplicate_removed": "removed this work item as a duplicate of ",
+      "relates_to_added": "marked that this work item relates to ",
+      "relates_to_removed": "removed the relation from "
+    },
+    "start_date": {
+      "set": "set the start date to ",
+      "removed": "removed the start date ",
+      "for": " for ",
+      "from": " from "
+    },
+    "target_date": {
+      "set": "set the due date to ",
+      "removed": "removed the due date ",
+      "for": " for ",
+      "from": " from "
+    },
+    "state": {
+      "set": "set the state to ",
+      "for": " for "
+    }
+  },
+  "duplicate_of": "Duplicate of",
+  "all_epics": "All epics",
+  "all_issues": "All work items",
+  "work_items_count_in_project": "{count, plural, one{There is # work item in this project} other{There are # work items in this project}}",
+  "view_less": "View less",
+  "view_all": "View all",
+  "image_upload_modal": {
+    "title": "Upload image",
+    "edit": "Edit",
+    "drop_to_upload": "Drop image here to upload",
+    "drag_and_drop": "Drag & drop image here",
+    "file_too_large": "The image size cannot exceed 5 MB.",
+    "invalid_format": "Please upload a file in a valid format.",
+    "formats_supported": "File formats supported- .jpeg, .jpg, .png, .webp",
+    "removing": "Removing",
+    "remove": "Remove",
+    "uploading": "Uploading",
+    "upload_and_save": "Upload & Save",
+    "upload_error": "Something went wrong. Please try again."
+  },
+  "tab_preferences": {
+    "default_tab_updated": "Default tab updated successfully.",
+    "default_tab_update_error": "Failed to update default tab. Please try again later.",
+    "hide_tab_error": "Failed to hide tab. Please try again later."
+  },
+  "gantt_drag_disabled_warning": "Drag and drop is only enabled when sorted by manual",
+  "instance_not_ready": {
+    "title": "Welcome to Plane",
+    "description": "Set up your instance and create your first workspace to begin managing projects and work."
+  },
+  "not_authorized": "Oops! You are not authorized to view this page",
+  "greeting_morning": "Good morning",
+  "greeting_afternoon": "Good afternoon",
+  "greeting_evening": "Good evening",
+  "hide": "Hide",
+  "more": "More",
+  "community_edition": "Community",
+  "work_items_count_in_archive": "{count, plural, one{There is # work item in project's archived} other{There are # work items in project's archived}}",
+  "not_found": {
+    "title": "Oops! Something went wrong.",
+    "description": "Sorry, the page you are looking for cannot be found. It may have been removed, had its name changed, or is temporarily unavailable.",
+    "go_to_home": "Go to Home"
   }
 }

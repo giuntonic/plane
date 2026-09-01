@@ -6,6 +6,7 @@
 
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
+import { useTranslation } from "@plane/i18n";
 import { ArchiveIcon, CycleIcon, ModuleIcon, WorkItemsIcon } from "@plane/propel/icons";
 import { Tooltip } from "@plane/propel/tooltip";
 import { EIssuesStoreType } from "@plane/types";
@@ -25,30 +26,6 @@ type TProps = {
   activeTab: "issues" | "cycles" | "modules";
 };
 
-const PROJECT_ARCHIVES_BREADCRUMB_LIST: {
-  [key: string]: {
-    label: string;
-    href: string;
-    icon: React.FC<React.SVGAttributes<SVGElement> & { className?: string }>;
-  };
-} = {
-  issues: {
-    label: "Work items",
-    href: "/issues",
-    icon: WorkItemsIcon,
-  },
-  cycles: {
-    label: "Cycles",
-    href: "/cycles",
-    icon: CycleIcon,
-  },
-  modules: {
-    label: "Modules",
-    href: "/modules",
-    icon: ModuleIcon,
-  },
-};
-
 export const ProjectArchivesHeader = observer(function ProjectArchivesHeader(props: TProps) {
   const { activeTab } = props;
   // router
@@ -61,8 +38,33 @@ export const ProjectArchivesHeader = observer(function ProjectArchivesHeader(pro
   const { loader } = useProject();
   // hooks
   const { isMobile } = usePlatformOS();
+  const { t } = useTranslation();
 
   const issueCount = getGroupIssueCount(undefined, undefined, false);
+
+  const PROJECT_ARCHIVES_BREADCRUMB_LIST: {
+    [key: string]: {
+      label: string;
+      href: string;
+      icon: React.FC<React.SVGAttributes<SVGElement> & { className?: string }>;
+    };
+  } = {
+    issues: {
+      label: t("work_items"),
+      href: "/issues",
+      icon: WorkItemsIcon,
+    },
+    cycles: {
+      label: t("common.cycles"),
+      href: "/cycles",
+      icon: CycleIcon,
+    },
+    modules: {
+      label: t("common.modules"),
+      href: "/modules",
+      icon: ModuleIcon,
+    },
+  };
 
   const activeTabBreadcrumbDetail =
     PROJECT_ARCHIVES_BREADCRUMB_LIST[activeTab as keyof typeof PROJECT_ARCHIVES_BREADCRUMB_LIST];
@@ -77,7 +79,7 @@ export const ProjectArchivesHeader = observer(function ProjectArchivesHeader(pro
               component={
                 <BreadcrumbLink
                   href={`/${workspaceSlug}/projects/${projectId}/archives/issues`}
-                  label="Archives"
+                  label={t("archives")}
                   icon={<ArchiveIcon className="h-4 w-4 text-tertiary" />}
                 />
               }
@@ -96,7 +98,7 @@ export const ProjectArchivesHeader = observer(function ProjectArchivesHeader(pro
           {activeTab === "issues" && issueCount && issueCount > 0 ? (
             <Tooltip
               isMobile={isMobile}
-              tooltipContent={`There are ${issueCount} ${issueCount > 1 ? "work items" : "work item"} in project's archived`}
+              tooltipContent={t("work_items_count_in_archive", { count: issueCount })}
               position="bottom"
             >
               <span className="flex flex-shrink-0 cursor-default items-center justify-center rounded-xl bg-accent-primary/20 px-2.5 py-0.5 text-center text-11 font-semibold text-accent-primary">

@@ -26,6 +26,7 @@
       "default_assignee_description": "Selecione o responsável padrão do projeto.",
       "project_subscribers": "Assinantes do projeto",
       "project_subscribers_description": "Selecione os membros que receberão notificações deste projeto.",
+      "guest_access": "Acesso de convidado",
       "guest_super_permissions": {
         "title": "Conceder acesso de visualização a todos os itens de trabalho para usuários convidados:",
         "sub_heading": "Isso permitirá que os convidados tenham acesso de visualização a todos os itens de trabalho do projeto."
@@ -43,6 +44,22 @@
       "empty_state": {
         "title": "Nenhum estado disponível para o grupo {groupKey}",
         "description": "Por favor, crie um novo estado"
+      },
+      "toasts": {
+        "created": "Status criado com sucesso.",
+        "already_exists": "Já existe um status com esse nome. Tente novamente com outro nome.",
+        "create_error": "Não foi possível criar o status. Tente novamente.",
+        "updated": "Status atualizado com sucesso.",
+        "update_error": "Não foi possível atualizar o status. Tente novamente.",
+        "already_exists_update": "Já existe outro status com o mesmo nome. Tente novamente com outro nome."
+      },
+      "delete_modal": {
+        "title": "Excluir status",
+        "confirmation": "Tem certeza de que deseja excluir o status- {name}? Todos os dados relacionados ao status serão removidos permanentemente. Essa ação não pode ser desfeita.",
+        "has_work_items_error": "Este status contém itens de trabalho. Mova-os para outro status para poder excluí-lo.",
+        "delete_error": "Não foi possível excluir o status. Tente novamente.",
+        "cannot_delete_default": "Não é possível excluir o status padrão.",
+        "cannot_have_empty_group": "Não é possível deixar um grupo vazio."
       }
     },
     "labels": {
@@ -53,6 +70,11 @@
       "label_max_char": "O nome da etiqueta não deve exceder 255 caracteres",
       "toast": {
         "error": "Erro ao atualizar a etiqueta"
+      },
+      "delete": {
+        "title": "Excluir etiqueta",
+        "confirmation": "Tem certeza de que deseja excluir {name}? Isso removerá a etiqueta de todos os itens de trabalho e de qualquer visualização em que ela esteja sendo usada como filtro.",
+        "error": "Não foi possível excluir a etiqueta. Tente novamente."
       }
     },
     "estimates": {
@@ -128,6 +150,16 @@
             "title": "Erro",
             "message": "Algo deu errado"
           }
+        },
+        "deleted": {
+          "success": {
+            "title": "Estimativa excluída",
+            "message": "A estimativa foi removida do seu projeto."
+          },
+          "error": {
+            "title": "Falha ao excluir estimativa",
+            "message": "Não foi possível excluir a estimativa. Tente novamente."
+          }
         }
       },
       "validation": {
@@ -174,7 +206,12 @@
       },
       "switch": "Alternar sistema de estimativas",
       "current": "Sistema de estimativas atual",
-      "select": "Selecione um sistema de estimativas"
+      "select": "Selecione um sistema de estimativas",
+      "delete_modal": {
+        "title": "Excluir sistema de estimativas",
+        "confirmation": "Excluir o sistema de estimativas {name} o removerá permanentemente de todos os itens de trabalho. Essa ação não pode ser desfeita. Se você adicionar estimativas novamente, precisará atualizar todos os itens de trabalho.",
+        "delete": "Excluir estimativa"
+      }
     },
     "dashboard": {
       "label": "Dashboard",
@@ -536,6 +573,7 @@
           }
         }
       }
-    }
+    },
+    "sidebar_title": "Configurações do projeto"
   }
 }

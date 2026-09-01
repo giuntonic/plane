@@ -8,6 +8,7 @@ import { observer } from "mobx-react";
 import { EStartOfTheWeek } from "@plane/types";
 import { getOrderedDays } from "@plane/utils";
 import { DAYS_LIST } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 // helpers
 // hooks
 import { useUserProfile } from "@/hooks/store/user";
@@ -17,11 +18,22 @@ type Props = {
   showWeekends: boolean;
 };
 
+const DAY_SHORT_KEYS: Record<EStartOfTheWeek, string> = {
+  [EStartOfTheWeek.SUNDAY]: "sun",
+  [EStartOfTheWeek.MONDAY]: "mon",
+  [EStartOfTheWeek.TUESDAY]: "tue",
+  [EStartOfTheWeek.WEDNESDAY]: "wed",
+  [EStartOfTheWeek.THURSDAY]: "thu",
+  [EStartOfTheWeek.FRIDAY]: "fri",
+  [EStartOfTheWeek.SATURDAY]: "sat",
+};
+
 export const CalendarWeekHeader = observer(function CalendarWeekHeader(props: Props) {
   const { isLoading, showWeekends } = props;
   // hooks
   const { data } = useUserProfile();
   const startOfWeek = data?.start_of_the_week;
+  const { t } = useTranslation();
 
   // derived
   const orderedDays = getOrderedDays(Object.values(DAYS_LIST), (item) => item.value, startOfWeek);
@@ -41,7 +53,7 @@ export const CalendarWeekHeader = observer(function CalendarWeekHeader(props: Pr
 
         return (
           <div key={day.shortTitle} className="flex h-11 items-center justify-center bg-layer-1 px-4 md:justify-end">
-            {day.shortTitle}
+            {t(`common.days_short.${DAY_SHORT_KEYS[day.value]}`)}
           </div>
         );
       })}

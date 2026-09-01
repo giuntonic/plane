@@ -6,6 +6,7 @@
 
 import { useState } from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { IState, TStateOperationsCallbacks } from "@plane/types";
 // components
@@ -22,6 +23,7 @@ export const StateUpdate = observer(function StateUpdate(props: TStateUpdate) {
   const { state, updateStateCallback, handleClose } = props;
   // states
   const [loader, setLoader] = useState(false);
+  const { t } = useTranslation();
 
   const onCancel = () => {
     setLoader(false);
@@ -35,8 +37,8 @@ export const StateUpdate = observer(function StateUpdate(props: TStateUpdate) {
       await updateStateCallback(state.id, formData);
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "State updated successfully.",
+        title: t("toast.success"),
+        message: t("project_settings.states.toasts.updated"),
       });
       handleClose();
       return { status: "success" };
@@ -45,15 +47,15 @@ export const StateUpdate = observer(function StateUpdate(props: TStateUpdate) {
       if (errorStatus?.status === 400) {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Another state exists with the same name. Please try again with another name.",
+          title: t("toast.error"),
+          message: t("project_settings.states.toasts.already_exists_update"),
         });
         return { status: "already_exists" };
       } else {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "State could not be updated. Please try again.",
+          title: t("toast.error"),
+          message: t("project_settings.states.toasts.update_error"),
         });
         return { status: "error" };
       }
@@ -66,7 +68,7 @@ export const StateUpdate = observer(function StateUpdate(props: TStateUpdate) {
       onSubmit={onSubmit}
       onCancel={onCancel}
       buttonDisabled={loader}
-      buttonTitle={loader ? `Updating` : `Update`}
+      buttonTitle={loader ? t("common.updating") : t("common.update")}
     />
   );
 });

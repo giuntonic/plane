@@ -126,6 +126,7 @@
       "toast": {
         "theme": {
           "success": "Tema atualizado com sucesso.",
+          "reloading": "Recarregando para aplicar as alterações...",
           "error": "Falha ao atualizar o tema. Tente novamente."
         },
         "timezone": {
@@ -170,6 +171,15 @@
     },
     "search_menu": {
       "no_results": "Nenhum resultado encontrado",
+      "no_cycles_found": "Nenhum ciclo encontrado",
+      "no_labels_found": "Nenhuma etiqueta encontrada",
+      "no_modules_found": "Nenhum módulo encontrado",
+      "no_projects_found": "Nenhum projeto encontrado",
+      "no_views_found": "Nenhuma visualização encontrada",
+      "no_settings_found": "Nenhuma configuração encontrada",
+      "no_workspaces_found": "Nenhum espaço de trabalho encontrado",
+      "results_for_workspace": "Resultados da busca por \"{query}\" no espaço de trabalho:",
+      "results_for_project": "Resultados da busca por \"{query}\" no projeto:",
       "clear_search": "Limpar pesquisa",
       "go_to_advanced_search": "Ir para pesquisa avançada"
     },
@@ -187,6 +197,8 @@
       "miscellaneous": "Diversos",
       "preferences": "Preferências",
       "help": "Ajuda"
-    }
+    },
+    "search_for_shortcuts": "Buscar atalhos",
+    "search_commands_placeholder": "Buscar comandos..."
   }
 }

@@ -7,6 +7,8 @@
 import { observer } from "mobx-react";
 // plane utils
 import { cn } from "@plane/utils";
+// helpers
+import { translateDayShort } from "../../data";
 // hooks
 import { useTimeLineChartStore } from "@/hooks/use-timeline-chart";
 //
@@ -59,7 +61,9 @@ export const WeekChartView = observer(function WeekChartView(_props: any) {
                     )}
                     style={{ width: `${currentViewData?.data.dayWidth}px` }}
                   >
-                    <div className="space-x-1 text-11 font-medium text-placeholder">{weekDay.dayData.abbreviation}</div>
+                    <div className="space-x-1 text-11 font-medium text-placeholder">
+                      {translateDayShort(weekDay.dayData.shortTitle)}
+                    </div>
                     <div className="space-x-1 text-11 font-medium">
                       <span
                         className={cn({

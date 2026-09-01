@@ -7,6 +7,7 @@
 import { useState } from "react";
 import { observer } from "mobx-react";
 // ui
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { EModalPosition, EModalWidth, ModalCore } from "@plane/ui";
@@ -30,6 +31,7 @@ export const DeleteEstimateModal = observer(function DeleteEstimateModal(props: 
   const { areEstimateEnabledByProjectId, deleteEstimate } = useProjectEstimates();
   const { asJson: estimate } = useEstimate(estimateId);
   const { updateProject } = useProject();
+  const { t } = useTranslation();
   // states
   const [buttonLoader, setButtonLoader] = useState(false);
 
@@ -44,16 +46,16 @@ export const DeleteEstimateModal = observer(function DeleteEstimateModal(props: 
       setButtonLoader(false);
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Estimate deleted",
-        message: "Estimate has been removed from your project.",
+        title: t("project_settings.estimates.toasts.deleted.success.title"),
+        message: t("project_settings.estimates.toasts.deleted.success.message"),
       });
       handleClose();
     } catch (_error) {
       setButtonLoader(false);
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Estimate creation failed",
-        message: "We were unable to delete the estimate, please try again.",
+        title: t("project_settings.estimates.toasts.deleted.error.title"),
+        message: t("project_settings.estimates.toasts.deleted.error.message"),
       });
     }
   };
@@ -63,24 +65,22 @@ export const DeleteEstimateModal = observer(function DeleteEstimateModal(props: 
       <div className="relative space-y-6 py-5">
         {/* heading */}
         <div className="relative flex items-center justify-between gap-2 px-5">
-          <div className="text-18 font-medium text-primary">Delete Estimate System</div>
+          <div className="text-18 font-medium text-primary">{t("project_settings.estimates.delete_modal.title")}</div>
         </div>
 
         {/* estimate steps */}
         <div className="px-5">
           <div className="text-14 text-secondary">
-            Deleting the estimate <span className="font-bold text-primary">{estimate?.name}</span>
-            &nbsp;system will remove it from all work items permanently. This action cannot be undone. If you add
-            estimates again, you will need to update all the work items.
+            {t("project_settings.estimates.delete_modal.confirmation", { name: estimate?.name })}
           </div>
         </div>
 
         <div className="relative flex items-center justify-end gap-3 border-t border-subtle px-5 pt-5">
           <Button variant="secondary" size="lg" onClick={handleClose} disabled={buttonLoader}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button variant="error-fill" size="lg" onClick={handleDeleteEstimate} disabled={buttonLoader}>
-            {buttonLoader ? "Deleting" : "Delete Estimate"}
+            {buttonLoader ? t("common.deleting") : t("project_settings.estimates.delete_modal.delete")}
           </Button>
         </div>
       </div>

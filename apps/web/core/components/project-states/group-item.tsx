@@ -78,7 +78,9 @@ export const GroupItem = observer(function GroupItem(props: TGroupItem) {
           <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center overflow-hidden rounded-sm">
             <StateGroupIcon stateGroup={groupKey} size={EIconSize.XL} />
           </div>
-          <div className="px-1 text-14 font-medium text-secondary capitalize">{groupKey}</div>
+          <div className="px-1 text-14 font-medium text-secondary capitalize">
+            {t(`common.state_group.${groupKey}`)}
+          </div>
         </div>
         <button
           type="button"
@@ -101,7 +103,9 @@ export const GroupItem = observer(function GroupItem(props: TGroupItem) {
 
       {shouldShowEmptyState && (
         <div className="flex h-full flex-col items-center justify-center py-4 text-13 text-tertiary">
-          <div>{t("project_settings.states.empty_state.title", { groupKey })}</div>
+          <div>
+            {t("project_settings.states.empty_state.title", { groupKey: t(`common.state_group.${groupKey}`) })}
+          </div>
           {isEditable && <div>{t("project_settings.states.empty_state.description")}</div>}
         </div>
       )}

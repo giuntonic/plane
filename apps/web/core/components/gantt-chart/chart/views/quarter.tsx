@@ -6,7 +6,10 @@
 
 import { observer } from "mobx-react";
 // plane utils
+import { useTranslation } from "@plane/i18n";
 import { cn } from "@plane/utils";
+// helpers
+import { translateMonthShort } from "../../data";
 // hooks
 import { useTimeLineChartStore } from "@/hooks/use-timeline-chart";
 //
@@ -15,6 +18,7 @@ import type { IMonthBlock, IQuarterMonthBlock } from "../../views";
 import { groupMonthsToQuarters } from "../../views";
 
 export const QuarterChartView = observer(function QuarterChartView(_props: any) {
+  const { t } = useTranslation();
   const { currentViewData, renderView } = useTimeLineChartStore();
   const monthBlocks: IMonthBlock[] = renderView;
 
@@ -46,7 +50,7 @@ export const QuarterChartView = observer(function QuarterChartView(_props: any) 
                   {quarterBlock?.title}
                   {quarterBlock.today && (
                     <span className={cn("ml-2 rounded-sm bg-accent-primary px-1 text-9 font-medium text-on-color")}>
-                      Current
+                      {t("current")}
                     </span>
                   )}
                 </div>
@@ -73,7 +77,7 @@ export const QuarterChartView = observer(function QuarterChartView(_props: any) 
                           "rounded-lg bg-accent-primary px-2 text-on-color": monthBlock.today,
                         })}
                       >
-                        {monthBlock.monthData.shortTitle}
+                        {translateMonthShort(monthBlock.monthData.shortTitle)}
                       </span>
                     </div>
                   </div>

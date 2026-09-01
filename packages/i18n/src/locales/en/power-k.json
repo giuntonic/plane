@@ -126,6 +126,7 @@
       "toast": {
         "theme": {
           "success": "Theme updated successfully.",
+          "reloading": "Reloading to apply changes...",
           "error": "Failed to update theme. Please try again."
         },
         "timezone": {
@@ -170,6 +171,15 @@
     },
     "search_menu": {
       "no_results": "No results found",
+      "no_cycles_found": "No cycles found",
+      "no_labels_found": "No labels found",
+      "no_modules_found": "No modules found",
+      "no_projects_found": "No projects found",
+      "no_views_found": "No views found",
+      "no_settings_found": "No settings found",
+      "no_workspaces_found": "No workspaces found",
+      "results_for_workspace": "Search results for \"{query}\" in workspace:",
+      "results_for_project": "Search results for \"{query}\" in project:",
       "clear_search": "Clear search",
       "go_to_advanced_search": "Go to advanced search"
     },
@@ -187,6 +197,8 @@
       "miscellaneous": "Miscellaneous",
       "preferences": "Preferences",
       "help": "Help"
-    }
+    },
+    "search_for_shortcuts": "Search for shortcuts",
+    "search_commands_placeholder": "Search commands..."
   }
 }

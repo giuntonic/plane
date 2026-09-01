@@ -1,41 +1,59 @@
 {
-  "active_cycle": {
-    "empty_state": {
-      "progress": {
-        "title": "Add work items to the cycle to view it's progress"
-      },
-      "chart": {
-        "title": "Add work items to the cycle to view the burndown chart."
-      },
-      "priority_issue": {
-        "title": "Observe high priority work items tackled in the cycle at a glance."
-      },
-      "assignee": {
-        "title": "Add assignees to work items to see a breakdown of work by assignees."
-      },
-      "label": {
-        "title": "Add labels to work items to see the breakdown of work by labels."
-      }
+    "active_cycle": {
+        "empty_state": {
+            "progress": {
+                "title": "Add work items to the cycle to view it's progress"
+            },
+            "chart": {
+                "title": "Add work items to the cycle to view the burndown chart."
+            },
+            "priority_issue": {
+                "title": "Observe high priority work items tackled in the cycle at a glance."
+            },
+            "assignee": {
+                "title": "Add assignees to work items to see a breakdown of work by assignees."
+            },
+            "label": {
+                "title": "Add labels to work items to see the breakdown of work by labels."
+            }
+        }
+    },
+    "cycle": {
+        "label": "{count, plural, one {Cycle} other {Cycles}}",
+        "no_cycle": "No cycle",
+        "delete_confirmation": "Are you sure you want to delete cycle \"{name}\"? All of the data related to the cycle will be permanently removed. This action cannot be undone.",
+        "created_successfully": "Cycle created successfully.",
+        "updated_successfully": "Cycle updated successfully.",
+        "create_error": "Error in creating cycle. Please try again.",
+        "update_error": "Error in updating cycle. Please try again.",
+        "no_matching_cycles": {
+            "title": "No matching cycles",
+            "remove_filters": "Remove the filters to see all cycles",
+            "remove_search": "Remove the search criteria to see all cycles"
+        }
+    },
+    "active_cycle_analytics": {
+        "empty_state": {
+            "progress": {
+                "title": "Add work items to the cycle to view it's\n progress"
+            },
+            "priority": {
+                "title": "Observe high priority work items tackled in\n the cycle at a glance."
+            },
+            "assignee": {
+                "title": "Add assignees to work items to see a\n breakdown of work by assignees."
+            },
+            "label": {
+                "title": "Add labels to work items to see the\n breakdown of work by labels."
+            }
+        }
+    },
+    "transfer_issues": {
+        "title": "Transfer work items",
+        "search_placeholder": "Search for a cycle...",
+        "no_current_cycle": "You don’t have any current cycle. Please create one to transfer the work items.",
+        "success": "Work items have been transferred successfully",
+        "error": "Unable to transfer work items. Please try again.",
+        "fetch_error": "Unable to fetch cycle details"
     }
-  },
-  "cycle": {
-    "label": "{count, plural, one {Cycle} other {Cycles}}",
-    "no_cycle": "No cycle"
-  },
-  "active_cycle_analytics": {
-    "empty_state": {
-      "progress": {
-        "title": "Add work items to the cycle to view it's\n progress"
-      },
-      "priority": {
-        "title": "Observe high priority work items tackled in\n the cycle at a glance."
-      },
-      "assignee": {
-        "title": "Add assignees to work items to see a\n breakdown of work by assignees."
-      },
-      "label": {
-        "title": "Add labels to work items to see the\n breakdown of work by labels."
-      }
-    }
-  }
 }

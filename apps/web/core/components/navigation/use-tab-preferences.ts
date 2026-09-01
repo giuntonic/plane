@@ -5,6 +5,7 @@
  */
 
 import { useMemo } from "react";
+import { useTranslation } from "@plane/i18n";
 import { setToast, TOAST_TYPE } from "@plane/propel/toast";
 import { useMember } from "@/hooks/store/use-member";
 import { useUser } from "@/hooks/store/user";
@@ -33,6 +34,7 @@ export const useTabPreferences = (workspaceSlug: string, projectId: string): TTa
   } = useMember();
   // const { projectUserInfo } = useUserPermissions();
   const { data } = useUser();
+  const { t } = useTranslation();
 
   // Get member ID from projectUserInfo
   // const projectMemberInfo = projectUserInfo[workspaceSlug]?.[projectId];
@@ -79,16 +81,16 @@ export const useTabPreferences = (workspaceSlug: string, projectId: string): TTa
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Default tab updated successfully.",
+          title: t("toast.success"),
+          message: t("tab_preferences.default_tab_updated"),
         });
         return;
       })
       .catch(() => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Failed to update default tab. Please try again later.",
+          title: t("toast.error"),
+          message: t("tab_preferences.default_tab_update_error"),
         });
       });
   };
@@ -107,8 +109,8 @@ export const useTabPreferences = (workspaceSlug: string, projectId: string): TTa
       console.error("Error hiding tab:", error);
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Failed to hide tab. Please try again later.",
+        title: t("toast.error"),
+        message: t("tab_preferences.hide_tab_error"),
       });
     }
   };
@@ -127,8 +129,8 @@ export const useTabPreferences = (workspaceSlug: string, projectId: string): TTa
       console.error("Error showing tab:", error);
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Something went wrong. Please try again later.",
+        title: t("toast.error"),
+        message: t("something_went_wrong_please_try_again"),
       });
     }
   };

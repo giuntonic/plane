@@ -10,7 +10,8 @@ import { Controller, useForm } from "react-hook-form";
 
 import { Disclosure } from "@headlessui/react";
 // plane imports
-import { ROLE, EUserPermissions, EUserPermissionsLevel, MEMBER_TRACKER_ELEMENTS } from "@plane/constants";
+import { ROLE, ROLE_DETAILS, EUserPermissions, EUserPermissionsLevel, MEMBER_TRACKER_ELEMENTS } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { TrashIcon, SuspendedUserIcon } from "@plane/propel/icons";
 import { Pill, EPillVariant, EPillSize } from "@plane/propel/pill";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -126,6 +127,7 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
     workspace: { updateMember },
   } = useMember();
   const { data: currentUser } = useUser();
+  const { t } = useTranslation();
 
   // derived values
   const isCurrentUser = currentUser?.id === rowData.member.id;
@@ -138,18 +140,18 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
       {isSuspended ? (
         <div className="flex w-32">
           <Pill variant={EPillVariant.DEFAULT} size={EPillSize.SM} className="border-none">
-            Suspended
+            {t("common.suspended")}
           </Pill>
         </div>
       ) : isRoleNonEditable ? (
         <div className="flex w-32">
-          <span>{ROLE[rowData.role]}</span>
+          <span>{t(ROLE_DETAILS[rowData.role].i18n_title)}</span>
         </div>
       ) : (
         <Controller
           name="role"
           control={control}
-          rules={{ required: "Role is required." }}
+          rules={{ required: t("common.role_required") }}
           render={({ field: { value } }) => (
             <CustomSelect
               value={value as EUserPermissions}
@@ -165,14 +167,14 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
 
                   setToast({
                     type: TOAST_TYPE.ERROR,
-                    title: "Error!",
-                    message: errorString ?? "An error occurred while updating member role. Please try again.",
+                    title: t("toast.error"),
+                    message: errorString ?? t("common.member_role_update_error"),
                   });
                 }
               }}
               label={
                 <div className="flex">
-                  <span>{ROLE[rowData.role]}</span>
+                  <span>{t(ROLE_DETAILS[rowData.role].i18n_title)}</span>
                 </div>
               }
               buttonClassName={`!px-0 !justify-start hover:bg-surface-1 ${errors.role ? "border-danger-strong" : "border-none"}`}
@@ -181,7 +183,7 @@ export const AccountTypeColumn = observer(function AccountTypeColumn(props: Acco
             >
               {Object.keys(ROLE).map((item) => (
                 <CustomSelect.Option key={item} value={item as unknown as EUserPermissions}>
-                  {ROLE[item as unknown as keyof typeof ROLE]}
+                  {t(ROLE_DETAILS[item as unknown as keyof typeof ROLE_DETAILS].i18n_title)}
                 </CustomSelect.Option>
               ))}
             </CustomSelect>

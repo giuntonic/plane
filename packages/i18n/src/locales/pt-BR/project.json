@@ -413,6 +413,25 @@
           "message": "Algo deu errado."
         }
       }
+    },
+    "leave_modal": {
+      "title": "Sair do projeto",
+      "confirmation": "Tem certeza de que deseja sair do projeto - \"{name}\"? Todos os itens de trabalho associados a você ficarão inacessíveis.",
+      "enter_project_name": "Digite o nome do projeto {name} para continuar:",
+      "enter_project_name_placeholder": "Digite o nome do projeto",
+      "confirm_phrase": "Sair do projeto",
+      "confirm_instruction": "Para confirmar, digite {phrase} abaixo:",
+      "confirm_placeholder": "Digite 'sair do projeto'",
+      "name_required_error": "Digite o nome do projeto exatamente como mostrado na descrição.",
+      "confirm_phrase_error": "Confirme a saída do projeto digitando '{phrase}'.",
+      "fill_all_fields_error": "Preencha todos os campos.",
+      "leaving": "Saindo..."
+    },
+    "join_modal": {
+      "title": "Entrar no projeto?",
+      "confirmation": "Tem certeza de que deseja entrar no projeto {name}? Clique no botão 'Entrar no projeto' abaixo para continuar.",
+      "join": "Entrar no projeto",
+      "joining": "Entrando..."
     }
   }
 }

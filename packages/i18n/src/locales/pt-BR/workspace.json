@@ -374,5 +374,88 @@
         }
       }
     }
+  },
+  "workspace_invitations_step": {
+    "title": "Você foi convidado!",
+    "subtitle": "Aceite os convites para colaborar com sua equipe.",
+    "continue_to_workspace": "Continuar para o workspace",
+    "or": "ou",
+    "create_own_workspace": "Criar seu próprio workspace",
+    "no_invitations_found": "Nenhum convite encontrado",
+    "join_or_create_title": "Participe de convites ou crie um workspace",
+    "join_or_create_description": "Todo o seu trabalho — unificado.",
+    "create_new_workspace": "Criar novo workspace"
+  },
+  "role_setup_step": {
+    "title": "Qual é a sua função?",
+    "description": "Vamos configurar o Plane para o seu jeito de trabalhar.",
+    "select_one": "Selecione uma opção",
+    "roles": {
+      "product_manager": "Gerente de Produto",
+      "engineering_manager": "Gerente de Engenharia",
+      "designer": "Designer",
+      "developer": "Desenvolvedor(a)",
+      "founder_executive": "Fundador(a)/Executivo(a)",
+      "operations_manager": "Gerente de Operações",
+      "others": "Outros"
+    },
+    "toasts": {
+      "success": {
+        "title": "Sucesso",
+        "message": "Configuração de perfil concluída!"
+      },
+      "error": {
+        "title": "Erro",
+        "message": "Falha na configuração do perfil. Tente novamente!"
+      }
+    },
+    "continue": "Continuar",
+    "skip": "Pular"
+  },
+  "usecase_setup_step": {
+    "title": "O que te trouxe ao Plane?",
+    "description": "Conte-nos seus objetivos e o tamanho da sua equipe.",
+    "select_one_or_more": "Selecione uma ou mais opções",
+    "required_error": "Selecione pelo menos uma opção",
+    "use_cases": {
+      "Plan and track product roadmaps": "Planejar e acompanhar roadmaps de produto",
+      "Manage engineering sprints": "Gerenciar sprints de engenharia",
+      "Coordinate cross-functional projects": "Coordenar projetos multidisciplinares",
+      "Replace our current tool": "Substituir nossa ferramenta atual",
+      "Just exploring": "Apenas explorando"
+    },
+    "continue": "Continuar",
+    "skip": "Pular"
+  },
+  "team_setup_step": {
+    "title": "Convide sua equipe",
+    "description": "O Plane funciona melhor com sua equipe. Convide-os agora para aproveitar todo o potencial do Plane.",
+    "add_another": "Adicionar outro",
+    "continue": "Continuar",
+    "do_it_later": "Farei isso depois"
+  },
+  "profile_setup_step": {
+    "title": "Crie seu perfil.",
+    "description": "É assim que você aparecerá no Plane.",
+    "change_image": "Alterar imagem",
+    "upload_image": "Enviar imagem",
+    "name_label": "Nome",
+    "name_required": "O nome é obrigatório",
+    "name_max_length": "O nome deve ter no máximo 50 caracteres.",
+    "name_placeholder": "Digite seu nome completo",
+    "continue": "Continuar",
+    "update_failed": "Falha ao atualizar os dados do usuário. Tente novamente!"
+  },
+  "marketing_consent": "Concordo em receber comunicações de marketing do Plane",
+  "not_a_member": {
+    "title": "Não autorizado!",
+    "description": "Você não é membro deste workspace. Entre em contato com o administrador do workspace para obter um convite ou verifique seus convites pendentes.",
+    "check_pending_invites": "Ver convites pendentes",
+    "create_new_workspace": "Criar novo workspace"
+  },
+  "workspace_not_found": {
+    "title": "Workspace não encontrado",
+    "description": "Nenhum workspace encontrado com essa URL. Ele pode não existir ou você não tem autorização para visualizá-lo.",
+    "visit_profile": "Visitar perfil"
   }
 }

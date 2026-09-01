@@ -4,9 +4,44 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 // types
 import type { WeekMonthDataType, ChartDataType, TGanttViews } from "@plane/types";
 import { EStartOfTheWeek } from "@plane/types";
+
+// Pespo: shortTitle values here don't always line up with the i18n key
+// names in common.json (e.g. "thurs" vs "thu", "sept" vs "sep"), so we
+// map them explicitly instead of assuming a 1:1 match.
+const DAY_SHORT_I18N_KEY: Record<string, string> = {
+  sun: "sun",
+  mon: "mon",
+  tue: "tue",
+  wed: "wed",
+  thurs: "thu",
+  fri: "fri",
+  sat: "sat",
+};
+
+const MONTH_SHORT_I18N_KEY: Record<string, string> = {
+  jan: "jan",
+  feb: "feb",
+  mar: "mar",
+  apr: "apr",
+  may: "may_short",
+  jun: "jun",
+  jul: "jul",
+  aug: "aug",
+  sept: "sep",
+  oct: "oct",
+  nov: "nov",
+  dec: "dec",
+};
+
+export const translateDayShort = (shortTitle: string) =>
+  i18nInstance.t(`common.days_short.${DAY_SHORT_I18N_KEY[shortTitle] ?? shortTitle}`);
+export const translateMonthFull = (title: string) => i18nInstance.t(`common.months.${title}`);
+export const translateMonthShort = (shortTitle: string) =>
+  i18nInstance.t(`common.months_short.${MONTH_SHORT_I18N_KEY[shortTitle] ?? shortTitle}`);
 
 // constants
 export const generateWeeks = (startOfWeek: EStartOfTheWeek = EStartOfTheWeek.SUNDAY): WeekMonthDataType[] => [

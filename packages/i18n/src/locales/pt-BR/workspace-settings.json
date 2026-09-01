@@ -37,6 +37,12 @@
             "required": "O tamanho da empresa é obrigatório",
             "select_a_range": "Selecione o tamanho da organização"
           }
+        },
+        "toasts": {
+          "updated": "Workspace atualizado com sucesso",
+          "logo_removed": "Imagem do workspace removida com sucesso.",
+          "logo_remove_error": "Ocorreu um erro ao excluir sua imagem de perfil. Tente novamente.",
+          "url_copied": "URL do workspace copiada para a área de transferência."
         }
       },
       "members": {
@@ -71,7 +77,9 @@
         "title": "Faturamento e planos",
         "current_plan": "Plano atual",
         "free_plan": "Você está usando o plano gratuito atualmente",
-        "view_plans": "Ver planos"
+        "view_plans": "Ver planos",
+        "community_description": "Projetos, itens de trabalho, ciclos, módulos, páginas e armazenamento ilimitados",
+        "all_plans": "Todos os planos"
       },
       "exports": {
         "heading": "Exportações",
@@ -117,6 +125,29 @@
           "all": "Envie-me tudo",
           "individual": "Selecionar eventos individuais"
         },
+        "toggle": "Ativar webhook",
+        "events": {
+          "project": {
+            "label": "Projetos",
+            "description": "Projeto criado, atualizado ou excluído"
+          },
+          "cycle": {
+            "label": "Ciclos",
+            "description": "Ciclo criado, atualizado ou excluído"
+          },
+          "issue": {
+            "label": "Itens de trabalho",
+            "description": "Item de trabalho criado, atualizado, excluído, adicionado a um ciclo ou módulo"
+          },
+          "module": {
+            "label": "Módulos",
+            "description": "Módulo criado, atualizado ou excluído"
+          },
+          "issue_comment": {
+            "label": "Comentários em itens de trabalho",
+            "description": "Comentário publicado, atualizado ou excluído"
+          }
+        },
         "toasts": {
           "created": {
             "title": "Webhook criado",
@@ -148,6 +179,10 @@
           "secret_key_not_copied": {
             "message": "Ocorreu um erro ao copiar a chave secreta."
           }
+        },
+        "delete": {
+          "title": "Excluir webhook",
+          "confirmation": "Tem certeza de que deseja excluir este webhook? Eventos futuros não serão mais entregues a ele. Essa ação não pode ser desfeita."
         }
       },
       "api_tokens": {
@@ -157,6 +192,10 @@
         "add_token": "Adicionar token de acesso",
         "create_token": "Criar token",
         "never_expires": "Nunca expira",
+        "copy_secret_key": "Copiar chave secreta",
+        "expired": "Expirado",
+        "expires_at": "Expira em {date} às {time}",
+        "expired_ago": "Expirou {time_ago}",
         "generate_token": "Gerar token",
         "generating": "Gerando",
         "delete": {
@@ -375,7 +414,7 @@
         "webhook_url_title": "URL do webhook",
         "webhook_url_error": "URL do webhook é obrigatória",
         "invalid_webhook_url_error": "URL do webhook inválida",
-        "redirect_uris_title": "Redirect URIs",
+        "redirect_uris_title": "URIs de redirecionamento",
         "redirect_uris_error": "Redirect URIs são obrigatórias",
         "invalid_redirect_uris_error": "Redirect URIs inválidas",
         "redirect_uris_description": "Digite URIs separados por espaço onde o aplicativo redirecionará para o usuário após e.g https://example.com https://example.com/",

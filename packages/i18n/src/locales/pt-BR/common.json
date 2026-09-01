@@ -32,9 +32,16 @@
   "add_new": "Adicionar novo",
   "remove_selected": "Remover selecionado",
   "first_name": "Primeiro nome",
+  "first_name_placeholder": "Digite seu primeiro nome",
+  "first_name_required": "Por favor, insira o primeiro nome",
   "last_name": "Sobrenome",
+  "last_name_placeholder": "Digite seu sobrenome",
   "email": "E-mail",
+  "email_placeholder": "Digite seu e-mail",
+  "email_required": "O e-mail é obrigatório.",
   "display_name": "Nome de exibição",
+  "display_name_placeholder": "Digite seu nome de exibição",
+  "display_name_required": "O nome de exibição é obrigatório.",
   "role": "Cargo",
   "timezone": "Fuso horário",
   "avatar": "Avatar",
@@ -145,6 +152,7 @@
   "drafts": "Rascunhos",
   "projects": "Projetos",
   "views": "Visualizações",
+  "all_views": "Todas as visualizações",
   "archives": "Arquivos",
   "settings": "Configurações",
   "failed_to_move_favorite": "Falha ao mover o favorito",
@@ -243,7 +251,7 @@
   "docs": "Documentos",
   "full_changelog": "Changelog completo",
   "support": "Suporte",
-  "forum": "Forum",
+  "forum": "Fórum",
   "powered_by_plane_pages": "Desenvolvido por Pespo Hub Pages",
   "please_select_at_least_one_invitation": "Selecione pelo menos um convite.",
   "please_select_at_least_one_invitation_description": "Selecione pelo menos um convite para entrar no espaço de trabalho.",
@@ -422,7 +430,15 @@
     "states": "Estados",
     "state": "Estado",
     "state_groups": "Grupos de estado",
-    "state_group": "Grupo de estado",
+    "state_group": {
+      "backlog": "Pendente",
+      "unstarted": "Não iniciado",
+      "started": "Em andamento",
+      "completed": "Concluído",
+      "cancelled": "Cancelado",
+      "not_started": "Não iniciado",
+      "working_on": "Em andamento"
+    },
     "priorities": "Prioridades",
     "priority": "Prioridade",
     "team_project": "Projeto de equipe",
@@ -433,6 +449,7 @@
     "modules": "Módulos",
     "labels": "Etiquetas",
     "label": "Etiqueta",
+    "select_labels": "Selecionar etiquetas",
     "admins": "Administradores",
     "users": "Usuários",
     "guests": "Convidados",
@@ -452,6 +469,8 @@
     "load_more": "Carregar mais",
     "activity": "Atividade",
     "analytics": "Análises",
+    "analytics_for": "Análises de {name}",
+    "in_entity": "em {name}",
     "dates": "Datas",
     "success": "Sucesso!",
     "something_went_wrong": "Algo deu errado",
@@ -486,7 +505,7 @@
     "project_timezone": "Fuso horário do projeto",
     "created_on": "Criado em",
     "updated_on": "Atualizado em",
-    "completed_on": "Completed on",
+    "completed_on": "Concluído em",
     "update_project": "Atualizar projeto",
     "identifier_already_exists": "O identificador já existe",
     "add_more": "Adicionar mais",
@@ -699,6 +718,7 @@
     "applying": "Aplicando",
     "overview": "Visão geral",
     "no_of": "Nº de {entity}",
+    "count": "Contagem",
     "resolved": "Resolvido",
     "get_started": "Começar",
     "worklogs": "Registros de trabalho",
@@ -713,11 +733,79 @@
     "details": "Detalhes",
     "project_structure": "Estrutura do projeto",
     "custom_properties": "Propriedades personalizadas",
-    "your_profile": "Your profile",
-    "developer": "Developer",
-    "work_structure": "Work structure",
-    "execution": "Execution",
-    "administration": "Administration"
+    "your_profile": "Seu perfil",
+    "developer": "Desenvolvedor",
+    "work_structure": "Estrutura de trabalho",
+    "execution": "Execução",
+    "administration": "Administração",
+    "state_group_filter_title": "Grupo de status",
+    "days": {
+      "sunday": "Domingo",
+      "monday": "Segunda-feira",
+      "tuesday": "Terça-feira",
+      "wednesday": "Quarta-feira",
+      "thursday": "Quinta-feira",
+      "friday": "Sexta-feira",
+      "saturday": "Sábado"
+    },
+    "start_of_week": {
+      "title": "Primeiro dia da semana",
+      "description": "Isso vai mudar a aparência de todos os calendários no seu app.",
+      "updated": "Primeiro dia da semana atualizado com sucesso",
+      "update_failed": "Falha ao atualizar"
+    },
+    "timezone_updated_successfully": "Fuso horário atualizado com sucesso",
+    "failed_to_update_timezone": "Falha ao atualizar o fuso horário",
+    "language_updated_successfully": "Idioma atualizado com sucesso",
+    "failed_to_update_language": "Falha ao atualizar o idioma",
+    "select_a_language": "Selecione um idioma",
+    "suspended": "Suspenso",
+    "role_required": "O cargo é obrigatório.",
+    "member_role_update_error": "Ocorreu um erro ao atualizar o cargo do membro. Tente novamente.",
+    "select_role": "Selecione o cargo",
+    "select_co_worker": "Selecione um colega",
+    "cannot_change_role_yet": "Você ainda não pode alterar esse cargo.",
+    "months": {
+      "january": "Janeiro",
+      "february": "Fevereiro",
+      "march": "Março",
+      "april": "Abril",
+      "may": "Maio",
+      "june": "Junho",
+      "july": "Julho",
+      "august": "Agosto",
+      "september": "Setembro",
+      "october": "Outubro",
+      "november": "Novembro",
+      "december": "Dezembro"
+    },
+    "months_short": {
+      "jan": "Jan",
+      "feb": "Fev",
+      "mar": "Mar",
+      "apr": "Abr",
+      "may_short": "Mai",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Ago",
+      "sep": "Set",
+      "oct": "Out",
+      "nov": "Nov",
+      "dec": "Dez"
+    },
+    "days_short": {
+      "sun": "Dom",
+      "mon": "Seg",
+      "tue": "Ter",
+      "wed": "Qua",
+      "thu": "Qui",
+      "fri": "Sex",
+      "sat": "Sáb"
+    },
+    "week_view": "Visualização semanal",
+    "month_layout": "Layout mensal",
+    "week_layout": "Layout semanal",
+    "due_date_before_start_date_error": "A data de vencimento não pode ser anterior à data de início do item de trabalho."
   },
   "chart": {
     "x_axis": "Eixo X",
@@ -780,6 +868,12 @@
     },
     "update": {
       "label": "Atualizar Visualização"
+    },
+    "toasts": {
+      "created": "Visualização criada com sucesso.",
+      "create_error": "Não foi possível criar a visualização. Tente novamente.",
+      "updated": "Visualização atualizada com sucesso.",
+      "update_error": "Não foi possível atualizar a visualização. Tente novamente."
     }
   },
   "role_details": {
@@ -867,5 +961,149 @@
       "description": "Exporte itens de trabalho para um arquivo JSON.",
       "short_description": "Exportar como JSON"
     }
+  },
+  "issue_activity": {
+    "created_work_item_via": "criou o item de trabalho via ",
+    "created_work_item": " criou o item de trabalho.",
+    "deleted_work_item": " excluiu um item de trabalho.",
+    "assignee": {
+      "added": "adicionou um novo responsável ",
+      "removed": "removeu o responsável ",
+      "to": " para ",
+      "from": " de "
+    },
+    "attachment": {
+      "added": "enviou um novo anexo",
+      "removed": "removeu um anexo",
+      "to": " para ",
+      "from": " de "
+    },
+    "archived_at": {
+      "restored": "restaurou o item de trabalho",
+      "archived": "arquivou o item de trabalho"
+    },
+    "cycle": {
+      "added": "adicionou este item de trabalho ao ciclo ",
+      "updated": "definiu o ciclo como ",
+      "removed": "removeu este item de trabalho do ciclo "
+    },
+    "description": {
+      "updated": "atualizou a descrição",
+      "of": " de "
+    },
+    "estimate": {
+      "set": "definiu o ponto de estimativa como ",
+      "removed": "removeu o ponto de estimativa",
+      "to": " para ",
+      "from": " de "
+    },
+    "inbox": {
+      "declined": "recusou este item de trabalho na entrada.",
+      "snoozed": "adiou este item de trabalho.",
+      "accepted": "aceitou este item de trabalho na entrada.",
+      "declined_duplicate": "recusou este item de trabalho na entrada por ser duplicado.",
+      "updated_status": "atualizou o status do item de trabalho na entrada."
+    },
+    "label": {
+      "added": "adicionou uma nova etiqueta ",
+      "removed": "removeu a etiqueta ",
+      "to": " para ",
+      "from": " de "
+    },
+    "link": {
+      "added": "adicionou ",
+      "updated": "atualizou o ",
+      "removed": "removeu este ",
+      "link_word": "link",
+      "to": " para ",
+      "from": " de "
+    },
+    "module": {
+      "added": "adicionou este item de trabalho ao módulo ",
+      "updated": "definiu o módulo como ",
+      "removed": "removeu este item de trabalho do módulo "
+    },
+    "name": {
+      "set": "definiu o nome como "
+    },
+    "parent": {
+      "set": "definiu o item pai como ",
+      "removed": "removeu o item pai ",
+      "for": " para ",
+      "from": " de "
+    },
+    "priority": {
+      "set": "definiu a prioridade como ",
+      "for": " para "
+    },
+    "relation": {
+      "blocking_added": "marcou que este item de trabalho está bloqueando o item ",
+      "blocking_removed": "removeu o bloqueio do item de trabalho ",
+      "blocked_by_added": "marcou que este item de trabalho está sendo bloqueado por ",
+      "blocked_by_removed": "removeu o bloqueio deste item de trabalho pelo item ",
+      "duplicate_added": "marcou este item de trabalho como duplicado de ",
+      "duplicate_removed": "removeu este item de trabalho como duplicado de ",
+      "relates_to_added": "marcou que este item de trabalho se relaciona com ",
+      "relates_to_removed": "removeu a relação com "
+    },
+    "start_date": {
+      "set": "definiu a data de início como ",
+      "removed": "removeu a data de início ",
+      "for": " para ",
+      "from": " de "
+    },
+    "target_date": {
+      "set": "definiu a data de vencimento como ",
+      "removed": "removeu a data de vencimento ",
+      "for": " para ",
+      "from": " de "
+    },
+    "state": {
+      "set": "definiu o status como ",
+      "for": " para "
+    }
+  },
+  "duplicate_of": "Duplicado de",
+  "all_epics": "Todos os épicos",
+  "all_issues": "Todos os itens de trabalho",
+  "work_items_count_in_project": "{count, plural, one{Há # item de trabalho neste projeto} other{Há # itens de trabalho neste projeto}}",
+  "view_less": "Ver menos",
+  "view_all": "Ver todos",
+  "image_upload_modal": {
+    "title": "Enviar imagem",
+    "edit": "Editar",
+    "drop_to_upload": "Solte a imagem aqui para enviar",
+    "drag_and_drop": "Arraste e solte a imagem aqui",
+    "file_too_large": "O tamanho da imagem não pode exceder 5 MB.",
+    "invalid_format": "Envie um arquivo em um formato válido.",
+    "formats_supported": "Formatos suportados: .jpeg, .jpg, .png, .webp",
+    "removing": "Removendo",
+    "remove": "Remover",
+    "uploading": "Enviando",
+    "upload_and_save": "Enviar e salvar",
+    "upload_error": "Algo deu errado. Tente novamente."
+  },
+  "tab_preferences": {
+    "default_tab_updated": "Aba padrão atualizada com sucesso.",
+    "default_tab_update_error": "Falha ao atualizar a aba padrão. Tente novamente mais tarde.",
+    "hide_tab_error": "Falha ao ocultar a aba. Tente novamente mais tarde."
+  },
+  "gantt_drag_disabled_warning": "Arrastar e soltar só está disponível quando a ordenação é manual",
+  "instance_not_ready": {
+    "title": "Bem-vindo ao Plane",
+    "description": "Configure sua instância e crie seu primeiro workspace para começar a gerenciar projetos e tarefas."
+  },
+  "not_authorized": "Ops! Você não tem autorização para visualizar esta página",
+  "greeting_morning": "Bom dia",
+  "greeting_afternoon": "Boa tarde",
+  "greeting_evening": "Boa noite",
+  "hide": "Ocultar",
+  "more": "Mais",
+  "community_edition": "Community",
+  "work_items_count_in_archive": "{count, plural, one{Há # item de trabalho arquivado no projeto} other{Há # itens de trabalho arquivados no projeto}}",
+  "not_found": {
+    "title": "Ops! Algo deu errado.",
+    "description": "Desculpe, a página que você está procurando não foi encontrada. Ela pode ter sido removida, ter tido o nome alterado ou estar temporariamente indisponível.",
+    "go_to_home": "Ir para a página inicial"
   }
 }

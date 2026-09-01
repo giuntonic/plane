@@ -8,7 +8,7 @@ import { cloneDeep, uniqBy } from "lodash-es";
 // plane imports
 import type { ChartDataType } from "@plane/types";
 // local imports
-import { months } from "../data";
+import { months, translateMonthFull } from "../data";
 import { getNumberOfDaysBetweenTwoDates, getNumberOfDaysInMonth } from "./helpers";
 import type { IWeekBlock } from "./week-view";
 import { getWeeksBetweenTwoDates } from "./week-view";
@@ -146,7 +146,7 @@ export const getMonthsBetweenTwoDates = (startDate: Date, endDate: Date): IMonth
       year: currentYear,
       month: currentMonth,
       monthData: months[currentMonth],
-      title: `${months[currentMonth].title} ${currentYear}`,
+      title: `${translateMonthFull(months[currentMonth].title)} ${currentYear}`,
       days: getNumberOfDaysInMonth(currentMonth, currentYear),
       today: todayMonth === currentMonth && todayYear === currentYear,
     });

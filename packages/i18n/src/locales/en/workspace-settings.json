@@ -37,6 +37,12 @@
             "required": "Company size is required",
             "select_a_range": "Select organization size"
           }
+        },
+        "toasts": {
+          "updated": "Workspace updated successfully",
+          "logo_removed": "Workspace picture removed successfully.",
+          "logo_remove_error": "There was some error in deleting your profile picture. Please try again.",
+          "url_copied": "Workspace URL copied to the clipboard."
         }
       },
       "members": {
@@ -71,7 +77,9 @@
         "title": "Billing & Plans",
         "current_plan": "Current plan",
         "free_plan": "You are currently using the free plan",
-        "view_plans": "View plans"
+        "view_plans": "View plans",
+        "community_description": "Unlimited projects, issues, cycles, modules, pages, and storage",
+        "all_plans": "All plans"
       },
       "exports": {
         "heading": "Exports",
@@ -117,6 +125,29 @@
           "all": "Send me everything",
           "individual": "Select individual events"
         },
+        "toggle": "Enable webhook",
+        "events": {
+          "project": {
+            "label": "Projects",
+            "description": "Project created, updated, or deleted"
+          },
+          "cycle": {
+            "label": "Cycles",
+            "description": "Cycle created, updated, or deleted"
+          },
+          "issue": {
+            "label": "Work items",
+            "description": "Work item created, updated, deleted, added to a cycle or module"
+          },
+          "module": {
+            "label": "Modules",
+            "description": "Module created, updated, or deleted"
+          },
+          "issue_comment": {
+            "label": "Work item comments",
+            "description": "Comment posted, updated, or deleted"
+          }
+        },
         "toasts": {
           "created": {
             "title": "Webhook created",
@@ -148,6 +179,10 @@
           "secret_key_not_copied": {
             "message": "Error occurred while copying secret key."
           }
+        },
+        "delete": {
+          "title": "Delete webhook",
+          "confirmation": "Are you sure you want to delete this webhook? Future events will not be delivered to this webhook. This action cannot be undone."
         }
       },
       "api_tokens": {
@@ -157,6 +192,10 @@
         "add_token": "Add access token",
         "create_token": "Create token",
         "never_expires": "Never expires",
+        "copy_secret_key": "Copy secret key",
+        "expired": "Expired",
+        "expires_at": "Expires {date} at {time}",
+        "expired_ago": "Expired {time_ago}",
         "generate_token": "Generate token",
         "generating": "Generating",
         "delete": {
