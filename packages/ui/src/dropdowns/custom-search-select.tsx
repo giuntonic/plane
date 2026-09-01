@@ -10,6 +10,7 @@ import React, { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { usePopper } from "react-popper";
 import { useOutsideClickDetector } from "@plane/hooks";
+import { useTranslation } from "@plane/i18n";
 import { CheckIcon, SearchIcon, ChevronDownIcon } from "@plane/propel/icons";
 // plane imports
 // local imports
@@ -40,9 +41,10 @@ export function CustomSearchSelect(props: ICustomSearchSelectProps) {
     optionsClassName = "",
     value,
     tabIndex,
-    noResultsMessage = "No matches found",
+    noResultsMessage,
     defaultOpen = false,
   } = props;
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
 
   const [referenceElement, setReferenceElement] = useState<HTMLButtonElement | null>(null);
@@ -159,7 +161,7 @@ export function CustomSearchSelect(props: ICustomSearchSelectProps) {
                         className="w-full bg-transparent py-1 text-11 text-secondary placeholder:text-placeholder focus:outline-none"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Search"
+                        placeholder={t("search")}
                         displayValue={(assigned: any) => assigned?.name}
                       />
                     </div>
@@ -213,10 +215,12 @@ export function CustomSearchSelect(props: ICustomSearchSelectProps) {
                             </Combobox.Option>
                           ))
                         ) : (
-                          <p className="px-1.5 py-1 text-placeholder italic">{noResultsMessage}</p>
+                          <p className="px-1.5 py-1 text-placeholder italic">
+                            {noResultsMessage ?? t("no_matching_results")}
+                          </p>
                         )
                       ) : (
-                        <p className="px-1.5 py-1 text-placeholder italic">Loading...</p>
+                        <p className="px-1.5 py-1 text-placeholder italic">{t("loading")}</p>
                       )}
                     </div>
                     {footerOption}

@@ -5,7 +5,20 @@
  */
 
 import { differenceInDays, format, formatDistanceToNow, isAfter, isEqual, isValid, parseISO } from "date-fns";
+import { enUS, ptBR } from "date-fns/locale";
 import { isNumber } from "lodash-es";
+import { i18nInstance } from "@plane/i18n";
+
+// Pespo: nomes de mês, "atrás", AM/PM etc. do date-fns são sensíveis a
+// locale — sem isso, toda data no app aparece em inglês independente do
+// idioma escolhido. Só mantemos pt-BR e en aqui (os dois idiomas que a
+// gente mantém de verdade); outros idiomas continuam caindo no inglês.
+const DATE_FNS_LOCALES = { "pt-BR": ptBR, en: enUS } as const;
+
+function getDateFnsLocale() {
+  const lang = i18nInstance.language;
+  return DATE_FNS_LOCALES[lang as keyof typeof DATE_FNS_LOCALES] ?? enUS;
+}
 
 // Format Date Helpers
 /**
@@ -29,10 +42,10 @@ export const renderFormattedDate = (
   let formattedDate;
   try {
     // Format the date in the format provided or default format (MMM dd, yyyy)
-    formattedDate = format(parsedDate, formatToken);
+    formattedDate = format(parsedDate, formatToken, { locale: getDateFnsLocale() });
   } catch (_e) {
     // Format the date in format (MMM dd, yyyy) in case of any error
-    formattedDate = format(parsedDate, "MMM dd, yyyy");
+    formattedDate = format(parsedDate, "MMM dd, yyyy", { locale: getDateFnsLocale() });
   }
   return formattedDate;
 };
@@ -51,7 +64,7 @@ export const renderFormattedDateWithoutYear = (date: string | Date): string => {
   // Check if the parsed date is valid before formatting
   if (!isValid(parsedDate)) return ""; // Return empty string for invalid dates
   // Format the date in short format (MMM dd)
-  const formattedDate = format(parsedDate, "MMM dd");
+  const formattedDate = format(parsedDate, "MMM dd", { locale: getDateFnsLocale() });
   return formattedDate;
 };
 
@@ -91,11 +104,11 @@ export const renderFormattedTime = (date: string | Date, timeFormat: "12-hour" |
   if (!isValid(parsedDate)) return ""; // Return empty string for invalid dates
   // Format the date in 12 hour format if in12HourFormat is true
   if (timeFormat === "12-hour") {
-    const formattedTime = format(parsedDate, "hh:mm a");
+    const formattedTime = format(parsedDate, "hh:mm a", { locale: getDateFnsLocale() });
     return formattedTime;
   }
   // Format the date in 24 hour format
-  const formattedTime = format(parsedDate, "HH:mm");
+  const formattedTime = format(parsedDate, "HH:mm", { locale: getDateFnsLocale() });
   return formattedTime;
 };
 
@@ -175,7 +188,7 @@ export const calculateTimeAgo = (time: string | number | Date | null): string =>
   // return if undefined
   if (!parsedTime) return ""; // Return empty string for invalid dates
   // Format the time in the form of amount of time passed since the event happened
-  const distance = formatDistanceToNow(parsedTime, { addSuffix: true });
+  const distance = formatDistanceToNow(parsedTime, { addSuffix: true, locale: getDateFnsLocale() });
   return distance;
 };
 

@@ -1564,6 +1564,9 @@ importers:
       '@plane/hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@plane/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@plane/types':
         specifier: workspace:*
         version: link:../types
@@ -1775,6 +1778,9 @@ importers:
       '@plane/hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@plane/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@plane/propel':
         specifier: workspace:*
         version: link:../propel
@@ -1890,6 +1896,9 @@ importers:
       '@plane/constants':
         specifier: workspace:*
         version: link:../constants
+      '@plane/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@plane/types':
         specifier: workspace:*
         version: link:../types
@@ -6010,6 +6019,7 @@ packages:
 
   crypto-js@4.2.0:
     resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    deprecated: Active development of CryptoJS has been discontinued. This library is no longer maintained.
 
   css-loader@7.1.4:
     resolution: {integrity: sha512-vv3J9tlOl04WjiMvHQI/9tmIrCxVrj6PFbHemBB1iihpeRbi/I4h033eoFIhwxBBqLhI0KYFS7yvynBFhIZfTw==}

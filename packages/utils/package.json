@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@plane/constants": "workspace:*",
+    "@plane/i18n": "workspace:*",
     "@plane/types": "workspace:*",
     "chroma-js": "catalog:",
     "clsx": "catalog:",
