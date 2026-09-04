@@ -375,6 +375,18 @@
       }
     }
   },
+  "workspace_invitation_page": {
+    "invitation_not_found": "Invitation not found",
+    "invited_title": "You have been invited to {workspace}",
+    "invited_description": "Your workspace is where you'll create projects, collaborate on your work items, and organize different streams of work in your Pespo Hub account.",
+    "accept": "Accept",
+    "ignore": "Ignore",
+    "sign_in_to_accept": "Sign in to accept",
+    "already_member_title": "You are already a member of {workspace}",
+    "continue_to_home": "Continue to home",
+    "expired_title": "This invitation link is not active anymore.",
+    "sign_in_to_continue": "Sign in to continue"
+  },
   "workspace_invitations_step": {
     "title": "You are invited!",
     "subtitle": "Accept the invites to collaborate with your team.",

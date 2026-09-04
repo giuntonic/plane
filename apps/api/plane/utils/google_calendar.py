@@ -90,13 +90,22 @@ def create_dedicated_calendar(access_token, summary="Plane"):
     return response.json()["id"]
 
 
+def _as_rfc3339(date_str, end_of_day=False):
+    """The events.list endpoint requires full RFC3339 timestamps — a
+    bare YYYY-MM-DD (what the calendar view sends as after/before)
+    gets rejected with a 400. Leave already-full timestamps as-is."""
+    if "T" in date_str:
+        return date_str
+    return f"{date_str}T{'23:59:59' if end_of_day else '00:00:00'}Z"
+
+
 def list_events(access_token, calendar_id, time_min, time_max):
     response = requests.get(
         f"{CALENDAR_API_BASE}/calendars/{calendar_id}/events",
         headers=_headers(access_token),
         params={
-            "timeMin": time_min,
-            "timeMax": time_max,
+            "timeMin": _as_rfc3339(time_min),
+            "timeMax": _as_rfc3339(time_max, end_of_day=True),
             "singleEvents": "true",
             "orderBy": "startTime",
         },
