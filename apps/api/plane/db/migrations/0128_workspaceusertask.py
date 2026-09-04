@@ -60,6 +60,15 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
+                    "project",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="project_%(class)s",
+                        to="db.project",
+                    ),
+                ),
+                (
                     "updated_by",
                     models.ForeignKey(
                         null=True,
