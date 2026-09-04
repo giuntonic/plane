@@ -4,23 +4,43 @@
  * See the LICENSE file for details.
  */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NodeViewWrapper } from "@tiptap/react";
 import type { NodeViewProps } from "@tiptap/react";
-import { ExternalLink, Pencil, Trash2, Video } from "lucide-react";
+import { Check, ExternalLink, Pencil, ThumbsUp, Trash2, Video } from "lucide-react";
 // local imports
-import type { TClapshotEmbedAttributes } from "../types";
+import type { TClapshotEmbedAttributes, TClapshotEmbedExtensionOptions } from "../types";
 import { EClapshotEmbedAttributeNames } from "../types";
 
 // Pespo: node view do embed de vídeo (Clapshot) — pede a URL da revisão
 // quando vazio, renderiza o player em iframe quando preenchido.
 export function ClapshotEmbedNodeView(props: NodeViewProps) {
-  const { node, updateAttributes, deleteNode, selected } = props;
+  const { node, updateAttributes, deleteNode, selected, extension } = props;
   const attrs = node.attrs as TClapshotEmbedAttributes;
   const url = attrs[EClapshotEmbedAttributeNames.URL];
+  const { onApproveEdit } = extension.options as TClapshotEmbedExtensionOptions;
+
+  const [approving, setApproving] = useState(false);
+  const [approved, setApproved] = useState(false);
+
+  const handleApproveEdit = async () => {
+    if (!onApproveEdit || approving) return;
+    setApproving(true);
+    try {
+      await onApproveEdit();
+      setApproved(true);
+    } finally {
+      setApproving(false);
+    }
+  };
 
   const [draftUrl, setDraftUrl] = useState(url ?? "");
   const [isEditing, setIsEditing] = useState(!url);
+  const urlInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isEditing) urlInputRef.current?.focus();
+  }, [isEditing]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,14 +54,14 @@ export function ClapshotEmbedNodeView(props: NodeViewProps) {
     return (
       <NodeViewWrapper
         className={`my-2 flex items-center gap-2 rounded-md border border-subtle bg-surface-1 p-3 ${
-          selected ? "outline outline-2 outline-accent-primary" : ""
+          selected ? "outline-accent-primary outline outline-2" : ""
         }`}
         contentEditable={false}
       >
         <Video className="size-4 flex-shrink-0 text-tertiary" />
         <form onSubmit={handleSubmit} className="flex flex-1 items-center gap-2">
           <input
-            autoFocus
+            ref={urlInputRef}
             type="url"
             value={draftUrl}
             onChange={(e) => setDraftUrl(e.target.value)}
@@ -75,7 +95,7 @@ export function ClapshotEmbedNodeView(props: NodeViewProps) {
   return (
     <NodeViewWrapper
       className={`group/clapshot-embed relative my-2 overflow-hidden rounded-md border border-subtle bg-surface-1 ${
-        selected ? "outline outline-2 outline-accent-primary" : ""
+        selected ? "outline-accent-primary outline outline-2" : ""
       }`}
       contentEditable={false}
     >
@@ -112,8 +132,32 @@ export function ClapshotEmbedNodeView(props: NodeViewProps) {
           title="Revisão de vídeo (Clapshot)"
           className="absolute top-0 left-0 h-full w-full border-none"
           allow="fullscreen"
+          // Pespo: a URL vem de um campo digitado pelo usuário — não
+          // combinar allow-scripts com allow-same-origin aqui (a dupla
+          // permite que o conteúdo do iframe fuja do sandbox).
+          sandbox="allow-scripts allow-forms allow-popups allow-presentation"
         />
       </div>
+      {onApproveEdit && (
+        <div className="flex items-center justify-between gap-2 border-t border-subtle px-3 py-2">
+          {approved ? (
+            <span className="text-green-600 flex items-center gap-1.5 text-13 font-medium">
+              <Check className="size-4" />
+              Edição aprovada
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={handleApproveEdit}
+              disabled={approving}
+              className="flex items-center gap-1.5 rounded-sm bg-accent-primary px-2.5 py-1 text-13 font-medium text-on-color disabled:opacity-50"
+            >
+              <ThumbsUp className="size-3.5" />
+              {approving ? "Aprovando..." : "Aprovar edição"}
+            </button>
+          )}
+        </div>
+      )}
     </NodeViewWrapper>
   );
 }

@@ -19,6 +19,15 @@ from plane.app.views import (
     ## End User
     ## Workspaces
     UserWorkSpacesEndpoint,
+    ## Google Calendar
+    GoogleCalendarConnectEndpoint,
+    GoogleCalendarCallbackEndpoint,
+    GoogleCalendarStatusEndpoint,
+    GoogleCalendarPreferencesEndpoint,
+    GoogleCalendarDisconnectEndpoint,
+    GoogleCalendarSyncNowEndpoint,
+    GoogleCalendarEventsEndpoint,
+    ## End Google Calendar
 )
 
 urlpatterns = [
@@ -51,6 +60,27 @@ urlpatterns = [
     path("users/me/accounts/", AccountEndpoint.as_view(), name="accounts"),
     path("users/me/accounts/<uuid:pk>/", AccountEndpoint.as_view(), name="accounts"),
     ## End Accounts
+    # Google Calendar (personal connection, distinct from the /auth/google/ login flow)
+    path("users/me/google-calendar/connect/", GoogleCalendarConnectEndpoint.as_view(), name="google-calendar-connect"),
+    path("users/me/google-calendar/callback/", GoogleCalendarCallbackEndpoint.as_view(), name="google-calendar-callback"),
+    path("users/me/google-calendar/status/", GoogleCalendarStatusEndpoint.as_view(), name="google-calendar-status"),
+    path(
+        "users/me/google-calendar/preferences/",
+        GoogleCalendarPreferencesEndpoint.as_view(),
+        name="google-calendar-preferences",
+    ),
+    path(
+        "users/me/google-calendar/disconnect/",
+        GoogleCalendarDisconnectEndpoint.as_view(),
+        name="google-calendar-disconnect",
+    ),
+    path(
+        "users/me/google-calendar/sync-now/",
+        GoogleCalendarSyncNowEndpoint.as_view(),
+        name="google-calendar-sync-now",
+    ),
+    path("users/me/google-calendar/events/", GoogleCalendarEventsEndpoint.as_view(), name="google-calendar-events"),
+    ## End Google Calendar
     path(
         "users/me/instance-admin/",
         UserEndpoint.as_view({"get": "retrieve_instance_admin"}),

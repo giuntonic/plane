@@ -6,7 +6,6 @@
 
 import React, { useMemo } from "react";
 import { observer } from "mobx-react";
-import { Ellipsis } from "lucide-react";
 import { Disclosure, Transition } from "@headlessui/react";
 // plane imports
 import {
@@ -18,10 +17,7 @@ import {
 import { useTranslation } from "@plane/i18n";
 import { ChevronRightIcon } from "@plane/propel/icons";
 import { cn } from "@plane/utils";
-// components
-import { SidebarNavItem } from "@/components/sidebar/sidebar-navigation";
-// store hooks
-import { useAppTheme } from "@/hooks/store/use-app-theme";
+// hooks
 import useLocalStorage from "@/hooks/use-local-storage";
 import {
   usePersonalNavigationPreferences,
@@ -36,8 +32,6 @@ export const SidebarMenuItems = observer(function SidebarMenuItems() {
     true
   );
 
-  // store hooks
-  const { isExtendedSidebarOpened, toggleExtendedSidebar } = useAppTheme();
   // hooks
   const { preferences: personalPreferences } = usePersonalNavigationPreferences();
   const { preferences: workspacePreferences } = useWorkspaceNavigationPreferences();
@@ -78,7 +72,17 @@ export const SidebarMenuItems = observer(function SidebarMenuItems() {
     personalItems.sort((a, b) => a.sort_order - b.sort_order);
 
     // Merge static items with sorted personal items
-    return [...items, ...personalItems];
+    const merged = [...items, ...personalItems];
+
+    // Calendário sempre logo abaixo de Notas adesivas, independente da
+    // ordem/preferência dos outros itens pessoais.
+    const calendarItem = WORKSPACE_SIDEBAR_STATIC_NAVIGATION_ITEMS["calendar"];
+    if (calendarItem) {
+      const stickiesIndex = merged.findIndex((item) => item.key === "stickies");
+      merged.splice(stickiesIndex >= 0 ? stickiesIndex + 1 : merged.length, 0, calendarItem);
+    }
+
+    return merged;
   }, [personalPreferences]);
 
   const sortedNavigationItems = useMemo(
@@ -157,22 +161,6 @@ export const SidebarMenuItems = observer(function SidebarMenuItems() {
                   // oxlint-disable-next-line react/no-array-index-key
                   <SidebarItemBase key={`dynamic_${_index}`} item={item} />
                 ))}
-                <SidebarNavItem>
-                  <button
-                    type="button"
-                    onClick={() => toggleExtendedSidebar()}
-                    className="flex flex-grow items-center gap-1.5 text-13 font-medium text-tertiary"
-                    id="extended-sidebar-toggle"
-                    aria-label={t(
-                      isExtendedSidebarOpened
-                        ? "aria_labels.projects_sidebar.close_extended_sidebar"
-                        : "aria_labels.projects_sidebar.open_extended_sidebar"
-                    )}
-                  >
-                    <Ellipsis className="size-4 flex-shrink-0" />
-                    <span>{isExtendedSidebarOpened ? t("hide") : t("more")}</span>
-                  </button>
-                </SidebarNavItem>
               </>
             </Disclosure.Panel>
           )}

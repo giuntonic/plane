@@ -86,7 +86,7 @@ const SidebarDropdownItem = observer(function SidebarDropdownItem(props: TProps)
         </div>
         {workspace.id === activeWorkspace?.id && (
           <>
-            <div className="mt-2 mb-1 flex gap-2">
+            <div className="mt-2 mb-1 flex flex-wrap gap-2">
               {[EUserPermissions.ADMIN, EUserPermissions.MEMBER].includes(workspace?.role) && (
                 <Link
                   href={`/${workspace.slug}/settings`}
@@ -94,10 +94,10 @@ const SidebarDropdownItem = observer(function SidebarDropdownItem(props: TProps)
                     e.stopPropagation();
                     handleClose();
                   }}
-                  className="flex gap-1.5 rounded-md border border-strong bg-layer-2 px-2.5 py-1.5 text-secondary transition-colors hover:border-strong hover:text-secondary hover:shadow-raised-100"
+                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border border-strong bg-layer-2 px-2.5 py-1.5 text-secondary transition-colors hover:border-strong hover:text-secondary hover:shadow-raised-100"
                 >
-                  <Settings className="my-auto h-4 w-4 flex-shrink-0" />
-                  <span className="my-auto text-13 font-medium whitespace-nowrap">{t("settings")}</span>
+                  <Settings className="h-4 w-4 flex-shrink-0" />
+                  <span className="truncate text-13 font-medium">{t("settings")}</span>
                 </Link>
               )}
               {[EUserPermissions.ADMIN].includes(workspace?.role) && (
@@ -107,10 +107,10 @@ const SidebarDropdownItem = observer(function SidebarDropdownItem(props: TProps)
                     e.stopPropagation();
                     handleClose();
                   }}
-                  className="flex gap-1.5 rounded-md border border-strong bg-layer-2 px-2.5 py-1.5 text-secondary transition-colors hover:border-strong hover:text-secondary hover:shadow-raised-100"
+                  className="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md border border-strong bg-layer-2 px-2.5 py-1.5 text-secondary transition-colors hover:border-strong hover:text-secondary hover:shadow-raised-100"
                 >
-                  <UserPlus className="my-auto h-4 w-4 flex-shrink-0" />
-                  <span className="my-auto text-13 font-medium whitespace-nowrap">
+                  <UserPlus className="h-4 w-4 flex-shrink-0" />
+                  <span className="truncate text-13 font-medium">
                     {t("project_settings.members.invite_members.title")}
                   </span>
                 </Link>

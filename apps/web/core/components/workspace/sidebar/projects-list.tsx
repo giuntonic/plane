@@ -9,7 +9,6 @@ import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import { autoScrollForElements } from "@atlaskit/pragmatic-drag-and-drop-auto-scroll/element";
 import { observer } from "mobx-react";
 import { useParams, usePathname } from "next/navigation";
-import { Ellipsis } from "lucide-react";
 import { Disclosure, Transition } from "@headlessui/react";
 // plane imports
 import { EUserPermissions, EUserPermissionsLevel, PROJECT_TRACKER_ELEMENTS } from "@plane/constants";
@@ -22,13 +21,10 @@ import { Loader } from "@plane/ui";
 import { copyUrlToClipboard, cn, orderJoinedProjects } from "@plane/utils";
 // components
 import { CreateProjectModal } from "@/components/project/create-project-modal";
-import { SidebarNavItem } from "@/components/sidebar/sidebar-navigation";
 // hooks
-import { useAppTheme } from "@/hooks/store/use-app-theme";
 import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { useProject } from "@/hooks/store/use-project";
 import { useUserPermissions } from "@/hooks/store/user";
-import { useProjectNavigationPreferences } from "@/hooks/use-navigation-preferences";
 // plane web imports
 import type { TProject } from "@plane/types";
 // local imports
@@ -45,8 +41,6 @@ export const SidebarProjectsList = observer(function SidebarProjectsList() {
   const { t } = useTranslation();
   const { toggleCreateProjectModal } = useCommandPalette();
   const { allowPermissions } = useUserPermissions();
-  const { preferences: projectPreferences } = useProjectNavigationPreferences();
-  const { isExtendedProjectSidebarOpened, toggleExtendedProjectSidebar } = useAppTheme();
 
   const { loader, getPartialProjectById, joinedProjectIds: joinedProjects, updateProjectView } = useProject();
   // router params
@@ -59,23 +53,14 @@ export const SidebarProjectsList = observer(function SidebarProjectsList() {
     EUserPermissionsLevel.WORKSPACE
   );
 
-  // Compute limited projects for main sidebar
-  const displayedProjects = projectPreferences.showLimitedProjects
-    ? joinedProjects.slice(0, projectPreferences.limitedProjectsCount)
-    : joinedProjects;
-
-  // Check if there are more projects to show
-  const hasMoreProjects =
-    projectPreferences.showLimitedProjects && joinedProjects.length > projectPreferences.limitedProjectsCount;
-
   const handleCopyText = (projectId: string) => {
-    copyUrlToClipboard(`${workspaceSlug}/projects/${projectId}/issues`).then(() => {
+    copyUrlToClipboard(`${workspaceSlug}/projects/${projectId}/issues`).then(() =>
       setToast({
         type: TOAST_TYPE.SUCCESS,
         title: t("link_copied"),
         message: t("project_link_copied_to_clipboard"),
-      });
-    });
+      })
+    );
   };
 
   const handleOnProjectDrop = (
@@ -230,6 +215,7 @@ export const SidebarProjectsList = observer(function SidebarProjectsList() {
               {loader === "init-loader" && (
                 <Loader className="w-full space-y-1.5">
                   {Array.from({ length: 4 }).map((_, index) => (
+                    // oxlint-disable-next-line react/no-array-index-key
                     <Loader.Item key={index} height="28px" />
                   ))}
                 </Loader>
@@ -237,7 +223,7 @@ export const SidebarProjectsList = observer(function SidebarProjectsList() {
               {isAllProjectsListOpen && (
                 <Disclosure.Panel as="div" className="flex flex-col gap-0.5" static>
                   <>
-                    {displayedProjects.map((projectId, index) => (
+                    {joinedProjects.map((projectId, index) => (
                       <SidebarProjectsListItem
                         key={projectId}
                         projectId={projectId}
@@ -245,28 +231,10 @@ export const SidebarProjectsList = observer(function SidebarProjectsList() {
                         projectListType={"JOINED"}
                         disableDrag={false}
                         disableDrop={false}
-                        isLastChild={index === displayedProjects.length - 1}
+                        isLastChild={index === joinedProjects.length - 1}
                         handleOnProjectDrop={handleOnProjectDrop}
                       />
                     ))}
-                    {hasMoreProjects && (
-                      <SidebarNavItem>
-                        <button
-                          type="button"
-                          onClick={() => toggleExtendedProjectSidebar()}
-                          className="flex flex-grow items-center gap-1.5 text-13 font-medium text-tertiary"
-                          id="extended-project-sidebar-toggle"
-                          aria-label={t(
-                            isExtendedProjectSidebarOpened
-                              ? "aria_labels.projects_sidebar.close_extended_sidebar"
-                              : "aria_labels.projects_sidebar.open_extended_sidebar"
-                          )}
-                        >
-                          <Ellipsis className="size-4 flex-shrink-0" />
-                          <span>{isExtendedProjectSidebarOpened ? t("hide") : t("more")}</span>
-                        </button>
-                      </SidebarNavItem>
-                    )}
                   </>
                 </Disclosure.Panel>
               )}

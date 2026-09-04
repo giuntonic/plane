@@ -103,7 +103,8 @@
       "preferences": "Preferences",
       "notifications": "Notifications",
       "api-tokens": "Personal Access Tokens",
-      "connections": "Connections"
+      "connections": "Connections",
+      "google-calendar": "Google Calendar"
     },
     "tabs": {
       "summary": "Summary",
@@ -129,6 +130,20 @@
         "title": "No work items yet",
         "description": "Subscribe to work items you are interested in, track all of them here."
       }
+    },
+    "google_calendar": {
+      "title": "Google Calendar",
+      "description": "Sync your assigned work items to your own Google Calendar, and see your Google Calendar events inside Pespo Hub.",
+      "connected_title": "Connected!",
+      "connect": "Connect with Google",
+      "connected_as": "Connected as {email}",
+      "sync_toggle": "Sync my work items to Google Calendar",
+      "sync_now": "Sync now",
+      "syncing": "Syncing...",
+      "last_synced": "Last synced {time}",
+      "disconnect": "Disconnect",
+      "overlay_title": "Show these calendars in Pespo Hub",
+      "not_configured": "Google Calendar is not configured on this instance."
     }
   },
   "themes": {

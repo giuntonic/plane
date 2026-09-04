@@ -103,7 +103,8 @@
       "preferences": "Preferências",
       "notifications": "Notificações",
       "api-tokens": "Tokens de Acesso Pessoal",
-      "connections": "Conexões"
+      "connections": "Conexões",
+      "google-calendar": "Google Calendar"
     },
     "tabs": {
       "summary": "Resumo",
@@ -129,6 +130,20 @@
         "title": "Nenhum item de trabalho ainda",
         "description": "Inscreva-se nos itens de trabalho nos quais você está interessado, rastreie todos eles aqui."
       }
+    },
+    "google_calendar": {
+      "title": "Google Calendar",
+      "description": "Sincronize os itens de trabalho atribuídos a você com o seu Google Calendar, e veja os eventos do seu Google Calendar dentro do Pespo Hub.",
+      "connected_title": "Conectado!",
+      "connect": "Conectar com o Google",
+      "connected_as": "Conectado como {email}",
+      "sync_toggle": "Sincronizar meus itens de trabalho com o Google Calendar",
+      "sync_now": "Sincronizar agora",
+      "syncing": "Sincronizando...",
+      "last_synced": "Última sincronização: {time}",
+      "disconnect": "Desconectar",
+      "overlay_title": "Mostrar estas agendas no Pespo Hub",
+      "not_configured": "O Google Calendar não está configurado nesta instância."
     }
   },
   "themes": {

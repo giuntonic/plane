@@ -33,6 +33,16 @@ from .user.base import (
     UserActivityEndpoint,
 )
 
+from .user.google_calendar import (
+    GoogleCalendarConnectEndpoint,
+    GoogleCalendarCallbackEndpoint,
+    GoogleCalendarStatusEndpoint,
+    GoogleCalendarPreferencesEndpoint,
+    GoogleCalendarDisconnectEndpoint,
+    GoogleCalendarSyncNowEndpoint,
+    GoogleCalendarEventsEndpoint,
+)
+
 
 from .base import BaseAPIView, BaseViewSet
 

@@ -16,6 +16,6 @@ export type TCoreAdditionalExtensionsProps = Pick<
 >;
 
 export const CoreEditorAdditionalExtensions = (props: TCoreAdditionalExtensionsProps): Extensions => {
-  const {} = props;
-  return [ClapshotEmbedExtension()];
+  const { extendedEditorProps } = props;
+  return [ClapshotEmbedExtension({ onApproveEdit: extendedEditorProps?.onApproveEdit })];
 };

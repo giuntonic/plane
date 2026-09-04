@@ -10,7 +10,6 @@ import { useParams, usePathname } from "next/navigation";
 import { cn } from "@plane/utils";
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { TopNavPowerK } from "@/components/navigation";
-import { HelpMenuRoot } from "@/components/workspace/sidebar/help-section/root";
 import { UserMenuRoot } from "@/components/workspace/sidebar/user-menu-root";
 import { WorkspaceMenuRoot } from "@/components/workspace/sidebar/workspace-menu-root";
 import { useAppRailPreferences } from "@/hooks/use-navigation-preferences";
@@ -20,8 +19,6 @@ import { InboxIcon } from "@plane/propel/icons";
 import useSWR from "swr";
 import { useWorkspaceNotifications } from "@/hooks/store/notifications";
 import { useUserPermissions } from "@/hooks/store/user";
-// local imports
-import { StarUsOnGitHubLink } from "@/app/(all)/[workspaceSlug]/(projects)/star-us-link";
 
 export const TopNavigationRoot = observer(function TopNavigationRoot() {
   // router
@@ -33,8 +30,8 @@ export const TopNavigationRoot = observer(function TopNavigationRoot() {
   const { preferences } = useAppRailPreferences();
   const { allowPermissions } = useUserPermissions();
   // Pespo: convidados (clientes do portal) veem um topo mais limpo — sem
-  // busca de comandos avançada nem o link "Star us on GitHub", que não
-  // fazem sentido pra quem só acessa como cliente.
+  // busca de comandos avançada, que não faz sentido pra quem só acessa
+  // como cliente.
   const isGuest = !allowPermissions(
     [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
     EUserPermissionsLevel.WORKSPACE,
@@ -90,8 +87,6 @@ export const TopNavigationRoot = observer(function TopNavigationRoot() {
             }}
           />
         </Tooltip>
-        {!isGuest && <HelpMenuRoot />}
-        {!isGuest && <StarUsOnGitHubLink />}
         <div className="flex size-8 items-center justify-center rounded-md hover:bg-layer-1-hover">
           <UserMenuRoot />
         </div>

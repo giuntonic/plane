@@ -12,3 +12,7 @@ export enum EClapshotEmbedAttributeNames {
 export type TClapshotEmbedAttributes = {
   [EClapshotEmbedAttributeNames.URL]: string | undefined;
 };
+
+export type TClapshotEmbedExtensionOptions = {
+  onApproveEdit?: () => Promise<void>;
+};
