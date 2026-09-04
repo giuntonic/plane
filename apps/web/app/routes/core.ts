@@ -72,6 +72,11 @@ export const coreRoutes: RouteConfigEntry[] = [
           route(":workspaceSlug/browse/:workItem", "./(all)/[workspaceSlug]/(projects)/browse/[workItem]/page.tsx"),
         ]),
 
+        // Calendar
+        layout("./(all)/[workspaceSlug]/(projects)/calendar/layout.tsx", [
+          route(":workspaceSlug/calendar", "./(all)/[workspaceSlug]/(projects)/calendar/page.tsx"),
+        ]),
+
         // Drafts
         layout("./(all)/[workspaceSlug]/(projects)/drafts/layout.tsx", [
           route(":workspaceSlug/drafts", "./(all)/[workspaceSlug]/(projects)/drafts/page.tsx"),
