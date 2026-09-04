@@ -8,7 +8,13 @@ import type { TLogoProps } from "./common";
 import type { TIssuePriorities } from "./issues";
 
 export type TRecentActivityFilterKeys = "all item" | "issue" | "page" | "project" | "workspace_page";
-export type THomeWidgetKeys = "quick_links" | "recents" | "my_stickies" | "quick_tutorial" | "new_at_plane";
+export type THomeWidgetKeys =
+  | "quick_links"
+  | "recents"
+  | "my_stickies"
+  | "task_list"
+  | "quick_tutorial"
+  | "new_at_plane";
 
 export type THomeWidgetProps = {
   workspaceSlug: string;
@@ -72,6 +78,26 @@ export type TLinkMap = {
 };
 
 export type TLinkIdMap = {
+  [workspace_slug: string]: string[];
+};
+
+export type TTaskEditableFields = {
+  title: string;
+  is_completed: boolean;
+};
+
+export type TTask = TTaskEditableFields & {
+  created_by_id: string;
+  id: string;
+  workspace_slug: string;
+  created_at: Date;
+};
+
+export type TTaskMap = {
+  [task_id: string]: TTask;
+};
+
+export type TTaskIdMap = {
   [workspace_slug: string]: string[];
 };
 

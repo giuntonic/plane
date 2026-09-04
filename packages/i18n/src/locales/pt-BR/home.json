@@ -37,6 +37,17 @@
       "title": "Link rápido",
       "title_plural": "Links rápidos"
     },
+    "tasks": {
+      "title": "Tarefas",
+      "add": "Adicionar uma tarefa",
+      "empty": "Você ainda não tem nenhuma tarefa.",
+      "remove": "Remover tarefa",
+      "toasts": {
+        "not_created": "Não foi possível criar a tarefa.",
+        "not_updated": "Não foi possível atualizar a tarefa.",
+        "not_removed": "Não foi possível remover a tarefa."
+      }
+    },
     "recents": {
       "title": "Recentes",
       "empty": {

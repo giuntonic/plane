@@ -22,7 +22,7 @@ A branch de produção é `pespo-branding-v1.4.1`, criada a partir da tag `v1.4.
 customização vira um commit separado, com mensagem descritiva em português — isso facilita re-aplicar
 ou entender uma mudança específica quando um merge de uma versão nova do Plane gerar conflito nela.
 
-Pra ver a lista de commits que são *só nossos* (não vêm do Plane original):
+Pra ver a lista de commits que são _só nossos_ (não vêm do Plane original):
 
 ```bash
 git log --oneline v1.4.1..HEAD
@@ -66,6 +66,7 @@ git status --short
 O que essas mudanças representam, por categoria:
 
 ### 1. Tradução completa para pt-BR
+
 - **Onde:** `packages/i18n/src/locales/{en,pt-BR}/*.json` (quase todos os namespaces) + centenas de
   arquivos em `apps/web/core/components/**` e `apps/web/app/**` trocando strings hardcoded em inglês
   por chamadas a `t(...)`.
@@ -79,6 +80,7 @@ O que essas mudanças representam, por categoria:
   registrada na conversa em 2026-08-31).
 
 ### 2. Fuso horário e idioma padrão = America/Sao_Paulo / pt-BR
+
 - **Onde:** `apps/api/plane/db/models/{cycle,project,user,workspace}.py` (mudança do default de
   `timezone`/`user_timezone`/`language` de `UTC`/`en` pra `America/Sao_Paulo`/`pt-BR`) + 3 migrations
   novas (`apps/api/plane/db/migrations/0124_alter_profile_language.py`, `0125_alter_project_timezone.py`,
@@ -93,6 +95,7 @@ O que essas mudanças representam, por categoria:
   um merge, mas é bom saber que já foi feito uma vez).
 
 ### 3. Remoção de UI de upgrade / planos pagos (2026-08-31)
+
 - **O quê:** removemos todo o chrome de "compre um plano pago" do produto, já que essa instância é
   self-hosted e nunca vai virar cliente pago do Plane.
 - **Arquivos deletados** (não existem mais nessa branch):
@@ -107,7 +110,7 @@ O que essas mudanças representam, por categoria:
   `packages/types/src/settings.ts`, `packages/constants/src/settings/workspace.ts`,
   `apps/web/app/routes/core.ts`, `apps/web/core/components/workspace/edition-badge.tsx`,
   `apps/web/core/components/workspace/sidebar/{workspace-menu.tsx,workspace-menu-item.tsx,
-  extended-sidebar-item.tsx,helper.tsx,help-section/root.tsx}`,
+extended-sidebar-item.tsx,helper.tsx,help-section/root.tsx}`,
   `apps/web/core/components/settings/workspace/sidebar/item-icon.tsx`,
   `apps/web/core/components/issues/bulk-operations/root.tsx` (agora sempre retorna `null` — comentário
   no código explica o motivo).
@@ -118,6 +121,7 @@ O que essas mudanças representam, por categoria:
   upstream traga uma funcionalidade real (não só marketing) que valha a pena reavaliar.
 
 ### 4. Fix sistêmico do placeholder de busca (`CustomSearchSelect`)
+
 - **Onde:** `packages/ui/src/dropdowns/custom-search-select.tsx` — adicionamos `@plane/i18n` como
   dependência de `packages/ui` (e também de `packages/propel`, pelo mesmo motivo em
   `packages/propel/src/emoji-icon-picker/icon/icon-root.tsx`) pra poder usar `useTranslation()` dentro
@@ -128,6 +132,7 @@ O que essas mudanças representam, por categoria:
   `pnpm install` de novo pra regerar o lockfile (não dá pra editar esse arquivo à mão com segurança).
 
 ### 5. Outras mudanças pontuais
+
 - `apps/space/components/issues/filters/{labels,state}.tsx` — mesma varredura de tradução, aplicada ao
   app `space` (portal público de compartilhamento).
 - `apps/api/templates/emails/**/*.html` + `apps/api/plane/bgtasks/*.py` — os 12 templates de e-mail
@@ -166,6 +171,45 @@ O que essas mudanças representam, por categoria:
 10. Só depois de tudo isso, atualizar o `docker compose` de produção e redeployar.
 
 ---
+
+## Widget de Tarefas + homepage em blocos (2026-09-04)
+
+- **O quê:** a homepage do workspace (`apps/web/core/components/home/`) passou de uma lista de
+  widgets empilhados em coluna única pra uma grade de 2 colunas (`grid-cols-2`), cada widget
+  virando um "card" (`DashboardWidgetBlock`,
+  `apps/web/core/components/home/widgets/dashboard-block.tsx`) que pode ser arrastado e solto
+  direto na home (não só reordenado pelo modal "Gerenciar widgets", que continua funcionando do
+  jeito que já funcionava). Além disso, um novo widget "Tarefas" foi adicionado — checklist simples
+  e privada por usuário (texto + concluída/não concluída), ao lado de Stickies/Quick Links.
+- **Por quê:** pedido do usuário pra uma home "personalizável, com os widgets em blocos", mais um
+  widget de lista de tarefas simples. Um widget de Calendário está sendo desenvolvido em paralelo
+  (rota `/calendar`, fora deste trabalho) e deve entrar nessa mesma grade quando estiver pronto —
+  não é preciso mexer no layout de novo pra isso, só registrar a nova chave do widget.
+- **Infra reaproveitada, zero mudança:** o sistema de habilitar/desabilitar/reordenar widgets já
+  existia inteiro (`WorkspaceHomePreference`, `useHome()` store, modal "Gerenciar widgets") — uma
+  chave nova em `THomeWidgetKeys`/`HOME_WIDGETS_LIST` fica automaticamente reordenável e
+  liga/desliga sem tocar em nada disso. O drag-and-drop direto na home reusa exatamente o mesmo
+  helper (`widgets/manage/widget.helpers.ts`) e a mesma ação de store (`reorderWidget`) que o modal
+  já usava — só migrou de lista vertical (`widget-item.tsx`) pra card em grade
+  (`dashboard-block.tsx`).
+- **Arquivos novos (Tarefas):**
+  - Backend: modelo `WorkspaceUserTask` (`apps/api/plane/db/models/workspace.py`, mesmo padrão do
+    `WorkspaceUserLink` — por usuário/workspace, sem campos extras), migration
+    `0128_workspaceusertask.py`, serializer `WorkspaceUserTaskSerializer`, view
+    `WorkspaceUserTaskViewSet` (`apps/api/plane/app/views/workspace/task.py`), rotas
+    `workspaces/<slug>/tasks/` em `apps/api/plane/app/urls/workspace.py`.
+  - Frontend: `WorkspaceTaskStore` (`apps/web/core/store/workspace/task.store.ts`, aninhado em
+    `HomeStore.tasks` do mesmo jeito que `HomeStore.quickLinks`), métodos de serviço em
+    `workspace.service.ts`, e o widget em si em
+    `apps/web/core/components/home/widgets/tasks/` (`root.tsx`, `task-item.tsx`, `use-tasks.tsx`).
+  - Chave nova `"task_list"` em `THomeWidgetKeys` (`packages/types/src/home.ts`) e em
+    `WorkspaceHomePreference.HomeWidgetKeys` (backend) — **sem migration pro campo `key`**, porque
+    ele é um `CharField` solto sem `choices=` no field (só a classe `TextChoices` documenta os
+    valores válidos em Python).
+- **Risco de upgrade:** médio — a home é uma área que o upstream mexe com alguma frequência
+  (feature de monetização já foi removida daqui antes, ver seção 3 acima). Se o merge reescrever
+  `home-dashboard-widgets.tsx`, a grade de 2 colunas e o `DashboardWidgetBlock` provavelmente
+  precisam ser reaplicados manualmente.
 
 ## Player de vídeo embutido (Clapshot) (2026-08-31)
 

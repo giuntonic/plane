@@ -32,6 +32,7 @@ from plane.app.views import (
     WorkspaceFavoriteGroupEndpoint,
     WorkspaceDraftIssueViewSet,
     QuickLinkViewSet,
+    WorkspaceUserTaskViewSet,
     UserRecentVisitViewSet,
     WorkspaceHomePreferenceViewSet,
     WorkspaceStickyViewSet,
@@ -224,6 +225,17 @@ urlpatterns = [
         "workspaces/<str:slug>/quick-links/<uuid:pk>/",
         QuickLinkViewSet.as_view({"get": "retrieve", "patch": "partial_update", "delete": "destroy"}),
         name="workspace-quick-links",
+    ),
+    # tasks
+    path(
+        "workspaces/<str:slug>/tasks/",
+        WorkspaceUserTaskViewSet.as_view({"get": "list", "post": "create"}),
+        name="workspace-tasks",
+    ),
+    path(
+        "workspaces/<str:slug>/tasks/<uuid:pk>/",
+        WorkspaceUserTaskViewSet.as_view({"get": "retrieve", "patch": "partial_update", "delete": "destroy"}),
+        name="workspace-tasks",
     ),
     # Widgets
     path(

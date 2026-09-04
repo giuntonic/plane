@@ -37,6 +37,17 @@
       "title": "Quicklink",
       "title_plural": "Quicklinks"
     },
+    "tasks": {
+      "title": "Tasks",
+      "add": "Add a task",
+      "empty": "You don't have any tasks yet.",
+      "remove": "Remove task",
+      "toasts": {
+        "not_created": "Task could not be created.",
+        "not_updated": "Task could not be updated.",
+        "not_removed": "Task could not be removed."
+      }
+    },
     "recents": {
       "title": "Recents",
       "empty": {

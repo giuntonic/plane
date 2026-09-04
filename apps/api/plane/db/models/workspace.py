@@ -372,6 +372,25 @@ class WorkspaceUserLink(WorkspaceBaseModel):
         return f"{self.workspace.id} {self.url}"
 
 
+class WorkspaceUserTask(WorkspaceBaseModel):
+    title = models.CharField(max_length=255)
+    is_completed = models.BooleanField(default=False)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="owner_workspace_user_task",
+    )
+
+    class Meta:
+        verbose_name = "Workspace User Task"
+        verbose_name_plural = "Workspace User Tasks"
+        db_table = "workspace_user_tasks"
+        ordering = ("created_at",)
+
+    def __str__(self):
+        return f"{self.workspace.id} {self.title}"
+
+
 class WorkspaceHomePreference(BaseModel):
     """Preference for the home page of a workspace for a user"""
 
@@ -379,6 +398,7 @@ class WorkspaceHomePreference(BaseModel):
         QUICK_LINKS = "quick_links", "Quick Links"
         RECENTS = "recents", "Recents"
         MY_STICKIES = "my_stickies", "My Stickies"
+        TASK_LIST = "task_list", "Task List"
         NEW_AT_PLANE = "new_at_plane", "New at Plane"
         QUICK_TUTORIAL = "quick_tutorial", "Quick Tutorial"
 

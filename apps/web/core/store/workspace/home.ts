@@ -13,6 +13,8 @@ import { WorkspaceService } from "@/services/workspace.service";
 // store
 import type { IWorkspaceLinkStore } from "./link.store";
 import { WorkspaceLinkStore } from "./link.store";
+import type { IWorkspaceTaskStore } from "./task.store";
+import { WorkspaceTaskStore } from "./task.store";
 
 export interface IHomeStore {
   // observables
@@ -25,6 +27,7 @@ export interface IHomeStore {
   orderedWidgets: THomeWidgetKeys[];
   //stores
   quickLinks: IWorkspaceLinkStore;
+  tasks: IWorkspaceTaskStore;
   // actions
   toggleWidgetSettings: (value?: boolean) => void;
   fetchWidgets: (workspaceSlug: string) => Promise<void>;
@@ -45,6 +48,7 @@ export class HomeStore implements IHomeStore {
   widgets: THomeWidgetKeys[] = [];
   // stores
   quickLinks: IWorkspaceLinkStore;
+  tasks: IWorkspaceTaskStore;
   // services
   workspaceService: WorkspaceService;
 
@@ -69,6 +73,7 @@ export class HomeStore implements IHomeStore {
 
     // stores
     this.quickLinks = new WorkspaceLinkStore();
+    this.tasks = new WorkspaceTaskStore();
   }
 
   get isAnyWidgetEnabled() {

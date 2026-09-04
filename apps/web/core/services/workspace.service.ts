@@ -19,6 +19,7 @@ import type {
   IWorkspaceView,
   TIssuesResponse,
   TLink,
+  TTask,
   TSearchResponse,
   TSearchEntityRequestPayload,
   TWidgetEntityData,
@@ -321,6 +322,38 @@ export class WorkspaceService extends APIService {
 
   async deleteWorkspaceLink(workspaceSlug: string, linkId: string): Promise<void> {
     return this.delete(`/api/workspaces/${workspaceSlug}/quick-links/${linkId}/`)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async fetchWorkspaceTasks(workspaceSlug: string): Promise<TTask[]> {
+    return this.get(`/api/workspaces/${workspaceSlug}/tasks/`)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response;
+      });
+  }
+
+  async createWorkspaceTask(workspaceSlug: string, data: Partial<TTask>): Promise<TTask> {
+    return this.post(`/api/workspaces/${workspaceSlug}/tasks/`, data)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response;
+      });
+  }
+
+  async updateWorkspaceTask(workspaceSlug: string, taskId: string, data: Partial<TTask>): Promise<TTask> {
+    return this.patch(`/api/workspaces/${workspaceSlug}/tasks/${taskId}/`, data)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response;
+      });
+  }
+
+  async deleteWorkspaceTask(workspaceSlug: string, taskId: string): Promise<void> {
+    return this.delete(`/api/workspaces/${workspaceSlug}/tasks/${taskId}/`)
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;

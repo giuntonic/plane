@@ -74,6 +74,7 @@ from .workspace import (
     WorkspaceTheme,
     WorkspaceUserProperties,
     WorkspaceUserLink,
+    WorkspaceUserTask,
     WorkspaceHomePreference,
     WorkspaceUserPreference,
 )
