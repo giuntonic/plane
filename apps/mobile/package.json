@@ -1,0 +1,38 @@
+{
+  "name": "mobile",
+  "version": "0.1.0",
+  "private": true,
+  "license": "AGPL-3.0",
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "check:types": "tsc --noEmit",
+    "check:lint": "oxlint --max-warnings=0 .",
+    "fix:lint": "oxlint --fix .",
+    "build:ios:preview": "eas build --platform ios --profile preview",
+    "build:android:preview": "eas build --platform android --profile preview",
+    "clean": "rm -rf .expo && rm -rf node_modules && rm -rf dist"
+  },
+  "dependencies": {
+    "@plane/types": "workspace:*",
+    "axios": "catalog:",
+    "date-fns": "catalog:",
+    "expo": "~57.0.21",
+    "expo-constants": "~18.0.9",
+    "expo-router": "~57.0.20",
+    "expo-secure-store": "~15.0.7",
+    "expo-status-bar": "~57.0.1",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "5.6.1",
+    "react-native-screens": "~4.19.0"
+  },
+  "devDependencies": {
+    "@plane/typescript-config": "workspace:*",
+    "@types/react": "~19.2.2",
+    "typescript": "~6.0.3"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Plane",
+    "slug": "plane-mobile",
+    "scheme": "plane",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "plugins": ["expo-router"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pespo.plane"
+    },
+    "android": {
+      "package": "com.pespo.plane",
+      "adaptiveIcon": {
+        "backgroundColor": "#3F76FF"
+      }
+    }
+  }
+}
