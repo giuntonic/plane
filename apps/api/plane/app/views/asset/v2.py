@@ -204,6 +204,12 @@ class WorkspaceFileAssetEndpoint(BaseAPIView):
     """This endpoint is used to upload cover images/logos etc for workspace, projects and users."""
 
     def get_entity_id_field(self, entity_type, entity_id):
+        # Empty string / False means the entity doesn't exist yet (e.g. a
+        # project cover uploaded during project creation, before the
+        # project itself has been created) — treat it as unset rather than
+        # passing "" into a UUID FK column, which the DB would reject.
+        entity_id = entity_id or None
+
         # Workspace Logo
         if entity_type == FileAsset.EntityTypeContext.WORKSPACE_LOGO:
             return {"workspace_id": entity_id}
@@ -549,6 +555,11 @@ class ProjectAssetEndpoint(BaseAPIView):
     """This endpoint is used to upload cover images/logos etc for workspace, projects and users."""
 
     def get_entity_id_field(self, entity_type, entity_id):
+        # Empty string / False means the entity doesn't exist yet — treat it
+        # as unset rather than passing "" into a UUID FK column, which the
+        # DB would reject.
+        entity_id = entity_id or None
+
         if entity_type == FileAsset.EntityTypeContext.WORKSPACE_LOGO:
             return {"workspace_id": entity_id}
 
@@ -780,6 +791,11 @@ class DuplicateAssetEndpoint(BaseAPIView):
     throttle_classes = [AssetRateThrottle]
 
     def get_entity_id_field(self, entity_type, entity_id):
+        # Empty string / False means the entity doesn't exist yet — treat it
+        # as unset rather than passing "" into a UUID FK column, which the
+        # DB would reject.
+        entity_id = entity_id or None
+
         # Workspace Logo
         if entity_type == FileAsset.EntityTypeContext.WORKSPACE_LOGO:
             return {"workspace_id": entity_id}
