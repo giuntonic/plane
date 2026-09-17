@@ -9,7 +9,7 @@ import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { Disclosure, Transition } from "@headlessui/react";
 // plane imports
-import { AnalyticsIcon, CycleIcon, ProjectIcon, ViewsIcon } from "@plane/propel/icons";
+import { AnalyticsIcon, CycleIcon, DashboardIcon, ProjectIcon, ViewsIcon } from "@plane/propel/icons";
 import { EUserWorkspaceRoles } from "@plane/types";
 // hooks
 import useLocalStorage from "@/hooks/use-local-storage";
@@ -53,6 +53,20 @@ export const SidebarWorkspaceMenu = observer(function SidebarWorkspaceMenu() {
       href: `/${workspaceSlug}/analytics/`,
       access: [EUserWorkspaceRoles.ADMIN, EUserWorkspaceRoles.MEMBER],
       Icon: AnalyticsIcon,
+    },
+    {
+      key: "dashboards",
+      labelTranslationKey: "sidebar.dashboards",
+      href: `/${workspaceSlug}/dashboards/`,
+      access: [EUserWorkspaceRoles.ADMIN, EUserWorkspaceRoles.MEMBER],
+      Icon: DashboardIcon,
+    },
+    {
+      key: "my-dashboards",
+      labelTranslationKey: "sidebar.my_dashboards",
+      href: `/${workspaceSlug}/my-dashboards/`,
+      access: [EUserWorkspaceRoles.ADMIN, EUserWorkspaceRoles.MEMBER, EUserWorkspaceRoles.GUEST],
+      Icon: DashboardIcon,
     },
   ];
 

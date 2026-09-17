@@ -121,6 +121,7 @@ from .intake import (
 )
 
 from .analytic import AnalyticViewSerializer
+from .dashboard import DashboardSerializer, DashboardWidgetSerializer
 
 from .notification import NotificationSerializer, UserNotificationPreferenceSerializer
 

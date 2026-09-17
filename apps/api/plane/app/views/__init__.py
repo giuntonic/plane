@@ -217,6 +217,9 @@ from .analytic.project_analytics import (
     ProjectAdvanceAnalyticsChartEndpoint,
 )
 
+from .dashboard.base import DashboardViewSet, DashboardWidgetViewSet
+from .dashboard.chart import DashboardWidgetChartEndpoint
+
 from .notification.base import (
     NotificationViewSet,
     UnreadNotificationEndpoint,
