@@ -17,6 +17,8 @@
     "workspace": "Workspace",
     "views": "Views",
     "analytics": "Analytics",
+    "dashboards": "Dashboards",
+    "my_dashboards": "My dashboards",
     "work_items": "Work items",
     "cycles": "Cycles",
     "modules": "Modules",
