@@ -189,6 +189,11 @@ from .estimate.base import (
     BulkEstimatePointEndpoint,
     EstimatePointEndpoint,
 )
+from .custom_field.base import (
+    CustomFieldViewSet,
+    CustomFieldOptionViewSet,
+    IssueCustomFieldValueViewSet,
+)
 
 from .intake.base import (
     IntakeViewSet,
