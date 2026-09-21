@@ -57,9 +57,9 @@ class CustomFieldOptionViewSet(BaseViewSet):
 
     def create(self, request, slug, project_id, custom_field_id):
         custom_field = CustomField.objects.get(pk=custom_field_id, workspace__slug=slug, project_id=project_id)
-        if custom_field.field_type != "dropdown":
+        if custom_field.field_type not in ("dropdown", "multi_select"):
             return Response(
-                {"error": "Options can only be added to dropdown custom fields"},
+                {"error": "Options can only be added to dropdown or multi-select custom fields"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         serializer = CustomFieldOptionSerializer(data=request.data)
@@ -92,9 +92,11 @@ class IssueCustomFieldValueViewSet(BaseViewSet):
     serializer_class = IssueCustomFieldValueSerializer
 
     def list(self, request, slug, project_id, issue_id):
-        values = IssueCustomFieldValue.objects.filter(
-            workspace__slug=slug, project_id=project_id, issue_id=issue_id
-        ).select_related("custom_field", "option")
+        values = (
+            IssueCustomFieldValue.objects.filter(workspace__slug=slug, project_id=project_id, issue_id=issue_id)
+            .select_related("custom_field", "option")
+            .prefetch_related("multi_select_options")
+        )
         serializer = IssueCustomFieldValueSerializer(values, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

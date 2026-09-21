@@ -191,7 +191,8 @@
         "number": "Number",
         "date": "Date",
         "checkbox": "Checkbox",
-        "dropdown": "Dropdown"
+        "dropdown": "Dropdown",
+        "multi_select": "Multi-select"
       },
       "errors": {
         "name_required": "Field name is required",

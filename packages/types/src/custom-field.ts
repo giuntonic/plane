@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-export type TCustomFieldType = "text" | "number" | "date" | "checkbox" | "dropdown";
+export type TCustomFieldType = "text" | "number" | "date" | "checkbox" | "dropdown" | "multi_select";
 
 export interface ICustomFieldOption {
   id: string;
@@ -44,10 +44,14 @@ export interface IIssueCustomFieldValue {
   date_value: string | null;
   boolean_value: boolean | null;
   option: string | null;
+  multi_select_options: string[];
   workspace: string;
   project: string;
 }
 
 export type TIssueCustomFieldValueFormData = Partial<
-  Pick<IIssueCustomFieldValue, "text_value" | "number_value" | "date_value" | "boolean_value" | "option">
+  Pick<
+    IIssueCustomFieldValue,
+    "text_value" | "number_value" | "date_value" | "boolean_value" | "option" | "multi_select_options"
+  >
 >;

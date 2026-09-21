@@ -11,6 +11,8 @@ import useSWR from "swr";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
+import type { ICustomField } from "@plane/types";
+import { Sortable } from "@plane/ui";
 // components
 import { SettingsHeading } from "@/components/settings/heading";
 // hooks
@@ -28,7 +30,7 @@ type Props = {
 export const CustomFieldsRoot = observer(function CustomFieldsRoot(props: Props) {
   const { workspaceSlug, projectId, isAdmin } = props;
   const { t } = useTranslation();
-  const { getProjectCustomFields, fetchProjectCustomFields } = useCustomField();
+  const { getProjectCustomFields, fetchProjectCustomFields, updateCustomFieldPosition } = useCustomField();
   const [isCreating, setIsCreating] = useState(false);
 
   useSWR(
@@ -60,9 +62,18 @@ export const CustomFieldsRoot = observer(function CustomFieldsRoot(props: Props)
             onClose={() => setIsCreating(false)}
           />
         )}
-        {customFields?.map((field) => (
-          <CustomFieldRow key={field.id} workspaceSlug={workspaceSlug} projectId={projectId} customField={field} />
-        ))}
+        {customFields && customFields.length > 0 && (
+          <Sortable<ICustomField>
+            data={customFields}
+            keyExtractor={(field) => field.id}
+            onChange={(orderedFields, movedField) => {
+              if (movedField) updateCustomFieldPosition(workspaceSlug, projectId, orderedFields, movedField.id);
+            }}
+            render={(field) => (
+              <CustomFieldRow key={field.id} workspaceSlug={workspaceSlug} projectId={projectId} customField={field} />
+            )}
+          />
+        )}
         {customFields?.length === 0 && !isCreating && (
           <p className="text-body-xs-regular text-tertiary">{t("project_settings.custom_fields.empty_state")}</p>
         )}

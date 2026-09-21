@@ -5,7 +5,7 @@
  */
 
 import { useState } from "react";
-import { Trash2 } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 import { observer } from "mobx-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
@@ -22,7 +22,10 @@ const FIELD_TYPE_I18N_LABEL: Record<ICustomField["field_type"], string> = {
   date: "project_settings.custom_fields.types.date",
   checkbox: "project_settings.custom_fields.types.checkbox",
   dropdown: "project_settings.custom_fields.types.dropdown",
+  multi_select: "project_settings.custom_fields.types.multi_select",
 };
+
+const FIELD_TYPES_WITH_OPTIONS: ICustomField["field_type"][] = ["dropdown", "multi_select"];
 
 type Props = {
   workspaceSlug: string;
@@ -54,6 +57,7 @@ export const CustomFieldRow = observer(function CustomFieldRow(props: Props) {
     <div className="flex w-full flex-col rounded-lg border border-subtle bg-layer-2 px-4 py-3">
       <div className="flex w-full items-center justify-between gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-3">
+          <GripVertical className="size-4 shrink-0 cursor-grab text-tertiary" />
           <span className="truncate text-body-sm-medium text-primary">{customField.name}</span>
           <span className="shrink-0 rounded-full bg-layer-3 px-2 py-0.5 text-caption-md-regular text-tertiary">
             {t(FIELD_TYPE_I18N_LABEL[customField.field_type])}
@@ -73,7 +77,7 @@ export const CustomFieldRow = observer(function CustomFieldRow(props: Props) {
           <Trash2 className="size-4" />
         </button>
       </div>
-      {customField.field_type === "dropdown" && (
+      {FIELD_TYPES_WITH_OPTIONS.includes(customField.field_type) && (
         <CustomFieldOptionsEditor workspaceSlug={workspaceSlug} projectId={projectId} customField={customField} />
       )}
     </div>

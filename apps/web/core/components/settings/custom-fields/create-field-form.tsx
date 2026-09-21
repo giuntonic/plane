@@ -20,6 +20,7 @@ const FIELD_TYPE_OPTIONS: { value: TCustomFieldType; i18n_label: string }[] = [
   { value: "date", i18n_label: "project_settings.custom_fields.types.date" },
   { value: "checkbox", i18n_label: "project_settings.custom_fields.types.checkbox" },
   { value: "dropdown", i18n_label: "project_settings.custom_fields.types.dropdown" },
+  { value: "multi_select", i18n_label: "project_settings.custom_fields.types.multi_select" },
 ];
 
 type Props = {

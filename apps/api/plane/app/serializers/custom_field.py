@@ -35,6 +35,10 @@ class IssueCustomFieldValueSerializer(BaseSerializer):
         field_type = custom_field.field_type
         if field_type == "dropdown" and data.get("option") and data["option"].custom_field_id != custom_field.id:
             raise serializers.ValidationError("The selected option does not belong to this custom field")
+        if field_type == "multi_select" and data.get("multi_select_options"):
+            for option in data["multi_select_options"]:
+                if option.custom_field_id != custom_field.id:
+                    raise serializers.ValidationError("The selected option does not belong to this custom field")
         if custom_field.is_required:
             value_present = any(
                 [
@@ -43,6 +47,7 @@ class IssueCustomFieldValueSerializer(BaseSerializer):
                     data.get("date_value") is not None,
                     data.get("boolean_value") is not None,
                     data.get("option") is not None,
+                    bool(data.get("multi_select_options")),
                 ]
             )
             if not value_present:

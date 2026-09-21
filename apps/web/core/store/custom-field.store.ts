@@ -54,6 +54,12 @@ export interface ICustomFieldStore {
     data: TCustomFieldFormData
   ) => Promise<ICustomField>;
   deleteCustomField: (workspaceSlug: string, projectId: string, customFieldId: string) => Promise<void>;
+  updateCustomFieldPosition: (
+    workspaceSlug: string,
+    projectId: string,
+    orderedFields: ICustomField[],
+    movedFieldId: string
+  ) => Promise<void>;
   createCustomFieldOption: (
     workspaceSlug: string,
     projectId: string,
@@ -97,6 +103,7 @@ export class CustomFieldStore implements ICustomFieldStore {
       createCustomField: action,
       updateCustomField: action,
       deleteCustomField: action,
+      updateCustomFieldPosition: action,
       createCustomFieldOption: action,
       deleteCustomFieldOption: action,
       fetchIssueCustomFieldValues: action,
@@ -213,6 +220,34 @@ export class CustomFieldStore implements ICustomFieldStore {
         delete this.fieldMap[customFieldId];
       });
     });
+  };
+
+  /**
+   * Reorders a custom field within a project by recomputing its sort_order
+   * relative to its new neighbors and persisting the change
+   */
+  updateCustomFieldPosition = async (
+    workspaceSlug: string,
+    projectId: string,
+    orderedFields: ICustomField[],
+    movedFieldId: string
+  ) => {
+    const movedIndex = orderedFields.findIndex((field) => field.id === movedFieldId);
+    if (movedIndex === -1) return;
+
+    const prevSortOrder = orderedFields[movedIndex - 1]?.sort_order;
+    const nextSortOrder = orderedFields[movedIndex + 1]?.sort_order;
+
+    let sortOrder = 65535;
+    if (prevSortOrder !== undefined && nextSortOrder !== undefined) {
+      sortOrder = (prevSortOrder + nextSortOrder) / 2;
+    } else if (nextSortOrder !== undefined) {
+      sortOrder = nextSortOrder / 2;
+    } else if (prevSortOrder !== undefined) {
+      sortOrder = prevSortOrder + 10000;
+    }
+
+    await this.updateCustomField(workspaceSlug, projectId, movedFieldId, { sort_order: sortOrder });
   };
 
   /**

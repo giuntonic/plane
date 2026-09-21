@@ -16,6 +16,7 @@ class CustomFieldType(models.TextChoices):
     DATE = "date", "Date"
     CHECKBOX = "checkbox", "Checkbox"
     DROPDOWN = "dropdown", "Dropdown"
+    MULTI_SELECT = "multi_select", "Multi-select"
 
 
 class CustomField(ProjectBaseModel):
@@ -73,6 +74,9 @@ class IssueCustomFieldValue(ProjectBaseModel):
         related_name="issue_values",
         null=True,
         blank=True,
+    )
+    multi_select_options = models.ManyToManyField(
+        "db.CustomFieldOption", related_name="multi_select_issue_values", blank=True
     )
 
     def __str__(self):

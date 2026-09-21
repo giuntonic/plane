@@ -443,6 +443,8 @@
     "link": "Link",
     "estimates": "Estimativas",
     "estimate": "Estimativa",
+    "custom_fields": "Campos personalizados",
+    "custom_field": "Campo personalizado",
     "created_at": "Criado em",
     "updated_at": "Atualizado em",
     "completed_at": "Concluído em",

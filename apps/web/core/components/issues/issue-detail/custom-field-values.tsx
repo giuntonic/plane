@@ -11,6 +11,7 @@ import useSWR from "swr";
 // plane imports
 import type { ICustomField, IIssueCustomFieldValue } from "@plane/types";
 import { CustomSelect, Input } from "@plane/ui";
+import { cn } from "@plane/utils";
 // components
 import { SidebarPropertyListItem } from "@/components/common/layout/sidebar/property-list-item";
 // hooks
@@ -114,6 +115,42 @@ const CustomFieldValueInput = observer(function CustomFieldValueInput(props: TVa
           </CustomSelect.Option>
         ))}
       </CustomSelect>
+    );
+  }
+
+  if (customField.field_type === "multi_select") {
+    const selectedOptionIds = value?.multi_select_options ?? [];
+    const toggleOption = (optionId: string) => {
+      const nextOptionIds = selectedOptionIds.includes(optionId)
+        ? selectedOptionIds.filter((id) => id !== optionId)
+        : [...selectedOptionIds, optionId];
+      handleUpdate({ multi_select_options: nextOptionIds });
+    };
+    return (
+      <div className="flex flex-wrap items-center gap-1">
+        {customField.options?.map((option) => {
+          const isSelected = selectedOptionIds.includes(option.id);
+          return (
+            <button
+              key={option.id}
+              type="button"
+              disabled={disabled}
+              onClick={() => toggleOption(option.id)}
+              className={cn(
+                "rounded-full border px-2 py-0.5 text-caption-md-regular disabled:opacity-60",
+                isSelected
+                  ? "border-accent-strong bg-accent-primary/10 text-accent-primary"
+                  : "border-subtle-1 text-tertiary hover:text-secondary"
+              )}
+            >
+              {option.name}
+            </button>
+          );
+        })}
+        {(!customField.options || customField.options.length === 0) && (
+          <span className="text-body-xs-regular text-placeholder">-</span>
+        )}
+      </div>
     );
   }
 
