@@ -58,7 +58,9 @@ export function BreadcrumbNavigationSearchDropdown(props: TBreadcrumbNavigationS
       customButton={
         <>
           <Tooltip tooltipContent={title} position="bottom">
-            <button
+            {/* Not a <button>: this is already inside the dropdown's own trigger button. */}
+            {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
+            <div
               onClick={(e) => {
                 if (!isLast) {
                   e.preventDefault();
@@ -82,7 +84,7 @@ export function BreadcrumbNavigationSearchDropdown(props: TBreadcrumbNavigationS
                 {icon && <Breadcrumbs.Icon>{icon}</Breadcrumbs.Icon>}
                 <Breadcrumbs.Label>{title}</Breadcrumbs.Label>
               </div>
-            </button>
+            </div>
           </Tooltip>
           <Breadcrumbs.Separator
             className={cn("rounded-r-sm", {

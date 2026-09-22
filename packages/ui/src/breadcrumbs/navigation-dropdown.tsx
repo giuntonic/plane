@@ -36,7 +36,9 @@ export function BreadcrumbNavigationDropdown(props: TBreadcrumbNavigationDropdow
   function NavigationButton() {
     return (
       <Tooltip tooltipContent={selectedItem?.title} position="bottom" disabled={isOpen}>
-        <button
+        {/* Not a <button>: when rendered via CustomMenu this is already inside its own trigger button. */}
+        {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions */}
+        <div
           onClick={(e) => {
             if (!isLast) {
               e.preventDefault();
@@ -56,7 +58,7 @@ export function BreadcrumbNavigationDropdown(props: TBreadcrumbNavigationDropdow
             {selectedItemIcon && <Breadcrumbs.Icon>{selectedItemIcon}</Breadcrumbs.Icon>}
             <Breadcrumbs.Label>{selectedItem?.title}</Breadcrumbs.Label>
           </div>
-        </button>
+        </div>
       </Tooltip>
     );
   }
