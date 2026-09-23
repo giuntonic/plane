@@ -7,18 +7,20 @@
 import { observer } from "mobx-react";
 import { LayoutDashboard } from "lucide-react";
 // plane imports
+import { useTranslation } from "@plane/i18n";
 import { Breadcrumbs, Header } from "@plane/ui";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
 
 export const MyDashboardsHeader = observer(function MyDashboardsHeader() {
+  const { t } = useTranslation();
   return (
     <Header>
       <Header.LeftItem>
         <Breadcrumbs>
           <Breadcrumbs.Item
             component={
-              <BreadcrumbLink label="My dashboards" icon={<LayoutDashboard className="h-4 w-4 text-tertiary" />} />
+              <BreadcrumbLink label={t("sidebar.my_dashboards")} icon={<LayoutDashboard className="h-4 w-4 text-tertiary" />} />
             }
           />
         </Breadcrumbs>

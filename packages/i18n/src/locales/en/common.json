@@ -1107,5 +1107,66 @@
     "title": "Oops! Something went wrong.",
     "description": "Sorry, the page you are looking for cannot be found. It may have been removed, had its name changed, or is temporarily unavailable.",
     "go_to_home": "Go to Home"
+  },
+  "native_dashboards": {
+    "new": "New dashboard",
+    "create": "Create dashboard",
+    "name_placeholder": "e.g. Engineering overview",
+    "name_required": "Name is required",
+    "created": "Dashboard created successfully.",
+    "empty": "No dashboards yet. Create one to visualize your projects and work items.",
+    "widget_count": "{count, plural, one {# widget} other {# widgets}}",
+    "widget": {
+      "add": "Add widget",
+      "update": "Update widget",
+      "title": "Title",
+      "title_required": "Title is required",
+      "title_placeholder": "e.g. Work items by state",
+      "chart_type": "Chart type",
+      "select_chart_type": "Select chart type",
+      "group_by": "Group work items by",
+      "split_by": "Split by",
+      "added": "Widget added successfully.",
+      "updated": "Widget updated successfully.",
+      "deleted": "Widget deleted successfully.",
+      "delete_failed": "Failed to delete widget.",
+      "empty": "No widgets yet. Add your first chart to this dashboard.",
+      "no_data": "No data to display"
+    },
+    "chart_types": {
+      "bar": "Bar chart",
+      "line": "Line chart",
+      "area": "Area chart",
+      "pie": "Pie chart",
+      "donut": "Donut chart",
+      "radar": "Radar chart",
+      "scatter": "Scatter chart"
+    }
+  },
+  "chart_axis": {
+    "no_value": "No value",
+    "state_name": "State name",
+    "state_group": "State group",
+    "priority": "Priority",
+    "label": "Label",
+    "assignee": "Assignee",
+    "estimate_point": "Estimate point",
+    "cycle": "Cycle",
+    "module": "Module",
+    "completed_date": "Completed date",
+    "due_date": "Due date",
+    "start_date": "Start date",
+    "created_date": "Created date",
+    "created_by": "Created by",
+    "work_item": "Work item",
+    "estimate": "Estimate",
+    "epic": "Epic"
+  },
+  "start_first_project": "Start your first project",
+  "project_count": "{count, plural, one {# project} other {# projects}}",
+  "settings_projects_empty": {
+    "title": "No projects yet",
+    "description": "Projects act as the foundation for goal-driven work. They let you manage your teams, tasks, and everything you need to get things done.",
+    "learn_more": "Learn more about projects"
   }
 }

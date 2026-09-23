@@ -1107,5 +1107,66 @@
     "title": "Ops! Algo deu errado.",
     "description": "Desculpe, a página que você está procurando não foi encontrada. Ela pode ter sido removida, ter tido o nome alterado ou estar temporariamente indisponível.",
     "go_to_home": "Ir para a página inicial"
+  },
+  "native_dashboards": {
+    "new": "Novo dashboard",
+    "create": "Criar dashboard",
+    "name_placeholder": "ex.: Visão geral da engenharia",
+    "name_required": "O nome é obrigatório",
+    "created": "Dashboard criado com sucesso.",
+    "empty": "Nenhum dashboard ainda. Crie um para visualizar seus projetos e itens de trabalho.",
+    "widget_count": "{count, plural, one {# widget} many {# widgets} other {# widgets}}",
+    "widget": {
+      "add": "Adicionar widget",
+      "update": "Atualizar widget",
+      "title": "Título",
+      "title_required": "O título é obrigatório",
+      "title_placeholder": "ex.: Itens de trabalho por estado",
+      "chart_type": "Tipo de gráfico",
+      "select_chart_type": "Selecione o tipo de gráfico",
+      "group_by": "Agrupar itens de trabalho por",
+      "split_by": "Dividir por",
+      "added": "Widget adicionado com sucesso.",
+      "updated": "Widget atualizado com sucesso.",
+      "deleted": "Widget excluído com sucesso.",
+      "delete_failed": "Falha ao excluir o widget.",
+      "empty": "Nenhum widget ainda. Adicione o primeiro gráfico a este dashboard.",
+      "no_data": "Sem dados para exibir"
+    },
+    "chart_types": {
+      "bar": "Gráfico de barras",
+      "line": "Gráfico de linhas",
+      "area": "Gráfico de área",
+      "pie": "Gráfico de pizza",
+      "donut": "Gráfico de rosca",
+      "radar": "Gráfico de radar",
+      "scatter": "Gráfico de dispersão"
+    }
+  },
+  "chart_axis": {
+    "no_value": "Nenhum",
+    "state_name": "Nome do estado",
+    "state_group": "Grupo de status",
+    "priority": "Prioridade",
+    "label": "Etiqueta",
+    "assignee": "Responsável",
+    "estimate_point": "Ponto de estimativa",
+    "cycle": "Ciclo",
+    "module": "Módulo",
+    "completed_date": "Data de conclusão",
+    "due_date": "Data de vencimento",
+    "start_date": "Data de início",
+    "created_date": "Data de criação",
+    "created_by": "Criado por",
+    "work_item": "Item de trabalho",
+    "estimate": "Estimativa",
+    "epic": "Epic"
+  },
+  "start_first_project": "Criar seu primeiro projeto",
+  "project_count": "{count, plural, one {# projeto} many {# projetos} other {# projetos}}",
+  "settings_projects_empty": {
+    "title": "Nenhum projeto ainda",
+    "description": "Os projetos são a base do trabalho orientado a objetivos. Com eles, você gerencia suas equipes, tarefas e tudo o que precisa para concluir o trabalho.",
+    "learn_more": "Saiba mais sobre projetos"
   }
 }

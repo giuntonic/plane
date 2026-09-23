@@ -13,7 +13,14 @@ import useSWR from "swr";
 // plane package imports
 import { Download } from "lucide-react";
 import type { ChartXAxisDateGrouping } from "@plane/constants";
-import { ANALYTICS_X_AXIS_VALUES, ANALYTICS_Y_AXIS_VALUES, CHART_COLOR_PALETTES, EChartModels } from "@plane/constants";
+import {
+  ANALYTICS_X_AXIS_I18N_KEYS,
+  ANALYTICS_X_AXIS_VALUES,
+  ANALYTICS_Y_AXIS_I18N_KEYS,
+  ANALYTICS_Y_AXIS_VALUES,
+  CHART_COLOR_PALETTES,
+  EChartModels,
+} from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { BarChart } from "@plane/propel/charts/bar-chart";
@@ -140,12 +147,18 @@ const PriorityChart = observer(function PriorityChart(props: Props) {
   }, [chart_model, group_by, parsedData, resolvedTheme, workspaceStates, x_axis, y_axis]);
 
   const yAxisLabel = useMemo(
-    () => ANALYTICS_Y_AXIS_VALUES.find((item) => item.value === props.y_axis)?.label ?? props.y_axis,
-    [props.y_axis]
+    () => {
+      const key = ANALYTICS_Y_AXIS_I18N_KEYS[props.y_axis];
+      return key ? t(key) : (ANALYTICS_Y_AXIS_VALUES.find((item) => item.value === props.y_axis)?.label ?? props.y_axis);
+    },
+    [props.y_axis, t]
   );
   const xAxisLabel = useMemo(
-    () => ANALYTICS_X_AXIS_VALUES.find((item) => item.value === props.x_axis)?.label ?? props.x_axis,
-    [props.x_axis]
+    () => {
+      const key = ANALYTICS_X_AXIS_I18N_KEYS[props.x_axis];
+      return key ? t(key) : (ANALYTICS_X_AXIS_VALUES.find((item) => item.value === props.x_axis)?.label ?? props.x_axis);
+    },
+    [props.x_axis, t]
   );
 
   const defaultColumns: ColumnDef<TChartDatum>[] = useMemo(

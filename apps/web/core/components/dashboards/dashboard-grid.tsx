@@ -13,6 +13,7 @@ import type { Layout } from "react-grid-layout/legacy";
 // oxlint-disable-next-line import/no-unassigned-import
 import "react-grid-layout/css/styles.css";
 // plane package imports
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { IconButton } from "@plane/propel/icon-button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -36,6 +37,7 @@ type Props = {
 export const DashboardGrid = observer(function DashboardGrid(props: Props) {
   const { dashboard, workspaceSlug, projectId } = props;
   const { updateWidget, deleteWidget } = useDashboards();
+  const { t } = useTranslation();
 
   const [isWidgetFormOpen, setIsWidgetFormOpen] = useState(false);
   const [editingWidget, setEditingWidget] = useState<TDashboardWidget | null>(null);
@@ -82,12 +84,12 @@ export const DashboardGrid = observer(function DashboardGrid(props: Props) {
     async (widgetId: string) => {
       try {
         await deleteWidget(workspaceSlug, dashboard.id, widgetId, projectId);
-        setToast({ type: TOAST_TYPE.SUCCESS, title: "Success!", message: "Widget deleted successfully." });
+        setToast({ type: TOAST_TYPE.SUCCESS, title: t("toast.success"), message: t("native_dashboards.widget.deleted") });
       } catch {
-        setToast({ type: TOAST_TYPE.ERROR, title: "Error!", message: "Failed to delete widget." });
+        setToast({ type: TOAST_TYPE.ERROR, title: t("toast.error"), message: t("native_dashboards.widget.delete_failed") });
       }
     },
-    [dashboard.id, deleteWidget, projectId, workspaceSlug]
+    [dashboard.id, deleteWidget, projectId, t, workspaceSlug]
   );
 
   return (
@@ -102,7 +104,7 @@ export const DashboardGrid = observer(function DashboardGrid(props: Props) {
             setIsWidgetFormOpen(true);
           }}
         >
-          Add widget
+          {t("native_dashboards.widget.add")}
         </Button>
       </div>
 
@@ -111,7 +113,7 @@ export const DashboardGrid = observer(function DashboardGrid(props: Props) {
           assetKey="unknown"
           assetClassName="size-20"
           rootClassName="flex-1 border border-dashed border-subtle mx-6 mb-6 rounded-md"
-          title="No widgets yet. Add your first chart to this dashboard."
+          title={t("native_dashboards.widget.empty")}
         />
       ) : (
         <div className="flex-1 overflow-y-auto px-6 pb-6">
@@ -140,14 +142,14 @@ export const DashboardGrid = observer(function DashboardGrid(props: Props) {
                       className="flex items-center gap-2"
                     >
                       <Pencil className="size-3.5" />
-                      Edit
+                      {t("common.actions.edit")}
                     </CustomMenu.MenuItem>
                     <CustomMenu.MenuItem
                       onClick={() => handleDeleteWidget(widget.id)}
                       className="text-danger flex items-center gap-2"
                     >
                       <Trash2 className="size-3.5" />
-                      Delete
+                      {t("common.actions.delete")}
                     </CustomMenu.MenuItem>
                   </CustomMenu>
                 </div>

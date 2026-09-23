@@ -172,6 +172,23 @@ export const ANALYTICS_X_AXIS_VALUES: { value: ChartXAxisProperty; label: string
   },
 ];
 
+// Pespo: i18n keys for the axis labels above (the labels stay as the English fallback)
+export const ANALYTICS_X_AXIS_I18N_KEYS: Partial<Record<ChartXAxisProperty, string>> = {
+  [ChartXAxisProperty.STATES]: "chart_axis.state_name",
+  [ChartXAxisProperty.STATE_GROUPS]: "chart_axis.state_group",
+  [ChartXAxisProperty.PRIORITY]: "chart_axis.priority",
+  [ChartXAxisProperty.LABELS]: "chart_axis.label",
+  [ChartXAxisProperty.ASSIGNEES]: "chart_axis.assignee",
+  [ChartXAxisProperty.ESTIMATE_POINTS]: "chart_axis.estimate_point",
+  [ChartXAxisProperty.CYCLES]: "chart_axis.cycle",
+  [ChartXAxisProperty.MODULES]: "chart_axis.module",
+  [ChartXAxisProperty.COMPLETED_AT]: "chart_axis.completed_date",
+  [ChartXAxisProperty.TARGET_DATE]: "chart_axis.due_date",
+  [ChartXAxisProperty.START_DATE]: "chart_axis.start_date",
+  [ChartXAxisProperty.CREATED_AT]: "chart_axis.created_date",
+  [ChartXAxisProperty.CREATED_BY]: "chart_axis.created_by",
+};
+
 export const ANALYTICS_Y_AXIS_VALUES: { value: ChartYAxisMetric; label: string }[] = [
   {
     value: ChartYAxisMetric.WORK_ITEM_COUNT,
@@ -186,5 +203,11 @@ export const ANALYTICS_Y_AXIS_VALUES: { value: ChartYAxisMetric; label: string }
     label: "Epic",
   },
 ];
+
+export const ANALYTICS_Y_AXIS_I18N_KEYS: Partial<Record<ChartYAxisMetric, string>> = {
+  [ChartYAxisMetric.WORK_ITEM_COUNT]: "chart_axis.work_item",
+  [ChartYAxisMetric.ESTIMATE_POINT_COUNT]: "chart_axis.estimate",
+  [ChartYAxisMetric.EPIC_WORK_ITEM_COUNT]: "chart_axis.epic",
+};
 
 export const ANALYTICS_V2_DATE_KEYS = ["completed_at", "target_date", "start_date", "created_at"];

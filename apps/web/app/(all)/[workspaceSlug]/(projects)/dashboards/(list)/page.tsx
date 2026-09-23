@@ -4,13 +4,15 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { PageHead } from "@/components/core/page-title";
 import { DashboardsList } from "@/components/dashboards/dashboards-list";
 
 function WorkspaceDashboardsPage() {
+  const { t } = useTranslation();
   return (
     <>
-      <PageHead title="Dashboards" />
+      <PageHead title={t("sidebar.dashboards")} />
       <DashboardsList dashboardType="workspace" />
     </>
   );

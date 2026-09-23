@@ -9,6 +9,7 @@ import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
 import useSWR from "swr";
 // plane package imports
+import { useTranslation } from "@plane/i18n";
 import { CHART_COLOR_PALETTES } from "@plane/constants";
 import { EmptyStateCompact } from "@plane/propel/empty-state";
 import { DashboardWidgetService } from "@plane/services";
@@ -44,6 +45,7 @@ type Props = {
 
 export const ChartWidget = observer(function ChartWidget(props: Props) {
   const { widget, workspaceSlug, projectId } = props;
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
 
   const { data, isLoading, error } = useSWR(
@@ -63,8 +65,8 @@ export const ChartWidget = observer(function ChartWidget(props: Props) {
 
   const seriesLabels = useMemo(
     () =>
-      Object.fromEntries(seriesKeys.map((key) => [key, widget.group_by ? (parsedData?.schema[key] ?? key) : "Count"])),
-    [seriesKeys, parsedData, widget.group_by]
+      Object.fromEntries(seriesKeys.map((key) => [key, widget.group_by ? (parsedData?.schema[key] ?? key) : t("common.count")])),
+    [seriesKeys, parsedData, t, widget.group_by]
   );
 
   const colors = useMemo(() => {
@@ -85,7 +87,7 @@ export const ChartWidget = observer(function ChartWidget(props: Props) {
         assetKey="unknown"
         assetClassName="size-16"
         rootClassName="h-full flex items-center justify-center"
-        title="No data to display"
+        title={t("native_dashboards.widget.no_data")}
       />
     );
 

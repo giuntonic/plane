@@ -70,7 +70,7 @@ export const ProjectDropdownBase = observer(function ProjectDropdownBase(props: 
     multiple,
     onChange,
     onClose,
-    placeholder = "Project",
+    placeholder: placeholderProp,
     placement,
     projectIds,
     renderByDefault = true,
@@ -90,6 +90,7 @@ export const ProjectDropdownBase = observer(function ProjectDropdownBase(props: 
   const [isOpen, setIsOpen] = useState(false);
   // plane hooks
   const { t } = useTranslation();
+  const placeholder = placeholderProp ?? t("common.project");
   // popper-js init
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement: placement ?? "bottom-start",
@@ -149,7 +150,7 @@ export const ProjectDropdownBase = observer(function ProjectDropdownBase(props: 
   const getDisplayName = (value: string | string[] | null, placeholder: string = "") => {
     if (Array.isArray(value)) {
       const firstProject = getProjectById(value[0]);
-      return value.length ? (value.length === 1 ? firstProject?.name : `${value.length} projects`) : placeholder;
+      return value.length ? (value.length === 1 ? firstProject?.name : t("project_count", { count: value.length })) : placeholder;
     } else {
       return value ? (getProjectById(value)?.name ?? placeholder) : placeholder;
     }
@@ -204,8 +205,8 @@ export const ProjectDropdownBase = observer(function ProjectDropdownBase(props: 
       <DropdownButton
         className={buttonClassName}
         isActive={isOpen}
-        tooltipHeading="Project"
-        tooltipContent={value?.length ? `${value.length} project${value.length !== 1 ? "s" : ""}` : placeholder}
+        tooltipHeading={t("common.project")}
+        tooltipContent={value?.length ? t("project_count", { count: value.length }) : placeholder}
         showTooltip={showTooltip}
         variant={buttonVariant}
         renderToolTipByDefault={renderByDefault}

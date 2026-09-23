@@ -7,6 +7,7 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 // plane package imports
+import { useTranslation } from "@plane/i18n";
 import { ANALYTICS_X_AXIS_VALUES } from "@plane/constants";
 import { Button } from "@plane/propel/button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -40,6 +41,7 @@ const defaultValues: TDashboardWidgetCreatePayload = {
 export function WidgetConfigFormModal(props: Props) {
   const { isOpen, handleClose, workspaceSlug, dashboardId, projectId, data } = props;
   const { createWidget, updateWidget } = useDashboards();
+  const { t } = useTranslation();
 
   const {
     control,
@@ -61,7 +63,7 @@ export function WidgetConfigFormModal(props: Props) {
     try {
       if (data) {
         await updateWidget(workspaceSlug, dashboardId, data.id, formData, projectId);
-        setToast({ type: TOAST_TYPE.SUCCESS, title: "Success!", message: "Widget updated successfully." });
+        setToast({ type: TOAST_TYPE.SUCCESS, title: t("toast.success"), message: t("native_dashboards.widget.updated") });
       } else {
         await createWidget(
           workspaceSlug,
@@ -69,14 +71,14 @@ export function WidgetConfigFormModal(props: Props) {
           { ...formData, layout: { x: 0, y: 0, w: 4, h: 4 }, sort_order: Date.now() },
           projectId
         );
-        setToast({ type: TOAST_TYPE.SUCCESS, title: "Success!", message: "Widget added successfully." });
+        setToast({ type: TOAST_TYPE.SUCCESS, title: t("toast.success"), message: t("native_dashboards.widget.added") });
       }
       onClose();
     } catch (error: any) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: error?.error ?? "Some error occurred. Please try again.",
+        title: t("toast.error"),
+        message: error?.error ?? t("common.error.message"),
       });
     }
   };
@@ -85,16 +87,16 @@ export function WidgetConfigFormModal(props: Props) {
     <ModalCore isOpen={isOpen} handleClose={onClose}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="space-y-5 p-5">
-          <h3 className="text-18 font-medium text-secondary">{data ? "Update" : "Add"} widget</h3>
+          <h3 className="text-18 font-medium text-secondary">{data ? t("native_dashboards.widget.update") : t("native_dashboards.widget.add")}</h3>
           <div className="space-y-3">
             <div>
               <label htmlFor="name" className="mb-2 block text-secondary">
-                Title
+                {t("native_dashboards.widget.title")}
               </label>
               <Controller
                 control={control}
                 name="name"
-                rules={{ required: "Title is required" }}
+                rules={{ required: t("native_dashboards.widget.title_required") }}
                 render={({ field: { value, onChange, ref } }) => (
                   <Input
                     id="name"
@@ -103,14 +105,14 @@ export function WidgetConfigFormModal(props: Props) {
                     onChange={onChange}
                     ref={ref}
                     hasError={Boolean(errors.name)}
-                    placeholder="e.g. Work items by state"
+                    placeholder={t("native_dashboards.widget.title_placeholder")}
                     className="w-full"
                   />
                 )}
               />
             </div>
             <div>
-              <div className="mb-2 text-secondary">Chart type</div>
+              <div className="mb-2 text-secondary">{t("native_dashboards.widget.chart_type")}</div>
               <Controller
                 control={control}
                 name="chart_type"
@@ -120,7 +122,7 @@ export function WidgetConfigFormModal(props: Props) {
               />
             </div>
             <div>
-              <div className="mb-2 text-secondary">Group work items by</div>
+              <div className="mb-2 text-secondary">{t("native_dashboards.widget.group_by")}</div>
               <Controller
                 control={control}
                 name="x_axis"
@@ -131,8 +133,8 @@ export function WidgetConfigFormModal(props: Props) {
             </div>
             <div>
               <div className="mb-2 text-secondary">
-                Split by
-                <span className="block text-10">Optional</span>
+                {t("native_dashboards.widget.split_by")}
+                <span className="block text-10">{t("common.optional")}</span>
               </div>
               <Controller
                 control={control}
@@ -151,10 +153,10 @@ export function WidgetConfigFormModal(props: Props) {
         </div>
         <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
           <Button variant="secondary" size="lg" onClick={onClose}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
-            {data ? "Update widget" : "Add widget"}
+            {data ? t("native_dashboards.widget.update") : t("native_dashboards.widget.add")}
           </Button>
         </div>
       </form>
