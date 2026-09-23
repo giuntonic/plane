@@ -65,7 +65,9 @@ export const ChartWidget = observer(function ChartWidget(props: Props) {
 
   const seriesLabels = useMemo(
     () =>
-      Object.fromEntries(seriesKeys.map((key) => [key, widget.group_by ? (parsedData?.schema[key] ?? key) : t("common.count")])),
+      Object.fromEntries(
+        seriesKeys.map((key) => [key, widget.group_by ? (parsedData?.schema[key] ?? key) : t("common.count")])
+      ),
     [seriesKeys, parsedData, t, widget.group_by]
   );
 

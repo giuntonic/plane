@@ -84,9 +84,17 @@ export const DashboardGrid = observer(function DashboardGrid(props: Props) {
     async (widgetId: string) => {
       try {
         await deleteWidget(workspaceSlug, dashboard.id, widgetId, projectId);
-        setToast({ type: TOAST_TYPE.SUCCESS, title: t("toast.success"), message: t("native_dashboards.widget.deleted") });
+        setToast({
+          type: TOAST_TYPE.SUCCESS,
+          title: t("toast.success"),
+          message: t("native_dashboards.widget.deleted"),
+        });
       } catch {
-        setToast({ type: TOAST_TYPE.ERROR, title: t("toast.error"), message: t("native_dashboards.widget.delete_failed") });
+        setToast({
+          type: TOAST_TYPE.ERROR,
+          title: t("toast.error"),
+          message: t("native_dashboards.widget.delete_failed"),
+        });
       }
     },
     [dashboard.id, deleteWidget, projectId, t, workspaceSlug]

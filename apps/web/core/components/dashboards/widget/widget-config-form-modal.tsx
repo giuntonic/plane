@@ -63,7 +63,11 @@ export function WidgetConfigFormModal(props: Props) {
     try {
       if (data) {
         await updateWidget(workspaceSlug, dashboardId, data.id, formData, projectId);
-        setToast({ type: TOAST_TYPE.SUCCESS, title: t("toast.success"), message: t("native_dashboards.widget.updated") });
+        setToast({
+          type: TOAST_TYPE.SUCCESS,
+          title: t("toast.success"),
+          message: t("native_dashboards.widget.updated"),
+        });
       } else {
         await createWidget(
           workspaceSlug,
@@ -87,7 +91,9 @@ export function WidgetConfigFormModal(props: Props) {
     <ModalCore isOpen={isOpen} handleClose={onClose}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="space-y-5 p-5">
-          <h3 className="text-18 font-medium text-secondary">{data ? t("native_dashboards.widget.update") : t("native_dashboards.widget.add")}</h3>
+          <h3 className="text-18 font-medium text-secondary">
+            {data ? t("native_dashboards.widget.update") : t("native_dashboards.widget.add")}
+          </h3>
           <div className="space-y-3">
             <div>
               <label htmlFor="name" className="mb-2 block text-secondary">

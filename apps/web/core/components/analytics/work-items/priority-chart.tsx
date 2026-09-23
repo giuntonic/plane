@@ -146,20 +146,14 @@ const PriorityChart = observer(function PriorityChart(props: Props) {
     return parsedBars;
   }, [chart_model, group_by, parsedData, resolvedTheme, workspaceStates, x_axis, y_axis]);
 
-  const yAxisLabel = useMemo(
-    () => {
-      const key = ANALYTICS_Y_AXIS_I18N_KEYS[props.y_axis];
-      return key ? t(key) : (ANALYTICS_Y_AXIS_VALUES.find((item) => item.value === props.y_axis)?.label ?? props.y_axis);
-    },
-    [props.y_axis, t]
-  );
-  const xAxisLabel = useMemo(
-    () => {
-      const key = ANALYTICS_X_AXIS_I18N_KEYS[props.x_axis];
-      return key ? t(key) : (ANALYTICS_X_AXIS_VALUES.find((item) => item.value === props.x_axis)?.label ?? props.x_axis);
-    },
-    [props.x_axis, t]
-  );
+  const yAxisLabel = useMemo(() => {
+    const key = ANALYTICS_Y_AXIS_I18N_KEYS[props.y_axis];
+    return key ? t(key) : (ANALYTICS_Y_AXIS_VALUES.find((item) => item.value === props.y_axis)?.label ?? props.y_axis);
+  }, [props.y_axis, t]);
+  const xAxisLabel = useMemo(() => {
+    const key = ANALYTICS_X_AXIS_I18N_KEYS[props.x_axis];
+    return key ? t(key) : (ANALYTICS_X_AXIS_VALUES.find((item) => item.value === props.x_axis)?.label ?? props.x_axis);
+  }, [props.x_axis, t]);
 
   const defaultColumns: ColumnDef<TChartDatum>[] = useMemo(
     () => [

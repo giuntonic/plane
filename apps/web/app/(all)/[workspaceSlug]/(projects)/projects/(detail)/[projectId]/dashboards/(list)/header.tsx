@@ -25,7 +25,10 @@ export const ProjectDashboardHeader = observer(function ProjectDashboardHeader()
           <CommonProjectBreadcrumbs workspaceSlug={workspaceSlug.toString()} projectId={projectId.toString()} />
           <Breadcrumbs.Item
             component={
-              <BreadcrumbLink label={t("sidebar.dashboards")} icon={<LayoutDashboard className="h-4 w-4 text-tertiary" />} />
+              <BreadcrumbLink
+                label={t("sidebar.dashboards")}
+                icon={<LayoutDashboard className="h-4 w-4 text-tertiary" />}
+              />
             }
           />
         </Breadcrumbs>

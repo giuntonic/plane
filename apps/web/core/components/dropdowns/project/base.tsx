@@ -150,7 +150,11 @@ export const ProjectDropdownBase = observer(function ProjectDropdownBase(props: 
   const getDisplayName = (value: string | string[] | null, placeholder: string = "") => {
     if (Array.isArray(value)) {
       const firstProject = getProjectById(value[0]);
-      return value.length ? (value.length === 1 ? firstProject?.name : t("project_count", { count: value.length })) : placeholder;
+      return value.length
+        ? value.length === 1
+          ? firstProject?.name
+          : t("project_count", { count: value.length })
+        : placeholder;
     } else {
       return value ? (getProjectById(value)?.name ?? placeholder) : placeholder;
     }

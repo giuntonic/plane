@@ -28,9 +28,7 @@ function ProjectSettingsPage() {
     <div className="mx-auto flex h-full max-w-[480px] flex-col items-center justify-center gap-4">
       <img src={resolvedPath} alt={t("settings_projects_empty.title")} />
       <div className="text-16 font-semibold text-tertiary">{t("settings_projects_empty.title")}</div>
-      <div className="text-center text-13 text-tertiary">
-        {t("settings_projects_empty.description")}
-      </div>
+      <div className="text-center text-13 text-tertiary">{t("settings_projects_empty.description")}</div>
       <div className="flex gap-2">
         <Link href="https://plane.so/" target="_blank" className={cn(getButtonStyling("secondary", "base"))}>
           {t("settings_projects_empty.learn_more")}

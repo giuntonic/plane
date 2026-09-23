@@ -77,7 +77,9 @@ export const DashboardsList = observer(function DashboardsList(props: Props) {
                 <LayoutDashboard className="size-4 text-tertiary" />
                 <span className="truncate text-14 font-medium text-primary">{dashboard.name}</span>
               </div>
-              <span className="text-13 text-tertiary">{t("native_dashboards.widget_count", { count: dashboard.widgets?.length ?? 0 })}</span>
+              <span className="text-13 text-tertiary">
+                {t("native_dashboards.widget_count", { count: dashboard.widgets?.length ?? 0 })}
+              </span>
             </Link>
           ))}
         </div>

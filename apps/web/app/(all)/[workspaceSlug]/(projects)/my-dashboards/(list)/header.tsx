@@ -20,7 +20,10 @@ export const MyDashboardsHeader = observer(function MyDashboardsHeader() {
         <Breadcrumbs>
           <Breadcrumbs.Item
             component={
-              <BreadcrumbLink label={t("sidebar.my_dashboards")} icon={<LayoutDashboard className="h-4 w-4 text-tertiary" />} />
+              <BreadcrumbLink
+                label={t("sidebar.my_dashboards")}
+                icon={<LayoutDashboard className="h-4 w-4 text-tertiary" />}
+              />
             }
           />
         </Breadcrumbs>
