@@ -3,12 +3,13 @@
 # See the LICENSE file for details.
 
 import copy
+import json
 
 from django.db import models
 from django.db.models import Q
 from django_filters import FilterSet, filters
 
-from plane.db.models import Issue
+from plane.db.models import CustomField, Issue
 
 
 class UUIDInFilter(filters.BaseInFilter, filters.UUIDFilter):
@@ -168,6 +169,12 @@ class IssueFilterSet(BaseFilterSet):
     subscriber_id = filters.UUIDFilter(method="filter_subscriber_id")
     subscriber_id__in = UUIDInFilter(method="filter_subscriber_id_in", lookup_expr="in")
 
+    # Synthetic field: populated by IssueComplexFilterBackend, which merges every
+    # "custom_field_<uuid>[__lookup]" leaf key into a single JSON payload here,
+    # since django-filter only allows statically declared filter names and custom
+    # field ids are per-project/dynamic.
+    custom_field_conditions = filters.CharFilter(method="filter_custom_field_conditions", distinct=True)
+
     # created_at / updated_at are DateTimeFields, but the UI sends a bare calendar
     # date (yyyy-MM-dd, e.g. {"created_at__exact": "2026-07-30"}). An `exact` lookup
     # coerces that to midnight, so the filter only matched rows stamped exactly
@@ -295,3 +302,40 @@ class IssueFilterSet(BaseFilterSet):
             issue_subscribers__subscriber_id__in=value,
             issue_subscribers__deleted_at__isnull=True,
         )
+
+    def filter_custom_field_conditions(self, queryset, name, value):
+        """Filter by custom field values.
+
+        `value` is a JSON string of {custom_field_id: {lookup: raw_value}}, built by
+        IssueComplexFilterBackend from the "custom_field_<uuid>[__lookup]" leaf keys.
+        Only dropdown/multi_select custom fields are supported for now, since those
+        are the only types with a matching option-based filter UI on the frontend.
+        """
+        try:
+            conditions = json.loads(value)
+        except (TypeError, ValueError):
+            return Q()
+        if not isinstance(conditions, dict) or not conditions:
+            return Q()
+
+        field_types = {
+            str(field_id): field_type
+            for field_id, field_type in CustomField.objects.filter(id__in=conditions.keys()).values_list(
+                "id", "field_type"
+            )
+        }
+
+        combined = Q()
+        for field_id, lookups in conditions.items():
+            if field_types.get(field_id) not in ("dropdown", "multi_select") or not isinstance(lookups, dict):
+                continue
+            for raw_value in lookups.values():
+                option_ids = raw_value if isinstance(raw_value, list) else [raw_value]
+                combined &= Q(
+                    custom_field_values__custom_field_id=field_id,
+                    custom_field_values__deleted_at__isnull=True,
+                ) & (
+                    Q(custom_field_values__option_id__in=option_ids)
+                    | Q(custom_field_values__multi_select_options__id__in=option_ids)
+                )
+        return combined

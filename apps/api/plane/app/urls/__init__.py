@@ -5,6 +5,7 @@
 from .analytic import urlpatterns as analytic_urls
 from .api import urlpatterns as api_urls
 from .asset import urlpatterns as asset_urls
+from .custom_field import urlpatterns as custom_field_urls
 from .cycle import urlpatterns as cycle_urls
 from .dashboard import urlpatterns as dashboard_urls
 from .estimate import urlpatterns as estimate_urls
@@ -27,6 +28,7 @@ from .exporter import urlpatterns as exporter_urls
 urlpatterns = [
     *analytic_urls,
     *asset_urls,
+    *custom_field_urls,
     *cycle_urls,
     *dashboard_urls,
     *estimate_urls,

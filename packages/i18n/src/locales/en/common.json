@@ -443,6 +443,8 @@
     "link": "Link",
     "estimates": "Estimates",
     "estimate": "Estimate",
+    "custom_fields": "Custom fields",
+    "custom_field": "Custom field",
     "created_at": "Created at",
     "updated_at": "Updated at",
     "completed_at": "Completed at",

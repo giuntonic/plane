@@ -176,6 +176,32 @@
       "current": "Sistema de estimativas atual",
       "select": "Selecione um sistema de estimativas"
     },
+    "custom_fields": {
+      "heading": "Campos personalizados",
+      "description": "Defina propriedades personalizadas para capturar informações específicas do fluxo de trabalho da sua equipe.",
+      "add_field": "Adicionar campo",
+      "name_placeholder": "Nome do campo",
+      "is_required": "Obrigatório",
+      "required_badge": "Obrigatório",
+      "add_option_placeholder": "Adicionar opção",
+      "empty_state": "Nenhum campo personalizado ainda. Adicione um para começar a capturar informações extras nos seus itens de trabalho.",
+      "created": "Campo personalizado criado com sucesso",
+      "types": {
+        "text": "Texto",
+        "number": "Número",
+        "date": "Data",
+        "checkbox": "Caixa de seleção",
+        "dropdown": "Lista suspensa",
+        "multi_select": "Seleção múltipla"
+      },
+      "errors": {
+        "name_required": "O nome do campo é obrigatório",
+        "create_failed": "Falha ao criar o campo personalizado",
+        "delete_failed": "Falha ao excluir o campo personalizado",
+        "option_create_failed": "Falha ao adicionar a opção",
+        "option_delete_failed": "Falha ao excluir a opção"
+      }
+    },
     "automations": {
       "label": "Automações",
       "heading": "Automações",

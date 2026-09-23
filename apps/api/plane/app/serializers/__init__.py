@@ -45,6 +45,11 @@ from .project import (
     ProjectMemberRoleSerializer,
     ProjectMemberPreferenceSerializer,
 )
+from .custom_field import (
+    CustomFieldSerializer,
+    CustomFieldOptionSerializer,
+    IssueCustomFieldValueSerializer,
+)
 from .state import StateSerializer, StateLiteSerializer
 from .view import IssueViewSerializer, ViewIssueListSerializer
 from .cycle import (

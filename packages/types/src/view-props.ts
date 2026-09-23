@@ -110,7 +110,16 @@ export const WORK_ITEM_FILTER_PROPERTY_KEYS = [
   "created_at",
   "updated_at",
 ] as const;
-export type TWorkItemFilterProperty = (typeof WORK_ITEM_FILTER_PROPERTY_KEYS)[number];
+export type TStaticWorkItemFilterProperty = (typeof WORK_ITEM_FILTER_PROPERTY_KEYS)[number];
+
+/**
+ * Property key for a project's custom field filter, e.g. "custom_field_<uuid>".
+ * Custom fields are per-project and dynamic, so they can't be part of the
+ * static WORK_ITEM_FILTER_PROPERTY_KEYS list above.
+ */
+export type TCustomFieldFilterProperty = `custom_field_${string}`;
+
+export type TWorkItemFilterProperty = TStaticWorkItemFilterProperty | TCustomFieldFilterProperty;
 
 export type TWorkItemFilterConditionKey = `${TWorkItemFilterProperty}__${TSupportedOperators}`;
 

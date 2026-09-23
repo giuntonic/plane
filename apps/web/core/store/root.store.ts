@@ -22,6 +22,8 @@ import { WorkspaceRootStore } from "@/store/workspace";
 import type { ITimelineStore } from "./timeline/timeline.store";
 import { TimeLineStore } from "./timeline/timeline.store";
 // stores
+import type { ICustomFieldStore } from "./custom-field.store";
+import { CustomFieldStore } from "./custom-field.store";
 import type { ICycleStore } from "./cycle.store";
 import { CycleStore } from "./cycle.store";
 import type { ICycleFilterStore } from "./cycle_filter.store";
@@ -78,6 +80,7 @@ export class CoreRootStore {
   workspaceRoot: IWorkspaceRootStore;
   projectRoot: IProjectRootStore;
   memberRoot: IMemberRootStore;
+  customField: ICustomFieldStore;
   cycle: ICycleStore;
   cycleFilter: ICycleFilterStore;
   module: IModuleStore;
@@ -116,6 +119,7 @@ export class CoreRootStore {
     this.workspaceRoot = new WorkspaceRootStore(this);
     this.projectRoot = new ProjectRootStore(this);
     this.memberRoot = new MemberRootStore(this);
+    this.customField = new CustomFieldStore(this);
     this.cycle = new CycleStore(this);
     this.cycleFilter = new CycleFilterStore(this);
     this.module = new ModulesStore(this);
@@ -152,6 +156,7 @@ export class CoreRootStore {
     this.workspaceRoot = new WorkspaceRootStore(this);
     this.projectRoot = new ProjectRootStore(this);
     this.memberRoot = new MemberRootStore(this);
+    this.customField = new CustomFieldStore(this);
     this.cycle = new CycleStore(this);
     this.cycleFilter = new CycleFilterStore(this);
     this.module = new ModulesStore(this);
