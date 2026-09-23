@@ -6,11 +6,9 @@
 
 import { useState } from "react";
 import { observer } from "mobx-react";
-import { MoreHorizontal } from "lucide-react";
 // ui
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
-import { IconButton } from "@plane/propel/icon-button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { TContextMenuItem } from "@plane/ui";
 import { ContextMenu, CustomMenu } from "@plane/ui";
@@ -57,6 +55,7 @@ export const CycleQuickActions = observer(function CycleQuickActions(props: Prop
 
   const cycleLink = `${workspaceSlug}/projects/${projectId}/cycles/${cycleId}`;
   const handleCopyText = () =>
+    // oxlint-disable-next-line promise/always-return
     copyUrlToClipboard(cycleLink).then(() => {
       setToast({
         type: TOAST_TYPE.SUCCESS,
@@ -68,6 +67,7 @@ export const CycleQuickActions = observer(function CycleQuickActions(props: Prop
 
   const handleRestoreCycle = async () =>
     await restoreCycle(workspaceSlug, projectId, cycleId)
+      // oxlint-disable-next-line promise/always-return
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
@@ -139,13 +139,7 @@ export const CycleQuickActions = observer(function CycleQuickActions(props: Prop
         </div>
       )}
       <ContextMenu parentRef={parentRef} items={CONTEXT_MENU_ITEMS} />
-      <CustomMenu
-        customButton={<IconButton variant="tertiary" size="lg" icon={MoreHorizontal} />}
-        placement="bottom-end"
-        closeOnSelect
-        maxHeight="lg"
-        buttonClassName={customClassName}
-      >
+      <CustomMenu ellipsis placement="bottom-end" closeOnSelect maxHeight="lg" buttonClassName={customClassName}>
         {MENU_ITEMS.map((item) => {
           if (item.shouldRender === false) return null;
           return (

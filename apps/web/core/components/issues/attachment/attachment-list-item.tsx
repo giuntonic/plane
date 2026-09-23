@@ -53,11 +53,21 @@ export const IssueAttachmentsListItem = observer(function IssueAttachmentsListIt
 
   return (
     <>
-      <button
+      {/* Not a <button>: it contains other interactive controls (the ellipsis menu, tooltips), and nesting those inside a real button is invalid HTML. */}
+      <div
+        // oxlint-disable-next-line jsx_a11y/prefer-tag-over-role
+        role="button"
+        tabIndex={0}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
           window.open(fileURL, "_blank");
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            window.open(fileURL, "_blank");
+          }
         }}
       >
         <div className="group flex h-11 items-center justify-between gap-3 pr-2 pl-9 hover:bg-surface-2">
@@ -100,7 +110,7 @@ export const IssueAttachmentsListItem = observer(function IssueAttachmentsListIt
             </CustomMenu>
           </div>
         </div>
-      </button>
+      </div>
     </>
   );
 });

@@ -53,8 +53,13 @@ interface AppSidebarButtonItemProps {
 // STYLES
 // ============================================================================
 
+// Exposed for callers that render AppSidebarItem's icon inside their own
+// interactive element (e.g. a CustomMenu customButton) and so cannot use
+// AppSidebarItem's "button"/"link" variants without nesting interactive tags.
+export const APP_SIDEBAR_ITEM_BASE_CLASSNAME = "group flex flex-col gap-0.5 items-center justify-center text-tertiary";
+
 const styles = {
-  base: "group flex flex-col gap-0.5 items-center justify-center text-tertiary",
+  base: APP_SIDEBAR_ITEM_BASE_CLASSNAME,
   icon: "flex items-center justify-center gap-2 size-8 rounded-md text-tertiary",
   iconActive: "bg-layer-transparent-selected text-secondary !text-icon-primary",
   iconInactive: "group-hover:text-icon-secondary group-hover:bg-layer-transparent-hover !text-icon-tertiary",

@@ -65,7 +65,12 @@ export function EmojiReactionPicker(props: EmojiReactionPickerProps) {
 
   return (
     <Popover open={isOpen} onOpenChange={handleToggle}>
-      <Popover.Button className={cn("outline-none", buttonClassName)} disabled={disabled}>
+      <Popover.Button
+        render={<div />}
+        nativeButton={false}
+        className={cn("outline-none", buttonClassName)}
+        disabled={disabled}
+      >
         {label}
       </Popover.Button>
       <Popover.Panel

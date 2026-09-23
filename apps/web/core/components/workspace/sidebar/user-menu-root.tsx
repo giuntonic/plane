@@ -16,7 +16,7 @@ import { Avatar, CustomMenu } from "@plane/ui";
 import { getFileURL } from "@plane/utils";
 // components
 import { CoverImage } from "@/components/common/cover-image";
-import { AppSidebarItem } from "@/components/sidebar/sidebar-item";
+import { APP_SIDEBAR_ITEM_BASE_CLASSNAME, AppSidebarItem } from "@/components/sidebar/sidebar-item";
 // hooks
 import { useAppTheme } from "@/hooks/store/use-app-theme";
 import { useCommandPalette } from "@/hooks/store/use-command-palette";
@@ -57,21 +57,19 @@ export const UserMenuRoot = observer(function UserMenuRoot() {
     <CustomMenu
       className="flex items-center"
       customButton={
-        <AppSidebarItem
-          variant="button"
-          item={{
-            icon: (
-              <Avatar
-                name={currentUser?.display_name}
-                src={getFileURL(currentUser?.avatar_url ?? "")}
-                size={20}
-                shape="circle"
-              />
-            ),
-            isActive: isUserMenuOpen,
-          }}
+        <AppSidebarItem.Icon
+          icon={
+            <Avatar
+              name={currentUser?.display_name}
+              src={getFileURL(currentUser?.avatar_url ?? "")}
+              size={20}
+              shape="circle"
+            />
+          }
+          highlight={isUserMenuOpen}
         />
       }
+      customButtonClassName={APP_SIDEBAR_ITEM_BASE_CLASSNAME}
       menuButtonOnClick={() => !isUserMenuOpen && setIsUserMenuOpen(true)}
       onMenuClose={() => setIsUserMenuOpen(false)}
       placement="bottom-end"

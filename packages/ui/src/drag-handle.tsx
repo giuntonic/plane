@@ -9,7 +9,7 @@ import React, { forwardRef } from "react";
 // helpers
 import { cn } from "./utils";
 
-interface IDragHandle {
+interface IDragHandle extends Omit<React.ComponentPropsWithoutRef<"button">, "className" | "disabled" | "type"> {
   className?: string;
   disabled?: boolean;
 }
@@ -18,7 +18,7 @@ export const DragHandle = forwardRef(function DragHandle(
   props: IDragHandle,
   ref: React.ForwardedRef<HTMLButtonElement | null>
 ) {
-  const { className, disabled = false } = props;
+  const { className, disabled = false, onContextMenu, ...rest } = props;
 
   if (disabled) {
     return <div className="h-[18px] w-[14px]" />;
@@ -31,8 +31,10 @@ export const DragHandle = forwardRef(function DragHandle(
       onContextMenu={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        onContextMenu?.(e);
       }}
       ref={ref}
+      {...rest}
     >
       <MoreVertical className="h-3.5 w-3.5 stroke-placeholder" />
       <MoreVertical className="-ml-5 h-3.5 w-3.5 stroke-placeholder" />

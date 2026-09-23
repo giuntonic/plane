@@ -48,8 +48,15 @@ export function Popover(props: TPopover) {
   return (
     <HeadlessReactPopover className={cn("relative flex h-full w-full items-center justify-center", popoverClassName)}>
       <div ref={setReferenceElement} className={cn("w-full", buttonRefClassName)}>
+        {/* Rendered as a div, not a <button>: a caller-supplied `button` prop may already
+            render its own <button>, and nesting one inside another is invalid HTML. Headless
+            UI still manages click/keyboard behavior for this trigger regardless of the tag. */}
         <HeadlessReactPopover.Button
-          ref={popoverButtonRef as Ref<HTMLButtonElement>}
+          as="div"
+          // oxlint-disable-next-line jsx_a11y/prefer-tag-over-role
+          role="button"
+          tabIndex={disabled ? -1 : 0}
+          ref={popoverButtonRef as unknown as Ref<HTMLDivElement>}
           className={cn(
             {
               "flex h-6 w-6 items-center justify-center rounded-sm bg-surface-2 text-14 transition-all hover:bg-layer-1":

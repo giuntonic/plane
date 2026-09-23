@@ -93,18 +93,25 @@ export const IssueAttachmentActionButton = observer(function IssueAttachmentActi
     multiple: false,
     disabled: isLoading || disabled,
   });
+  const { onClick: onDropzoneClick, ...rootProps } = getRootProps();
 
   return (
+    // Not a <button>: some callers (the "Attachments" section header) render this inside
+    // another button (a Disclosure toggle), and nesting buttons is invalid HTML.
+    // react-dropzone's getRootProps() already wires up onKeyDown for this role="button" div.
+    // oxlint-disable-next-line jsx_a11y/click-events-have-key-events
     <div
+      {...rootProps}
+      // oxlint-disable-next-line jsx_a11y/prefer-tag-over-role
+      role="button"
+      tabIndex={disabled ? -1 : 0}
       onClick={(e) => {
-        // TODO: Remove extra div and move event propagation to button
         e.stopPropagation();
+        onDropzoneClick?.(e);
       }}
     >
-      <button {...getRootProps()} type="button" disabled={disabled}>
-        <input {...getInputProps()} />
-        {customButton ? customButton : <PlusIcon className="h-4 w-4" />}
-      </button>
+      <input {...getInputProps()} />
+      {customButton ? customButton : <PlusIcon className="h-4 w-4" />}
     </div>
   );
 });

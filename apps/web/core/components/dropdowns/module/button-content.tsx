@@ -91,16 +91,29 @@ export function ModuleButtonContent(props: ModuleButtonContentProps) {
                       isMobile={isMobile}
                       renderByDefault={false}
                     >
-                      <button
-                        type="button"
+                      {/* Not a <button>: this sits inside the dropdown's own trigger button, and nesting
+                          buttons is invalid HTML. */}
+                      <div
+                        // oxlint-disable-next-line jsx_a11y/prefer-tag-over-role
+                        role="button"
+                        tabIndex={0}
                         className="flex-shrink-0"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           const newModuleIds = value.filter((m) => m !== moduleId);
                           onChange(newModuleIds);
                         }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const newModuleIds = value.filter((m) => m !== moduleId);
+                            onChange(newModuleIds);
+                          }
+                        }}
                       >
                         <CloseIcon className="h-2.5 w-2.5 text-tertiary hover:text-danger-primary" />
-                      </button>
+                      </div>
                     </Tooltip>
                   )}
                 </div>
