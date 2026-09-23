@@ -6,7 +6,8 @@
 
 import React from "react";
 // helpers
-import { Button } from "@plane/propel/button";
+import { getButtonStyling } from "@plane/propel/button";
+import { cn } from "@plane/utils";
 
 type Props = {
   icon: React.ReactNode;
@@ -14,12 +15,15 @@ type Props = {
   disabled?: boolean;
 };
 
+// Renders as a plain div, not a button: every caller already places this
+// inside its own interactive wrapper (a CustomMenu trigger or a dropzone),
+// so a nested <button> here would be invalid HTML and break SSR hydration.
 export function IssueDetailWidgetButton(props: Props) {
   const { icon, title, disabled = false } = props;
   return (
-    <Button variant={"secondary"} disabled={disabled} size="lg">
-      {icon && icon}
+    <div className={cn(getButtonStyling("secondary", "lg"), { "pointer-events-none opacity-60": disabled })}>
+      {icon}
       <span className="text-body-xs-medium">{title}</span>
-    </Button>
+    </div>
   );
 }

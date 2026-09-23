@@ -5,7 +5,7 @@
  */
 
 import { useCallback, useMemo } from "react";
-import { AtSign, Briefcase } from "lucide-react";
+import { AtSign, Briefcase, ListChecks } from "lucide-react";
 // plane imports
 import { Logo } from "@plane/propel/emoji-icon-picker";
 import {
@@ -32,12 +32,14 @@ import type {
   IModule,
   IProject,
   TWorkItemFilterProperty,
+  TCustomFieldFilterProperty,
 } from "@plane/types";
 import { Avatar } from "@plane/ui";
 import {
   getAssigneeFilterConfig,
   getCreatedAtFilterConfig,
   getCreatedByFilterConfig,
+  getCustomFieldFilterConfig,
   getCycleFilterConfig,
   getFileURL,
   getLabelFilterConfig,
@@ -54,6 +56,7 @@ import {
   isLoaderReady,
 } from "@plane/utils";
 // store hooks
+import { useCustomField } from "@/hooks/store/use-custom-field";
 import { useCycle } from "@/hooks/store/use-cycle";
 import { useLabel } from "@/hooks/store/use-label";
 import { useMember } from "@/hooks/store/use-member";
@@ -98,6 +101,7 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
   const { getModuleById } = useModule();
   const { getStateById } = useProjectState();
   const { getUserDetails } = useMember();
+  const { getProjectCustomFields } = useCustomField();
   // derived values
   const operatorConfigs = useFiltersOperatorConfigs({ workspaceSlug });
   const filtersToShow = useMemo(() => new Set(allowedFilters), [allowedFilters]);
@@ -362,6 +366,32 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
     [isFilterEnabled, projects, operatorConfigs]
   );
 
+  // custom field filter configs (dropdown / multi-select only — those are the
+  // only types with an option-based filter UI matching this framework's
+  // SINGLE_SELECT/MULTI_SELECT field types)
+  const selectableCustomFields = useMemo(
+    () =>
+      (getProjectCustomFields(projectId) ?? []).filter(
+        (field) => field.field_type === "dropdown" || field.field_type === "multi_select"
+      ),
+    [getProjectCustomFields, projectId]
+  );
+
+  const customFieldFilterConfigs = useMemo(
+    () =>
+      selectableCustomFields.map((field) => {
+        const key: TCustomFieldFilterProperty = `custom_field_${field.id}`;
+        return getCustomFieldFilterConfig<TWorkItemFilterProperty>(key)({
+          isEnabled: true,
+          filterIcon: ListChecks,
+          label: field.name,
+          options: field.options ?? [],
+          ...operatorConfigs,
+        });
+      }),
+    [selectableCustomFields, operatorConfigs]
+  );
+
   return {
     areAllConfigsInitialized,
     configs: [
@@ -380,6 +410,7 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
       updatedAtFilterConfig,
       createdByFilterConfig,
       subscriberFilterConfig,
+      ...customFieldFilterConfigs,
     ],
     configMap: {
       project_id: projectFilterConfig,
@@ -397,6 +428,7 @@ export const useWorkItemFiltersConfig = (props: TUseWorkItemFiltersConfigProps):
       target_date: targetDateFilterConfig,
       created_at: createdAtFilterConfig,
       updated_at: updatedAtFilterConfig,
+      ...Object.fromEntries(customFieldFilterConfigs.map((config) => [config.id, config])),
     },
     isFilterEnabled,
     members: members ?? [],

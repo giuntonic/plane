@@ -13,7 +13,7 @@ import { PageIcon } from "@plane/propel/icons";
 import { CustomMenu } from "@plane/ui";
 // components
 import { ProductUpdatesModal } from "@/components/global";
-import { AppSidebarItem } from "@/components/sidebar/sidebar-item";
+import { APP_SIDEBAR_ITEM_BASE_CLASSNAME, AppSidebarItem } from "@/components/sidebar/sidebar-item";
 import { PlaneVersionNumber } from "@/components/global/version-number";
 // hooks
 import { usePowerK } from "@/hooks/store/use-power-k";
@@ -31,16 +31,8 @@ export const HelpMenuRoot = observer(function HelpMenuRoot() {
       <ProductUpdatesModal isOpen={isProductUpdatesModalOpen} handleClose={() => setProductUpdatesModalOpen(false)} />
 
       <CustomMenu
-        customButton={
-          <AppSidebarItem
-            variant="button"
-            item={{
-              icon: <HelpCircle className="size-5" />,
-              isActive: isNeedHelpOpen,
-            }}
-          />
-        }
-        // customButtonClassName="relative grid place-items-center rounded-md p-1.5 outline-none"
+        customButton={<AppSidebarItem.Icon icon={<HelpCircle className="size-5" />} highlight={isNeedHelpOpen} />}
+        customButtonClassName={APP_SIDEBAR_ITEM_BASE_CLASSNAME}
         menuButtonOnClick={() => !isNeedHelpOpen && setIsNeedHelpOpen(true)}
         onMenuClose={() => setIsNeedHelpOpen(false)}
         placement="bottom-end"

@@ -4,6 +4,7 @@
 
 # Python imports
 import json
+import re
 
 # Django imports
 from django.db.models import Q
@@ -457,3 +458,41 @@ class ComplexFilterBackend(filters.BaseFilterBackend):
 
     def _is_scalar(self, value):
         return value is None or isinstance(value, (str, int, float, bool))
+
+
+class IssueComplexFilterBackend(ComplexFilterBackend):
+    """
+    Complex filter backend for the Issue endpoints, extended to support filtering
+    by custom field values.
+
+    Custom fields are per-project and dynamic, so their ids can't be declared as
+    static fields on IssueFilterSet the way "priority" or "label_id" are. Instead,
+    every "custom_field_<uuid>[__lookup]" leaf key is folded into a single JSON
+    payload on the synthetic "custom_field_conditions" field, which IssueFilterSet
+    knows how to unpack (see IssueFilterSet.filter_custom_field_conditions).
+    """
+
+    _custom_field_key_re = re.compile(r"^custom_field_(?P<field_id>[0-9a-fA-F-]{36})(__(?P<lookup>\w+))?$")
+
+    def _transform_field_name_for_validation(self, field_name):
+        if self._custom_field_key_re.match(field_name):
+            return "custom_field_conditions"
+        return field_name
+
+    def _preprocess_leaf_conditions(self, leaf_conditions, view, queryset):
+        custom_field_payload = {}
+        remaining_conditions = {}
+
+        for key, value in leaf_conditions.items():
+            match = self._custom_field_key_re.match(key)
+            if not match:
+                remaining_conditions[key] = value
+                continue
+            field_id = match.group("field_id")
+            lookup = match.group("lookup") or "exact"
+            custom_field_payload.setdefault(field_id, {})[lookup] = value
+
+        if custom_field_payload:
+            remaining_conditions["custom_field_conditions"] = json.dumps(custom_field_payload)
+
+        return remaining_conditions

@@ -189,6 +189,11 @@ from .estimate.base import (
     BulkEstimatePointEndpoint,
     EstimatePointEndpoint,
 )
+from .custom_field.base import (
+    CustomFieldViewSet,
+    CustomFieldOptionViewSet,
+    IssueCustomFieldValueViewSet,
+)
 
 from .intake.base import (
     IntakeViewSet,
@@ -216,6 +221,9 @@ from .analytic.project_analytics import (
     ProjectAdvanceAnalyticsStatsEndpoint,
     ProjectAdvanceAnalyticsChartEndpoint,
 )
+
+from .dashboard.base import DashboardViewSet, DashboardWidgetViewSet
+from .dashboard.chart import DashboardWidgetChartEndpoint
 
 from .notification.base import (
     NotificationViewSet,

@@ -176,6 +176,32 @@
       "current": "Current estimate system",
       "select": "Select an estimate system"
     },
+    "custom_fields": {
+      "heading": "Custom fields",
+      "description": "Define custom properties to capture information that's specific to your team's workflow.",
+      "add_field": "Add field",
+      "name_placeholder": "Field name",
+      "is_required": "Required",
+      "required_badge": "Required",
+      "add_option_placeholder": "Add option",
+      "empty_state": "No custom fields yet. Add one to start capturing extra information on your work items.",
+      "created": "Custom field created successfully",
+      "types": {
+        "text": "Text",
+        "number": "Number",
+        "date": "Date",
+        "checkbox": "Checkbox",
+        "dropdown": "Dropdown",
+        "multi_select": "Multi-select"
+      },
+      "errors": {
+        "name_required": "Field name is required",
+        "create_failed": "Failed to create the custom field",
+        "delete_failed": "Failed to delete the custom field",
+        "option_create_failed": "Failed to add the option",
+        "option_delete_failed": "Failed to delete the option"
+      }
+    },
     "automations": {
       "label": "Automations",
       "heading": "Automations",

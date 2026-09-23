@@ -45,6 +45,11 @@ from .project import (
     ProjectMemberRoleSerializer,
     ProjectMemberPreferenceSerializer,
 )
+from .custom_field import (
+    CustomFieldSerializer,
+    CustomFieldOptionSerializer,
+    IssueCustomFieldValueSerializer,
+)
 from .state import StateSerializer, StateLiteSerializer
 from .view import IssueViewSerializer, ViewIssueListSerializer
 from .cycle import (
@@ -121,6 +126,7 @@ from .intake import (
 )
 
 from .analytic import AnalyticViewSerializer
+from .dashboard import DashboardSerializer, DashboardWidgetSerializer
 
 from .notification import NotificationSerializer, UserNotificationPreferenceSerializer
 
