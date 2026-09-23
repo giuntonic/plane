@@ -72,6 +72,28 @@ export const coreRoutes: RouteConfigEntry[] = [
           route(":workspaceSlug/analytics/:tabId", "./(all)/[workspaceSlug]/(projects)/analytics/[tabId]/page.tsx"),
         ]),
 
+        // Dashboards
+        layout("./(all)/[workspaceSlug]/(projects)/dashboards/(list)/layout.tsx", [
+          route(":workspaceSlug/dashboards", "./(all)/[workspaceSlug]/(projects)/dashboards/(list)/page.tsx"),
+        ]),
+        layout("./(all)/[workspaceSlug]/(projects)/dashboards/[dashboardId]/layout.tsx", [
+          route(
+            ":workspaceSlug/dashboards/:dashboardId",
+            "./(all)/[workspaceSlug]/(projects)/dashboards/[dashboardId]/page.tsx"
+          ),
+        ]),
+
+        // My Dashboards (personal)
+        layout("./(all)/[workspaceSlug]/(projects)/my-dashboards/(list)/layout.tsx", [
+          route(":workspaceSlug/my-dashboards", "./(all)/[workspaceSlug]/(projects)/my-dashboards/(list)/page.tsx"),
+        ]),
+        layout("./(all)/[workspaceSlug]/(projects)/my-dashboards/[dashboardId]/layout.tsx", [
+          route(
+            ":workspaceSlug/my-dashboards/:dashboardId",
+            "./(all)/[workspaceSlug]/(projects)/my-dashboards/[dashboardId]/page.tsx"
+          ),
+        ]),
+
         // Browse
         layout("./(all)/[workspaceSlug]/(projects)/browse/[workItem]/layout.tsx", [
           route(":workspaceSlug/browse/:workItem", "./(all)/[workspaceSlug]/(projects)/browse/[workItem]/page.tsx"),
@@ -216,6 +238,24 @@ export const coreRoutes: RouteConfigEntry[] = [
               "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/intake/page.tsx"
             ),
           ]),
+
+          // Dashboard list
+          layout("./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/(list)/layout.tsx", [
+            route(
+              ":workspaceSlug/projects/:projectId/dashboard",
+              "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/(list)/page.tsx"
+            ),
+          ]),
+          // Dashboard detail
+          layout(
+            "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/[dashboardId]/layout.tsx",
+            [
+              route(
+                ":workspaceSlug/projects/:projectId/dashboard/:dashboardId",
+                "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/[dashboardId]/page.tsx"
+              ),
+            ]
+          ),
         ]),
 
         // Project Archives - Issues, Cycles, Modules

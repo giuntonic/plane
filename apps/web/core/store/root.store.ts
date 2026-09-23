@@ -28,6 +28,8 @@ import type { ICycleFilterStore } from "./cycle_filter.store";
 import { CycleFilterStore } from "./cycle_filter.store";
 import type { IDashboardStore } from "./dashboard.store";
 import { DashboardStore } from "./dashboard.store";
+import type { IDashboardsStore } from "./dashboards.store";
+import { DashboardsStore } from "./dashboards.store";
 import type { IEditorAssetStore } from "./editor/asset.store";
 import { EditorAssetStore } from "./editor/asset.store";
 import type { IProjectEstimateStore } from "./estimates/project-estimate.store";
@@ -86,6 +88,7 @@ export class CoreRootStore {
   state: IStateStore;
   label: ILabelStore;
   dashboard: IDashboardStore;
+  dashboards: IDashboardsStore;
   analytics: IAnalyticsStore;
   projectPages: IProjectPageStore;
   router: IRouterStore;
@@ -123,6 +126,7 @@ export class CoreRootStore {
     this.state = new StateStore(this);
     this.label = new LabelStore(this);
     this.dashboard = new DashboardStore(this);
+    this.dashboards = new DashboardsStore(this);
     this.multipleSelect = new MultipleSelectStore();
     this.projectInbox = new ProjectInboxStore(this);
     this.projectPages = new ProjectPageStore(this);
@@ -158,6 +162,7 @@ export class CoreRootStore {
     this.state = new StateStore(this);
     this.label = new LabelStore(this);
     this.dashboard = new DashboardStore(this);
+    this.dashboards = new DashboardsStore(this);
     this.projectInbox = new ProjectInboxStore(this);
     this.projectPages = new ProjectPageStore(this);
     this.multipleSelect = new MultipleSelectStore();

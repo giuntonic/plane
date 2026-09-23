@@ -5,3 +5,4 @@
  */
 
 export * from "./dashboard.service";
+export * from "./dashboard-widget.service";
