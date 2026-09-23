@@ -58,7 +58,6 @@ export const getCustomFieldFilterConfig =
   (params: TCreateCustomFieldFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: params.label,
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([

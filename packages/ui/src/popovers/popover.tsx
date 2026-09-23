@@ -56,7 +56,7 @@ export function Popover(props: TPopover) {
           // oxlint-disable-next-line jsx_a11y/prefer-tag-over-role
           role="button"
           tabIndex={disabled ? -1 : 0}
-          ref={popoverButtonRef as unknown as Ref<HTMLDivElement>}
+          ref={popoverButtonRef as Ref<HTMLButtonElement>}
           className={cn(
             {
               "flex h-6 w-6 items-center justify-center rounded-sm bg-surface-2 text-14 transition-all hover:bg-layer-1":

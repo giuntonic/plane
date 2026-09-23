@@ -5,7 +5,7 @@
  */
 
 import { set, sortBy } from "lodash-es";
-import { action, computed, makeObservable, observable, runInAction } from "mobx";
+import { action, makeObservable, observable, runInAction } from "mobx";
 import { computedFn } from "mobx-utils";
 // types
 import type {
@@ -42,11 +42,7 @@ export interface ICustomFieldStore {
     issueId: string
   ) => Promise<IIssueCustomFieldValue[]>;
   // crud actions
-  createCustomField: (
-    workspaceSlug: string,
-    projectId: string,
-    data: TCustomFieldFormData
-  ) => Promise<ICustomField>;
+  createCustomField: (workspaceSlug: string, projectId: string, data: TCustomFieldFormData) => Promise<ICustomField>;
   updateCustomField: (
     workspaceSlug: string,
     projectId: string,
@@ -215,10 +211,9 @@ export class CustomFieldStore implements ICustomFieldStore {
    */
   deleteCustomField = async (workspaceSlug: string, projectId: string, customFieldId: string) => {
     if (!this.fieldMap[customFieldId]) return;
-    await this.customFieldService.deleteCustomField(workspaceSlug, projectId, customFieldId).then(() => {
-      runInAction(() => {
-        delete this.fieldMap[customFieldId];
-      });
+    await this.customFieldService.deleteCustomField(workspaceSlug, projectId, customFieldId);
+    runInAction(() => {
+      delete this.fieldMap[customFieldId];
     });
   };
 
@@ -259,15 +254,15 @@ export class CustomFieldStore implements ICustomFieldStore {
     customFieldId: string,
     data: Partial<Pick<ICustomFieldOption, "name" | "sort_order">>
   ) =>
-    await this.customFieldService.createCustomFieldOption(workspaceSlug, projectId, customFieldId, data).then(
-      (response) => {
+    await this.customFieldService
+      .createCustomFieldOption(workspaceSlug, projectId, customFieldId, data)
+      .then((response) => {
         runInAction(() => {
           const field = this.fieldMap[customFieldId];
           if (field) set(this.fieldMap, [customFieldId, "options"], [...(field.options ?? []), response]);
         });
         return response;
-      }
-    );
+      });
 
   /**
    * Removes a dropdown option from a custom field
@@ -278,19 +273,16 @@ export class CustomFieldStore implements ICustomFieldStore {
     customFieldId: string,
     optionId: string
   ) => {
-    await this.customFieldService.deleteCustomFieldOption(workspaceSlug, projectId, customFieldId, optionId).then(
-      () => {
-        runInAction(() => {
-          const field = this.fieldMap[customFieldId];
-          if (field)
-            set(
-              this.fieldMap,
-              [customFieldId, "options"],
-              (field.options ?? []).filter((option) => option.id !== optionId)
-            );
-        });
-      }
-    );
+    await this.customFieldService.deleteCustomFieldOption(workspaceSlug, projectId, customFieldId, optionId);
+    runInAction(() => {
+      const field = this.fieldMap[customFieldId];
+      if (field)
+        set(
+          this.fieldMap,
+          [customFieldId, "options"],
+          (field.options ?? []).filter((option) => option.id !== optionId)
+        );
+    });
   };
 
   /**

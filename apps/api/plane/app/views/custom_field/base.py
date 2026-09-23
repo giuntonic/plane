@@ -24,7 +24,10 @@ class CustomFieldViewSet(BaseViewSet):
 
     def get_queryset(self):
         return (
-            CustomField.objects.filter(workspace__slug=self.kwargs.get("slug"), project_id=self.kwargs.get("project_id"))
+            CustomField.objects.filter(
+                workspace__slug=self.kwargs.get("slug"),
+                project_id=self.kwargs.get("project_id"),
+            )
             .prefetch_related("options")
             .select_related("workspace", "project")
         )

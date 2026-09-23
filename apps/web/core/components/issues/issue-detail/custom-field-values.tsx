@@ -28,13 +28,11 @@ export const IssueCustomFieldValuesList = observer(function IssueCustomFieldValu
   const { workspaceSlug, projectId, issueId, disabled } = props;
   const { getProjectCustomFields, fetchProjectCustomFields, fetchIssueCustomFieldValues } = useCustomField();
 
-  useSWR(
-    workspaceSlug && projectId ? `PROJECT_CUSTOM_FIELDS_${workspaceSlug}_${projectId}` : null,
-    () => fetchProjectCustomFields(workspaceSlug, projectId)
+  useSWR(workspaceSlug && projectId ? `PROJECT_CUSTOM_FIELDS_${workspaceSlug}_${projectId}` : null, () =>
+    fetchProjectCustomFields(workspaceSlug, projectId)
   );
-  useSWR(
-    workspaceSlug && projectId && issueId ? `ISSUE_CUSTOM_FIELD_VALUES_${issueId}` : null,
-    () => fetchIssueCustomFieldValues(workspaceSlug, projectId, issueId)
+  useSWR(workspaceSlug && projectId && issueId ? `ISSUE_CUSTOM_FIELD_VALUES_${issueId}` : null, () =>
+    fetchIssueCustomFieldValues(workspaceSlug, projectId, issueId)
   );
 
   const customFields = getProjectCustomFields(projectId);

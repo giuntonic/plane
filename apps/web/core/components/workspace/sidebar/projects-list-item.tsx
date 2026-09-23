@@ -86,7 +86,7 @@ export const SidebarProjectsListItem = observer(function SidebarProjectsListItem
   const isProjectListOpen = getIsProjectListOpen(projectId);
   const [instruction, setInstruction] = useState<"DRAG_OVER" | "DRAG_BELOW" | undefined>(undefined);
   // refs
-  const actionSectionRef = useRef<HTMLButtonElement | null>(null);
+  const actionSectionRef = useRef<HTMLDivElement | null>(null);
   const projectRef = useRef<HTMLDivElement | null>(null);
   const dragHandleRef = useRef<HTMLButtonElement | null>(null);
   // router

@@ -33,9 +33,8 @@ export const CustomFieldsRoot = observer(function CustomFieldsRoot(props: Props)
   const { getProjectCustomFields, fetchProjectCustomFields, updateCustomFieldPosition } = useCustomField();
   const [isCreating, setIsCreating] = useState(false);
 
-  useSWR(
-    workspaceSlug && projectId ? `PROJECT_CUSTOM_FIELDS_${workspaceSlug}_${projectId}` : null,
-    () => fetchProjectCustomFields(workspaceSlug, projectId)
+  useSWR(workspaceSlug && projectId ? `PROJECT_CUSTOM_FIELDS_${workspaceSlug}_${projectId}` : null, () =>
+    fetchProjectCustomFields(workspaceSlug, projectId)
   );
 
   const customFields = getProjectCustomFields(projectId);
