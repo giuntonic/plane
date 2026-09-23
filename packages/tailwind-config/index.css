@@ -21,6 +21,8 @@
  */
 @import "@makeplane/propel/styles/variables";
 @import "@makeplane/propel/styles/animations";
+/* Pespo: brand colour override, must stay below the propel variables import */
+@import "./pespo-brand.css";
 @source "../**/*.{ts,tsx}";
 
 * {

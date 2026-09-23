@@ -7,6 +7,7 @@
 import { useState } from "react";
 import { concat, uniq } from "lodash-es";
 import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 import { PAST_DURATION_FILTER_OPTIONS } from "@plane/constants";
 import type { TInboxIssueFilterDateKeys } from "@plane/types";
 // components
@@ -28,6 +29,7 @@ const isDate = (date: string) => {
 };
 
 export const FilterDate = observer(function FilterDate(props: Props) {
+  const { t } = useTranslation();
   const { filterKey, label, searchQuery } = props;
   // hooks
   const { inboxFilters, handleInboxIssueFilters } = useProjectInbox();
@@ -93,7 +95,7 @@ export const FilterDate = observer(function FilterDate(props: Props) {
               />
             </>
           ) : (
-            <p className="text-11 text-placeholder italic">No matches found</p>
+            <p className="text-11 text-placeholder italic">{t("search.no_matches_found")}</p>
           )}
         </div>
       )}

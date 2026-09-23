@@ -18,6 +18,8 @@ import type {
   TIssuesResponse,
   TUserProfile,
   IEmailCheckResponse,
+  TGoogleCalendarStatus,
+  TGoogleCalendarEvent,
 } from "@plane/types";
 import { APIService } from "@/services/api.service";
 // types
@@ -284,6 +286,49 @@ export class UserService extends APIService {
 
   async verifyEmailCode(data: { email: string; code: string }): Promise<any> {
     return this.patch("/api/users/me/email/", data)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async googleCalendarStatus(): Promise<TGoogleCalendarStatus> {
+    return this.get("/api/users/me/google-calendar/status/")
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async updateGoogleCalendarPreferences(data: {
+    sync_enabled?: boolean;
+    overlay_calendar_ids?: string[];
+  }): Promise<{ sync_enabled: boolean; overlay_calendar_ids: string[] }> {
+    return this.patch("/api/users/me/google-calendar/preferences/", data)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async disconnectGoogleCalendar(): Promise<void> {
+    return this.delete("/api/users/me/google-calendar/disconnect/")
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async syncGoogleCalendarNow(): Promise<{ queued: boolean }> {
+    return this.post("/api/users/me/google-calendar/sync-now/")
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async googleCalendarEvents(after: string, before: string): Promise<TGoogleCalendarEvent[]> {
+    return this.get("/api/users/me/google-calendar/events/", { params: { after, before } })
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;

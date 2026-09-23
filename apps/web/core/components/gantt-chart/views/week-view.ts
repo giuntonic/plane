@@ -5,9 +5,10 @@
  */
 
 //
+import { i18nInstance } from "@plane/i18n";
 import type { ChartDataType } from "@plane/types";
 import { EStartOfTheWeek } from "@plane/types";
-import { months, generateWeeks } from "../data";
+import { months, generateWeeks, translateMonthShort, translateDayShort } from "../data";
 import { getNumberOfDaysBetweenTwoDates, getWeekNumberByDate } from "./helpers";
 export interface IDayBlock {
   date: Date;
@@ -161,12 +162,12 @@ export const getWeeksBetweenTwoDates = (
       weekNumber,
       weekData: {
         shortTitle: `w${weekNumber}`,
-        title: `Week ${weekNumber}`,
+        title: `${i18nInstance.t("common.week")} ${weekNumber}`,
       },
       title:
         monthAtStartOfTheWeek === monthAtEndOfTheWeek
-          ? `${months[monthAtStartOfTheWeek].abbreviation} ${yearAtStartOfTheWeek}`
-          : `${months[monthAtStartOfTheWeek].abbreviation} ${yearAtStartOfTheWeek} - ${months[monthAtEndOfTheWeek].abbreviation} ${yearAtEndOfTheWeek}`,
+          ? `${translateMonthShort(months[monthAtStartOfTheWeek].shortTitle)} ${yearAtStartOfTheWeek}`
+          : `${translateMonthShort(months[monthAtStartOfTheWeek].shortTitle)} ${yearAtStartOfTheWeek} - ${translateMonthShort(months[monthAtEndOfTheWeek].shortTitle)} ${yearAtEndOfTheWeek}`,
       startMonth: monthAtStartOfTheWeek,
       startYear: yearAtStartOfTheWeek,
       endMonth: monthAtEndOfTheWeek,
@@ -198,7 +199,7 @@ const populateDaysForWeek = (startDate: Date, startOfWeek: EStartOfTheWeek = ESt
       date: new Date(currentDate),
       day: currentDate.getDay(),
       dayData: weekDays[i],
-      title: `${weekDays[i].abbreviation} ${currentDate.getDate()}`,
+      title: `${translateDayShort(weekDays[i].shortTitle)} ${currentDate.getDate()}`,
       today: today.setHours(0, 0, 0, 0) == currentDate.setHours(0, 0, 0, 0),
     });
     currentDate.setDate(currentDate.getDate() + 1);

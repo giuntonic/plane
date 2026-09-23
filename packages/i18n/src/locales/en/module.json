@@ -2,6 +2,12 @@
   "module": {
     "label": "{count, plural, one {Module} other {Modules}}",
     "no_module": "No module",
-    "select": "Add modules"
+    "select": "Add modules",
+    "no_matching_modules": {
+      "title": "No matching modules",
+      "remove_filters": "Remove the filters to see all modules",
+      "remove_search": "Remove the search criteria to see all modules"
+    },
+    "could_not_be_updated": "Module could not be updated. Please try again."
   }
 }

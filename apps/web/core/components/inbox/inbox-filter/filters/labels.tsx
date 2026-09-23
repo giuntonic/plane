@@ -6,6 +6,7 @@
 
 import { useState } from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 import type { IIssueLabel } from "@plane/types";
 import { Loader } from "@plane/ui";
 // components
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export const FilterLabels = observer(function FilterLabels(props: Props) {
+  const { t } = useTranslation();
   const { labels, searchQuery } = props;
 
   const [itemsToRender, setItemsToRender] = useState(5);
@@ -73,12 +75,12 @@ export const FilterLabels = observer(function FilterLabels(props: Props) {
                     className="ml-8 text-11 font-medium text-accent-primary"
                     onClick={handleViewToggle}
                   >
-                    {itemsToRender === filteredOptions.length ? "View less" : "View all"}
+                    {itemsToRender === filteredOptions.length ? t("view_less") : t("view_all")}
                   </button>
                 )}
               </>
             ) : (
-              <p className="text-11 text-placeholder italic">No matches found</p>
+              <p className="text-11 text-placeholder italic">{t("search.no_matches_found")}</p>
             )
           ) : (
             <Loader className="space-y-2">

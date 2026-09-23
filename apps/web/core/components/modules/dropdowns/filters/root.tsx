@@ -8,6 +8,7 @@ import { useState } from "react";
 import { observer } from "mobx-react";
 import type { TModuleStatus } from "@plane/propel/icons";
 // plane imports
+import { useTranslation } from "@plane/i18n";
 import { CloseIcon, SearchIcon } from "@plane/propel/icons";
 import type { TModuleDisplayFilters, TModuleFilters } from "@plane/types";
 // components
@@ -38,6 +39,7 @@ export const ModuleFiltersSelection = observer(function ModuleFiltersSelection(p
   const [filtersSearchQuery, setFiltersSearchQuery] = useState("");
   // store
   const { isMobile } = usePlatformOS();
+  const { t } = useTranslation();
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">
@@ -47,7 +49,7 @@ export const ModuleFiltersSelection = observer(function ModuleFiltersSelection(p
           <input
             type="text"
             className="w-full bg-surface-2 outline-none placeholder:text-placeholder"
-            placeholder="Search"
+            placeholder={t("search")}
             value={filtersSearchQuery}
             onChange={(e) => setFiltersSearchQuery(e.target.value)}
             autoFocus={!isMobile}

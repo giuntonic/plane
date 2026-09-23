@@ -3,6 +3,7 @@
     "label": "{count, plural, one {Work item} other {Work items}}",
     "all": "All Work items",
     "edit": "Edit work item",
+    "could_not_be_updated": "{entity} could not be updated. Please try again.",
     "title": {
       "label": "Work item title",
       "required": "Work item title is required."
@@ -266,7 +267,9 @@
       "click_to_downvote": "Click to downvote",
       "click_to_view_upvotes": "Click to view upvotes",
       "click_to_view_downvotes": "Click to view downvotes"
-    }
+    },
+    "create_work_item": "Create work item",
+    "add_existing_work_item": "Add an existing work item"
   },
   "sub_work_item": {
     "update": {
@@ -309,6 +312,10 @@
     }
   },
   "bulk_operations": {
+    "upgrade_banner": {
+      "message": "Change state, priority, and more for several work items at once. Save three minutes on an average per operation.",
+      "cta": "Upgrade to One"
+    },
     "error_details": {
       "invalid_archive_state_group": {
         "title": "Unable to archive work items",
@@ -422,5 +429,11 @@
       "label": "Epic Title",
       "required": "Epic title is required."
     }
+  },
+  "bulk_delete_modal": {
+    "select_at_least_one": "Please select at least one work item.",
+    "deleted_successfully": "Work items deleted successfully!",
+    "select_to_delete": "Select work items to delete",
+    "delete_selected": "Delete selected work items"
   }
 }

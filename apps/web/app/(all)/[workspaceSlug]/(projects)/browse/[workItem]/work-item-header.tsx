@@ -7,6 +7,7 @@
 import React from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
+import { useTranslation } from "@plane/i18n";
 // plane ui
 import { WorkItemsIcon } from "@plane/propel/icons";
 import { Breadcrumbs, Header } from "@plane/ui";
@@ -29,6 +30,7 @@ export const WorkItemDetailsHeader = observer(function WorkItemDetailsHeader() {
   const {
     issue: { getIssueById, getIssueIdByIdentifier },
   } = useIssueDetail();
+  const { t } = useTranslation();
   // derived values
   const issueId = getIssueIdByIdentifier(workItem?.toString());
   const issueDetails = issueId ? getIssueById(issueId.toString()) : undefined;
@@ -44,7 +46,7 @@ export const WorkItemDetailsHeader = observer(function WorkItemDetailsHeader() {
           <Breadcrumbs.Item
             component={
               <BreadcrumbLink
-                label="Work Items"
+                label={t("work_items")}
                 href={`/${workspaceSlug}/projects/${projectId}/issues/`}
                 icon={<WorkItemsIcon className="h-4 w-4 text-tertiary" />}
               />

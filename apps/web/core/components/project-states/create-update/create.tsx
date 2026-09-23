@@ -7,6 +7,7 @@
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { STATE_GROUPS } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { IState, TStateGroups, TStateOperationsCallbacks } from "@plane/types";
 // components
@@ -23,6 +24,7 @@ export const StateCreate = observer(function StateCreate(props: TStateCreate) {
 
   // states
   const [loader, setLoader] = useState(false);
+  const { t } = useTranslation();
 
   const onCancel = () => {
     setLoader(false);
@@ -37,8 +39,8 @@ export const StateCreate = observer(function StateCreate(props: TStateCreate) {
 
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "State created successfully.",
+        title: t("toast.success"),
+        message: t("project_settings.states.toasts.created"),
       });
       handleClose();
       return { status: "success" };
@@ -47,15 +49,15 @@ export const StateCreate = observer(function StateCreate(props: TStateCreate) {
       if (errorStatus?.status === 400) {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "State with that name already exists. Please try again with another name.",
+          title: t("toast.error"),
+          message: t("project_settings.states.toasts.already_exists"),
         });
         return { status: "already_exists" };
       } else {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: errorStatus.data.error ?? "State could not be created. Please try again.",
+          title: t("toast.error"),
+          message: errorStatus.data.error ?? t("project_settings.states.toasts.create_error"),
         });
         return { status: "error" };
       }
@@ -68,7 +70,7 @@ export const StateCreate = observer(function StateCreate(props: TStateCreate) {
       onSubmit={onSubmit}
       onCancel={onCancel}
       buttonDisabled={loader}
-      buttonTitle={loader ? `Creating` : `Create`}
+      buttonTitle={loader ? t("common.creating") : t("common.create")}
     />
   );
 });

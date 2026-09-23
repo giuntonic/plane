@@ -17,6 +17,7 @@ from plane.db.models import (
     WorkspaceTheme,
     WorkspaceUserProperties,
     WorkspaceUserLink,
+    WorkspaceUserTask,
     UserRecentVisit,
     Issue,
     Page,
@@ -229,6 +230,13 @@ class WorkspaceUserLinkSerializer(BaseSerializer):
             raise serializers.ValidationError({"error": "URL already exists for this workspace and owner"})
 
         return super().update(instance, validated_data)
+
+
+class WorkspaceUserTaskSerializer(BaseSerializer):
+    class Meta:
+        model = WorkspaceUserTask
+        fields = "__all__"
+        read_only_fields = ["workspace", "owner"]
 
 
 class IssueRecentVisitSerializer(serializers.ModelSerializer):

@@ -47,7 +47,7 @@ export function CreateDashboardModal(props: Props) {
       setToast({ type: TOAST_TYPE.SUCCESS, title: "Success!", message: "Dashboard created successfully." });
       onClose();
       const basePath = projectId
-        ? `/${workspaceSlug}/projects/${projectId}/dashboard`
+        ? `/${workspaceSlug}/projects/${projectId}/dashboards`
         : dashboardType === "home"
           ? `/${workspaceSlug}/my-dashboards`
           : `/${workspaceSlug}/dashboards`;

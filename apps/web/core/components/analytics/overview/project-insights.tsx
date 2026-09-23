@@ -51,6 +51,11 @@ const ProjectInsights = observer(function ProjectInsights() {
       )
   );
 
+  const translatedProjectInsightsData = projectInsightsData?.map((item) => {
+    const translatedName = t(item.key);
+    return { ...item, name: translatedName === item.key ? item.name : translatedName };
+  });
+
   return (
     <AnalyticsSectionWrapper
       title={`${t("workspace_analytics.project_insights")}`}
@@ -72,12 +77,12 @@ const ProjectInsights = observer(function ProjectInsights() {
             <Suspense fallback={<ProjectInsightsLoader />}>
               <RadarChart
                 className="h-[350px] w-full text-accent-primary lg:w-3/5"
-                data={projectInsightsData}
+                data={translatedProjectInsightsData}
                 dataKey="key"
                 radars={[
                   {
                     key: "count",
-                    name: "Count",
+                    name: t("count"),
                     fill: "var(--text-color-accent-primary)",
                     stroke: "var(--text-color-accent-primary)",
                     fillOpacity: 0.6,
@@ -103,7 +108,7 @@ const ProjectInsights = observer(function ProjectInsights() {
                 <div>{t("workspace_analytics.trend_on_charts")}</div>
                 <div>{t("common.work_items")}</div>
               </div>
-              {projectInsightsData?.map((item) => (
+              {translatedProjectInsightsData?.map((item) => (
                 <div key={item.key} className="flex items-center justify-between text-13 text-primary">
                   <div>{item.name}</div>
                   <div className="flex items-center gap-1">

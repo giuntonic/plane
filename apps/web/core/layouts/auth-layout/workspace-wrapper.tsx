@@ -12,6 +12,7 @@ import useSWR from "swr";
 // ui
 import { LogOut } from "lucide-react";
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { Button, getButtonStyling } from "@plane/propel/button";
 import { PlaneLogo } from "@plane/propel/icons";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -61,6 +62,7 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
   const { isMobile } = usePlatformOS();
   const { loader, workspaceInfoBySlug, fetchUserWorkspaceInfo, fetchUserProjectPermissions, allowPermissions } =
     useUserPermissions();
+  const { t } = useTranslation();
   const { fetchWorkspaceStates } = useProjectState();
   // derived values
   const canPerformWorkspaceMemberActions = allowPermissions(
@@ -163,7 +165,7 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
                 className="relative flex h-6 w-6 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm hover:bg-layer-1"
                 onClick={handleSignOut}
               >
-                <Tooltip tooltipContent={"Sign out"} position="top" className="ml-2" isMobile={isMobile}>
+                <Tooltip tooltipContent={t("sign_out")} position="top" className="ml-2" isMobile={isMobile}>
                   <LogOut size={14} />
                 </Tooltip>
               </div>
@@ -173,24 +175,22 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
             <div className="relative flex-shrink-0">
               <img src={WorkSpaceNotAvailable} className="h-[220px] object-contain object-center" alt="Plane logo" />
             </div>
-            <h3 className="text-center text-16 font-semibold">Workspace not found</h3>
-            <p className="text-center text-13 text-secondary">
-              No workspace found with the URL. It may not exist or you lack authorization to view it.
-            </p>
+            <h3 className="text-center text-16 font-semibold">{t("workspace_not_found.title")}</h3>
+            <p className="text-center text-13 text-secondary">{t("workspace_not_found.description")}</p>
             <div className="flex items-center justify-center gap-2 pt-4">
               {allWorkspaces && allWorkspaces.length > 0 && (
                 <Link href="/" className={cn(getButtonStyling("primary", "base"))}>
-                  Go Home
+                  {t("go_home")}
                 </Link>
               )}
               {allWorkspaces?.length > 0 && (
                 <Link href="/settings/profile/general/" className={cn(getButtonStyling("secondary", "base"))}>
-                  Visit Profile
+                  {t("workspace_not_found.visit_profile")}
                 </Link>
               )}
               {allWorkspaces && allWorkspaces.length === 0 && (
                 <Link href="/create-workspace/" className={cn(getButtonStyling("secondary", "base"))}>
-                  Create new workspace
+                  {t("not_a_member.create_new_workspace")}
                 </Link>
               )}
             </div>
@@ -209,21 +209,18 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
         <div className="grid h-full place-items-center p-4">
           <div className="space-y-8 text-center">
             <div className="space-y-2">
-              <h3 className="text-16 font-semibold">Not Authorized!</h3>
-              <p className="mx-auto w-1/2 text-13 text-secondary">
-                You{"'"}re not a member of this workspace. Please contact the workspace admin to get an invitation or
-                check your pending invitations.
-              </p>
+              <h3 className="text-16 font-semibold">{t("not_a_member.title")}</h3>
+              <p className="mx-auto w-1/2 text-13 text-secondary">{t("not_a_member.description")}</p>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Link href="/invitations">
                 <span>
-                  <Button variant="secondary">Check pending invites</Button>
+                  <Button variant="secondary">{t("not_a_member.check_pending_invites")}</Button>
                 </span>
               </Link>
               <Link href="/create-workspace">
                 <span>
-                  <Button variant="primary">Create new workspace</Button>
+                  <Button variant="primary">{t("not_a_member.create_new_workspace")}</Button>
                 </span>
               </Link>
             </div>

@@ -6,6 +6,7 @@
 
 import React, { useEffect, useState } from "react";
 import { InfoIcon } from "lucide-react";
+import { useTranslation } from "@plane/i18n";
 import { SearchIcon } from "../../icons";
 import { cn } from "../../utils/classname";
 import { adjustColorForContrast, DEFAULT_COLORS } from "../helper";
@@ -27,6 +28,7 @@ export function IconRoot(props: IconRootProps) {
   const [hexValue, setHexValue] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [query, setQuery] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (DEFAULT_COLORS.includes(defaultColor.toLowerCase() ?? "")) setShowHexInput(false);
@@ -52,7 +54,7 @@ export function IconRoot(props: IconRootProps) {
               <SearchIcon className="absolute bottom-3 left-2.5 h-3.5 w-3.5 text-placeholder" />
 
               <input
-                placeholder="Search"
+                placeholder={t("search")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="block h-full w-full rounded-md border-[0.5px] border-none border-subtle bg-transparent p-0 px-3 py-2 text-16 placeholder-(--text-color-placeholder) focus:outline-none"

@@ -114,10 +114,16 @@ class Project(BaseModel):
     archived_at = models.DateTimeField(null=True)
     # timezone
     TIMEZONE_CHOICES = tuple(zip(pytz.common_timezones, pytz.common_timezones))
-    timezone = models.CharField(max_length=255, default="UTC", choices=TIMEZONE_CHOICES)
+    # Pespo: fuso horário padrão em Brasília, já que os clientes são todos brasileiros.
+    timezone = models.CharField(max_length=255, default="America/Sao_Paulo", choices=TIMEZONE_CHOICES)
     # external_id for imports
     external_source = models.CharField(max_length=255, null=True, blank=True)
     external_id = models.CharField(max_length=255, blank=True, null=True)
+    # Pespo: dashboard Metabase embutido pro projeto (configurado via admin).
+    # dashboard_id = id do dashboard no Metabase; cliente_id = valor travado
+    # no parâmetro "cliente" do embed (mesmo mecanismo do portal-cliente).
+    metabase_dashboard_id = models.CharField(max_length=255, blank=True, null=True)
+    metabase_cliente_id = models.CharField(max_length=255, blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
         # Track if timezone is provided, if so, don't override it with the workspace timezone when saving

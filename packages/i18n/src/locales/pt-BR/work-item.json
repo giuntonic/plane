@@ -3,6 +3,7 @@
     "label": "{count, plural, one {Item de trabalho} other {Itens de trabalho}}",
     "all": "Todos os Itens de trabalho",
     "edit": "Editar item de trabalho",
+    "could_not_be_updated": "Não foi possível atualizar {entity}. Por favor, tente novamente.",
     "title": {
       "label": "Título do item de trabalho",
       "required": "O título do item de trabalho é obrigatório."
@@ -266,7 +267,9 @@
       "click_to_downvote": "Clique para votar contra",
       "click_to_view_upvotes": "Clique para ver os votos a favor",
       "click_to_view_downvotes": "Clique para ver os votos contra"
-    }
+    },
+    "create_work_item": "Criar item de trabalho",
+    "add_existing_work_item": "Adicionar item de trabalho existente"
   },
   "sub_work_item": {
     "update": {
@@ -309,6 +312,10 @@
     }
   },
   "bulk_operations": {
+    "upgrade_banner": {
+      "message": "Altere estado, prioridade e mais para vários itens de trabalho de uma vez. Economize três minutos em média por operação.",
+      "cta": "Fazer upgrade para o One"
+    },
     "error_details": {
       "invalid_archive_state_group": {
         "title": "Não é possível arquivar itens de trabalho",
@@ -422,5 +429,11 @@
       "label": "Título do Épico",
       "required": "O título do épico é obrigatório."
     }
+  },
+  "bulk_delete_modal": {
+    "select_at_least_one": "Selecione pelo menos um item de trabalho.",
+    "deleted_successfully": "Itens de trabalho excluídos com sucesso!",
+    "select_to_delete": "Selecione os itens de trabalho para excluir",
+    "delete_selected": "Excluir itens de trabalho selecionados"
   }
 }

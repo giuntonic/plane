@@ -8,7 +8,7 @@ import { useState } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // plane imports
-import { ROLE, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
+import { ROLE, ROLE_DETAILS, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, TrashIcon, ChevronDownIcon } from "@plane/propel/icons";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -142,7 +142,7 @@ export const WorkspaceInvitationsListItem = observer(function WorkspaceInvitatio
                     hasRoleChangeAccess ? "" : "text-placeholder"
                   }`}
                 >
-                  {ROLE[invitationDetails.role]}
+                  {t(ROLE_DETAILS[invitationDetails.role].i18n_title)}
                 </span>
                 {hasRoleChangeAccess && (
                   <span className="grid place-items-center">
@@ -161,8 +161,8 @@ export const WorkspaceInvitationsListItem = observer(function WorkspaceInvitatio
                 const error = err as { error?: string };
                 setToast({
                   type: TOAST_TYPE.ERROR,
-                  title: "Error!",
-                  message: error?.error || "An error occurred while updating member role. Please try again.",
+                  title: t("toast.error"),
+                  message: error?.error || t("common.member_role_update_error"),
                 });
               });
             }}
@@ -179,7 +179,7 @@ export const WorkspaceInvitationsListItem = observer(function WorkspaceInvitatio
 
               return (
                 <CustomSelect.Option key={key} value={parseInt(key, 10)}>
-                  <>{ROLE[parseInt(key) as keyof typeof ROLE]}</>
+                  <>{t(ROLE_DETAILS[parseInt(key) as keyof typeof ROLE_DETAILS].i18n_title)}</>
                 </CustomSelect.Option>
               );
             })}

@@ -8,6 +8,7 @@ import React from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { Disclosure, Transition } from "@headlessui/react";
+import { CalendarDays } from "lucide-react";
 // plane imports
 import { AnalyticsIcon, CycleIcon, DashboardIcon, ProjectIcon, ViewsIcon } from "@plane/propel/icons";
 import { EUserWorkspaceRoles } from "@plane/types";
@@ -41,13 +42,6 @@ export const SidebarWorkspaceMenu = observer(function SidebarWorkspaceMenu() {
       Icon: ViewsIcon,
     },
     {
-      key: "active-cycles",
-      labelTranslationKey: "sidebar.cycles",
-      href: `/${workspaceSlug}/active-cycles/`,
-      access: [EUserWorkspaceRoles.ADMIN, EUserWorkspaceRoles.MEMBER],
-      Icon: CycleIcon,
-    },
-    {
       key: "analytics",
       labelTranslationKey: "sidebar.analytics",
       href: `/${workspaceSlug}/analytics/`,
@@ -67,6 +61,13 @@ export const SidebarWorkspaceMenu = observer(function SidebarWorkspaceMenu() {
       href: `/${workspaceSlug}/my-dashboards/`,
       access: [EUserWorkspaceRoles.ADMIN, EUserWorkspaceRoles.MEMBER, EUserWorkspaceRoles.GUEST],
       Icon: DashboardIcon,
+    },
+    {
+      key: "calendar",
+      labelTranslationKey: "sidebar.calendar",
+      href: `/${workspaceSlug}/calendar/`,
+      access: [EUserWorkspaceRoles.ADMIN, EUserWorkspaceRoles.MEMBER, EUserWorkspaceRoles.GUEST],
+      Icon: CalendarDays,
     },
   ];
 

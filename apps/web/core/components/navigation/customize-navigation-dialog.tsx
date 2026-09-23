@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { GripVertical, X } from "lucide-react";
@@ -12,7 +12,6 @@ import { GripVertical, X } from "lucide-react";
 import { WORKSPACE_SIDEBAR_DYNAMIC_NAVIGATION_ITEMS_LINKS, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Checkbox, EModalPosition, EModalWidth, ModalCore, Sortable } from "@plane/ui";
-import { cn } from "@plane/utils";
 // hooks
 import { useUserPermissions } from "@/hooks/store/user";
 import {
@@ -59,20 +58,12 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
     togglePersonalItem,
     updatePersonalItemOrder,
   } = usePersonalNavigationPreferences();
-  const {
-    preferences: projectPreferences,
-    updateNavigationMode,
-    updateShowLimitedProjects,
-    updateLimitedProjectsCount,
-  } = useProjectNavigationPreferences();
+  const { preferences: projectPreferences, updateNavigationMode } = useProjectNavigationPreferences();
   const {
     preferences: workspacePreferences,
     toggleWorkspaceItem,
     updateWorkspaceItemOrder,
   } = useWorkspaceNavigationPreferences();
-
-  // local state for limited projects count input
-  const [projectCountInput, setProjectCountInput] = useState(projectPreferences.limitedProjectsCount.toString());
 
   // Filter personal items by feature flags
   const filteredPersonalItems = PERSONAL_ITEMS;
@@ -155,31 +146,6 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
     return items.sort((a, b) => a.sortOrder - b.sortOrder);
   }, [personalPreferences, filteredPersonalItems]);
 
-  // Prevent typing invalid characters in number input
-  // oxlint-disable-next-line unicorn/consistent-function-scoping
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Block: e, E, +, -, .
-    if (["e", "E", "+", "-", "."].includes(e.key)) {
-      e.preventDefault();
-    }
-  };
-
-  // Handle project count input change
-  const handleProjectCountChange = (value: string) => {
-    // Strip any non-digit characters
-    const cleanedValue = value.replace(/\D/g, "");
-    setProjectCountInput(cleanedValue);
-
-    // Parse and validate the value
-    const numValue = parseInt(cleanedValue, 10);
-
-    // If valid number, enforce minimum of 1
-    if (!isNaN(numValue)) {
-      const validValue = Math.max(1, numValue);
-      updateLimitedProjectsCount(validValue);
-    }
-  };
-
   return (
     <ModalCore isOpen={isOpen} handleClose={onClose} position={EModalPosition.CENTER} width={EModalWidth.XXL}>
       <div className="flex max-h-[90vh] flex-col rounded-lg bg-surface-1">
@@ -188,8 +154,8 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
           <div>
             <h2 className="text-18 font-semibold text-primary">{t("customize_navigation")}</h2>
             <p className="mt-1 text-13 text-tertiary">
-              Selected items will always stay visible in your sidebar. You can still find the others anytime from the
-              More menu. These changes are personal to you and won&apos;t affect anyone else on your workspace.
+              Choose which items appear in your sidebar and reorder them. These changes are personal to you and
+              won&apos;t affect anyone else on your workspace.
             </p>
           </div>
           <button
@@ -304,46 +270,6 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
                       </div>
                     </div>
                   </label>
-                </div>
-
-                {/* Limited Projects Checkbox */}
-                <div className="space-y-1">
-                  <label className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 hover:bg-surface-2">
-                    <Checkbox
-                      checked={projectPreferences.showLimitedProjects}
-                      onChange={(e) => updateShowLimitedProjects(e.target.checked)}
-                    />
-                    <span className="text-13 text-primary">{t("show_limited_projects_on_sidebar")}</span>
-                  </label>
-
-                  {projectPreferences.showLimitedProjects && (
-                    <div className="pl-8">
-                      <div className="flex w-full flex-col gap-1">
-                        <div className="flex w-full flex-col gap-2 pb-1.5">
-                          <label className="w-full text-11 text-secondary">{t("enter_number_of_projects")}</label>
-                          <input
-                            type="number"
-                            min="1"
-                            step="1"
-                            value={projectCountInput}
-                            onKeyDown={handleKeyDown}
-                            onChange={(e) => handleProjectCountChange(e.target.value)}
-                            className={cn(
-                              "w-full rounded-md px-2 py-1 text-13",
-                              "border bg-surface-2",
-                              "text-secondary",
-                              parseInt(projectCountInput) >= 1
-                                ? "border-strong focus:border-accent-strong focus:ring-1 focus:ring-accent-strong"
-                                : "border-danger-strong focus:border-danger-strong focus:ring-1 focus:ring-danger-strong"
-                            )}
-                          />
-                        </div>
-                        {parseInt(projectCountInput) < 1 && projectCountInput !== "" && (
-                          <span className="pl-0.5 text-11 text-danger-primary">Minimum value is 1</span>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>

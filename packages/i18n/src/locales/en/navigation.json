@@ -19,18 +19,20 @@
     "analytics": "Analytics",
     "dashboards": "Dashboards",
     "my_dashboards": "My dashboards",
+    "calendar": "Calendar",
     "work_items": "Work items",
     "cycles": "Cycles",
     "modules": "Modules",
     "intake": "Intake",
+    "dashboard": "Dashboard",
     "drafts": "Drafts",
     "favorites": "Favorites",
     "pro": "Pro",
     "upgrade": "Upgrade",
-    "pi_chat": "Plane AI",
+    "pi_chat": "Pespo Hub AI",
     "epics": "Epics",
     "upgrade_plan": "Upgrade plan",
-    "plane_pro": "Plane Pro",
+    "plane_pro": "Pespo Hub Pro",
     "business": "Business"
   }
 }

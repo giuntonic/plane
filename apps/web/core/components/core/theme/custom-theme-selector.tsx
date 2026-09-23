@@ -44,10 +44,10 @@ export const CustomThemeSelector = observer(function CustomThemeSelector() {
       };
     }
 
-    // Fallback to defaults
+    // Fallback to defaults (cor de marca da Pespo)
     return {
       theme: "custom",
-      primary: "#3f76ff",
+      primary: "#6C5CE7",
       background: "#1a1a1a",
       darkPalette: false,
     };

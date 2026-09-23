@@ -7,6 +7,7 @@
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // ui
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { ViewsIcon } from "@plane/propel/icons";
 import { Breadcrumbs, Header } from "@plane/ui";
@@ -24,6 +25,7 @@ export const ProjectViewsHeader = observer(function ProjectViewsHeader() {
   // store hooks
   const { toggleCreateViewModal } = useCommandPalette();
   const { loader } = useProject();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -34,7 +36,7 @@ export const ProjectViewsHeader = observer(function ProjectViewsHeader() {
             <Breadcrumbs.Item
               component={
                 <BreadcrumbLink
-                  label="Views"
+                  label={t("common.views")}
                   href={`/${workspaceSlug}/projects/${projectId}/views/`}
                   icon={<ViewsIcon className="h-4 w-4 text-tertiary" />}
                   isLast
@@ -48,7 +50,7 @@ export const ProjectViewsHeader = observer(function ProjectViewsHeader() {
           <ViewListHeader />
           <div>
             <Button variant="primary" size="lg" onClick={() => toggleCreateViewModal(true)}>
-              Add view
+              {t("view.create.label")}
             </Button>
           </div>
         </Header.RightItem>

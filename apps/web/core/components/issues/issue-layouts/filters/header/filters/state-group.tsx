@@ -6,6 +6,7 @@
 
 import React, { useState } from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 // plane imports
 import { STATE_GROUPS } from "@plane/constants";
 import { StateGroupIcon } from "@plane/propel/icons";
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export const FilterStateGroup = observer(function FilterStateGroup(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate, searchQuery } = props;
 
   const [itemsToRender, setItemsToRender] = useState(5);
@@ -38,7 +40,7 @@ export const FilterStateGroup = observer(function FilterStateGroup(props: Props)
   return (
     <>
       <FilterHeader
-        title={`State group${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("common.state_group_filter_title")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -52,7 +54,7 @@ export const FilterStateGroup = observer(function FilterStateGroup(props: Props)
                   isChecked={appliedFilters?.includes(stateGroup.key) ? true : false}
                   onClick={() => handleUpdate(stateGroup.key)}
                   icon={<StateGroupIcon stateGroup={stateGroup.key} />}
-                  title={stateGroup.label}
+                  title={t(`common.state_group.${stateGroup.key}`)}
                 />
               ))}
               {filteredOptions.length > 5 && (
@@ -61,12 +63,12 @@ export const FilterStateGroup = observer(function FilterStateGroup(props: Props)
                   className="ml-8 text-11 font-medium text-accent-primary"
                   onClick={handleViewToggle}
                 >
-                  {itemsToRender === filteredOptions.length ? "View less" : "View all"}
+                  {itemsToRender === filteredOptions.length ? t("view_less") : t("view_all")}
                 </button>
               )}
             </>
           ) : (
-            <p className="text-11 text-placeholder italic">No matches found</p>
+            <p className="text-11 text-placeholder italic">{t("search.no_matches_found")}</p>
           )}
         </div>
       )}

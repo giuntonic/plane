@@ -6,7 +6,10 @@
 
 import type { TLanguage, ILanguageOption } from "../types";
 
-export const FALLBACK_LANGUAGE: TLanguage = "en";
+// Pespo: pt-BR como idioma padrão da instância (em vez de en). Continua
+// só o fallback — quem já tem "userLanguage" salvo no navegador ou troca
+// pelo seletor de idioma nas preferências não é afetado.
+export const FALLBACK_LANGUAGE: TLanguage = "pt-BR";
 
 export const SUPPORTED_LANGUAGES: ILanguageOption[] = [
   { label: "English", value: "en" },

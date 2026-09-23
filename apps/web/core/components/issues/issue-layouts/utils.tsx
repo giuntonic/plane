@@ -13,6 +13,7 @@ import type { FC } from "react";
 import { CalendarDays, LayersIcon, Paperclip } from "lucide-react";
 // plane types
 import { EIconSize, ISSUE_PRIORITIES, STATE_GROUPS } from "@plane/constants";
+import type { TTranslationStore } from "@plane/i18n";
 import { Logo } from "@plane/propel/emoji-icon-picker";
 import type { ISvgIcons } from "@plane/propel/icons";
 import {
@@ -110,6 +111,7 @@ type TGetGroupByColumns = {
   isWorkspaceLevel: boolean;
   isEpic?: boolean;
   projectId?: string;
+  t: TTranslationStore["t"];
 };
 
 // NOTE: Type of groupBy is different compared to what's being passed from the components.
@@ -121,13 +123,14 @@ export const getGroupByColumns = ({
   isWorkspaceLevel,
   isEpic = false,
   projectId,
+  t,
 }: TGetGroupByColumns): IGroupByColumn[] | undefined => {
   // If no groupBy is specified and includeNone is true, return "All Issues" group
   if (!groupBy && includeNone) {
     return [
       {
         id: "All Issues",
-        name: `All ${isEpic ? "Epics" : "work items"}`,
+        name: isEpic ? t("all_epics") : t("all_issues"),
         payload: {},
         icon: undefined,
       },
@@ -140,7 +143,7 @@ export const getGroupByColumns = ({
   // Map of group by options to their corresponding column getter functions
   const groupByColumnMap: Record<
     GroupByColumnTypes,
-    ({ isWorkspaceLevel, projectId }: TGetColumns) => IGroupByColumn[] | undefined
+    (args: TGetColumns & { t: TTranslationStore["t"] }) => IGroupByColumn[] | undefined
   > = {
     project: getProjectColumns,
     cycle: getCycleColumns,
@@ -155,7 +158,7 @@ export const getGroupByColumns = ({
   };
 
   // Get and return the columns for the specified group by option
-  return groupByColumnMap[groupBy]?.({ isWorkspaceLevel, projectId });
+  return groupByColumnMap[groupBy]?.({ isWorkspaceLevel, projectId, t });
 };
 
 const getProjectColumns = (): IGroupByColumn[] | undefined => {
@@ -255,12 +258,12 @@ const getStateColumns = ({ projectId }: TGetColumns): IGroupByColumn[] | undefin
   }));
 };
 
-const getStateGroupColumns = (): IGroupByColumn[] => {
+const getStateGroupColumns = ({ t }: { t: TTranslationStore["t"] }): IGroupByColumn[] => {
   const stateGroups = STATE_GROUPS;
   // map state groups to group by columns
   return Object.values(stateGroups).map((stateGroup) => ({
     id: stateGroup.key,
-    name: stateGroup.label,
+    name: t(`common.state_group.${stateGroup.key}`),
     icon: (
       <div className="size-4 rounded-full">
         <StateGroupIcon stateGroup={stateGroup.key} size={EIconSize.LG} />
@@ -270,12 +273,12 @@ const getStateGroupColumns = (): IGroupByColumn[] => {
   }));
 };
 
-const getPriorityColumns = (): IGroupByColumn[] => {
+const getPriorityColumns = ({ t }: { t: TTranslationStore["t"] }): IGroupByColumn[] => {
   const priorities = ISSUE_PRIORITIES;
   // map priorities to group by columns
   return priorities.map((priority) => ({
     id: priority.key,
-    name: priority.title,
+    name: t(priority.key),
     icon: <PriorityIcon priority={priority?.key} />,
     payload: { priority: priority.key },
   }));

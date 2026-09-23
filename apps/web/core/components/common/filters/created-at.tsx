@@ -6,6 +6,7 @@
 
 import React, { useState } from "react";
 import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 // plane imports
 import { DATE_BEFORE_FILTER_OPTIONS } from "@plane/constants";
 import { isInDateFormat } from "@plane/utils";
@@ -20,6 +21,7 @@ type Props = {
 };
 
 export const FilterCreatedDate = observer(function FilterCreatedDate(props: Props) {
+  const { t } = useTranslation();
   const { appliedFilters, handleUpdate, searchQuery } = props;
 
   const [previewEnabled, setPreviewEnabled] = useState(true);
@@ -73,7 +75,7 @@ export const FilterCreatedDate = observer(function FilterCreatedDate(props: Prop
               <FilterOption isChecked={isCustomDateSelected()} onClick={handleCustomDate} title="Custom" multiple />
             </>
           ) : (
-            <p className="text-11 text-placeholder italic">No matches found</p>
+            <p className="text-11 text-placeholder italic">{t("search.no_matches_found")}</p>
           )}
         </div>
       )}

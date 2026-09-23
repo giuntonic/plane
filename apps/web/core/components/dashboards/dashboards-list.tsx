@@ -38,7 +38,7 @@ export const DashboardsList = observer(function DashboardsList(props: Props) {
 
   const dashboards = getDashboardsByScope(workspaceSlug, dashboardType, projectId);
   const basePath = projectId
-    ? `/${workspaceSlug}/projects/${projectId}/dashboard`
+    ? `/${workspaceSlug}/projects/${projectId}/dashboards`
     : dashboardType === "home"
       ? `/${workspaceSlug}/my-dashboards`
       : `/${workspaceSlug}/dashboards`;

@@ -4,10 +4,10 @@
  * See the LICENSE file for details.
  */
 
+import { CalendarDays } from "lucide-react";
 import {
   AnalyticsIcon,
   ArchiveIcon,
-  CycleIcon,
   DraftIcon,
   HomeIcon,
   InboxIcon,
@@ -28,8 +28,6 @@ export const getSidebarNavigationItemIcon = (key: string, className: string = ""
       return <ProjectIcon className={cn("size-4 flex-shrink-0", className)} />;
     case "views":
       return <ViewsIcon className={cn("size-4 flex-shrink-0", className)} />;
-    case "active_cycles":
-      return <CycleIcon className={cn("size-4 flex-shrink-0", className)} />;
     case "analytics":
       return <AnalyticsIcon className={cn("size-4 flex-shrink-0", className)} />;
     case "your_work":
@@ -40,5 +38,7 @@ export const getSidebarNavigationItemIcon = (key: string, className: string = ""
       return <ArchiveIcon className={cn("size-4 flex-shrink-0", className)} />;
     case "stickies":
       return <MultipleStickyIcon className={cn("size-4 flex-shrink-0", className)} />;
+    case "calendar":
+      return <CalendarDays className={cn("size-4 flex-shrink-0", className)} />;
   }
 };

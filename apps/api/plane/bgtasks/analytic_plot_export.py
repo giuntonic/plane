@@ -51,7 +51,7 @@ MODULE_ID = "issue_module__module_id"
 
 def send_export_email(email, slug, csv_buffer, rows):
     """Helper function to send export email."""
-    subject = "Your Export is ready"
+    subject = "Sua exportação está pronta"
     html_content = render_to_string("emails/exports/analytics.html", {})
     text_content = generate_plain_text_from_html(html_content)
 

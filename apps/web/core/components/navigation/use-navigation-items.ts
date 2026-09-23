@@ -102,7 +102,7 @@ export const useNavigationItems = ({
         sortOrder: 6,
       },
       {
-        i18n_key: "sidebar.dashboards",
+        i18n_key: "sidebar.dashboard",
         key: "dashboard",
         name: "Dashboard",
         href: `/${workspaceSlug}/projects/${projectId}/dashboard`,
@@ -110,6 +110,16 @@ export const useNavigationItems = ({
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
         shouldRender: true,
         sortOrder: 7,
+      },
+      {
+        i18n_key: "sidebar.dashboards",
+        key: "dashboards",
+        name: "Dashboards",
+        href: `/${workspaceSlug}/projects/${projectId}/dashboards`,
+        icon: DashboardIcon,
+        access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
+        shouldRender: true,
+        sortOrder: 8,
       },
     ],
     [project]
