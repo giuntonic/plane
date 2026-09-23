@@ -63,11 +63,14 @@ def build_widget_queryset(widget: DashboardWidget, user) -> QuerySet[Issue]:
 class DashboardWidgetChartEndpoint(BaseAPIView):
     permission_classes = [WorkspaceEntityPermission]
 
-    def get(self, request, slug, dashboard_id, widget_id):
+    def get(self, request, slug, dashboard_id, widget_id, project_id=None):
         dashboard_qs = Dashboard.objects.filter(workspace__slug=slug).filter(
             Q(dashboard_type=Dashboard.DashboardType.HOME, owned_by=request.user)
             | ~Q(dashboard_type=Dashboard.DashboardType.HOME)
         )
+        # Also routed as projects/<project_id>/dashboards/..., scope to that project
+        if project_id:
+            dashboard_qs = dashboard_qs.filter(project_id=project_id)
         widget = DashboardWidget.objects.select_related("dashboard", "dashboard__workspace").get(
             pk=widget_id, dashboard_id=dashboard_id, dashboard__in=dashboard_qs
         )
