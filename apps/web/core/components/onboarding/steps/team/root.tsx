@@ -259,6 +259,8 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
 
 export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
   const { handleStepChange } = props;
+  // plane hooks
+  const { t } = useTranslation();
 
   const [isInvitationDisabled, setIsInvitationDisabled] = useState(true);
 

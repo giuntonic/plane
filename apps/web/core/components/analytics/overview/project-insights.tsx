@@ -51,7 +51,7 @@ const ProjectInsights = observer(function ProjectInsights() {
       )
   );
 
-  const translatedProjectInsightsData = projectInsightsData?.map((item) => {
+  const translatedProjectInsightsData = projectInsightsData?.map((item): TChartData<string, string> => {
     const translatedName = t(item.key);
     return { ...item, name: translatedName === item.key ? item.name : translatedName };
   });
@@ -77,7 +77,7 @@ const ProjectInsights = observer(function ProjectInsights() {
             <Suspense fallback={<ProjectInsightsLoader />}>
               <RadarChart
                 className="h-[350px] w-full text-accent-primary lg:w-3/5"
-                data={translatedProjectInsightsData}
+                data={translatedProjectInsightsData ?? []}
                 dataKey="key"
                 radars={[
                   {
