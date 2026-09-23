@@ -281,6 +281,14 @@ minimumReleaseAgeExclude:
 
 patchedDependencies:
   react-color@2.19.3: patches/react-color@2.19.3.patch
+  # Headless UI's internal Frozen wrapper (used by Combobox.Options) does
+  # cloneElement(child, { ref }) even when no ref was forwarded. On React 19 ref is a
+  # plain prop, so that replaced the child's own ref with null: every dropdown that
+  # puts react-popper's setPopperElement on the div inside Combobox.Options never got
+  # its popper element and rendered at the top-left of the screen. The patch only
+  # overrides the child's ref when one was actually forwarded. 2.2.10 is the latest
+  # release and still has the bug.
+  "@headlessui/react@2.2.10": patches/@headlessui__react@2.2.10.patch
 
 peerDependencyRules:
   allowedVersions:
