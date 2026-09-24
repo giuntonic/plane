@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { forwardRef } from "react";
+import { forwardRef, useMemo } from "react";
 // plane imports
 import { RichTextEditorWithRef } from "@plane/editor";
 import type { EditorRefApi, IRichTextEditorProps, TFileHandler } from "@plane/editor";
@@ -12,6 +12,7 @@ import type { MakeOptional, TSearchEntityRequestPayload, TSearchResponse } from 
 import { cn } from "@plane/utils";
 // components
 import { EditorMentionsRoot } from "@/components/editor/embeds/mentions";
+import { pickGoogleDriveFile } from "@/components/integration/google-drive/picker-store";
 // hooks
 import { useEditorConfig, useEditorMention } from "@/hooks/editor";
 import { useMember } from "@/hooks/store/use-member";
@@ -69,6 +70,11 @@ export const RichTextEditor = forwardRef(function RichTextEditor(
   });
   // editor config
   const { getEditorFileHandlers } = useEditorConfig();
+  // Pespo: "Aprovar edição" do Clapshot + seletor do Google Drive do bloco /google-drive
+  const extendedEditorProps = useMemo(
+    () => ({ onApproveEdit, onPickGoogleDriveFile: editable ? pickGoogleDriveFile : undefined }),
+    [onApproveEdit, editable]
+  );
   // parse content
   const { getEditorMetaData } = useParseEditorContent({
     projectId,
@@ -100,7 +106,7 @@ export const RichTextEditor = forwardRef(function RichTextEditor(
           display_name: getUserDetails(id)?.display_name ?? "",
         }),
       }}
-      extendedEditorProps={{ onApproveEdit }}
+      extendedEditorProps={extendedEditorProps}
       {...rest}
       containerClassName={cn("relative pb-3 pl-3", containerClassName)}
     />

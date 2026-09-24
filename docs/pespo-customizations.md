@@ -251,6 +251,154 @@ Correções feitas depois do merge:
 
 ---
 
+## Integração com o Google Calendar — sincronização nos dois sentidos, reuniões e calendário (2026-09-24)
+
+A conexão pessoal com o Google Calendar já existia (agenda "Plane" com as tarefas atribuídas, só de ida,
+a cada 10 min, e a visão `/calendar` com eventos do Google por cima), mas não estava documentada aqui.
+Nesta leva ela foi corrigida e ampliada:
+
+- **Bugs corrigidos:**
+  - Desconectar fazia *soft delete* da conexão: os tokens ficavam no banco e **reconectar falhava sempre**
+    (`IntegrityError` no OneToOne do usuário). Agora apaga de verdade; a migration `0131` limpa as
+    linhas antigas e o callback revive uma conexão que tenha ficado soft-deleted.
+  - Eventos que saíam da agenda (tarefa concluída, sem data) também eram soft-deleted e bloqueavam a
+    mesma tarefa de voltar pra agenda depois (restrição única de `SyncedCalendarEvent`).
+  - Tirar alguém dos responsáveis não tirava o evento da agenda dessa pessoa (o `IssueAssignee` removido
+    é soft-deleted e o filtro `assignees__in` continuava encontrando).
+  - IDs de agenda com `#`/`@` (ex.: feriados) iam sem codificar na URL.
+  - A visão `/calendar` carregava só os 100 primeiros itens do workspace, sem olhar o mês.
+- **Sincronização nos dois sentidos (Google → Plane):** mover ou renomear no Google o evento de uma
+  tarefa muda as datas (início/entrega) e o título do item, com registro na atividade em nome da pessoa.
+  Só vale pra quem é membro/admin do projeto (edições de convidados são ignoradas). Apagar o evento no
+  Google **não** apaga nada no Plane — o evento volta na próxima sincronização (pra tirar da agenda:
+  concluir o item ou tirar a data). Pode ser desligada nas configurações.
+  - Como chega: o Google avisa via notificações push (`events.watch`) em
+    `POST /api/google-calendar/notifications/` (valida o token secreto de cada canal) e o Plane busca as
+    mudanças com `syncToken`; um pull a cada 2 min cobre notificações perdidas. As notificações só são
+    registradas se `WEB_URL` for **https** (o Google recusa http); canais são renovados sozinhos.
+  - Eco: `SyncedCalendarEvent.pushed_*` guarda o que o Plane escreveu por último, então a escrita do
+    próprio Plane nunca é lida de volta como edição.
+- **Plane → Google imediato:** qualquer atividade de item de trabalho (`issue_activity`) agenda a
+  sincronização daquele item pra todos os envolvidos (debounce de 5 s via Redis). A completa a cada 10
+  min continua como rede de segurança.
+- **Mais completo na agenda:** tarefas com data de início viram eventos de vários dias; cor pela
+  prioridade; lembretes (padrão da agenda, nenhum, ou N dias antes às 9h); filtro de projetos; opção de
+  uma agenda por projeto ("Plane · Projeto"); eventos marcados como "livre" (não bloqueiam horário);
+  a agenda "Plane" é recriada se for apagada no Google.
+- **Reuniões ligadas ao item de trabalho:** botão "Agendar reunião" no item → cria o evento no Google
+  Calendar de quem agenda, com **Google Meet**, convidados (atalho "Adicionar responsáveis") e link do
+  item na descrição; o Google manda os convites. Seção "Reuniões" no item com "Entrar no Meet", abrir no
+  Google, desvincular e cancelar (só quem organizou; os convidados são avisados). A lista se atualiza com
+  remarcações/cancelamentos feitos no Google.
+- **"Meet agora" no item de trabalho:** um clique cria um Google Meet começando na hora (30 min) no
+  Google Calendar de quem clicou, convida os responsáveis atuais e abre o Meet numa aba nova (a aba é
+  aberta de forma síncrona no clique, senão o navegador bloquearia o popup). Endpoint
+  `…/issues/<id>/calendar-events/instant/`; a reunião aparece em "Reuniões".
+- **Visão `/calendar`:** busca os itens por período (paginado); tarefas de vários dias aparecem em todos
+  os dias; **arrastar um item pra outro dia muda as datas** (início e entrega andam juntos); filtro "Só
+  meus itens"; liga/desliga eventos do Google; o detalhe do evento mostra horário, local, convidados,
+  botão do Meet e o item vinculado; **"Criar item de trabalho a partir deste evento"** abre o formulário
+  preenchido e vincula o evento ao item criado.
+- **Configurações → Perfil → Google Calendar:** ganhou as opções acima (dois sentidos, agenda por
+  projeto, cor, lembretes, projetos) e mostra se as mudanças chegam em segundos ou em ~2 minutos.
+- **Arquivos:**
+  - Backend: `db/models/google_calendar.py` (campos novos em `GoogleCalendarConnection` e
+    `SyncedCalendarEvent`, modelo `IssueCalendarEvent`), migration `0131_google_calendar_two_way_sync.py`
+    (com a limpeza de dados), `utils/google_calendar.py` (cliente da API + regras puras da sincronização),
+    `bgtasks/google_calendar_sync_task.py` (motor: push, pull, canais), gancho no fim do
+    `bgtasks/issue_activities_task.issue_activity`, beat `pull-google-calendars` em `celery.py`, views
+    `app/views/user/google_calendar.py` (conexão, preferências, eventos, receptor de notificações) e
+    `app/views/issue/calendar_event.py` (reuniões). Rotas `users/me/google-calendar/…`,
+    `google-calendar/notifications/` e `…/issues/<id>/calendar-events/…`.
+  - Testes: `tests/unit/utils/test_google_calendar.py`, `tests/contract/app/test_google_calendar_app.py`.
+  - Frontend: `components/workspace/calendar-sync/` (visão do calendário), widget
+    `issue-detail-widgets/meetings/`, `settings/profile/content/pages/google-calendar.tsx`, serviço
+    `services/issue-calendar-event.service.ts`, tipos em `packages/types/src/google-calendar.ts`, i18n
+    `google_calendar_integration.*` em `integration.json` (en e pt-BR).
+- **Deploy:** rebuildar `api` (migration) e `web`. O **worker e o beat do Celery** precisam estar rodando
+  com a imagem nova (o beat tem uma tarefa nova). Conferir que `WEB_URL` no `.env` é o domínio público
+  com https — é ele que o Google chama. Quem já estava conectado não precisa reconectar (o escopo
+  `calendar` já cobre tudo); eventos antigos passam a sincronizar nos dois sentidos depois do primeiro
+  push.
+- **Risco de upgrade:** médio. Pontos do upstream tocados: o fim de `issue_activity`
+  (`issue_activities_task.py`), a lista `openWidgets` e `TWorkItemWidgets` (widget `"meetings"`),
+  `action-buttons.tsx`/`issue-detail-widget-collapsibles.tsx`.
+
+---
+
+## Integração com o Google Drive (2026-09-24)
+
+- **O quê:** conexão real, por usuário, com o Google Drive (OAuth, mesmo client do Google Calendar),
+  usada em três lugares:
+  1. **Itens de trabalho** — botão "Google Drive" na fileira de ações (ao lado de "Anexar"), com duas
+     opções:
+     - **Vincular do Drive:** guarda só os metadados no Plane (tabela `issue_google_drive_files`); o
+       arquivo continua no Drive, sempre na versão mais recente. Aparece na seção "Google Drive" do item,
+       com **Visualizar** e **Editar** (Docs/Sheets/Slides abertos dentro do Plane, num modal com iframe),
+       **Abrir no Google** e **Remover**. Entra no histórico de atividade como link.
+     - **Copiar para anexos:** baixa o arquivo pelo backend e cria um anexo normal do Plane (Docs e
+       Slides viram PDF, Sheets vira XLSX, Drawings vira PNG). Respeita `FILE_SIZE_LIMIT` e
+       `ATTACHMENT_MIME_TYPES`. É uma cópia congelada, visível pra quem não tem acesso ao arquivo no Drive.
+     - O seletor navega por Meu Drive / Compartilhados comigo / Recentes / Com estrela, pastas, busca, e
+       permite criar um Google Docs/Sheets/Slides novo já vinculado.
+  2. **Páginas (e descrições)** — bloco `/google-drive` no editor: abre o seletor do Drive (ou aceita um
+     link colado) e incorpora o Docs/Sheets/Slides/PDF em iframe, com alternância **Visualizar/Editar**,
+     altura ajustável (arrastando a borda de baixo) e "Abrir no Google". Funciona em páginas colaborativas
+     (live) e fica só-leitura nas páginas publicadas.
+  3. **Configurações → Perfil → Google Drive** — conectar/desconectar.
+- **Como a permissão funciona:** o Plane nunca compartilha arquivos. Navegar/vincular/copiar usa o token
+  de quem está fazendo a ação; visualizar/editar no iframe usa a sessão Google do próprio navegador de quem
+  está olhando — quem não tem acesso ao arquivo no Drive vê a tela de "pedir acesso" do Google. Se o
+  navegador bloquear cookies de terceiros (Safari, Chrome com bloqueio ativado), o iframe pode pedir login;
+  o botão "Abrir no Google" resolve.
+- **Configuração no Google Cloud (obrigatória antes de usar):** no mesmo projeto/client OAuth do Calendar
+  (`GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`):
+  1. Ativar a **Google Drive API** (APIs & Services → Library).
+  2. Adicionar o redirect URI `https://<domínio>/api/users/me/google-drive/callback/` no client OAuth.
+  3. Adicionar o escopo `https://www.googleapis.com/auth/drive` na tela de consentimento. É um escopo
+     "restrito": com o app do tipo **Interno** (Google Workspace) não precisa de verificação do Google; se
+     o app for Externo, só funciona pra usuários de teste até passar pela verificação.
+- **Arquivos novos:**
+  - Backend: modelos `GoogleDriveConnection` (tokens criptografados, igual ao Calendar) e
+    `IssueGoogleDriveFile` em `apps/api/plane/db/models/google_drive.py`, migration
+    `0130_googledriveconnection_issuegoogledrivefile.py`, provider OAuth
+    `authentication/provider/oauth/google_drive.py` (herda do `GoogleCalendarOAuthProvider`, que ganhou o
+    atributo `callback_path`), cliente da API `utils/google_drive.py` (reaproveita refresh/revoke de
+    `utils/google_calendar.py`), views `app/views/user/google_drive.py` (conexão, navegação, criar arquivo)
+    e `app/views/issue/google_drive.py` (vincular, remover, copiar para anexos), serializer
+    `app/serializers/google_drive.py`. Rotas `users/me/google-drive/…` e
+    `workspaces/<slug>/projects/<id>/issues/<id>/google-drive-files/…`.
+  - Testes: `tests/unit/utils/test_google_drive.py` e `tests/contract/app/test_google_drive_app.py`
+    (o Google é sempre mockado).
+  - Frontend: serviço `apps/web/core/services/google-drive.service.ts`; componentes compartilhados em
+    `apps/web/core/components/integration/google-drive/` (seletor, visualizador, `picker-store.ts` +
+    `picker-host.tsx` — ponte que deixa o editor abrir o seletor, montada em `GlobalModals`); widget do
+    item em `issue-detail-widgets/google-drive/`; página de configurações
+    `settings/profile/content/pages/google-drive.tsx`; tipos em `packages/types/src/google-drive.ts`;
+    helpers de URL (extrair id, montar URL de preview/edição) em `packages/utils/src/google-drive.ts`,
+    com testes vitest (`pnpm --filter @plane/utils test` — primeiro teste desse pacote).
+  - Editor: extensão `packages/editor/src/ce/extensions/google-drive-embed/`, registrada nos mesmos
+    pontos do Clapshot (`CORE_EXTENSIONS.GOOGLE_DRIVE_EMBED`, `BLOCK_NODE_TYPES`, `TEditorCommands`,
+    `ce/extensions/core/extensions.ts`, `without-props.ts`, `slash-commands.tsx`) + o callback
+    `onPickGoogleDriveFile` em `IEditorPropsExtended`.
+  - **Allowlist do sanitizador** (a pegadinha do Clapshot): `google-drive-embed-component` com os
+    atributos `url`, `name`, `mime_type`, `mode`, `height` em `apps/api/plane/utils/content_validator.py`.
+  - i18n: bloco `google_drive_integration.*` em `integration.json` e `profile.actions.google-drive` em
+    `settings.json` (só `en` e `pt-BR`, como as outras chaves da Pespo). O node do editor usa textos em
+    português fixos, como o do Clapshot.
+- **Segurança:** o iframe nunca usa a URL crua salva no documento — só o id extraído e validado, sempre em
+  domínio do Google (por isso ali `allow-scripts` + `allow-same-origin` é seguro, diferente do Clapshot).
+  O backend busca os metadados no próprio Drive (nunca confia em nome/link vindos do navegador), valida
+  todo id antes de usar em URL ou query, e o `next_path` do OAuth só aceita caminhos relativos.
+- **Deploy:** rebuildar `api` (migration nova), `web`, `space` e `live` (o `live` precisa do node novo
+  pra converter páginas).
+- **Risco de upgrade:** médio. Pontos do `core/` que um merge pode reescrever: as mesmas duas linhas do
+  Clapshot em `core/constants/extension.ts`/`core/types/editor.ts`, `action-buttons.tsx` e
+  `issue-detail-widget-collapsibles.tsx` (botão + seção), a lista `openWidgets` em
+  `store/issue/issue-details/root.store.ts` e `TWorkItemWidgets` em `packages/types/src/issues/issue.ts`.
+
+---
+
 ## Widget de Tarefas + homepage em blocos (2026-09-04)
 
 - **O quê:** a homepage do workspace (`apps/web/core/components/home/`) passou de uma lista de

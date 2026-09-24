@@ -39,6 +39,26 @@ class GoogleCalendarConnection(BaseModel):
 
     last_synced_at = models.DateTimeField(null=True, blank=True)
 
+    # Google -> Plane: moving/renaming a synced event in Google updates the
+    # work item's dates/title.
+    two_way_sync = models.BooleanField(default=True)
+    # Project ids whose work items are synced; empty means every project.
+    sync_project_ids = models.JSONField(default=list, blank=True)
+    # One Google calendar per project instead of the single "Plane" one.
+    calendar_per_project = models.BooleanField(default=False)
+    # {project_id: google_calendar_id}, filled lazily when calendar_per_project is on.
+    project_calendar_ids = models.JSONField(default=dict, blank=True)
+    # Color events by the work item's priority.
+    color_by_priority = models.BooleanField(default=True)
+    # None: Google's default reminders for the calendar; -1: no reminders;
+    # N >= 1: a popup N days before the due date, at 9:00.
+    reminder_days_before = models.IntegerField(null=True, blank=True)
+    # {google_calendar_id: nextSyncToken} for incremental pulls.
+    sync_tokens = models.JSONField(default=dict, blank=True)
+    # Active push-notification channels:
+    # [{"id", "resource_id", "calendar_id", "token", "expiration"}]
+    watch_channels = models.JSONField(default=list, blank=True)
+
     class Meta:
         verbose_name = "Google Calendar Connection"
         verbose_name_plural = "Google Calendar Connections"
@@ -70,11 +90,17 @@ class SyncedCalendarEvent(BaseModel):
     issue, for a given connection — lets the sync task know what to
     update/delete when an issue changes or stops qualifying."""
 
-    connection = models.ForeignKey(
-        GoogleCalendarConnection, on_delete=models.CASCADE, related_name="synced_events"
-    )
+    connection = models.ForeignKey(GoogleCalendarConnection, on_delete=models.CASCADE, related_name="synced_events")
     issue = models.ForeignKey("db.Issue", on_delete=models.CASCADE, related_name="synced_calendar_events")
     google_event_id = models.CharField(max_length=255)
+    # Calendar the event lives in (the "Plane" calendar or a per-project one).
+    calendar_id = models.CharField(max_length=255, blank=True)
+    # What Plane last wrote to the event — lets the pull tell a change made in
+    # Google apart from our own echo. Null for rows created before two-way sync.
+    pushed_start = models.DateField(null=True, blank=True)
+    pushed_end = models.DateField(null=True, blank=True)
+    pushed_summary = models.TextField(blank=True)
+    pushed_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Synced Calendar Event"
@@ -85,3 +111,32 @@ class SyncedCalendarEvent(BaseModel):
 
     def __str__(self):
         return f"{self.connection.user.email} -> {self.issue_id} ({self.google_event_id})"
+
+
+class IssueCalendarEvent(BaseModel):
+    """A Google Calendar event (usually a meeting) linked to a work item —
+    either scheduled from Plane or an existing event linked afterwards.
+    Distinct from SyncedCalendarEvent, which is the automatic due-date
+    mirror of the work item itself."""
+
+    issue = models.ForeignKey("db.Issue", on_delete=models.CASCADE, related_name="calendar_events")
+    project = models.ForeignKey("db.Project", on_delete=models.CASCADE, related_name="issue_calendar_events")
+    workspace = models.ForeignKey("db.Workspace", on_delete=models.CASCADE, related_name="issue_calendar_events")
+    google_event_id = models.CharField(max_length=1024)
+    calendar_id = models.CharField(max_length=255)
+    summary = models.CharField(max_length=1024, blank=True)
+    start = models.DateTimeField(null=True, blank=True)
+    end = models.DateTimeField(null=True, blank=True)
+    all_day = models.BooleanField(default=False)
+    html_link = models.TextField(blank=True)
+    meet_link = models.TextField(blank=True)
+    attendees = models.JSONField(default=list, blank=True)
+
+    class Meta:
+        verbose_name = "Issue Calendar Event"
+        verbose_name_plural = "Issue Calendar Events"
+        db_table = "issue_calendar_events"
+        ordering = ("start",)
+
+    def __str__(self):
+        return f"{self.issue_id} -> {self.summary} ({self.google_event_id})"

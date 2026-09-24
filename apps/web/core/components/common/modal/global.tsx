@@ -13,6 +13,13 @@ const ProfileSettingsModal = lazy(() =>
   }))
 );
 
+// Pespo: seletor do Google Drive aberto pelo embed do editor (pickGoogleDriveFile).
+const GoogleDrivePickerHost = lazy(() =>
+  import("@/components/integration/google-drive/picker-host").then((module) => ({
+    default: module.GoogleDrivePickerHost,
+  }))
+);
+
 type TGlobalModalsProps = {
   workspaceSlug: string;
 };
@@ -22,11 +29,13 @@ type TGlobalModalsProps = {
  *
  * This includes:
  * - Profile settings modal
+ * - Google Drive picker (Pespo)
  */
 export const GlobalModals = observer(function GlobalModals(_props: TGlobalModalsProps) {
   return (
     <Suspense fallback={null}>
       <ProfileSettingsModal />
+      <GoogleDrivePickerHost />
     </Suspense>
   );
 });

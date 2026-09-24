@@ -5,6 +5,8 @@
  */
 
 import type { IEditorPropsExtended } from "@plane/editor";
+// Pespo: seletor do Google Drive pro bloco /google-drive nas Páginas.
+import { pickGoogleDriveFile } from "@/components/integration/google-drive/picker-store";
 import type { TSearchEntityRequestPayload, TSearchResponse } from "@plane/types";
 import type { TPageInstance } from "@/store/pages/base-page";
 import type { EPageStoreType } from "@/hooks/store";
@@ -21,6 +23,9 @@ export type TExtendedEditorExtensionsHookParams = {
 
 export type TExtendedEditorExtensionsConfig = IEditorPropsExtended;
 
-export const useExtendedEditorProps = (
-  _params: TExtendedEditorExtensionsHookParams
-): TExtendedEditorExtensionsConfig => ({});
+// Module-level constant: a stable reference keeps the editor from rebuilding
+// its extensions on every render.
+const EXTENDED_EDITOR_PROPS: TExtendedEditorExtensionsConfig = { onPickGoogleDriveFile: pickGoogleDriveFile };
+
+export const useExtendedEditorProps = (_params: TExtendedEditorExtensionsHookParams): TExtendedEditorExtensionsConfig =>
+  EXTENDED_EDITOR_PROPS;

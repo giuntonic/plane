@@ -13,7 +13,9 @@ import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useTimeLineRelationOptions } from "@/components/relations";
 // local imports
 import { AttachmentsCollapsible } from "./attachments";
+import { GoogleDriveCollapsible } from "./google-drive";
 import { LinksCollapsible } from "./links";
+import { MeetingsCollapsible } from "./meetings";
 import { PecaMarkingCollapsible } from "./peca-marking";
 import { RelationsCollapsible } from "./relations";
 import { SubIssuesCollapsible } from "./sub-issues";
@@ -81,6 +83,24 @@ export const IssueDetailWidgetCollapsibles = observer(function IssueDetailWidget
       )}
       {shouldRenderAttachments && (
         <AttachmentsCollapsible
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          disabled={disabled}
+          issueServiceType={issueServiceType}
+        />
+      )}
+      {!hideWidgets?.includes("meetings") && (
+        <MeetingsCollapsible
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          disabled={disabled}
+          issueServiceType={issueServiceType}
+        />
+      )}
+      {!hideWidgets?.includes("google-drive") && (
+        <GoogleDriveCollapsible
           workspaceSlug={workspaceSlug}
           projectId={projectId}
           issueId={issueId}

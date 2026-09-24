@@ -4,43 +4,63 @@
  * See the LICENSE file for details.
  */
 
+import { useState } from "react";
 import { observer } from "mobx-react";
-import { SquareArrowOutUpRight } from "lucide-react";
 // plane imports
-import type { ICalendarDate, TGoogleCalendarEvent } from "@plane/types";
-import { Popover } from "@plane/ui";
+import type { ICalendarDate, TBaseIssue, TGoogleCalendarEvent } from "@plane/types";
 import { cn } from "@plane/utils";
 // hooks
 import { useProject } from "@/hooks/store/use-project";
 import { useAppRouter } from "@/hooks/use-app-router";
 // local imports
+import { CalendarSyncEventPopover } from "./event-popover";
+import { DRAG_MIME } from "./helpers";
 import type { TDayEntry } from "./root";
 
-const formatEventTime = (event: TGoogleCalendarEvent) => {
-  if (event.start?.date) return "Dia inteiro";
-  if (!event.start?.dateTime) return "";
-  const timeOptions: Intl.DateTimeFormatOptions = { hour: "2-digit", minute: "2-digit" };
-  const start = new Date(event.start.dateTime).toLocaleTimeString("pt-BR", timeOptions);
-  const end = event.end?.dateTime ? new Date(event.end.dateTime).toLocaleTimeString("pt-BR", timeOptions) : undefined;
-  return end ? `${start} – ${end}` : start;
+const PRIORITY_COLORS: Record<string, string> = {
+  urgent: "#dc2626",
+  high: "#ea580c",
+  medium: "#ca8a04",
+  low: "#2563eb",
 };
+
+export type TDragPayload = { issueId: string; fromDay: string };
 
 type Props = {
   dateKey: string;
   calendarDate: ICalendarDate;
   entry: TDayEntry | undefined;
   workspaceSlug: string;
+  canDrag: (issue: TBaseIssue) => boolean;
+  onDropIssue: (payload: TDragPayload, toDay: string) => void;
+  onCreateWorkItem: (event: TGoogleCalendarEvent) => void;
 };
 
 export const CalendarSyncDayCell = observer(function CalendarSyncDayCell(props: Props) {
-  const { calendarDate, entry, workspaceSlug } = props;
+  const { dateKey, calendarDate, entry, workspaceSlug, canDrag, onDropIssue, onCreateWorkItem } = props;
   const router = useAppRouter();
   const { getProjectIdentifierById } = useProject();
+  const [isDragOver, setIsDragOver] = useState(false);
 
   return (
     <div
-      className={cn("flex min-h-28 flex-col gap-1 p-1.5", {
+      onDragOver={(e) => {
+        if (!e.dataTransfer.types.includes(DRAG_MIME)) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        setIsDragOver(true);
+      }}
+      onDragLeave={() => setIsDragOver(false)}
+      onDrop={(e) => {
+        setIsDragOver(false);
+        const raw = e.dataTransfer.getData(DRAG_MIME);
+        if (!raw) return;
+        e.preventDefault();
+        onDropIssue(JSON.parse(raw) as TDragPayload, dateKey);
+      }}
+      className={cn("flex min-h-28 flex-col gap-1 p-1.5 transition-colors", {
         "bg-surface-1": !calendarDate.is_current_month,
+        "bg-accent-primary/10": isDragOver,
       })}
     >
       <span
@@ -53,14 +73,30 @@ export const CalendarSyncDayCell = observer(function CalendarSyncDayCell(props: 
       </span>
 
       <div className="flex flex-col gap-1">
-        {entry?.issues.map((issue) => {
+        {entry?.issues.map(({ issue, isContinuation }) => {
           const identifier = getProjectIdentifierById(issue.project_id);
+          const isCompleted = (issue as TBaseIssue & { state__group?: string }).state__group === "completed";
+          const draggable = canDrag(issue);
           return (
             <button
               key={issue.id}
               type="button"
+              draggable={draggable}
+              onDragStart={(e) => {
+                const payload: TDragPayload = { issueId: issue.id, fromDay: dateKey };
+                e.dataTransfer.setData(DRAG_MIME, JSON.stringify(payload));
+                e.dataTransfer.effectAllowed = "move";
+              }}
               onClick={() => router.push(`/${workspaceSlug}/browse/${identifier}-${issue.sequence_id}/`)}
-              className="hover:bg-surface-3 truncate rounded border border-subtle-1 bg-surface-2 px-1.5 py-0.5 text-left text-caption-sm-medium"
+              className={cn(
+                "hover:bg-surface-3 truncate rounded border border-l-[3px] border-subtle-1 bg-surface-2 px-1.5 py-0.5 text-left text-caption-sm-medium",
+                {
+                  "cursor-grab active:cursor-grabbing": draggable,
+                  "opacity-70": isContinuation,
+                  "text-tertiary line-through": isCompleted,
+                }
+              )}
+              style={{ borderLeftColor: PRIORITY_COLORS[issue.priority ?? ""] ?? undefined }}
               title={issue.name}
             >
               <span className="text-tertiary">
@@ -71,35 +107,13 @@ export const CalendarSyncDayCell = observer(function CalendarSyncDayCell(props: 
           );
         })}
 
-        {entry?.events.map((event) => (
-          <Popover
+        {entry?.events.map(({ event, isContinuation }) => (
+          <CalendarSyncEventPopover
             key={event.id}
-            popperPosition="bottom-start"
-            buttonClassName="block w-full truncate rounded border border-dashed border-subtle-2 px-1.5 py-0.5 text-left text-caption-sm-medium text-secondary hover:bg-surface-2"
-            button={event.summary || "(sem título)"}
-            panelClassName="w-72 max-w-xs rounded-md border-[0.5px] border-subtle-1 bg-surface-1 p-3 shadow-raised-200"
-          >
-            <div className="flex flex-col gap-1.5">
-              <p className="text-13 font-semibold text-primary">{event.summary || "(sem título)"}</p>
-              <p className="text-caption-sm-medium text-tertiary">{formatEventTime(event)}</p>
-              {event.description && (
-                <p className="max-h-40 overflow-y-auto text-caption-sm-regular whitespace-pre-wrap text-secondary">
-                  {event.description}
-                </p>
-              )}
-              {event.htmlLink && (
-                <a
-                  href={event.htmlLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 flex items-center gap-1 text-caption-sm-medium text-accent-primary hover:underline"
-                >
-                  Abrir no Google Calendar
-                  <SquareArrowOutUpRight className="size-3" />
-                </a>
-              )}
-            </div>
-          </Popover>
+            event={event}
+            isContinuation={isContinuation}
+            onCreateWorkItem={onCreateWorkItem}
+          />
         ))}
       </div>
     </div>

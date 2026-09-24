@@ -14,7 +14,8 @@ export type TProfileSettingsTabs =
   | "notifications"
   | "security"
   | "api-tokens"
-  | "google-calendar";
+  | "google-calendar"
+  | "google-drive";
 
 export type TWorkspaceSettingsTabs = "general" | "members" | "export" | "webhooks";
 export type TWorkspaceSettingsItem = {
