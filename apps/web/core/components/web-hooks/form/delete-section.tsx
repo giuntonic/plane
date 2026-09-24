@@ -38,10 +38,7 @@ export function WebhookDeleteSection(props: Props) {
           >
             <Disclosure.Panel>
               <div className="flex flex-col gap-8">
-                <span className="text-13 tracking-tight">
-                  Once a webhook is deleted, it cannot be restored. Future events will no longer be delivered to this
-                  webhook.
-                </span>
+                <span className="text-13 tracking-tight">{t("ui.jsx_once_a_webhook_is_deleted_it_cannot")}</span>
                 <div>
                   <Button variant="error-fill" size="lg" onClick={openDeleteModal}>
                     {t("ui.delete_webhook")}

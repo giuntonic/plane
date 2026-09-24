@@ -21,9 +21,7 @@ export function ContentLimitBanner({ className, onDismiss }: Props) {
         <span className="text-amber-500">
           <TriangleAlert />
         </span>
-        <span className="font-medium">
-          Content limit reached and live sync is off. Create a new page or use nested pages to continue syncing.
-        </span>
+        <span className="font-medium">{t("ui.jsx_content_limit_reached_and_live_sync_is")}</span>
       </div>
       {onDismiss && (
         <button

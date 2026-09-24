@@ -143,7 +143,7 @@ export function PageForm(props: Props) {
         </div>
         <div className="flex items-center justify-end gap-2">
           <Button variant="secondary" size="lg" onClick={handleModalClose} tabIndex={getIndex("cancel")}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="primary"

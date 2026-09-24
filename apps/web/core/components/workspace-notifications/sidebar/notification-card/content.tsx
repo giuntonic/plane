@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import type { ReactNode } from "react";
 // plane imports
 import type { TNotification } from "@plane/types";
@@ -209,7 +210,7 @@ export function NotificationContent({
       <span className="text-tertiary">{renderAction()} </span>
       {verb !== "deleted" && (
         <>
-          {showConnector && <span className="text-tertiary">to </span>}
+          {showConnector && <span className="text-tertiary">{i18nInstance.t("ui.jsx_to")} </span>}
           <span className="font-medium text-primary">{renderValue()}</span>
           {notificationField === "comment" && renderCommentBox && (
             <div className="origin-left scale-75">

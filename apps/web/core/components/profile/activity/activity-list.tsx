@@ -74,7 +74,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                             : activityItem.actor_detail.display_name}
                         </div>
                         <p className="mt-0.5 text-11 text-secondary">
-                          Commented {calculateTimeAgo(activityItem.created_at)}
+                          {t("ui.jsx_commented_2")} {calculateTimeAgo(activityItem.created_at)}
                         </p>
                       </div>
                       <div className="issue-comments-section p-0">
@@ -104,7 +104,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
               ) &&
               !activityItem.field ? (
                 <span>
-                  created <IssueLink activity={activityItem} />
+                  {t("ui.jsx_created")} <IssueLink activity={activityItem} />
                 </span>
               ) : (
                 <ActivityMessage activity={activityItem} showIssue />

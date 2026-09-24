@@ -90,13 +90,15 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
         </div>
         <span>
           <p className="text-13 leading-7 text-secondary">
-            Are you sure you want to delete project <span className="font-semibold break-words">{project?.name}</span>?
-            All of the data related to the project will be permanently removed. This action cannot be undone
+            {t("ui.jsx_are_you_sure_you_want_to_delete_4")}{" "}
+            <span className="font-semibold break-words">{project?.name}</span>
+            {t("ui.jsx_all_of_the_data_related_to_the_2")}
           </p>
         </span>
         <div className="text-secondary">
           <p className="text-13 break-words">
-            Enter the project name <span className="font-medium text-primary">{project?.name}</span> to continue:
+            {t("ui.jsx_enter_the_project_name")} <span className="font-medium text-primary">{project?.name}</span>{" "}
+            {t("ui.jsx_to_continue")}
           </p>
           <Controller
             control={control}
@@ -119,7 +121,8 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
         </div>
         <div className="text-secondary">
           <p className="text-13">
-            To confirm, type <span className="font-medium text-primary">delete my project</span> below:
+            {t("ui.jsx_to_confirm_type")} <span className="font-medium text-primary">delete my project</span>{" "}
+            {t("ui.jsx_below")}
           </p>
           <Controller
             control={control}
@@ -142,7 +145,7 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
         </div>
         <div className="flex justify-end gap-2">
           <Button variant="secondary" size="lg" onClick={handleClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="error-fill" size="lg" type="submit" disabled={!canDelete} loading={isSubmitting}>
             {isSubmitting ? t("deleting") : t("ui.delete_project")}

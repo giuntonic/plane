@@ -36,7 +36,7 @@ export const NewUserPopup = observer(function NewUserPopup() {
               {t("create_workspace")}
             </Link>
             <Button variant="secondary" size="lg" onClick={toggleNewUserPopup}>
-              Close
+              {t("close")}
             </Button>
           </div>
         </div>

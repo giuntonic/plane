@@ -9,7 +9,7 @@ import type { UseFormSetValue } from "react-hook-form";
 import { Controller, useFormContext } from "react-hook-form";
 import { InfoIcon } from "@plane/propel/icons";
 // plane imports
-import { ETabIndices } from "@plane/constants";
+import { ETabIndices, PROJECT_IDENTIFIER_MAX_LENGTH } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import type { TProject } from "@plane/types";
 // ui
@@ -42,7 +42,8 @@ function ProjectCommonAttributes(props: Props) {
         return;
       }
       if (e.target.value === "") setValue("identifier", "");
-      else setValue("identifier", projectIdentifierSanitizer(e.target.value).substring(0, 10));
+      else
+        setValue("identifier", projectIdentifierSanitizer(e.target.value).substring(0, PROJECT_IDENTIFIER_MAX_LENGTH));
       onChange(e);
       handleFormOnChange?.();
     };
@@ -97,8 +98,8 @@ function ProjectCommonAttributes(props: Props) {
               message: t("project_id_min_char"),
             },
             maxLength: {
-              value: 10,
-              message: t("project_id_max_char"),
+              value: PROJECT_IDENTIFIER_MAX_LENGTH,
+              message: t("project_id_max_char", { max: PROJECT_IDENTIFIER_MAX_LENGTH }),
             },
           }}
           render={({ field: { value, onChange } }) => (
@@ -106,6 +107,7 @@ function ProjectCommonAttributes(props: Props) {
               id="identifier"
               name="identifier"
               type="text"
+              maxLength={PROJECT_IDENTIFIER_MAX_LENGTH}
               value={value}
               onChange={handleIdentifierChange(onChange)}
               hasError={Boolean(errors.identifier)}
@@ -119,7 +121,7 @@ function ProjectCommonAttributes(props: Props) {
         />
         <Tooltip
           isMobile={isMobile}
-          tooltipContent={t("project_id_tooltip_content")}
+          tooltipContent={t("project_id_tooltip_content", { max: PROJECT_IDENTIFIER_MAX_LENGTH })}
           className="text-13"
           position="right-start"
         >

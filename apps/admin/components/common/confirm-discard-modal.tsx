@@ -55,9 +55,7 @@ export function ConfirmDiscardModal(props: Props) {
                         {t("ui.you_have_unsaved_changes")}
                       </Dialog.Title>
                       <div className="mt-2">
-                        <p className="text-13 text-placeholder">
-                          Changes you made will be lost if you go back. Do you wish to go back?
-                        </p>
+                        <p className="text-13 text-placeholder">{t("ui.jsx_changes_you_made_will_be_lost_if")}</p>
                       </div>
                     </div>
                   </div>

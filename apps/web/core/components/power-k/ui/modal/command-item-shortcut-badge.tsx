@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 
 /**
@@ -96,6 +97,7 @@ export const formatKeySequenceForDisplay = (sequence: string | undefined): strin
 };
 
 export function KeySequenceBadge({ sequence }: { sequence: string | undefined }) {
+  const { t } = useTranslation();
   if (!sequence) return null;
 
   const chars = sequence.split("");
@@ -107,7 +109,7 @@ export function KeySequenceBadge({ sequence }: { sequence: string | undefined })
           <kbd className="inline-flex h-5 items-center justify-center rounded-sm border border-strong bg-surface-1 px-1.5 font-code text-10 font-medium text-tertiary">
             {char.toUpperCase()}
           </kbd>
-          {index < chars.length - 1 && <span className="text-10 text-placeholder">then</span>}
+          {index < chars.length - 1 && <span className="text-10 text-placeholder">{t("ui.jsx_then")}</span>}
         </React.Fragment>
       ))}
     </div>

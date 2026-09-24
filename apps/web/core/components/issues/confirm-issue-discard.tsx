@@ -41,9 +41,7 @@ export function ConfirmIssueDiscard(props: Props) {
           <div className="mt-3 text-center sm:mt-0 sm:text-left">
             <h3 className="text-16 leading-6 font-medium text-primary">{t("ui.save_this_draft")}</h3>
             <div className="mt-2">
-              <p className="text-13 text-secondary">
-                You can save this work item to Drafts so you can come back to it later.{" "}
-              </p>
+              <p className="text-13 text-secondary">{t("ui.jsx_you_can_save_this_work_item_to")} </p>
             </div>
           </div>
         </div>
@@ -51,12 +49,12 @@ export function ConfirmIssueDiscard(props: Props) {
       <div className="flex justify-between gap-2 p-4 sm:px-6">
         <div>
           <Button variant="secondary" onClick={onDiscard}>
-            Discard
+            {t("discard")}
           </Button>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" onClick={onClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" onClick={handleDeletion} loading={isLoading}>
             {isLoading ? t("saving") : t("save_to_drafts")}

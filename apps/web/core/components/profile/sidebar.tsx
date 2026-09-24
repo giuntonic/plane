@@ -239,7 +239,7 @@ export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSi
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
                                   <div className="h-2.5 w-2.5 rounded-xs bg-[#203b80]" />
-                                  Created
+                                  {t("ui.jsx_created_2")}
                                 </div>
                                 <div className="font-medium">
                                   {project.created_issues} {t("issues")}
@@ -248,7 +248,7 @@ export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSi
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
                                   <div className="h-2.5 w-2.5 rounded-xs bg-[#3f76ff]" />
-                                  Assigned
+                                  {t("ui.jsx_assigned")}
                                 </div>
                                 <div className="font-medium">
                                   {project.assigned_issues} {t("issues")}
@@ -257,7 +257,7 @@ export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSi
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
                                   <div className="h-2.5 w-2.5 rounded-xs bg-[#f59e0b]" />
-                                  Due
+                                  {t("ui.jsx_due")}
                                 </div>
                                 <div className="font-medium">
                                   {project.pending_issues} {t("issues")}
@@ -266,7 +266,7 @@ export const ProfileSidebar = observer(function ProfileSidebar(props: TProfileSi
                               <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center gap-2">
                                   <div className="h-2.5 w-2.5 rounded-xs bg-[#16a34a]" />
-                                  Completed
+                                  {t("ui.jsx_completed")}
                                 </div>
                                 <div className="font-medium">
                                   {project.completed_issues} {t("issues")}

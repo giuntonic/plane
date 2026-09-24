@@ -29,7 +29,7 @@ export function PoweredBy(props: TPoweredBy) {
     >
       <PlaneLogo className="h-3 w-auto text-primary" />
       <div className="text-11">
-        Powered by <span className="font-semibold">{t("ui.plane_publish")}</span>
+        {t("ui.powered_by")} <span className="font-semibold">{t("ui.plane_publish")}</span>
       </div>
     </a>
   );

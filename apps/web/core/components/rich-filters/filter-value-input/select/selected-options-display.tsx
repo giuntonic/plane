@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { Transition } from "@headlessui/react";
 // plane imports
@@ -20,6 +21,7 @@ type TSelectedOptionsDisplayProps<V extends TFilterValue> = {
 };
 
 export function SelectedOptionsDisplay<V extends TFilterValue>(props: TSelectedOptionsDisplayProps<V>) {
+  const { t } = useTranslation();
   const { selectedValue, options, displayCount = 2, emptyValue = EMPTY_FILTER_PLACEHOLDER_TEXT, fallbackText } = props;
   // derived values
   const selectedArray = toFilterArray(selectedValue);
@@ -59,7 +61,7 @@ export function SelectedOptionsDisplay<V extends TFilterValue>(props: TSelectedO
           enterTo="opacity-100"
           className="ml-1 whitespace-nowrap text-tertiary"
         >
-          +{remainingCount} more
+          +{remainingCount} {t("ui.jsx_more")}
         </Transition>
       )}
     </div>

@@ -90,7 +90,7 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
               <div className="grow">
                 <div className="pb-1 text-16 font-medium">{t("ui.prevent_anyone_else_from_creating_a_workspace")}</div>
                 <div className={cn("text-11 leading-5 font-regular text-tertiary")}>
-                  Toggling this on will let only you create workspaces. You will have to invite users to new workspaces.
+                  {t("ui.jsx_toggling_this_on_will_let_only_you")}
                 </div>
               </div>
             </div>
@@ -121,14 +121,14 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
             <div className="flex items-center justify-between gap-2 pt-6">
               <div className="flex flex-col items-start gap-x-2">
                 <div className="flex items-center gap-2 text-16 font-medium">
-                  All workspaces on this instance <span className="text-tertiary">• {workspaceIds.length}</span>
+                  {t("ui.jsx_all_workspaces_on_this_instance")}{" "}
+                  <span className="text-tertiary">• {workspaceIds.length}</span>
                   {workspaceLoader && ["mutation", "pagination"].includes(workspaceLoader) && (
                     <LoaderIcon className="h-4 w-4 animate-spin" />
                   )}
                 </div>
                 <div className={cn("text-11 leading-5 font-regular text-tertiary")}>
-                  You can&apos;t yet delete workspaces and you can only go to the workspace if you are an Admin or a
-                  Member.
+                  {t("ui.jsx_you_cant_yet_delete_workspaces_and_you")}
                 </div>
               </div>
               <div className="flex items-center gap-2">

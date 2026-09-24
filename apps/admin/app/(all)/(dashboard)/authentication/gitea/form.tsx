@@ -66,9 +66,7 @@ export function InstanceGiteaConfigForm(props: Props) {
       key: "GITEA_HOST",
       type: "text",
       label: t("ui.gitea_host"),
-      description: (
-        <>Use the URL of your Gitea instance. For the official Gitea instance, use &quot;https://gitea.com&quot;.</>
-      ),
+      description: <>{t("ui.jsx_use_the_url_of_your_gitea_instance")}</>,
       placeholder: "https://gitea.com",
       error: Boolean(errors.GITEA_HOST),
       required: true,
@@ -79,7 +77,7 @@ export function InstanceGiteaConfigForm(props: Props) {
       label: t("ui.client_id"),
       description: (
         <>
-          You will get this from your{" "}
+          {t("ui.jsx_you_will_get_this_from_your")}{" "}
           <a
             href="https://gitea.com/user/settings/applications"
             target="_blank"
@@ -100,7 +98,7 @@ export function InstanceGiteaConfigForm(props: Props) {
       label: t("ui.client_secret"),
       description: (
         <>
-          Your client secret is also found in your{" "}
+          {t("ui.jsx_your_client_secret_is_also_found_in")}{" "}
           <a
             href="https://gitea.com/user/settings/applications"
             target="_blank"
@@ -124,8 +122,8 @@ export function InstanceGiteaConfigForm(props: Props) {
       url: `${originURL}/auth/gitea/callback/`,
       description: (
         <>
-          We will auto-generate this. Paste this into your <CodeBlock darkerShade>Authorized Callback URI</CodeBlock>{" "}
-          field{" "}
+          {t("ui.jsx_we_will_auto_generate_this_paste_this")}{" "}
+          <CodeBlock darkerShade>{t("ui.jsx_authorized_callback_uri")}</CodeBlock> {t("ui.jsx_field")}{" "}
           <a
             href={`${control._formValues.GITEA_HOST || "https://gitea.com"}/user/settings/applications`}
             target="_blank"
@@ -133,7 +131,7 @@ export function InstanceGiteaConfigForm(props: Props) {
             rel="noreferrer"
             aria-label={t("ui.gitea_oauth_application_settings_2")}
           >
-            here.
+            {t("ui.jsx_here")}
           </a>
         </>
       ),

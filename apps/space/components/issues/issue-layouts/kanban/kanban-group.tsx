@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { MutableRefObject } from "react";
 import { forwardRef, useCallback, useRef, useState } from "react";
 import { observer } from "mobx-react";
@@ -51,6 +52,7 @@ const KanbanIssueBlockLoader = forwardRef(function KanbanIssueBlockLoader(
 KanbanIssueBlockLoader.displayName = "KanbanIssueBlockLoader";
 
 export const KanbanGroup = observer(function KanbanGroup(props: IKanbanGroup) {
+  const { t } = useTranslation();
   const {
     groupId,
     subGroupId,
@@ -101,7 +103,7 @@ export const KanbanGroup = observer(function KanbanGroup(props: IKanbanGroup) {
       role="button"
     >
       {" "}
-      Load More &darr;
+      {t("ui.jsx_load_more")}
     </div>
   );
 

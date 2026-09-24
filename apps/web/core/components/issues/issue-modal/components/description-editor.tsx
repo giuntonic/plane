@@ -258,7 +258,8 @@ export const IssueDescriptionEditor = observer(function IssueDescriptionEditor(p
                   "Generating response"
                 ) : (
                   <>
-                    <Sparkle className="h-3.5 w-3.5" />I{"'"}m feeling lucky
+                    <Sparkle className="h-3.5 w-3.5" />
+                    {t("ui.jsx_im_feeling_lucky")}
                   </>
                 )}
               </button>

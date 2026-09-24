@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { SmilePlus } from "lucide-react";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export const PageEditorHeaderRoot = observer(function PageEditorHeaderRoot(props: Props) {
+  const { t } = useTranslation();
   const { page } = props;
   // states
   const [isLogoPickerOpen, setIsLogoPickerOpen] = useState(false);
@@ -54,7 +56,7 @@ export const PageEditorHeaderRoot = observer(function PageEditorHeaderRoot(props
                   )}
                 >
                   <SmilePlus className="size-4 flex-shrink-0" />
-                  Icon
+                  {t("ui.jsx_icon")}
                 </button>
               }
               onChange={updatePageLogo}

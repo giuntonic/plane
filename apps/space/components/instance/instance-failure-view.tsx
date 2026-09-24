@@ -28,13 +28,13 @@ export function InstanceFailureView() {
           <img src={instanceImage} alt={t("ui.plane_instance_failure_image")} />
           <h3 className="text-20 font-medium text-on-color">{t("ui.unable_to_fetch_instance_details")}</h3>
           <p className="text-center text-14 font-medium">
-            We were unable to fetch the details of the instance. <br />
-            Fret not, it might just be a connectivity work items.
+            {t("ui.jsx_we_were_unable_to_fetch_the_details_2")} <br />
+            {t("ui.jsx_fret_not_it_might_just_be_a")}
           </p>
         </div>
         <div className="flex justify-center">
           <Button size="lg" onClick={handleRetry}>
-            Retry
+            {t("common.retry")}
           </Button>
         </div>
       </div>

@@ -68,7 +68,8 @@ export function InstanceGitlabConfigForm(props: Props) {
       label: t("ui.host"),
       description: (
         <>
-          This is either https://gitlab.com or the <CodeBlock>domain.tld</CodeBlock> where you host GitLab.
+          {t("ui.jsx_this_is_either_https_gitlab_com_or")} <CodeBlock>domain.tld</CodeBlock>{" "}
+          {t("ui.jsx_where_you_host_gitlab")}
         </>
       ),
       placeholder: "https://gitlab.com",
@@ -81,7 +82,7 @@ export function InstanceGitlabConfigForm(props: Props) {
       label: t("ui.application_id"),
       description: (
         <>
-          Get this from your{" "}
+          {t("ui.jsx_get_this_from_your")}{" "}
           <a
             href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
             target="_blank"
@@ -103,7 +104,7 @@ export function InstanceGitlabConfigForm(props: Props) {
       label: t("ui.secret"),
       description: (
         <>
-          The client secret is also found in your{" "}
+          {t("ui.jsx_the_client_secret_is_also_found_in")}{" "}
           <a
             href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
             target="_blank"
@@ -128,7 +129,8 @@ export function InstanceGitlabConfigForm(props: Props) {
       url: `${originURL}/auth/gitlab/callback/`,
       description: (
         <>
-          We will auto-generate this. Paste this into the <CodeBlock darkerShade>Redirect URI</CodeBlock> field of your{" "}
+          {t("ui.jsx_we_will_auto_generate_this_paste_this_2")}{" "}
+          <CodeBlock darkerShade>{t("ui.jsx_redirect_uri")}</CodeBlock> {t("ui.jsx_field_of_your")}{" "}
           <a
             href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
             target="_blank"

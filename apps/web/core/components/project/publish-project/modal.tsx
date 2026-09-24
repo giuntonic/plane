@@ -327,7 +327,7 @@ export const PublishProjectModal = observer(function PublishProjectModal(props: 
           {!fetchSettingsLoader && (
             <div className="relative flex items-center gap-2">
               <Button variant="secondary" size="lg" onClick={handleClose}>
-                Cancel
+                {t("cancel")}
               </Button>
               {isProjectPublished ? (
                 isDirty && (

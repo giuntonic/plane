@@ -98,8 +98,9 @@ export function SwitchAccountModal(props: Props) {
                       </Dialog.Title>
                       {userData?.email && (
                         <div className="text-14 font-regular text-secondary">
-                          If you have signed up via <span className="text-accent-primary">{userData.email}</span>{" "}
-                          un-intentionally, you can switch your account to a different one from here.
+                          {t("ui.jsx_if_you_have_signed_up_via")}{" "}
+                          <span className="text-accent-primary">{userData.email}</span>{" "}
+                          {t("ui.jsx_un_intentionally_you_can_switch_your_account")}
                         </div>
                       )}
                     </div>

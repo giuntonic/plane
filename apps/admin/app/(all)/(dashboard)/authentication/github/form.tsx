@@ -69,7 +69,7 @@ export function InstanceGithubConfigForm(props: Props) {
       label: t("ui.client_id"),
       description: (
         <>
-          You will get this from your{" "}
+          {t("ui.jsx_you_will_get_this_from_your")}{" "}
           <a
             href="https://github.com/settings/applications/new"
             target="_blank"
@@ -90,7 +90,7 @@ export function InstanceGithubConfigForm(props: Props) {
       label: t("ui.client_secret"),
       description: (
         <>
-          Your client secret is also found in your{" "}
+          {t("ui.jsx_your_client_secret_is_also_found_in")}{" "}
           <a
             href="https://github.com/settings/applications/new"
             target="_blank"
@@ -123,7 +123,8 @@ export function InstanceGithubConfigForm(props: Props) {
       url: originURL,
       description: (
         <>
-          We will auto-generate this. Paste this into the <CodeBlock darkerShade>Authorized origin URL</CodeBlock> field{" "}
+          {t("ui.jsx_we_will_auto_generate_this_paste_this_2")}{" "}
+          <CodeBlock darkerShade>{t("ui.jsx_authorized_origin_url")}</CodeBlock> {t("ui.jsx_field")}{" "}
           <a
             href="https://github.com/settings/applications/new"
             target="_blank"
@@ -131,7 +132,7 @@ export function InstanceGithubConfigForm(props: Props) {
             rel="noreferrer"
             aria-label={t("ui.github_oauth_application_settings_2")}
           >
-            here.
+            {t("ui.jsx_here")}
           </a>
         </>
       ),
@@ -145,8 +146,8 @@ export function InstanceGithubConfigForm(props: Props) {
       url: `${originURL}/auth/github/callback/`,
       description: (
         <>
-          We will auto-generate this. Paste this into your <CodeBlock darkerShade>Authorized Callback URI</CodeBlock>{" "}
-          field{" "}
+          {t("ui.jsx_we_will_auto_generate_this_paste_this")}{" "}
+          <CodeBlock darkerShade>{t("ui.jsx_authorized_callback_uri")}</CodeBlock> {t("ui.jsx_field")}{" "}
           <a
             href="https://github.com/settings/applications/new"
             target="_blank"
@@ -154,7 +155,7 @@ export function InstanceGithubConfigForm(props: Props) {
             rel="noreferrer"
             aria-label={t("ui.github_oauth_application_settings_2")}
           >
-            here.
+            {t("ui.jsx_here")}
           </a>
         </>
       ),

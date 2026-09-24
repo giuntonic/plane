@@ -218,7 +218,7 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
         <div className="mt-5 flex items-center justify-between gap-2">
           <div className="flex w-full items-center justify-end gap-2">
             <Button variant="secondary" size="lg" onClick={handleClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
               {isSubmitting ? t("ui.submitting") : t("submit")}

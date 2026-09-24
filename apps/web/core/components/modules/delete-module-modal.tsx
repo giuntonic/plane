@@ -79,9 +79,9 @@ export const DeleteModuleModal = observer(function DeleteModuleModal(props: Prop
       title={t("ui.delete_module")}
       content={
         <>
-          Are you sure you want to delete module-{" "}
-          <span className="font-medium break-all text-primary">{data?.name}</span>? All of the data related to the
-          module will be permanently removed. This action cannot be undone.
+          {t("ui.jsx_are_you_sure_you_want_to_delete_3")}{" "}
+          <span className="font-medium break-all text-primary">{data?.name}</span>
+          {t("ui.jsx_all_of_the_data_related_to_the")}
         </>
       }
     />

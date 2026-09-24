@@ -303,9 +303,7 @@ export function EditorAIMenu(props: Props) {
           <span className="grid size-4 flex-shrink-0 place-items-center">
             <TriangleAlert className="size-3" />
           </span>
-          <p className="flex-shrink-0 text-11 font-medium">
-            By using this feature, you consent to sharing the message with a 3rd party service.
-          </p>
+          <p className="flex-shrink-0 text-11 font-medium">{t("ui.jsx_by_using_this_feature_you_consent_to")}</p>
         </div>
       )}
     </div>

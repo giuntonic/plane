@@ -153,10 +153,7 @@ export const CustomizeNavigationDialog = observer(function CustomizeNavigationDi
         <div className="flex justify-between px-6 pt-4">
           <div>
             <h2 className="text-18 font-semibold text-primary">{t("customize_navigation")}</h2>
-            <p className="mt-1 text-13 text-tertiary">
-              Choose which items appear in your sidebar and reorder them. These changes are personal to you and
-              won&apos;t affect anyone else on your workspace.
-            </p>
+            <p className="mt-1 text-13 text-tertiary">{t("ui.jsx_choose_which_items_appear_in_your_sidebar")}</p>
           </div>
           <button
             onClick={onClose}

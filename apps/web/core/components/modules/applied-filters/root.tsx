@@ -99,7 +99,7 @@ export function ModuleAppliedFiltersList(props: Props) {
             <div className="flex flex-wrap items-center gap-1.5">
               <span className="text-11 text-tertiary">{t("modules")}</span>
               <div className="flex items-center gap-1 rounded-sm bg-layer-1 p-1 text-11">
-                Favorite
+                {t("ui.jsx_favorite")}
                 {isEditingAllowed && (
                   <button
                     type="button"

@@ -74,15 +74,12 @@ export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMe
                       </Dialog.Title>
                       <div className="mt-2">
                         {currentUser?.id === userDetails.id ? (
-                          <p className="text-13 text-secondary">
-                            Are you sure you want to leave the workspace? You will no longer have access to this
-                            workspace. This action cannot be undone.
-                          </p>
+                          <p className="text-13 text-secondary">{t("ui.jsx_are_you_sure_you_want_to_leave_2")}</p>
                         ) : (
                           <p className="text-13 text-secondary">
-                            Are you sure you want to remove member-{" "}
-                            <span className="font-bold">{userDetails?.display_name}</span>? They will no longer have
-                            access to this workspace. This action cannot be undone.
+                            {t("ui.jsx_are_you_sure_you_want_to_remove")}{" "}
+                            <span className="font-bold">{userDetails?.display_name}</span>
+                            {t("ui.jsx_they_will_no_longer_have_access_to_2")}
                           </p>
                         )}
                       </div>
@@ -91,7 +88,7 @@ export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMe
                 </div>
                 <div className="flex justify-end gap-2 p-4 sm:px-6">
                   <Button variant="secondary" onClick={handleClose}>
-                    Cancel
+                    {t("cancel")}
                   </Button>
                   <Button variant="error-fill" tabIndex={1} onClick={handleDeletion} loading={isRemoving}>
                     {currentUser?.id === userDetails.id

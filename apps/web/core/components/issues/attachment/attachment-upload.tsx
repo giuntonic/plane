@@ -60,7 +60,7 @@ export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(pro
       <input {...getInputProps()} />
       <span className="flex items-center gap-2">
         {isDragActive ? (
-          <p>Drop here...</p>
+          <p>{t("ui.jsx_drop_here")}</p>
         ) : fileError ? (
           <p className="text-center text-danger-primary">{fileError}</p>
         ) : isLoading ? (

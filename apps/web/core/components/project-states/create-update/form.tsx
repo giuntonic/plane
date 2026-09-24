@@ -104,7 +104,7 @@ export function StateForm(props: TStateForm) {
             {buttonTitle}
           </Button>
           <Button type="button" variant="secondary" size="lg" disabled={buttonDisabled} onClick={onCancel}>
-            Cancel
+            {t("cancel")}
           </Button>
         </div>
       </div>

@@ -56,7 +56,11 @@ export const useExportColumns = () => {
     {
       key: "Exported projects",
       content: t("ui.exported_projects"),
-      tdRender: (rowData: RowData) => <div className="text-13">{rowData.project.length} project(s)</div>,
+      tdRender: (rowData: RowData) => (
+        <div className="text-13">
+          {rowData.project.length} {t("ui.jsx_project_s")}
+        </div>
+      ),
     },
     {
       key: "Format",
@@ -104,7 +108,7 @@ export const useExportColumns = () => {
               <a target="_blank" href={rowData?.url} rel="noopener noreferrer">
                 <button className="flex w-full items-center gap-1 font-medium text-accent-primary">
                   <Download className="h-4 w-4" />
-                  <div>Download</div>
+                  <div>{t("ui.download")}</div>
                 </button>
               </a>
             ) : (

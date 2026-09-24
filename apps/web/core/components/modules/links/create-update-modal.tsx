@@ -88,7 +88,9 @@ export function CreateUpdateModuleLinkModal(props: Props) {
     <ModalCore isOpen={isOpen} handleClose={onClose}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="space-y-5 p-5">
-          <h3 className="text-18 font-medium text-secondary">{data ? t("update") : t("add")} link</h3>
+          <h3 className="text-18 font-medium text-secondary">
+            {data ? t("update") : t("add")} {t("ui.jsx_link")}
+          </h3>
           <div className="mt-2 space-y-3">
             <div>
               <label htmlFor="url" className="mb-2 text-secondary">
@@ -140,7 +142,7 @@ export function CreateUpdateModuleLinkModal(props: Props) {
         </div>
         <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
           <Button variant="secondary" size="lg" onClick={onClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
             {data

@@ -210,7 +210,9 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
           </div>
           {!!passwordFormData.confirm_password &&
             passwordFormData.password !== passwordFormData.confirm_password &&
-            renderPasswordMatchError && <span className="text-13 text-danger-primary">Passwords don{"'"}t match</span>}
+            renderPasswordMatchError && (
+              <span className="text-13 text-danger-primary">{t("ui.jsx_passwords_dont_match")}</span>
+            )}
         </div>
       )}
 

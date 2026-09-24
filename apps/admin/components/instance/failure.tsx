@@ -33,13 +33,11 @@ export const InstanceFailureView = observer(function InstanceFailureView() {
             <h3 className="text-center text-20 font-medium text-on-color">
               {t("ui.unable_to_fetch_instance_details")}
             </h3>
-            <p className="text-center text-14 font-medium">
-              We were unable to fetch the details of the instance. Fret not, it might just be a connectivity issue.
-            </p>
+            <p className="text-center text-14 font-medium">{t("ui.jsx_we_were_unable_to_fetch_the_details")}</p>
           </div>
           <div className="flex justify-center">
             <Button size="lg" onClick={handleRetry}>
-              Retry
+              {t("common.retry")}
             </Button>
           </div>
         </div>

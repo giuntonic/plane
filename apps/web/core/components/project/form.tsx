@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Info } from "lucide-react";
-import { NETWORK_CHOICES } from "@plane/constants";
+import { NETWORK_CHOICES, PROJECT_IDENTIFIER_MAX_LENGTH } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 // plane imports
 import { Button } from "@plane/propel/button";
@@ -337,8 +337,8 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
                     message: t("project_id_min_char"),
                   },
                   maxLength: {
-                    value: 10,
-                    message: t("project_id_max_char"),
+                    value: PROJECT_IDENTIFIER_MAX_LENGTH,
+                    message: t("project_id_max_char", { max: PROJECT_IDENTIFIER_MAX_LENGTH }),
                   },
                 }}
                 render={({ field: { value, ref } }) => (
@@ -346,6 +346,7 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
                     id="identifier"
                     name="identifier"
                     type="text"
+                    maxLength={PROJECT_IDENTIFIER_MAX_LENGTH}
                     value={value}
                     onChange={handleIdentifierChange}
                     ref={ref}
@@ -358,7 +359,7 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
               />
               <Tooltip
                 isMobile={isMobile}
-                tooltipContent={t("project_id_tooltip_content")}
+                tooltipContent={t("project_id_tooltip_content", { max: PROJECT_IDENTIFIER_MAX_LENGTH })}
                 className="text-13"
                 position="right-start"
               >

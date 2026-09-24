@@ -98,7 +98,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       return {
         message: (
           <>
-            set the priority to <span className="font-medium text-primary">{newValue || "none"}</span>
+            {i18nInstance.t("ui.jsx_set_the_priority_to")}{" "}
+            <span className="font-medium text-primary">{newValue || "none"}</span>
           </>
         ),
       };
@@ -111,7 +112,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       return {
         message: (
           <>
-            renamed the project to <span className="font-medium text-primary">{newValue}</span>
+            {i18nInstance.t("ui.jsx_renamed_the_project_to")}{" "}
+            <span className="font-medium text-primary">{newValue}</span>
           </>
         ),
       };
@@ -125,7 +127,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
           <>
             {newValue ? (
               <>
-                set the start date to <span className="font-medium text-primary">{newValue}</span>
+                {i18nInstance.t("ui.jsx_set_the_start_date_to")}{" "}
+                <span className="font-medium text-primary">{newValue}</span>
               </>
             ) : (
               "removed the start date"
@@ -139,7 +142,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
           <>
             {newValue ? (
               <>
-                set the target date to <span className="font-medium text-primary">{newValue}</span>
+                {i18nInstance.t("ui.jsx_set_the_target_date_to")}{" "}
+                <span className="font-medium text-primary">{newValue}</span>
               </>
             ) : (
               "removed the target date"
@@ -151,7 +155,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       return {
         message: (
           <>
-            set the state to <span className="font-medium text-primary">{newValue || "none"}</span>
+            {i18nInstance.t("ui.jsx_set_the_state_to")}{" "}
+            <span className="font-medium text-primary">{newValue || "none"}</span>
           </>
         ),
       };
@@ -161,11 +166,12 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
           <>
             {newValue ? (
               <>
-                set the estimate point to <span className="font-medium text-primary">{newValue}</span>
+                {i18nInstance.t("ui.jsx_set_the_estimate_point_to")}{" "}
+                <span className="font-medium text-primary">{newValue}</span>
               </>
             ) : (
               <>
-                removed the estimate point
+                {i18nInstance.t("ui.jsx_removed_the_estimate_point")}
                 {oldValue && (
                   <>
                     {" "}
@@ -182,7 +188,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
         message: (
           <>
             <span>
-              {verb} this project {verb === "removed" ? "from" : "to"} the cycle{" "}
+              {verb} {i18nInstance.t("ui.jsx_this_project")} {verb === "removed" ? "from" : "to"}{" "}
+              {i18nInstance.t("ui.jsx_the_cycle")}{" "}
             </span>
             {verb !== "removed" ? (
               <a
@@ -206,7 +213,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
         message: (
           <>
             <span>
-              {verb} this project {verb === "removed" ? "from" : "to"} the module{" "}
+              {verb} {i18nInstance.t("ui.jsx_this_project")} {verb === "removed" ? "from" : "to"}{" "}
+              {i18nInstance.t("ui.jsx_the_module")}{" "}
             </span>
             <span className="font-medium text-primary">
               {verb === "removed" ? oldValue : newValue || i18nInstance.t("ui.unknown_module")}
@@ -218,7 +226,7 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       return {
         message: (
           <>
-            {verb} the label{" "}
+            {verb} {i18nInstance.t("ui.jsx_the_label")}{" "}
             <span className="font-medium text-primary">
               {newValue || oldValue || i18nInstance.t("ui.untitled_label")}
             </span>
@@ -227,13 +235,17 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       };
     case "inbox":
       return {
-        message: <>{newValue ? "enabled" : "disabled"} inbox</>,
+        message: (
+          <>
+            {newValue ? "enabled" : "disabled"} {i18nInstance.t("ui.jsx_inbox")}
+          </>
+        ),
       };
     case "page":
       return {
         message: (
           <>
-            {newValue ? "created" : "removed"} the project page{" "}
+            {newValue ? "created" : "removed"} {i18nInstance.t("ui.jsx_the_project_page")}{" "}
             <span className="font-medium text-primary">
               {newValue || oldValue || i18nInstance.t("ui.untitled_page")}
             </span>
@@ -242,13 +254,18 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       };
     case "network":
       return {
-        message: <>{newValue ? "enabled" : "disabled"} network access</>,
+        message: (
+          <>
+            {newValue ? "enabled" : "disabled"} {i18nInstance.t("ui.jsx_network_access")}
+          </>
+        ),
       };
     case "identifier":
       return {
         message: (
           <>
-            updated project identifier to <span className="font-medium text-primary">{newValue || "none"}</span>
+            {i18nInstance.t("ui.jsx_updated_project_identifier_to")}{" "}
+            <span className="font-medium text-primary">{newValue || "none"}</span>
           </>
         ),
       };
@@ -256,7 +273,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       return {
         message: (
           <>
-            changed project timezone to <span className="font-medium text-primary">{newValue || "default"}</span>
+            {i18nInstance.t("ui.jsx_changed_project_timezone_to")}{" "}
+            <span className="font-medium text-primary">{newValue || "default"}</span>
           </>
         ),
       };
@@ -268,29 +286,50 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       return {
         message: (
           <>
-            {getBooleanActionText(newValue)} {activityType.replace(/_view$/, "").replace(/_/g, " ")} view
+            {getBooleanActionText(newValue)} {activityType.replace(/_view$/, "").replace(/_/g, " ")}{" "}
+            {i18nInstance.t("ui.jsx_view")}
           </>
         ),
       };
     case "is_project_updates_enabled":
       return {
-        message: <>{getBooleanActionText(newValue)} project updates</>,
+        message: (
+          <>
+            {getBooleanActionText(newValue)} {i18nInstance.t("ui.jsx_project_updates")}
+          </>
+        ),
       };
     case "is_epic_enabled":
       return {
-        message: <>{getBooleanActionText(newValue)} epics</>,
+        message: (
+          <>
+            {getBooleanActionText(newValue)} {i18nInstance.t("ui.jsx_epics")}
+          </>
+        ),
       };
     case "is_workflow_enabled":
       return {
-        message: <>{getBooleanActionText(newValue)} custom workflow</>,
+        message: (
+          <>
+            {getBooleanActionText(newValue)} {i18nInstance.t("ui.jsx_custom_workflow")}
+          </>
+        ),
       };
     case "is_time_tracking_enabled":
       return {
-        message: <>{getBooleanActionText(newValue)} time tracking</>,
+        message: (
+          <>
+            {getBooleanActionText(newValue)} {i18nInstance.t("ui.jsx_time_tracking")}
+          </>
+        ),
       };
     case "is_issue_type_enabled":
       return {
-        message: <>{getBooleanActionText(newValue)} work item types</>,
+        message: (
+          <>
+            {getBooleanActionText(newValue)} {i18nInstance.t("ui.jsx_work_item_types")}
+          </>
+        ),
       };
     default:
       return {

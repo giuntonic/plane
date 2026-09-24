@@ -58,7 +58,7 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
           onClick={handleThemeSwitch}
         >
           <Palette className="h-4 w-4 stroke-[1.5]" />
-          Switch to {resolvedTheme === "dark" ? "light" : "dark"} mode
+          {t("ui.jsx_switch_to")} {resolvedTheme === "dark" ? "light" : "dark"} mode
         </Menu.Item>
       </div>
       <div className="py-2">

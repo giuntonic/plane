@@ -69,13 +69,15 @@ export const ConfirmProjectMemberRemove = observer(function ConfirmProjectMember
               <p className="text-13 text-secondary">
                 {isCurrentUser ? (
                   <>
-                    Are you sure you want to leave the <span className="font-bold">{currentProjectDetails?.name}</span>{" "}
-                    project? You will be able to join the project if invited again or if it{"'"}s public.
+                    {t("ui.jsx_are_you_sure_you_want_to_leave")}{" "}
+                    <span className="font-bold">{currentProjectDetails?.name}</span>{" "}
+                    {t("ui.jsx_project_you_will_be_able_to_join")}
                   </>
                 ) : (
                   <>
-                    Are you sure you want to remove member- <span className="font-bold">{data?.display_name}</span>?
-                    They will no longer have access to this project. This action cannot be undone.
+                    {t("ui.jsx_are_you_sure_you_want_to_remove")}{" "}
+                    <span className="font-bold">{data?.display_name}</span>
+                    {t("ui.jsx_they_will_no_longer_have_access_to")}
                   </>
                 )}
               </p>
@@ -85,7 +87,7 @@ export const ConfirmProjectMemberRemove = observer(function ConfirmProjectMember
       </div>
       <div className="flex justify-end gap-2 p-4 sm:px-6">
         <Button variant="secondary" size="lg" onClick={handleClose}>
-          Cancel
+          {t("cancel")}
         </Button>
         <Button variant="error-fill" size="lg" tabIndex={1} onClick={handleDeletion} loading={isDeleteLoading}>
           {isCurrentUser

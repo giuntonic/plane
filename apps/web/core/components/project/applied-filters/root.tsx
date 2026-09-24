@@ -119,8 +119,8 @@ export function ProjectAppliedFiltersList(props: Props) {
         <Tooltip
           tooltipContent={
             <p>
-              <span className="font-semibold">{filteredProjects}</span> of{" "}
-              <span className="font-semibold">{totalProjects}</span> projects match the applied filters.
+              <span className="font-semibold">{filteredProjects}</span> {t("ui.jsx_of")}{" "}
+              <span className="font-semibold">{totalProjects}</span> {t("ui.jsx_projects_match_the_applied_filters")}
             </p>
           }
         >

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 
 type TSingleProgressStatsProps = {
@@ -15,6 +16,7 @@ type TSingleProgressStatsProps = {
 };
 
 export function SingleProgressStats({ title, completed, total, onClick, selected = false }: TSingleProgressStatsProps) {
+  const { t } = useTranslation();
   return (
     <div
       className={`flex w-full items-center justify-between gap-4 rounded-xs p-1 text-11 ${
@@ -29,7 +31,9 @@ export function SingleProgressStats({ title, completed, total, onClick, selected
             {isNaN(Math.round((completed / total) * 100)) ? "0" : Math.round((completed / total) * 100)}%
           </span>
         </div>
-        <span>of {total}</span>
+        <span>
+          {t("ui.jsx_of")} {total}
+        </span>
       </div>
     </div>
   );

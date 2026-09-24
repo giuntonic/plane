@@ -101,7 +101,7 @@ export const PageLockControl = observer(function PageLockControl({ page }: Props
         >
           <LockKeyhole className="animate-lock-icon size-3.5 flex-shrink-0" />
           <span className="animate-text-slide-in overflow-hidden text-11 font-medium whitespace-nowrap transition-all duration-500 ease-out">
-            Locked
+            {t("ui.locked")}
           </span>
         </button>
       )}
@@ -113,7 +113,7 @@ export const PageLockControl = observer(function PageLockControl({ page }: Props
         >
           <LockKeyholeOpen className="animate-unlock-icon size-3.5 flex-shrink-0" />
           <span className="animate-text-slide-in animate-text-fade-out overflow-hidden text-11 font-medium whitespace-nowrap transition-all duration-500 ease-out">
-            Unlocked
+            {t("ui.unlocked")}
           </span>
         </div>
       )}

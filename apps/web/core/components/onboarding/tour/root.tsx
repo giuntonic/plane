@@ -115,12 +115,9 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
             </div>
             <div className="flex flex-col overflow-y-auto p-6">
               <h3 className="font-semibold sm:text-18">
-                Welcome to Plane, {currentUser?.first_name} {currentUser?.last_name}
+                {t("ui.jsx_welcome_to_plane")} {currentUser?.first_name} {currentUser?.last_name}
               </h3>
-              <p className="mt-3 text-13 text-secondary">
-                We{"'"}re glad that you decided to try out Plane. You can now manage your projects with ease. Get
-                started by creating a project.
-              </p>
+              <p className="mt-3 text-13 text-secondary">{t("ui.jsx_were_glad_that_you_decided_to_try")}</p>
               <div className="flex h-full items-end">
                 <div className="mt-12 flex items-center gap-6">
                   <Button
@@ -138,7 +135,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                       onComplete();
                     }}
                   >
-                    No thanks, I will explore it myself
+                    {t("ui.jsx_no_thanks_i_will_explore_it_myself")}
                   </button>
                 </div>
               </div>
@@ -170,12 +167,12 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                 <div className="flex items-center gap-4">
                   {currentStep?.prevStep && (
                     <Button variant="secondary" onClick={() => setStep(currentStep.prevStep ?? "welcome")}>
-                      Back
+                      {t("common.back")}
                     </Button>
                   )}
                   {currentStep?.nextStep && (
                     <Button variant="primary" onClick={() => setStep(currentStep.nextStep ?? "work-items")}>
-                      Next
+                      {t("next")}
                     </Button>
                   )}
                 </div>

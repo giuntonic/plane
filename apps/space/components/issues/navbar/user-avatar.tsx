@@ -109,7 +109,7 @@ export const UserAvatar = observer(function UserAvatar() {
                         className="flex min-w-36 cursor-pointer items-center gap-2 rounded-sm p-2 text-13 whitespace-nowrap hover:bg-layer-transparent-hover"
                       >
                         <LogOut size={12} className="shrink-0 text-danger-primary" />
-                        <div>Sign out</div>
+                        <div>{t("sign_out")}</div>
                       </button>
                     </form>
                   )}

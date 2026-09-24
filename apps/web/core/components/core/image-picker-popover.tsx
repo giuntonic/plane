@@ -244,7 +244,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                           )}
                         />
                         <Button variant="primary" size="xl" onClick={() => setSearchParams(formData.search)}>
-                          Search
+                          {t("search")}
                         </Button>
                       </div>
                       {unsplashImages ? (
@@ -317,7 +317,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                           type="button"
                           className="absolute top-0 right-0 z-40 -translate-y-1/2 rounded-sm bg-surface-2 px-2 py-0.5 text-11 font-medium text-secondary"
                         >
-                          Edit
+                          {t("edit")}
                         </button>
                         {image !== null || (value && value !== "") ? (
                           <>
@@ -356,7 +356,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                           setImage(null);
                         }}
                       >
-                        Cancel
+                        {t("cancel")}
                       </Button>
                       <Button
                         variant="primary"

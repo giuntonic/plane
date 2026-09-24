@@ -295,7 +295,7 @@ export function ExportPageModal(props: Props) {
         </div>
         <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
           <Button variant="secondary" size="lg" onClick={handleClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" size="lg" loading={isExporting} onClick={handleExport}>
             {isExporting ? t("ui.exporting") : t("export")}

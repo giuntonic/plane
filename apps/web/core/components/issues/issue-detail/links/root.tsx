@@ -124,7 +124,7 @@ export function IssueLinkRoot(props: TIssueLinkRoot) {
 
       <div className="py-1 text-11">
         <div className="flex items-center justify-between gap-2">
-          <h4>Links</h4>
+          <h4>{t("ui.links")}</h4>
           {!disabled && (
             <button
               type="button"

@@ -189,7 +189,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
               <div className="grow">
                 <div className="text-13 font-medium text-primary">{t("ui.authentication")}</div>
                 <div className="text-11 font-regular text-tertiary">
-                  This is optional, but we recommend setting up a username and a password for your SMTP server.
+                  {t("ui.jsx_this_is_optional_but_we_recommend_setting")}
                 </div>
               </div>
             </div>

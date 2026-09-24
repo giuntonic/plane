@@ -32,7 +32,8 @@ export const CustomThemeColorInputs = observer(function CustomThemeColorInputs(p
       {/* Neutral Color */}
       <div className="flex flex-col gap-2">
         <h3 className="text-body-sm-medium">
-          Neutral color<span className="text-danger-primary">*</span>
+          {t("ui.jsx_neutral_color")}
+          <span className="text-danger-primary">*</span>
         </h3>
         <div className="w-full">
           <Controller
@@ -65,7 +66,8 @@ export const CustomThemeColorInputs = observer(function CustomThemeColorInputs(p
       {/* Brand Color */}
       <div className="flex flex-col gap-2">
         <h3 className="text-body-sm-medium">
-          Brand color<span className="text-danger-primary">*</span>
+          {t("ui.jsx_brand_color")}
+          <span className="text-danger-primary">*</span>
         </h3>
         <div className="w-full">
           <Controller

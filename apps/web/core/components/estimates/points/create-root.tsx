@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useState } from "react";
 import { observer } from "mobx-react";
@@ -35,6 +36,7 @@ type TEstimatePointCreateRoot = {
 };
 
 export const EstimatePointCreateRoot = observer(function EstimatePointCreateRoot(props: TEstimatePointCreateRoot) {
+  const { t } = useTranslation();
   // props
   const {
     workspaceSlug,
@@ -172,7 +174,7 @@ export const EstimatePointCreateRoot = observer(function EstimatePointCreateRoot
         ))}
       {estimatePoints && estimatePoints.length + (estimatePointCreate?.length || 0) <= estimateCount.max - 1 && (
         <Button variant="link" prependIcon={<PlusIcon />} onClick={handleCreate}>
-          Add {estimateType}
+          {t("add")} {estimateType}
         </Button>
       )}
     </div>

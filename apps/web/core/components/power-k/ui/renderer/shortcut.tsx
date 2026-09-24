@@ -102,7 +102,7 @@ export function ShortcutRenderer(props: Props) {
         ))
       ) : (
         <p className="flex justify-center text-center text-13 text-secondary">
-          No shortcuts found for{" "}
+          {t("ui.jsx_no_shortcuts_found_for")}{" "}
           <span className="font-semibold italic">
             {`"`}
             {searchQuery}

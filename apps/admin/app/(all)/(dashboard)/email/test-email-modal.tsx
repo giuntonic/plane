@@ -116,10 +116,10 @@ export function SendTestEmailModal(props: Props) {
                   {sendEmailStep === ESendEmailSteps.SUCCESS && (
                     <div className="flex flex-col gap-y-4 text-13">
                       <p>
-                        We have sent the test email to {receiverEmail}. Please check your spam folder if you cannot find
-                        it.
+                        {t("ui.jsx_we_have_sent_the_test_email_to")} {receiverEmail}
+                        {t("ui.jsx_please_check_your_spam_folder_if_you")}
                       </p>
-                      <p>If you still cannot find it, recheck your SMTP configuration and trigger a new test email.</p>
+                      <p>{t("ui.jsx_if_you_still_cannot_find_it_recheck")}</p>
                     </div>
                   )}
                   {sendEmailStep === ESendEmailSteps.FAILED && <div className="text-13">{error}</div>}

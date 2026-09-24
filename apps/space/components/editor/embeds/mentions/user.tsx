@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // helpers
 import { cn } from "@plane/utils";
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export const EditorUserMention = observer(function EditorUserMention(props: Props) {
+  const { t } = useTranslation();
   const { id } = props;
   // store hooks
   const { data: currentUser } = useUser();
@@ -26,7 +28,7 @@ export const EditorUserMention = observer(function EditorUserMention(props: Prop
   if (!userDetails) {
     return (
       <div className="not-prose inline rounded-sm bg-layer-1 px-1 py-0.5 text-tertiary no-underline">
-        @deactivated user
+        {t("ui.jsx_deactivated_user")}
       </div>
     );
   }

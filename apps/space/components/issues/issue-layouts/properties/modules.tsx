@@ -45,7 +45,9 @@ export const IssueBlockModules = observer(function IssueBlockModules({ moduleIds
         ) : (
           <div className="flex h-full flex-shrink-0 cursor-default items-center rounded-md border border-strong px-2.5 py-1 text-11">
             <div className="flex items-center gap-1.5 text-secondary">
-              <div className="text-11">{modules.length} Modules</div>
+              <div className="text-11">
+                {modules.length} {t("modules")}
+              </div>
             </div>
           </div>
         )}

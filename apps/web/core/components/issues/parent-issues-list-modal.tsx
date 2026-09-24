@@ -119,13 +119,13 @@ export function ParentIssuesListModal({
         >
           {searchTerm !== "" && (
             <h5 className="mx-2 text-13 text-secondary">
-              Search results for{" "}
+              {t("ui.jsx_search_results_for")}{" "}
               <span className="text-primary">
                 {'"'}
                 {searchTerm}
                 {'"'}
               </span>{" "}
-              in project:
+              {t("ui.jsx_in_project")}
             </h5>
           )}
 

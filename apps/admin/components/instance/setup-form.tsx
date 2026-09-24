@@ -165,7 +165,7 @@ export function InstanceSetupForm() {
             <div className="flex flex-col items-center gap-4 sm:flex-row">
               <div className="w-full space-y-1">
                 <label className="text-13 font-medium text-tertiary" htmlFor="first_name">
-                  First name <span className="text-danger-primary">*</span>
+                  {t("ui.jsx_first_name")} <span className="text-danger-primary">*</span>
                 </label>
                 <Input
                   className="w-full border border-subtle !bg-surface-1 placeholder:text-placeholder"
@@ -188,7 +188,7 @@ export function InstanceSetupForm() {
               </div>
               <div className="w-full space-y-1">
                 <label className="text-13 font-medium text-tertiary" htmlFor="last_name">
-                  Last name <span className="text-danger-primary">*</span>
+                  {t("last_name")} <span className="text-danger-primary">*</span>
                 </label>
                 <Input
                   className="w-full border border-subtle !bg-surface-1 placeholder:text-placeholder"
@@ -233,7 +233,7 @@ export function InstanceSetupForm() {
 
             <div className="w-full space-y-1">
               <label className="text-13 font-medium text-tertiary" htmlFor="company_name">
-                Company name <span className="text-danger-primary">*</span>
+                {t("ui.company_name")} <span className="text-danger-primary">*</span>
               </label>
               <Input
                 className="w-full border border-subtle !bg-surface-1 placeholder:text-placeholder"
@@ -255,7 +255,7 @@ export function InstanceSetupForm() {
 
             <div className="w-full space-y-1">
               <label className="text-13 font-medium text-tertiary" htmlFor="password">
-                Set a password <span className="text-danger-primary">*</span>
+                {t("ui.set_a_password")} <span className="text-danger-primary">*</span>
               </label>
               <div className="relative">
                 <Input
@@ -300,7 +300,7 @@ export function InstanceSetupForm() {
 
             <div className="w-full space-y-1">
               <label className="text-13 font-medium text-tertiary" htmlFor="confirm_password">
-                Confirm password <span className="text-danger-primary">*</span>
+                {t("ui.confirm_password")} <span className="text-danger-primary">*</span>
               </label>
               <div className="relative">
                 <Input
@@ -339,7 +339,7 @@ export function InstanceSetupForm() {
               {!!formData.confirm_password &&
                 formData.password !== formData.confirm_password &&
                 renderPasswordMatchError && (
-                  <span className="text-13 text-danger-primary">Passwords don{"'"}t match</span>
+                  <span className="text-13 text-danger-primary">{t("ui.jsx_passwords_dont_match")}</span>
                 )}
             </div>
 
@@ -354,7 +354,7 @@ export function InstanceSetupForm() {
                 />
               </div>
               <label className="cursor-pointer text-13 font-medium text-tertiary" htmlFor="is_telemetry_enabled">
-                Allow Plane to anonymously collect usage events.{" "}
+                {t("ui.jsx_allow_plane_to_anonymously_collect_usage_events")}{" "}
                 <a
                   href="https://developers.plane.so/self-hosting/telemetry"
                   target="_blank"

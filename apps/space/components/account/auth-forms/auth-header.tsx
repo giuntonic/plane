@@ -31,8 +31,12 @@ const Titles: TAuthHeaderDetails = {
     },
   },
   [EAuthModes.SIGN_UP]: {
-    header: "View, comment, and do more",
-    subHeader: "Sign up or log in to work with Plane work items and Pages.",
+    get header() {
+      return i18nInstance.t("ui.space_signup_header");
+    },
+    get subHeader() {
+      return i18nInstance.t("ui.space_signup_subheader");
+    },
   },
 };
 

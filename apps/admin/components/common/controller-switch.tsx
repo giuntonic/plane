@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Control, FieldPath, FieldValues } from "react-hook-form";
 import { Controller } from "react-hook-form";
 // plane internal packages
@@ -20,6 +21,7 @@ export type TControllerSwitchFormField<T extends FieldValues = FieldValues> = {
 };
 
 export function ControllerSwitch<T extends FieldValues>(props: Props<T>) {
+  const { t } = useTranslation();
   const {
     control,
     field: { name, label },
@@ -27,7 +29,9 @@ export function ControllerSwitch<T extends FieldValues>(props: Props<T>) {
 
   return (
     <div className="flex items-center justify-between gap-1">
-      <h4 className="text-sm text-custom-text-300">Refresh user attributes from {label} during sign in</h4>
+      <h4 className="text-sm text-custom-text-300">
+        {t("ui.jsx_refresh_user_attributes_from")} {label} {t("ui.jsx_during_sign_in")}
+      </h4>
       <div className="relative">
         <Controller
           control={control}

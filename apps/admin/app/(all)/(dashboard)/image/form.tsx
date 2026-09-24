@@ -60,7 +60,7 @@ export function InstanceImageConfigForm(props: IInstanceImageConfigForm) {
           label={t("ui.access_key_from_your_unsplash_account")}
           description={
             <>
-              You will find your access key in your Unsplash developer console.&nbsp;
+              {t("ui.jsx_you_will_find_your_access_key_in")}
               <a
                 href="https://unsplash.com/documentation#creating-a-developer-account"
                 target="_blank"

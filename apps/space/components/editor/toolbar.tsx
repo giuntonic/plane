@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useEffect, useState, useCallback } from "react";
 // plane imports
 import { TOOLBAR_ITEMS } from "@plane/editor";
@@ -24,6 +25,7 @@ type Props = {
 const toolbarItems = TOOLBAR_ITEMS.lite;
 
 export function IssueCommentToolbar(props: Props) {
+  const { t } = useTranslation();
   const { executeCommand, handleSubmit, isCommentEmpty, editorRef, isSubmitting, showSubmitButton } = props;
   // states
   const [activeStates, setActiveStates] = useState<Record<string, boolean>>({});
@@ -109,7 +111,7 @@ export function IssueCommentToolbar(props: Props) {
               disabled={isCommentEmpty}
               loading={isSubmitting}
             >
-              Comment
+              {t("ui.jsx_comment")}
             </Button>
           </div>
         )}

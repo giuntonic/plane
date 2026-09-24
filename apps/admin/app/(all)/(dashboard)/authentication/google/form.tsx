@@ -68,7 +68,7 @@ export function InstanceGoogleConfigForm(props: Props) {
       label: t("ui.client_id"),
       description: (
         <>
-          Your client ID lives in your Google API Console.{" "}
+          {t("ui.jsx_your_client_id_lives_in_your_google")}{" "}
           <a
             href="https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow#creatingcred"
             target="_blank"
@@ -90,7 +90,7 @@ export function InstanceGoogleConfigForm(props: Props) {
       label: t("ui.client_secret"),
       description: (
         <>
-          Your client secret should also be in your Google API Console.{" "}
+          {t("ui.jsx_your_client_secret_should_also_be_in")}{" "}
           <a
             href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid"
             target="_blank"
@@ -115,8 +115,9 @@ export function InstanceGoogleConfigForm(props: Props) {
       url: originURL,
       description: (
         <p>
-          We will auto-generate this. Paste this into your{" "}
-          <CodeBlock darkerShade>Authorized JavaScript origins</CodeBlock> field. For this OAuth client{" "}
+          {t("ui.jsx_we_will_auto_generate_this_paste_this")}{" "}
+          <CodeBlock darkerShade>{t("ui.jsx_authorized_javascript_origins")}</CodeBlock>{" "}
+          {t("ui.jsx_field_for_this_oauth_client")}{" "}
           <a
             href="https://console.cloud.google.com/apis/credentials/oauthclient"
             target="_blank"
@@ -124,7 +125,7 @@ export function InstanceGoogleConfigForm(props: Props) {
             rel="noreferrer"
             aria-label={t("ui.google_cloud_console_oauth_client_credentials")}
           >
-            here.
+            {t("ui.jsx_here")}
           </a>
         </p>
       ),
@@ -138,8 +139,9 @@ export function InstanceGoogleConfigForm(props: Props) {
       url: `${originURL}/auth/google/callback/`,
       description: (
         <p>
-          We will auto-generate this. Paste this into your <CodeBlock darkerShade>Authorized Redirect URI</CodeBlock>{" "}
-          field. For this OAuth client{" "}
+          {t("ui.jsx_we_will_auto_generate_this_paste_this")}{" "}
+          <CodeBlock darkerShade>{t("ui.jsx_authorized_redirect_uri")}</CodeBlock>{" "}
+          {t("ui.jsx_field_for_this_oauth_client")}{" "}
           <a
             href="https://console.cloud.google.com/apis/credentials/oauthclient"
             target="_blank"
@@ -147,7 +149,7 @@ export function InstanceGoogleConfigForm(props: Props) {
             rel="noreferrer"
             aria-label={t("ui.google_cloud_console_oauth_client_credentials")}
           >
-            here.
+            {t("ui.jsx_here")}
           </a>
         </p>
       ),

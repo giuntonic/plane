@@ -117,11 +117,7 @@ export const WorkspaceCreateStep = observer(function WorkspaceCreateStep({
   if (isWorkspaceCreationDisabled) {
     return (
       <div className="flex flex-col gap-10">
-        <span className="text-center text-14 text-tertiary">
-          You don&apos;t seem to have any invites to a workspace and your instance admin has restricted creation of new
-          workspaces. Please ask a workspace owner or admin to invite you to a workspace first and come back to this
-          screen to join.
-        </span>
+        <span className="text-center text-14 text-tertiary">{t("ui.jsx_you_dont_seem_to_have_any_invites")}</span>
       </div>
     );
   }

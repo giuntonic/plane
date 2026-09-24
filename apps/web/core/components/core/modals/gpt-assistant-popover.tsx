@@ -224,7 +224,7 @@ export function GptAssistantPopover(props: Props) {
           <div className="vertical-scroll-enable max-h-72 space-y-4 overflow-y-auto">
             {prompt && (
               <div className="text-13">
-                Content:
+                {t("ui.jsx_content")}
                 <RichTextEditor
                   editable={false}
                   id="ai-assistant-content"
@@ -239,7 +239,7 @@ export function GptAssistantPopover(props: Props) {
             )}
             {response !== "" && (
               <div className="page-block-section max-h-[8rem] text-13">
-                Response:
+                {t("ui.jsx_response")}
                 <RichTextEditor
                   editable={false}
                   id="ai-assistant-response"
@@ -252,10 +252,7 @@ export function GptAssistantPopover(props: Props) {
               </div>
             )}
             {invalidResponse && (
-              <div className="text-13 text-danger-primary">
-                No response could be generated. This may be due to insufficient content or task information. Please try
-                again.
-              </div>
+              <div className="text-13 text-danger-primary">{t("ui.jsx_no_response_could_be_generated_this_may")}</div>
             )}
           </div>
           <Controller
@@ -284,13 +281,13 @@ export function GptAssistantPopover(props: Props) {
               <>
                 <div className="flex items-start justify-center gap-2 text-13 text-accent-primary">
                   <AlertCircle className="h-4 w-4" />
-                  <p>By using this feature, you consent to sharing the message with a 3rd party service. </p>
+                  <p>{t("ui.jsx_by_using_this_feature_you_consent_to")} </p>
                 </div>
               </>
             )}
             <div className="flex items-center gap-2">
               <Button variant="secondary" onClick={onClose}>
-                Close
+                {t("close")}
               </Button>
               <Button variant="primary" onClick={handleSubmit(handleAIResponse)} loading={isSubmitting}>
                 {generateResponseButtonText}

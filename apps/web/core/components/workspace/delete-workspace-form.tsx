@@ -94,9 +94,9 @@ export const DeleteWorkspaceForm = observer(function DeleteWorkspaceForm(props: 
           <div className="text-center sm:text-left">
             <h3 className="text-h5-medium">{t("workspace_settings.settings.general.delete_modal.title")}</h3>
             <p className="mt-1 text-body-xs-regular text-secondary">
-              You are about to delete the workspace{" "}
-              <span className="text-body-xs-semibold break-words">{data?.name}</span>. If you confirm, you will lose
-              access to all your work data in this workspace without any way to restore it. Tread very carefully.
+              {t("ui.jsx_you_are_about_to_delete_the_workspace")}{" "}
+              <span className="text-body-xs-semibold break-words">{data?.name}</span>
+              {t("ui.jsx_if_you_confirm_you_will_lose_access")}
             </p>
           </div>
 
@@ -124,9 +124,9 @@ export const DeleteWorkspaceForm = observer(function DeleteWorkspaceForm(props: 
 
           <div className="mt-4 text-secondary">
             <p className="text-body-xs-regular">
-              For final confirmation, type{" "}
+              {t("ui.jsx_for_final_confirmation_type")}{" "}
               <span className="text-body-xs-medium text-primary">delete my workspace </span>
-              below.
+              {t("ui.jsx_below_2")}
             </p>
             <Controller
               control={control}

@@ -112,11 +112,12 @@ export function IssueLinkDetail(props: TIssueLinkDetail) {
 
         <div className="px-5">
           <p className="mt-0.5 stroke-[1.5] text-11 text-tertiary">
-            Added {calculateTimeAgo(linkDetail.created_at)}
+            {t("ui.jsx_added_2")} {calculateTimeAgo(linkDetail.created_at)}
             <br />
             {createdByDetails && (
               <>
-                by {createdByDetails?.is_bot ? createdByDetails?.first_name + " Bot" : createdByDetails?.display_name}
+                {t("ui.jsx_by")}{" "}
+                {createdByDetails?.is_bot ? createdByDetails?.first_name + " Bot" : createdByDetails?.display_name}
               </>
             )}
           </p>

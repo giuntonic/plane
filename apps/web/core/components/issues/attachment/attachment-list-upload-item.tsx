@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // ui
 import { Tooltip } from "@plane/propel/tooltip";
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export const IssueAttachmentsUploadItem = observer(function IssueAttachmentsUploadItem(props: Props) {
+  const { t } = useTranslation();
   // props
   const { uploadStatus } = props;
   // derived values
@@ -43,7 +45,10 @@ export const IssueAttachmentsUploadItem = observer(function IssueAttachmentsUplo
         <span className="flex-shrink-0">
           <CircularProgressIndicator size={20} strokeWidth={3} percentage={uploadStatus.progress} />
         </span>
-        <div className="flex-shrink-0 text-13 font-medium">{uploadStatus.progress}% done</div>
+        <div className="flex-shrink-0 text-13 font-medium">
+          {uploadStatus.progress}
+          {t("ui.jsx_done")}
+        </div>
       </div>
     </div>
   );

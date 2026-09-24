@@ -164,9 +164,7 @@ function PageDetailsPage({ params }: Route.ComponentProps) {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center">
         <h3 className="text-center text-16 font-semibold">{t("ui.page_not_found")}</h3>
-        <p className="mt-3 text-center text-13 text-secondary">
-          The page you are trying to access doesn{"'"}t exist or you don{"'"}t have permission to view it.
-        </p>
+        <p className="mt-3 text-center text-13 text-secondary">{t("ui.jsx_the_page_you_are_trying_to_access")}</p>
         <Link
           href={`/${workspaceSlug}/projects/${projectId}/pages`}
           className={cn(getButtonStyling("secondary", "base"), "mt-5")}

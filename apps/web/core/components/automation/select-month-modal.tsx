@@ -126,7 +126,7 @@ export function SelectMonthModal({ type, initialValues, isOpen, handleClose, han
         </div>
         <div className="mt-5 flex justify-end gap-2">
           <Button variant="secondary" size="lg" onClick={onClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
             {isSubmitting ? t("ui.submitting") : t("submit")}

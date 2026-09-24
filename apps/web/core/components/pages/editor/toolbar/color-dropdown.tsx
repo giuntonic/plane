@@ -46,7 +46,7 @@ export const ColorDropdown = memo(function ColorDropdown(props: Props) {
               }
             )}
           >
-            Color
+            {t("ui.jsx_color")}
             <span
               className={cn("grid size-6 shrink-0 place-items-center rounded-sm border-[0.5px] border-strong", {
                 "bg-surface-1": !activeBackgroundColor,

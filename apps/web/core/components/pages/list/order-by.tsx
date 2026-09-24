@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { i18nInstance } from "@plane/i18n";
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
 // plane imports
 import { getButtonStyling } from "@plane/propel/button";
@@ -44,6 +44,7 @@ const PAGE_SORTING_KEY_OPTIONS: {
 ];
 
 export function PageOrderByDropdown(props: Props) {
+  const { t } = useTranslation();
   const { onChange, sortBy, sortKey } = props;
 
   const orderByDetails = PAGE_SORTING_KEY_OPTIONS.find((option) => sortKey === option.key);
@@ -85,7 +86,7 @@ export function PageOrderByDropdown(props: Props) {
             });
         }}
       >
-        Ascending
+        {t("ui.jsx_ascending")}
         {!isDescending && <CheckIcon className="h-3 w-3" />}
       </CustomMenu.MenuItem>
       <CustomMenu.MenuItem
@@ -97,7 +98,7 @@ export function PageOrderByDropdown(props: Props) {
             });
         }}
       >
-        Descending
+        {t("ui.jsx_descending")}
         {isDescending && <CheckIcon className="h-3 w-3" />}
       </CustomMenu.MenuItem>
     </CustomMenu>

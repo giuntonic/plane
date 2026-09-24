@@ -46,7 +46,7 @@ export function InstanceAIForm(props: IInstanceAIForm) {
       label: t("ui.llm_model"),
       description: (
         <>
-          Choose an OpenAI engine.{" "}
+          {t("ui.jsx_choose_an_openai_engine")}{" "}
           <a
             href="https://platform.openai.com/docs/models/overview"
             target="_blank"
@@ -68,7 +68,7 @@ export function InstanceAIForm(props: IInstanceAIForm) {
       label: t("ui.api_key"),
       description: (
         <>
-          You will find your API key{" "}
+          {t("ui.jsx_you_will_find_your_api_key")}{" "}
           <a
             href="https://platform.openai.com/api-keys"
             target="_blank"
@@ -76,7 +76,7 @@ export function InstanceAIForm(props: IInstanceAIForm) {
             rel="noreferrer"
             aria-label={t("ui.openai_api_keys_page")}
           >
-            here.
+            {t("ui.jsx_here")}
           </a>
         </>
       ),
@@ -132,9 +132,9 @@ export function InstanceAIForm(props: IInstanceAIForm) {
         <div className="relative inline-flex items-center gap-1.5 rounded-sm border border-accent-subtle bg-accent-subtle px-4 py-2 text-caption-sm-regular text-accent-secondary">
           <Lightbulb className="size-4" />
           <div>
-            If you have a preferred AI models vendor, please get in{" "}
+            {t("ui.jsx_if_you_have_a_preferred_ai_models")}{" "}
             <a className="font-medium underline" href="https://plane.so/contact">
-              touch with us.
+              {t("ui.jsx_touch_with_us")}
             </a>
           </div>
         </div>
