@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 // plane types
@@ -27,6 +28,7 @@ const defaultValues: ModuleLink = {
 };
 
 export function CreateUpdateModuleLinkModal(props: Props) {
+  const { t } = useTranslation();
   const { isOpen, handleClose, createLink, updateLink, data } = props;
   // form info
   const {
@@ -54,22 +56,22 @@ export function CreateUpdateModuleLinkModal(props: Props) {
         await createLink(payload);
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Module link created successfully.",
+          title: t("toast.success"),
+          message: t("ui.module_link_created_successfully"),
         });
       } else {
         await updateLink(payload, data.id);
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Module link updated successfully.",
+          title: t("toast.success"),
+          message: t("ui.module_link_updated_successfully"),
         });
       }
       onClose();
     } catch (error: any) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
+        title: t("toast.error"),
         message: error?.data?.error ?? "Some error occurred. Please try again.",
       });
     }
@@ -106,7 +108,7 @@ export function CreateUpdateModuleLinkModal(props: Props) {
                     onChange={onChange}
                     ref={ref}
                     hasError={Boolean(errors.url)}
-                    placeholder="Type or paste a URL"
+                    placeholder={t("common.type_or_paste_a_url")}
                     className="w-full"
                   />
                 )}
@@ -114,8 +116,8 @@ export function CreateUpdateModuleLinkModal(props: Props) {
             </div>
             <div>
               <label htmlFor="title" className="mb-2 text-secondary">
-                Display title
-                <span className="block text-10">Optional</span>
+                {t("common.display_title")}
+                <span className="block text-10">{t("optional")}</span>
               </label>
               <Controller
                 control={control}
@@ -128,7 +130,7 @@ export function CreateUpdateModuleLinkModal(props: Props) {
                     onChange={onChange}
                     ref={ref}
                     hasError={Boolean(errors.title)}
-                    placeholder="What you'd like to see this link as"
+                    placeholder={t("common.link_title_placeholder")}
                     className="w-full"
                   />
                 )}

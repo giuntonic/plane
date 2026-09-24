@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 // plane imports
@@ -26,6 +27,7 @@ enum ESendEmailSteps {
 const instanceService = new InstanceService();
 
 export function SendTestEmailModal(props: Props) {
+  const { t } = useTranslation();
   const { isOpen, handleClose } = props;
 
   // state
@@ -58,7 +60,7 @@ export function SendTestEmailModal(props: Props) {
         setSendEmailStep(ESendEmailSteps.SUCCESS);
       })
       .catch((error) => {
-        setError(error?.error || "Failed to send email");
+        setError(error?.error || t("ui.failed_to_send_email"));
         setSendEmailStep(ESendEmailSteps.FAILED);
       })
       .finally(() => {
@@ -106,7 +108,7 @@ export function SendTestEmailModal(props: Props) {
                       type="email"
                       value={receiverEmail}
                       onChange={(e) => setReceiverEmail(e.target.value)}
-                      placeholder="Receiver email"
+                      placeholder={t("ui.receiver_email")}
                       className="w-full resize-none text-16"
                       tabIndex={0}
                     />

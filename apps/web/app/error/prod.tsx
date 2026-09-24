@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useTheme } from "next-themes";
 // plane imports
 import { Button } from "@plane/propel/button";
@@ -16,12 +17,16 @@ import DefaultLayout from "@/layouts/default-layout";
 const linkMap = [
   {
     key: "mail_to",
-    label: "Contact Support",
+    get label() {
+      return i18nInstance.t("ui.contact_support");
+    },
     value: "mailto:support@plane.so",
   },
   {
     key: "status",
-    label: "Status Page",
+    get label() {
+      return i18nInstance.t("ui.status_page");
+    },
     value: "https://status.plane.so/",
   },
   {
@@ -37,6 +42,7 @@ interface ProdErrorComponentProps {
 }
 
 export function ProdErrorComponent({ onGoHome }: ProdErrorComponentProps) {
+  const { t } = useTranslation();
   // hooks
   const { resolvedTheme } = useTheme();
 
@@ -81,7 +87,7 @@ export function ProdErrorComponent({ onGoHome }: ProdErrorComponentProps) {
 
           <div className="flex items-center justify-start gap-6">
             <Button variant="primary" size="lg" onClick={onGoHome}>
-              Go to home
+              {t("ui.go_to_home")}
             </Button>
           </div>
         </div>

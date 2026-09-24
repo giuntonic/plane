@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState, useMemo } from "react";
 import { E_PASSWORD_STRENGTH } from "@plane/constants";
 import { Button } from "../button/button";
@@ -59,6 +60,7 @@ export function AuthForm({
   alternateModeText,
   alternateModeButtonText,
 }: AuthFormProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<AuthFormData>({
     email: initialData.email || "",
     password: initialData.password || "",
@@ -137,7 +139,7 @@ export function AuthForm({
         id="email"
         name="email"
         type="email"
-        label="Email"
+        label={t("email")}
         value={formData.email}
         onChange={handleInputChange("email")}
         placeholder="name@company.com"
@@ -156,7 +158,7 @@ export function AuthForm({
         onChange={handleInputChange("password")}
         onPasswordChange={handlePasswordChange}
         onPasswordStrengthChange={handlePasswordStrengthChange}
-        placeholder="Enter password"
+        placeholder={t("ui.enter_password")}
         error={passwordError}
         showPasswordStrength={showPasswordStrength && mode === "sign-up"}
         disabled={disabled}

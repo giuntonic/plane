@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
@@ -28,6 +29,7 @@ import { InstanceGithubConfigForm } from "./form";
 const InstanceGithubAuthenticationPage = observer(function InstanceGithubAuthenticationPage(
   _props: Route.ComponentProps
 ) {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig, updateInstanceConfigurations } = useInstance();
   // state
@@ -49,9 +51,9 @@ const InstanceGithubAuthenticationPage = observer(function InstanceGithubAuthent
     const updateConfigPromise = updateInstanceConfigurations(payload);
 
     setPromiseToast(updateConfigPromise, {
-      loading: "Saving Configuration",
+      loading: t("ui.saving_configuration"),
       success: {
-        title: "Configuration saved",
+        title: t("ui.configuration_saved"),
         message: () => `GitHub authentication is now ${value === "1" ? "active" : "disabled"}.`,
       },
       error: {
@@ -77,13 +79,13 @@ const InstanceGithubAuthenticationPage = observer(function InstanceGithubAuthent
       customHeader={
         <AuthenticationMethodCard
           name="GitHub"
-          description="Allow members to login or sign up to plane with their GitHub accounts."
+          description={t("ui.allow_members_to_login_or_sign_up_2")}
           icon={
             <img
               src={resolveGeneralTheme(resolvedTheme) === "dark" ? githubDarkModeImage : githubLightModeImage}
               height={24}
               width={24}
-              alt="GitHub Logo"
+              alt={t("ui.github_logo")}
             />
           }
           config={
@@ -116,6 +118,12 @@ const InstanceGithubAuthenticationPage = observer(function InstanceGithubAuthent
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "GitHub Authentication - God Mode" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.github_authentication_god_mode");
+    },
+  },
+];
 
 export default InstanceGithubAuthenticationPage;

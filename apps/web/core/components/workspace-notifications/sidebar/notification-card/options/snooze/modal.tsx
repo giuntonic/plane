@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 // plane imports
@@ -36,6 +37,7 @@ const defaultValues: FormValues = {
 const timeStamps = allTimeIn30MinutesInterval12HoursFormat;
 
 export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
+  const { t } = useTranslation();
   const { isOpen, onClose, onSubmit: handleSubmitSnooze } = props;
 
   const { workspaceSlug } = useParams();
@@ -116,7 +118,7 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
     <ModalCore isOpen={isOpen} handleClose={handleClose} position={EModalPosition.CENTER} width={EModalWidth.XXL}>
       <form onSubmit={handleSubmit(onSubmit)} className="p-5">
         <div className="flex items-center justify-between">
-          <h3 className="text-h5-medium leading-6 text-primary">Customize Snooze Time</h3>
+          <h3 className="text-h5-medium leading-6 text-primary">{t("ui.customize_snooze_time")}</h3>
 
           <div>
             <button type="button" onClick={handleClose}>
@@ -127,15 +129,15 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
 
         <div className="mt-5 flex flex-col gap-3 md:!flex-row md:items-center">
           <div className="flex-1 pb-3 md:pb-0">
-            <h6 className="mb-2 block text-body-xs-medium text-placeholder">Pick a date</h6>
+            <h6 className="mb-2 block text-body-xs-medium text-placeholder">{t("ui.pick_a_date")}</h6>
             <Controller
               name="date"
               control={control}
-              rules={{ required: "Please select a date" }}
+              rules={{ required: t("ui.please_select_a_date") }}
               render={({ field: { value, onChange } }) => (
                 <DateDropdown
                   value={value || null}
-                  placeholder="Select date"
+                  placeholder={t("ui.select_date")}
                   onChange={(val) => {
                     setValue("time", undefined);
                     onChange(val);
@@ -150,11 +152,11 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
             />
           </div>
           <div className="flex-1">
-            <h6 className="mb-2 block text-body-xs-medium text-placeholder">Pick a time</h6>
+            <h6 className="mb-2 block text-body-xs-medium text-placeholder">{t("ui.pick_a_time")}</h6>
             <Controller
               control={control}
               name="time"
-              rules={{ required: "Please select a time" }}
+              rules={{ required: t("ui.please_select_a_time") }}
               render={({ field: { value, onChange } }) => (
                 <CustomSelect
                   value={value}
@@ -166,7 +168,7 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
                           {value} {watch("period").toLowerCase()}
                         </span>
                       ) : (
-                        <span className="text-body-xs-medium text-placeholder">Select a time</span>
+                        <span className="text-body-xs-medium text-placeholder">{t("ui.select_a_time")}</span>
                       )}
                     </div>
                   }
@@ -205,7 +207,7 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
                       </CustomSelect.Option>
                     ))
                   ) : (
-                    <p className="p-3 text-center text-secondary">No available time for this date.</p>
+                    <p className="p-3 text-center text-secondary">{t("ui.no_available_time_for_this_date")}</p>
                   )}
                 </CustomSelect>
               )}

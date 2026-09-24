@@ -39,12 +39,10 @@ export function InstanceNotReady() {
           </div>
           <div className="flex h-full w-full flex-col items-center justify-center gap-7">
             <div className="flex flex-col items-center gap-11">
-              <img src={GradientLogo} className="h-24 w-40 object-contain" alt="Plane Logo" />
+              <img src={GradientLogo} className="h-24 w-40 object-contain" alt={t("ui.plane_logo")} />
               <div className="flex max-w-124 flex-col items-center gap-3">
                 <h1 className="text-h2-semibold text-primary">{t("instance_not_ready.title")}</h1>
-                <p className="text-center text-body-md-regular text-secondary">
-                  {t("instance_not_ready.description")}
-                </p>
+                <p className="text-center text-body-md-regular text-secondary">{t("instance_not_ready.description")}</p>
               </div>
             </div>
             <a href={GOD_MODE_URL} className="w-72">

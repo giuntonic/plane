@@ -4,11 +4,13 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 export function MaintenanceMessage() {
+  const { t } = useTranslation();
   const linkMap = [
     {
       key: "mail_to",
-      label: "Contact Support",
+      label: t("ui.contact_support"),
       value: "mailto:support@plane.so",
     },
   ];

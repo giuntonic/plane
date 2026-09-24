@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState, useRef, useCallback, useMemo } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -52,6 +53,7 @@ type Props<TFieldValues extends FieldValues = FieldValues> = {
 const fileService = new FileService();
 
 function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldValues>(props: Props<TFieldValues>) {
+  const { t } = useTranslation();
   const { label, value, control, onChange, disabled = false, tabIndex, isProfileCover = false, projectId } = props;
   // states
   const [image, setImage] = useState<File | null>(null);
@@ -78,12 +80,12 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
       },
       {
         key: "images",
-        title: "Images",
+        title: t("ui.images"),
         isEnabled: true,
       },
       {
         key: "upload",
-        title: "Upload",
+        title: t("ui.upload"),
         isEnabled: true,
       },
     ],
@@ -143,9 +145,9 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
           console.error("Error uploading user cover image:", error);
           setIsImageUploading(false);
           setToast({
-            message: error?.error ?? "The image could not be uploaded",
+            message: error?.error ?? t("ui.the_image_could_not_be_uploaded"),
             type: TOAST_TYPE.ERROR,
-            title: "Image not uploaded",
+            title: t("ui.image_not_uploaded"),
           });
         });
     } else {
@@ -164,9 +166,9 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
           console.error("Error uploading project cover image:", error);
           setIsImageUploading(false);
           setToast({
-            message: error?.error ?? "The image could not be uploaded",
+            message: error?.error ?? t("ui.the_image_could_not_be_uploaded"),
             type: TOAST_TYPE.ERROR,
-            title: "Image not uploaded",
+            title: t("ui.image_not_uploaded"),
           });
         });
     }
@@ -236,7 +238,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                               value={value}
                               onChange={(e) => setFormData({ ...formData, search: e.target.value })}
                               ref={ref}
-                              placeholder="Search for images"
+                              placeholder={t("ui.search_for_images")}
                               className="w-full text-13"
                             />
                           )}
@@ -266,7 +268,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                             ))}
                           </div>
                         ) : (
-                          <p className="pt-7 text-center text-11 text-secondary">No images found.</p>
+                          <p className="pt-7 text-center text-11 text-secondary">{t("ui.no_images_found")}</p>
                         )
                       ) : (
                         <Loader className="grid grid-cols-4 gap-4">
@@ -344,7 +346,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                       </p>
                     )}
 
-                    <p className="text-13 text-secondary">File formats supported- .jpeg, .jpg, .png, .webp</p>
+                    <p className="text-13 text-secondary">{t("ui.file_formats_supported_jpeg_jpg_png_webp")}</p>
 
                     <div className="flex h-12 items-start justify-end gap-2">
                       <Button

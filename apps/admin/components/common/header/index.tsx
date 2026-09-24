@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { usePathname } from "next/navigation";
 import { Menu, Settings } from "lucide-react";
@@ -18,11 +19,12 @@ import { CORE_HEADER_SEGMENT_LABELS } from "./core";
 import { EXTENDED_HEADER_SEGMENT_LABELS } from "./extended";
 
 export const HamburgerToggle = observer(function HamburgerToggle() {
+  const { t } = useTranslation();
   const { isSidebarCollapsed, toggleSidebar } = useTheme();
   return (
     <button
       type="button"
-      aria-label="Toggle sidebar"
+      aria-label={t("ui.toggle_sidebar")}
       className="group flex size-7 cursor-pointer items-center justify-center rounded-sm bg-layer-1 transition-all hover:bg-layer-1-hover md:hidden"
       onClick={() => toggleSidebar(!isSidebarCollapsed)}
     >
@@ -53,6 +55,7 @@ const generateBreadcrumbItems = (pathname: string) => {
 };
 
 export const AdminHeader = observer(function AdminHeader() {
+  const { t } = useTranslation();
   const pathName = usePathname();
 
   const breadcrumbItems = generateBreadcrumbItems(pathName || "");
@@ -67,7 +70,7 @@ export const AdminHeader = observer(function AdminHeader() {
               component={
                 <BreadcrumbLink
                   href="/general/"
-                  label="Settings"
+                  label={t("settings")}
                   icon={<Settings className="h-4 w-4 text-tertiary" />}
                 />
               }

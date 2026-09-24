@@ -7,7 +7,7 @@
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 // plane package imports
-import { useTranslation } from "@plane/i18n";
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { ANALYTICS_X_AXIS_VALUES } from "@plane/constants";
 import { Button } from "@plane/propel/button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -20,7 +20,15 @@ import { useDashboards } from "@/hooks/store/use-dashboards";
 import { SelectXAxis } from "@/components/analytics/select/select-x-axis";
 import { SelectChartType } from "./select-chart-type";
 
-const X_AXIS_OPTIONS = [...ANALYTICS_X_AXIS_VALUES, { value: ChartXAxisProperty.CREATED_BY, label: "Created by" }];
+const X_AXIS_OPTIONS = [
+  ...ANALYTICS_X_AXIS_VALUES,
+  {
+    value: ChartXAxisProperty.CREATED_BY,
+    get label() {
+      return i18nInstance.t("common.created_by");
+    },
+  },
+];
 
 type Props = {
   isOpen: boolean;

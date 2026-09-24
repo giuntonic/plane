@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Fragment, useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router";
@@ -25,6 +26,7 @@ import { useUser } from "@/hooks/store/use-user";
 const authService = new AuthService();
 
 export const UserAvatar = observer(function UserAvatar() {
+  const { t } = useTranslation();
   const pathName = usePathname();
   const searchParams = useSearchParams();
   // query params
@@ -119,7 +121,7 @@ export const UserAvatar = observer(function UserAvatar() {
       ) : (
         <div className="flex-shrink-0">
           <Link to={`/?next_path=${pathName}?${queryParam}`}>
-            <Button variant="secondary">Sign in</Button>
+            <Button variant="secondary">{t("ui.sign_in_2")}</Button>
           </Link>
         </div>
       )}

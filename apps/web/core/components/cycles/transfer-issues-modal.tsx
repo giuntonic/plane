@@ -44,7 +44,7 @@ export const TransferIssuesModal = observer(function TransferIssuesModal(props: 
         setToast({
           type: TOAST_TYPE.SUCCESS,
           title: t("toast.success"),
-          message: t("cycle.transfer_issues.success"),
+          message: t("ui.transfer_issues_success"),
         });
         await getCycleDetails(payload.new_cycle_id);
       })
@@ -52,7 +52,7 @@ export const TransferIssuesModal = observer(function TransferIssuesModal(props: 
         setToast({
           type: TOAST_TYPE.ERROR,
           title: t("toast.error"),
-          message: t("cycle.transfer_issues.error"),
+          message: t("ui.transfer_issues_error"),
         });
       });
   };
@@ -67,7 +67,7 @@ export const TransferIssuesModal = observer(function TransferIssuesModal(props: 
       setToast({
         type: TOAST_TYPE.ERROR,
         title: t("toast.error"),
-        message: error.error || t("cycle.transfer_issues.fetch_error"),
+        message: error.error || t("ui.transfer_issues_fetch_error"),
       });
     });
   };
@@ -84,7 +84,7 @@ export const TransferIssuesModal = observer(function TransferIssuesModal(props: 
         <div className="flex items-center justify-between px-5">
           <div className="flex items-center gap-1">
             <TransferIcon className="w-5 fill-primary" />
-            <h4 className="text-18 font-medium text-primary">{t("cycle.transfer_issues.title")}</h4>
+            <h4 className="text-18 font-medium text-primary">{t("ui.transfer_work_items")}</h4>
           </div>
           <button onClick={handleClose}>
             <CloseIcon className="h-4 w-4" />
@@ -94,7 +94,7 @@ export const TransferIssuesModal = observer(function TransferIssuesModal(props: 
           <SearchIcon className="h-4 w-4 text-secondary" />
           <input
             className="text-13 outline-none"
-            placeholder={t("cycle.transfer_issues.search_placeholder")}
+            placeholder={t("ui.transfer_issues_search_placeholder")}
             onChange={(e) => setQuery(e.target.value)}
             value={query}
           />
@@ -133,7 +133,7 @@ export const TransferIssuesModal = observer(function TransferIssuesModal(props: 
             ) : (
               <div className="flex w-full items-center justify-center gap-4 p-5 text-13">
                 <AlertCircle className="h-3.5 w-3.5 text-secondary" />
-                <span className="text-center text-secondary">{t("cycle.transfer_issues.no_current_cycle")}</span>
+                <span className="text-center text-secondary">{t("ui.transfer_issues_no_current_cycle")}</span>
               </div>
             )
           ) : (

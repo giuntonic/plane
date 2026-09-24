@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useMemo } from "react";
 import { setPromiseToast, TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { TIssueServiceType } from "@plane/types";
@@ -33,6 +34,7 @@ export const useAttachmentOperations = (
   issueId: string,
   issueServiceType: TIssueServiceType = EIssueServiceType.ISSUES
 ): TAttachmentHelpers => {
+  const { t } = useTranslation();
   const {
     attachment: { createAttachment, removeAttachment, getAttachmentsUploadStatusByIssueId },
   } = useIssueDetail(issueServiceType);
@@ -43,13 +45,13 @@ export const useAttachmentOperations = (
         if (!workspaceSlug || !projectId || !issueId) throw new Error("Missing required fields");
         const attachmentUploadPromise = createAttachment(workspaceSlug, projectId, issueId, file);
         setPromiseToast(attachmentUploadPromise, {
-          loading: "Uploading attachment...",
+          loading: t("ui.uploading_attachment"),
           success: {
-            title: "Attachment uploaded",
+            title: t("ui.attachment_uploaded"),
             message: () => "The attachment has been successfully uploaded",
           },
           error: {
-            title: "Attachment not uploaded",
+            title: t("ui.attachment_not_uploaded"),
             message: () => "The attachment could not be uploaded",
           },
         });
@@ -61,15 +63,15 @@ export const useAttachmentOperations = (
           if (!workspaceSlug || !projectId || !issueId) throw new Error("Missing required fields");
           await removeAttachment(workspaceSlug, projectId, issueId, attachmentId);
           setToast({
-            message: "The attachment has been successfully removed",
+            message: t("ui.the_attachment_has_been_successfully_removed"),
             type: TOAST_TYPE.SUCCESS,
-            title: "Attachment removed",
+            title: t("ui.attachment_removed"),
           });
         } catch (_error) {
           setToast({
-            message: "The Attachment could not be removed",
+            message: t("ui.the_attachment_could_not_be_removed"),
             type: TOAST_TYPE.ERROR,
-            title: "Attachment not removed",
+            title: t("ui.attachment_not_removed"),
           });
         }
       },

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 // ui
 import { Button } from "@plane/propel/button";
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export function ArchiveCycleModal(props: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId, cycleId, isOpen, handleClose } = props;
   // router
   const router = useAppRouter();
@@ -44,8 +46,8 @@ export function ArchiveCycleModal(props: Props) {
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Archive success",
-          message: "Your archives can be found in project archives.",
+          title: t("ui.archive_success"),
+          message: t("ui.your_archives_can_be_found_in_project"),
         });
         onClose();
         router.push(`/${workspaceSlug}/projects/${projectId}/cycles`);
@@ -54,8 +56,8 @@ export function ArchiveCycleModal(props: Props) {
       .catch(() => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Cycle could not be archived. Please try again.",
+          title: t("toast.error"),
+          message: t("ui.cycle_could_not_be_archived_please_try"),
         });
       })
       .finally(() => setIsArchiving(false));

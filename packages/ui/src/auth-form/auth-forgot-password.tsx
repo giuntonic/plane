@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import React from "react";
 import { cn } from "../utils";
 
@@ -17,7 +18,7 @@ export interface AuthForgotPasswordProps {
 export function AuthForgotPassword({
   onForgotPassword,
   className = "",
-  text = "Forgot your password?",
+  text = i18nInstance.t("ui.forgot_your_password"),
   disabled = false,
 }: AuthForgotPasswordProps) {
   const handleClick = (e: React.MouseEvent) => {

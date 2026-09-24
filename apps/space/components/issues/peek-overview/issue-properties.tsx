@@ -54,8 +54,8 @@ export const PeekOverviewIssueProperties = observer(function PeekOverviewIssuePr
     copyTextToClipboard(urlToCopy).then(() => {
       setToast({
         type: TOAST_TYPE.INFO,
-        title: "Link copied!",
-        message: "Work item link copied to clipboard",
+        title: t("common.link_copied"),
+        message: t("common.copied_to_clipboard"),
       });
     });
   };
@@ -127,7 +127,7 @@ export const PeekOverviewIssueProperties = observer(function PeekOverviewIssuePr
                 {renderFormattedDate(issueDetails.target_date)}
               </div>
             ) : (
-              <span className="text-13 text-secondary">Empty</span>
+              <span className="text-13 text-secondary">{t("ui.empty")}</span>
             )}
           </div>
         </div>

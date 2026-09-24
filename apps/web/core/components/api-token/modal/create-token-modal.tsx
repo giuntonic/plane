@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { mutate } from "swr";
 // plane imports
@@ -27,6 +28,7 @@ type Props = {
 const apiTokenService = new APITokenService();
 
 export function CreateApiTokenModal(props: Props) {
+  const { t } = useTranslation();
   const { isOpen, onClose } = props;
   // states
   const [neverExpires, setNeverExpires] = useState<boolean>(false);
@@ -73,7 +75,7 @@ export function CreateApiTokenModal(props: Props) {
       .catch((err) => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
+          title: t("toast.error"),
           message: err.message || err.detail,
         });
 

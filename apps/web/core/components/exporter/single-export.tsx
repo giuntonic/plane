@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 // ui
 import { Button } from "@plane/propel/button";
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function SingleExport({ service, refreshing }: Props) {
+  const { t } = useTranslation();
   const provider = service.provider;
 
   const [isLoading] = useState(false);
@@ -74,7 +76,7 @@ export function SingleExport({ service, refreshing }: Props) {
           )}
         </>
       ) : (
-        <div className="text-11 text-danger-primary">Expired</div>
+        <div className="text-11 text-danger-primary">{t("ui.expired")}</div>
       )}
     </div>
   );

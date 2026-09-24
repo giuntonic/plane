@@ -400,7 +400,7 @@
   },
   "role_setup_step": {
     "title": "Qual é a sua função?",
-    "description": "Vamos configurar o Plane para o seu jeito de trabalhar.",
+    "description": "Vamos configurar o Pespo Hub para o seu jeito de trabalhar.",
     "select_one": "Selecione uma opção",
     "roles": {
       "product_manager": "Gerente de Produto",
@@ -425,7 +425,7 @@
     "skip": "Pular"
   },
   "usecase_setup_step": {
-    "title": "O que te trouxe ao Plane?",
+    "title": "O que te trouxe ao Pespo Hub?",
     "description": "Conte-nos seus objetivos e o tamanho da sua equipe.",
     "select_one_or_more": "Selecione uma ou mais opções",
     "required_error": "Selecione pelo menos uma opção",
@@ -441,14 +441,14 @@
   },
   "team_setup_step": {
     "title": "Convide sua equipe",
-    "description": "O Plane funciona melhor com sua equipe. Convide-os agora para aproveitar todo o potencial do Plane.",
+    "description": "O Pespo Hub funciona melhor com sua equipe. Convide-os agora para aproveitar todo o potencial do Pespo Hub.",
     "add_another": "Adicionar outro",
     "continue": "Continuar",
     "do_it_later": "Farei isso depois"
   },
   "profile_setup_step": {
     "title": "Crie seu perfil.",
-    "description": "É assim que você aparecerá no Plane.",
+    "description": "É assim que você aparecerá no Pespo Hub.",
     "change_image": "Alterar imagem",
     "upload_image": "Enviar imagem",
     "name_label": "Nome",
@@ -458,7 +458,7 @@
     "continue": "Continuar",
     "update_failed": "Falha ao atualizar os dados do usuário. Tente novamente!"
   },
-  "marketing_consent": "Concordo em receber comunicações de marketing do Plane",
+  "marketing_consent": "Concordo em receber comunicações de marketing do Pespo Hub",
   "not_a_member": {
     "title": "Não autorizado!",
     "description": "Você não é membro deste workspace. Entre em contato com o administrador do workspace para obter um convite ou verifique seus convites pendentes.",

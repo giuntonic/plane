@@ -55,7 +55,7 @@ export const DeletePageModal = observer(function DeletePageModal(props: TConfirm
         setToast({
           type: TOAST_TYPE.SUCCESS,
           title: t("toast.success"),
-          message: t("page.delete_modal.success"),
+          message: t("ui.delete_page_success"),
         });
 
         if (routePageId) {
@@ -66,7 +66,7 @@ export const DeletePageModal = observer(function DeletePageModal(props: TConfirm
         setToast({
           type: TOAST_TYPE.ERROR,
           title: t("toast.error"),
-          message: t("page.delete_modal.error"),
+          message: t("ui.delete_page_error"),
         });
       });
 
@@ -81,8 +81,8 @@ export const DeletePageModal = observer(function DeletePageModal(props: TConfirm
       handleSubmit={handleDelete}
       isSubmitting={isDeleting}
       isOpen={isOpen}
-      title={t("page.delete_modal.title")}
-      content={t("page.delete_modal.confirmation", { name: getPageName(name) })}
+      title={t("ui.delete_page_title")}
+      content={t("ui.delete_page_confirmation", { name: getPageName(name) })}
     />
   );
 });

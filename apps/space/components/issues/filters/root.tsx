@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback } from "react";
 import { cloneDeep } from "lodash-es";
 import { observer } from "mobx-react";
@@ -25,6 +26,7 @@ type IssueFiltersDropdownProps = {
 };
 
 export const IssueFiltersDropdown = observer(function IssueFiltersDropdown(props: IssueFiltersDropdownProps) {
+  const { t } = useTranslation();
   const { anchor } = props;
   // router
   const router = useRouter();
@@ -63,7 +65,7 @@ export const IssueFiltersDropdown = observer(function IssueFiltersDropdown(props
 
   return (
     <div className="relative">
-      <FiltersDropdown title="Filters" placement="bottom-end">
+      <FiltersDropdown title={t("common.filters")} placement="bottom-end">
         <FilterSelection
           filters={issueFilters?.filters ?? {}}
           handleFilters={handleFilters as any}

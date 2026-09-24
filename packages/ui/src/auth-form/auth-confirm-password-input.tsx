@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import React, { useState } from "react";
 import { cn } from "@plane/utils";
 import { AuthInput } from "./auth-input";
@@ -21,7 +22,7 @@ export type TAuthConfirmPasswordInputProps = React.InputHTMLAttributes<HTMLInput
 
 export function AuthConfirmPasswordInput({
   password,
-  label = "Confirm Password",
+  label = i18nInstance.t("ui.confirm_password_2"),
   error,
   showPasswordToggle = true,
   containerClassName = "",
@@ -32,6 +33,7 @@ export function AuthConfirmPasswordInput({
   onPasswordMatchChange,
   ...props
 }: TAuthConfirmPasswordInputProps) {
+  const { t } = useTranslation();
   const [isFocused, setIsFocused] = useState(false);
 
   const confirmPassword = value as string;
@@ -75,7 +77,7 @@ export function AuthConfirmPasswordInput({
         onBlur={handleBlur}
         autoComplete="off"
       />
-      {confirmPassword && passwordsMatch && <p className="text-13 text-success-primary">Passwords match</p>}
+      {confirmPassword && passwordsMatch && <p className="text-13 text-success-primary">{t("ui.passwords_match")}</p>}
     </div>
   );
 }

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { observer } from "mobx-react";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -28,6 +29,7 @@ type Props = {
 };
 
 export const IssueDetailWidgetModals = observer(function IssueDetailWidgetModals(props: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId, issueId, issueServiceType, hideWidgets } = props;
   // store hooks
   const {
@@ -111,8 +113,8 @@ export const IssueDetailWidgetModals = observer(function IssueDetailWidgetModals
     if (data.length === 0) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Please select at least one work item.",
+        title: t("toast.error"),
+        message: t("ui.please_select_at_least_one_work_item"),
       });
       return;
     }

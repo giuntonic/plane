@@ -75,10 +75,38 @@ export const months: WeekMonthDataType[] = [
 ];
 
 export const quarters: WeekMonthDataType[] = [
-  { key: 0, shortTitle: "Q1", title: "Jan - Mar", abbreviation: "Q1" },
-  { key: 1, shortTitle: "Q2", title: "Apr - Jun", abbreviation: "Q2" },
-  { key: 2, shortTitle: "Q3", title: "Jul - Sept", abbreviation: "Q3" },
-  { key: 3, shortTitle: "Q4", title: "Oct - Dec", abbreviation: "Q4" },
+  {
+    key: 0,
+    shortTitle: "Q1",
+    get title() {
+      return i18nInstance.t("ui.jan_mar");
+    },
+    abbreviation: "Q1",
+  },
+  {
+    key: 1,
+    shortTitle: "Q2",
+    get title() {
+      return i18nInstance.t("ui.apr_jun");
+    },
+    abbreviation: "Q2",
+  },
+  {
+    key: 2,
+    shortTitle: "Q3",
+    get title() {
+      return i18nInstance.t("ui.jul_sept");
+    },
+    abbreviation: "Q3",
+  },
+  {
+    key: 3,
+    shortTitle: "Q4",
+    get title() {
+      return i18nInstance.t("ui.oct_dec");
+    },
+    abbreviation: "Q4",
+  },
 ];
 
 export const charCapitalize = (word: string) => `${word.charAt(0).toUpperCase()}${word.substring(1)}`;

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // components
 import { PageWrapper } from "@/components/common/page-wrapper";
@@ -15,12 +16,13 @@ import { GeneralConfigurationForm } from "./form";
 import type { Route } from "./+types/page";
 
 function GeneralPage() {
+  const { t } = useTranslation();
   const { instance, instanceAdmins } = useInstance();
 
   return (
     <PageWrapper
       header={{
-        title: "General settings",
+        title: t("general_settings"),
         description:
           "Change the name of your instance and instance admin e-mail addresses. Enable or disable telemetry in your instance.",
       }}
@@ -30,6 +32,12 @@ function GeneralPage() {
   );
 }
 
-export const meta: Route.MetaFunction = () => [{ title: "General Settings - God Mode" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.general_settings_god_mode");
+    },
+  },
+];
 
 export default observer(GeneralPage);

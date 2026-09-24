@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { KeyRound, Mails } from "lucide-react";
 // types
 import type {
@@ -35,17 +36,16 @@ export const getCoreAuthenticationModesMap: (
 }) => ({
   "unique-codes": {
     key: "unique-codes",
-    name: "Unique codes",
-    description:
-      "Log in or sign up for Plane using codes sent via email. You need to have set up SMTP to use this method.",
+    name: i18nInstance.t("ui.auth_mode_unique_codes"),
+    description: i18nInstance.t("ui.auth_mode_unique_codes_description"),
     icon: <Mails className="h-6 w-6 p-0.5 text-tertiary" />,
     config: <EmailCodesConfiguration disabled={disabled} updateConfig={updateConfig} />,
     enabledConfigKey: "ENABLE_MAGIC_LINK_LOGIN",
   },
   "passwords-login": {
     key: "passwords-login",
-    name: "Passwords",
-    description: "Allow members to create accounts with passwords and use it with their email addresses to sign in.",
+    name: i18nInstance.t("ui.auth_mode_passwords"),
+    description: i18nInstance.t("ui.allow_members_to_create_accounts_with_passwords"),
     icon: <KeyRound className="h-6 w-6 p-0.5 text-tertiary" />,
     config: <PasswordLoginConfiguration disabled={disabled} updateConfig={updateConfig} />,
     enabledConfigKey: "ENABLE_EMAIL_PASSWORD",
@@ -53,21 +53,21 @@ export const getCoreAuthenticationModesMap: (
   google: {
     key: "google",
     name: "Google",
-    description: "Allow members to log in or sign up for Plane with their Google accounts.",
-    icon: <img src={googleLogo} height={20} width={20} alt="Google Logo" />,
+    description: i18nInstance.t("ui.allow_members_to_log_in_or_sign"),
+    icon: <img src={googleLogo} height={20} width={20} alt={i18nInstance.t("ui.google_logo")} />,
     config: <GoogleConfiguration disabled={disabled} updateConfig={updateConfig} />,
     enabledConfigKey: "IS_GOOGLE_ENABLED",
   },
   github: {
     key: "github",
     name: "GitHub",
-    description: "Allow members to log in or sign up for Plane with their GitHub accounts.",
+    description: i18nInstance.t("ui.allow_members_to_log_in_or_sign_2"),
     icon: (
       <img
         src={resolvedTheme === "dark" ? githubDarkModeImage : githubLightModeImage}
         height={20}
         width={20}
-        alt="GitHub Logo"
+        alt={i18nInstance.t("ui.github_logo")}
       />
     ),
     config: <GithubConfiguration disabled={disabled} updateConfig={updateConfig} />,
@@ -76,16 +76,16 @@ export const getCoreAuthenticationModesMap: (
   gitlab: {
     key: "gitlab",
     name: "GitLab",
-    description: "Allow members to log in or sign up to plane with their GitLab accounts.",
-    icon: <img src={gitlabLogo} height={20} width={20} alt="GitLab Logo" />,
+    description: i18nInstance.t("ui.allow_members_to_log_in_or_sign_3"),
+    icon: <img src={gitlabLogo} height={20} width={20} alt={i18nInstance.t("ui.gitlab_logo")} />,
     config: <GitlabConfiguration disabled={disabled} updateConfig={updateConfig} />,
     enabledConfigKey: "IS_GITLAB_ENABLED",
   },
   gitea: {
     key: "gitea",
     name: "Gitea",
-    description: "Allow members to log in or sign up to plane with their Gitea accounts.",
-    icon: <img src={giteaLogo} height={20} width={20} alt="Gitea Logo" />,
+    description: i18nInstance.t("ui.allow_members_to_log_in_or_sign_4"),
+    icon: <img src={giteaLogo} height={20} width={20} alt={i18nInstance.t("ui.gitea_logo")} />,
     config: <GiteaConfiguration disabled={disabled} updateConfig={updateConfig} />,
     enabledConfigKey: "IS_GITEA_ENABLED",
   },

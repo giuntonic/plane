@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
@@ -24,6 +25,7 @@ import { InstanceGitlabConfigForm } from "./form";
 const InstanceGitlabAuthenticationPage = observer(function InstanceGitlabAuthenticationPage(
   _props: Route.ComponentProps
 ) {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig, updateInstanceConfigurations } = useInstance();
   // state
@@ -43,9 +45,9 @@ const InstanceGitlabAuthenticationPage = observer(function InstanceGitlabAuthent
     const updateConfigPromise = updateInstanceConfigurations(payload);
 
     setPromiseToast(updateConfigPromise, {
-      loading: "Saving Configuration",
+      loading: t("ui.saving_configuration"),
       success: {
-        title: "Configuration saved",
+        title: t("ui.configuration_saved"),
         message: () => `GitLab authentication is now ${value === "1" ? "active" : "disabled"}.`,
       },
       error: {
@@ -68,8 +70,8 @@ const InstanceGitlabAuthenticationPage = observer(function InstanceGitlabAuthent
       customHeader={
         <AuthenticationMethodCard
           name="GitLab"
-          description="Allow members to login or sign up to plane with their GitLab accounts."
-          icon={<img src={GitlabLogo} height={24} width={24} alt="GitLab Logo" />}
+          description={t("ui.allow_members_to_login_or_sign_up_3")}
+          icon={<img src={GitlabLogo} height={24} width={24} alt={t("ui.gitlab_logo")} />}
           config={
             <ToggleSwitch
               value={Boolean(parseInt(enableGitlabConfig))}
@@ -104,6 +106,12 @@ const InstanceGitlabAuthenticationPage = observer(function InstanceGitlabAuthent
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "GitLab Authentication - God Mode" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.gitlab_authentication_god_mode");
+    },
+  },
+];
 
 export default InstanceGitlabAuthenticationPage;

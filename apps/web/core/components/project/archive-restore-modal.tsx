@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 // ui
 import { Button } from "@plane/propel/button";
@@ -23,6 +24,7 @@ type Props = {
 };
 
 export function ArchiveRestoreProjectModal(props: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId, isOpen, onClose, archive } = props;
   // router
   const router = useAppRouter();
@@ -45,7 +47,7 @@ export function ArchiveRestoreProjectModal(props: Props) {
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Archive success",
+          title: t("ui.archive_success"),
           message: `${projectDetails.name} has been archived successfully`,
         });
         onClose();
@@ -55,8 +57,8 @@ export function ArchiveRestoreProjectModal(props: Props) {
       .catch(() =>
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Project could not be archived. Please try again.",
+          title: t("toast.error"),
+          message: t("ui.project_could_not_be_archived_please_try"),
         })
       )
       .finally(() => setIsLoading(false));
@@ -68,7 +70,7 @@ export function ArchiveRestoreProjectModal(props: Props) {
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Restore success",
+          title: t("ui.restore_success"),
           message: `You can find ${projectDetails.name} in your projects.`,
         });
         onClose();
@@ -78,8 +80,8 @@ export function ArchiveRestoreProjectModal(props: Props) {
       .catch(() =>
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Project could not be restored. Please try again.",
+          title: t("toast.error"),
+          message: t("ui.project_could_not_be_restored_please_try"),
         })
       )
       .finally(() => setIsLoading(false));

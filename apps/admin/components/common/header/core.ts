@@ -4,9 +4,12 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 export const CORE_HEADER_SEGMENT_LABELS: Record<string, string> = {
   general: "General",
-  ai: "Artificial Intelligence",
+  get ai() {
+    return i18nInstance.t("ui.artificial_intelligence");
+  },
   email: "Email",
   authentication: "Authentication",
   image: "Image",

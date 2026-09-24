@@ -137,8 +137,8 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
       ]);
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success",
-        message: "Profile setup completed!",
+        title: t("success"),
+        message: t("ui.profile_setup_completed"),
       });
       // For Invited Users, they will skip all other steps and finish onboarding.
       if (totalSteps <= 2) {
@@ -148,7 +148,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
       setToast({
         type: TOAST_TYPE.ERROR,
         title: "Error",
-        message: "Profile setup failed. Please try again!",
+        message: t("ui.profile_setup_failed_please_try_again"),
       });
     }
   };
@@ -173,7 +173,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
       setToast({
         type: TOAST_TYPE.ERROR,
         title: "Error",
-        message: "User details update failed. Please try again!",
+        message: t("ui.user_details_update_failed_please_try_again"),
       });
     }
   };
@@ -190,8 +190,8 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
       ]);
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success",
-        message: "Profile setup completed!",
+        title: t("success"),
+        message: t("ui.profile_setup_completed"),
       });
       // For Invited Users, they will skip all other steps and finish onboarding.
       if (totalSteps <= 2) {
@@ -201,7 +201,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
       setToast({
         type: TOAST_TYPE.ERROR,
         title: "Error",
-        message: "Profile setup failed. Please try again!",
+        message: t("ui.profile_setup_failed_please_try_again"),
       });
     }
   };
@@ -275,7 +275,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                         </div>
                       </div>
                       <div className="pt-1 text-13 font-medium text-accent-secondary hover:text-tertiary">
-                        Choose image
+                        {t("ui.choose_image")}
                       </div>
                     </div>
                   ) : (
@@ -296,17 +296,17 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                     className="text-13 font-medium text-tertiary after:ml-0.5 after:text-danger-primary after:content-['*']"
                     htmlFor="first_name"
                   >
-                    First name
+                    {t("first_name")}
                   </label>
                   <Controller
                     control={control}
                     name="first_name"
                     rules={{
-                      required: "First name is required",
+                      required: t("ui.first_name_is_required"),
                       validate: validatePersonName,
                       maxLength: {
                         value: 50,
-                        message: "First name must be within 50 characters.",
+                        message: t("ui.first_name_must_be_within_50_characters"),
                       },
                     }}
                     render={({ field: { value, onChange, ref } }) => (
@@ -319,7 +319,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                         onChange={onChange}
                         ref={ref}
                         hasError={Boolean(errors.first_name)}
-                        placeholder="Wilbur"
+                        placeholder={t("ui.wilbur")}
                         className="w-full border-strong"
                         autoComplete="on"
                       />
@@ -334,17 +334,17 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                     className="text-13 font-medium text-tertiary after:ml-0.5 after:text-danger-primary after:content-['*']"
                     htmlFor="last_name"
                   >
-                    Last name
+                    {t("last_name")}
                   </label>
                   <Controller
                     control={control}
                     name="last_name"
                     rules={{
-                      required: "Last name is required",
+                      required: t("ui.last_name_is_required"),
                       validate: validatePersonName,
                       maxLength: {
                         value: 50,
-                        message: "Last name must be within 50 characters.",
+                        message: t("ui.last_name_must_be_within_50_characters"),
                       },
                     }}
                     render={({ field: { value, onChange, ref } }) => (
@@ -356,7 +356,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                         onChange={onChange}
                         ref={ref}
                         hasError={Boolean(errors.last_name)}
-                        placeholder="Wright"
+                        placeholder={t("ui.wright")}
                         className="w-full border-strong"
                         autoComplete="on"
                       />
@@ -388,7 +388,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                             onChange={onChange}
                             ref={ref}
                             hasError={Boolean(errors.password)}
-                            placeholder="New password..."
+                            placeholder={t("ui.new_password_2")}
                             className="w-full border-[0.5px] border-subtle pr-12 placeholder:text-placeholder"
                             onFocus={() => setIsPasswordInputFocused(true)}
                             onBlur={() => setIsPasswordInputFocused(false)}
@@ -420,7 +420,11 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                       rules={{
                         required: watch("password") ? true : false,
                         validate: (value) =>
-                          watch("password") ? (value === watch("password") ? true : "Passwords don't match") : true,
+                          watch("password")
+                            ? value === watch("password")
+                              ? true
+                              : t("ui.passwords_dont_match")
+                            : true,
                       }}
                       render={({ field: { value, onChange, ref } }) => (
                         <div className="relative flex items-center rounded-md">
@@ -472,7 +476,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                   control={control}
                   name="role"
                   rules={{
-                    required: "This field is required",
+                    required: t("common.errors.required"),
                   }}
                   render={({ field: { value, onChange } }) => (
                     <div className="flex flex-wrap gap-2 overflow-auto py-2 break-all">
@@ -507,7 +511,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                   control={control}
                   name="use_case"
                   rules={{
-                    required: "Please select at least one option",
+                    required: t("ui.please_select_at_least_one_option"),
                     validate: (value) => (value && value.length > 0) || "Please select at least one option",
                   }}
                   render={({ field: { value, onChange } }) => (

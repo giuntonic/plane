@@ -101,7 +101,7 @@ export const DeleteWorkspaceForm = observer(function DeleteWorkspaceForm(props: 
           </div>
 
           <div className="mt-4 text-secondary">
-            <p className="text-body-xs-regular break-words">Type in this workspace&apos;s name to continue.</p>
+            <p className="text-body-xs-regular break-words">{t("ui.type_in_this_workspaces_name_to_continue")}</p>
             <Controller
               control={control}
               name="workspaceName"

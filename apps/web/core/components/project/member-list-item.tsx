@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export const ProjectMemberListItem = observer(function ProjectMemberListItem(props: Props) {
+  const { t } = useTranslation();
   const { memberDetails, projectId, workspaceSlug } = props;
   // router
   const router = useAppRouter();
@@ -53,7 +55,7 @@ export const ProjectMemberListItem = observer(function ProjectMemberListItem(pro
         .catch((err) => {
           setToast({
             type: TOAST_TYPE.ERROR,
-            title: "You can’t leave this project yet.",
+            title: t("ui.you_cant_leave_this_project_yet"),
             message: err?.error || "Something went wrong. Please try again.",
           });
         });
@@ -61,7 +63,7 @@ export const ProjectMemberListItem = observer(function ProjectMemberListItem(pro
       await removeMemberFromProject(workspaceSlug.toString(), projectId.toString(), memberId).catch((err) =>
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "You can't remove the member from this project yet.",
+          title: t("ui.you_cant_remove_the_member_from_this"),
           message: err?.error || "Something went wrong. Please try again.",
         })
       );

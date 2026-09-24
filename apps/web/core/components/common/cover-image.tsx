@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { cn } from "@plane/utils";
 // helpers
 import { getCoverImageDisplayURL, DEFAULT_COVER_IMAGE_URL } from "@/helpers/cover-image.helper";
@@ -30,9 +31,10 @@ type TCoverImageProps = {
  * - Fallback to default cover image
  */
 export function CoverImage(props: TCoverImageProps) {
+  const { t } = useTranslation();
   const {
     src,
-    alt = "Cover image",
+    alt = t("cover_image"),
     className,
     showDefaultWhenEmpty = false,
     fallbackUrl = DEFAULT_COVER_IMAGE_URL,

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
@@ -23,6 +24,7 @@ import type { Route } from "./+types/page";
 import { InstanceGiteaConfigForm } from "./form";
 
 const InstanceGiteaAuthenticationPage = observer(function InstanceGiteaAuthenticationPage() {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig, updateInstanceConfigurations } = useInstance();
   // state
@@ -41,9 +43,9 @@ const InstanceGiteaAuthenticationPage = observer(function InstanceGiteaAuthentic
     const updateConfigPromise = updateInstanceConfigurations(payload);
 
     setPromiseToast(updateConfigPromise, {
-      loading: "Saving Configuration",
+      loading: t("ui.saving_configuration"),
       success: {
-        title: "Configuration saved",
+        title: t("ui.configuration_saved"),
         message: () => `Gitea authentication is now ${value === "1" ? "active" : "disabled"}.`,
       },
       error: {
@@ -69,8 +71,8 @@ const InstanceGiteaAuthenticationPage = observer(function InstanceGiteaAuthentic
       customHeader={
         <AuthenticationMethodCard
           name="Gitea"
-          description="Allow members to login or sign up to plane with their Gitea accounts."
-          icon={<img src={giteaLogo} height={24} width={24} alt="Gitea Logo" />}
+          description={t("ui.allow_members_to_login_or_sign_up")}
+          icon={<img src={giteaLogo} height={24} width={24} alt={t("ui.gitea_logo")} />}
           config={
             <ToggleSwitch
               value={isGiteaEnabled}
@@ -100,6 +102,12 @@ const InstanceGiteaAuthenticationPage = observer(function InstanceGiteaAuthentic
     </PageWrapper>
   );
 });
-export const meta: Route.MetaFunction = () => [{ title: "Gitea Authentication - God Mode" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.gitea_authentication_god_mode");
+    },
+  },
+];
 
 export default InstanceGiteaAuthenticationPage;

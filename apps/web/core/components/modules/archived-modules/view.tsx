@@ -40,7 +40,7 @@ export const ArchivedModulesView = observer(function ArchivedModulesView(props: 
           <img
             src={archivedModulesSearchQuery.trim() === "" ? AllFiltersImage : NameFilterImage}
             className="mx-auto h-36 w-36 sm:h-48 sm:w-48"
-            alt="No matching modules"
+            alt={t("ui.no_matching_modules")}
           />
           <h5 className="mt-7 mb-1 text-18 font-medium">{t("module.no_matching_modules.title")}</h5>
           <p className="text-14 text-placeholder">

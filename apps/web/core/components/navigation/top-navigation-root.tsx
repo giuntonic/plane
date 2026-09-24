@@ -5,6 +5,7 @@
  */
 
 // components
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams, usePathname } from "next/navigation";
 import { cn } from "@plane/utils";
@@ -21,6 +22,7 @@ import { useWorkspaceNotifications } from "@/hooks/store/notifications";
 import { useUserPermissions } from "@/hooks/store/user";
 
 export const TopNavigationRoot = observer(function TopNavigationRoot() {
+  const { t } = useTranslation();
   // router
   const { workspaceSlug } = useParams();
   const pathname = usePathname();
@@ -70,7 +72,7 @@ export const TopNavigationRoot = observer(function TopNavigationRoot() {
       )}
       {/* Additional Actions */}
       <div className="flex flex-1 shrink-0 items-center justify-end gap-1">
-        <Tooltip tooltipContent="Inbox" position="bottom">
+        <Tooltip tooltipContent={t("sidebar.inbox")} position="bottom">
           <AppSidebarItem
             variant="link"
             item={{

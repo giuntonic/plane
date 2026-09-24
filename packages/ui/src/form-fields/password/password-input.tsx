@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
 import { Tooltip } from "@plane/propel/tooltip";
@@ -24,7 +25,7 @@ export function PasswordInput({
   id,
   value,
   onChange,
-  placeholder = "Enter your password",
+  placeholder = i18nInstance.t("ui.enter_your_password"),
   className,
   showToggle = true,
   error = false,

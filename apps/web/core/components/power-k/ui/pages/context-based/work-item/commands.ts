@@ -92,7 +92,7 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
         setToast({
           type: TOAST_TYPE.ERROR,
           title: t("toast.error"),
-          message: t("work_item.issue.could_not_be_updated", {
+          message: t("issue.could_not_be_updated", {
             entity: isEpic ? t("common.epic") : t("common.work_item"),
           }),
         });
@@ -324,7 +324,7 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
           setToast({
             type: TOAST_TYPE.ERROR,
             title: t("toast.error"),
-            message: t("work_item.issue.could_not_be_updated", {
+            message: t("issue.could_not_be_updated", {
               entity: entityDetails.is_epic ? t("common.epic") : t("common.work_item"),
             }),
           });
@@ -358,7 +358,7 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
           setToast({
             type: TOAST_TYPE.ERROR,
             title: t("toast.error"),
-            message: t("work_item.issue.could_not_be_updated", {
+            message: t("issue.could_not_be_updated", {
               entity: entityDetails.is_epic ? t("common.epic") : t("common.work_item"),
             }),
           });

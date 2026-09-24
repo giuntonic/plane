@@ -11,7 +11,7 @@ import { EIssueCommentAccessSpecifier } from "@plane/constants";
 // editor
 import type { EditorRefApi } from "@plane/editor";
 // i18n
-import { useTranslation } from "@plane/i18n";
+import { i18nInstance, useTranslation } from "@plane/i18n";
 // ui
 import { Button } from "@plane/propel/button";
 import { GlobeIcon, LockIcon } from "@plane/propel/icons";
@@ -39,19 +39,23 @@ type Props = {
 type TCommentAccessType = {
   icon: LucideIcon | React.FC<ISvgIcons>;
   key: EIssueCommentAccessSpecifier;
-  label: "Private" | "Public";
+  label: string;
 };
 
 const COMMENT_ACCESS_SPECIFIERS: TCommentAccessType[] = [
   {
     icon: LockIcon,
     key: EIssueCommentAccessSpecifier.INTERNAL,
-    label: "Private",
+    get label() {
+      return i18nInstance.t("private");
+    },
   },
   {
     icon: GlobeIcon,
     key: EIssueCommentAccessSpecifier.EXTERNAL,
-    label: "Public",
+    get label() {
+      return i18nInstance.t("public");
+    },
   },
 ];
 

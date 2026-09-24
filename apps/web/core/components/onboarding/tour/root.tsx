@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 // plane imports
@@ -37,7 +38,9 @@ const TOUR_STEPS: {
 }[] = [
   {
     key: "work-items",
-    title: "Plan with work items",
+    get title() {
+      return i18nInstance.t("ui.plan_with_work_items");
+    },
     description:
       "The work item is the building block of the Plane. Most concepts in Plane are either associated with work items and their properties.",
     image: IssuesTour,
@@ -45,7 +48,9 @@ const TOUR_STEPS: {
   },
   {
     key: "cycles",
-    title: "Move with cycles",
+    get title() {
+      return i18nInstance.t("ui.move_with_cycles");
+    },
     description:
       "Cycles help you and your team to progress faster, similar to the sprints commonly used in agile development.",
     image: CyclesTour,
@@ -54,15 +59,21 @@ const TOUR_STEPS: {
   },
   {
     key: "modules",
-    title: "Break into modules",
-    description: "Modules break your big thing into Projects or Features, to help you organize better.",
+    get title() {
+      return i18nInstance.t("ui.break_into_modules");
+    },
+    get description() {
+      return i18nInstance.t("ui.modules_break_your_big_thing_into_projects");
+    },
     image: ModulesTour,
     prevStep: "cycles",
     nextStep: "views",
   },
   {
     key: "views",
-    title: "Views",
+    get title() {
+      return i18nInstance.t("views");
+    },
     description:
       "Create custom filters to display only the work items that matter to you. Save and share your filters in just a few clicks.",
     image: ViewsTour,
@@ -71,14 +82,19 @@ const TOUR_STEPS: {
   },
   {
     key: "pages",
-    title: "Document with pages",
-    description: "Use Pages to quickly jot down work items when you're in a meeting or starting a day.",
+    get title() {
+      return i18nInstance.t("ui.document_with_pages");
+    },
+    get description() {
+      return i18nInstance.t("ui.use_pages_to_quickly_jot_down_work");
+    },
     image: PagesTour,
     prevStep: "views",
   },
 ];
 
 export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) {
+  const { t } = useTranslation();
   const { onComplete } = props;
   // states
   const [step, setStep] = useState<TTourSteps>("welcome");
@@ -113,7 +129,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                       setStep("work-items");
                     }}
                   >
-                    Take a Product Tour
+                    {t("ui.take_a_product_tour")}
                   </Button>
                   <button
                     type="button"
@@ -171,7 +187,7 @@ export const TourRoot = observer(function TourRoot(props: TOnboardingTourProps) 
                       toggleCreateProjectModal(true);
                     }}
                   >
-                    Create your first project
+                    {t("ui.create_your_first_project")}
                   </Button>
                 )}
               </div>

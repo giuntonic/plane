@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import type React from "react";
 import { observer } from "mobx-react";
 // ui
@@ -24,21 +25,28 @@ const CYCLE_VIEW_LAYOUTS: {
   {
     key: "list",
     icon: ListLayoutIcon,
-    title: "List layout",
+    get title() {
+      return i18nInstance.t("ui.list_layout");
+    },
   },
   {
     key: "board",
     icon: GridLayoutIcon,
-    title: "Gallery layout",
+    get title() {
+      return i18nInstance.t("ui.gallery_layout");
+    },
   },
   {
     key: "gantt",
     icon: TimelineLayoutIcon,
-    title: "Timeline layout",
+    get title() {
+      return i18nInstance.t("ui.timeline_layout");
+    },
   },
 ];
 
 export const CyclesListMobileHeader = observer(function CyclesListMobileHeader() {
+  const { t } = useTranslation();
   const { currentProjectDetails } = useProject();
   // hooks
   const { updateDisplayFilters } = useCycleFilter();
@@ -51,7 +59,7 @@ export const CyclesListMobileHeader = observer(function CyclesListMobileHeader()
         customButton={
           <span className="flex items-center gap-2">
             <ListLayoutIcon className="h-4 w-4" />
-            <span className="flex flex-grow justify-center text-13 text-secondary">Layout</span>
+            <span className="flex flex-grow justify-center text-13 text-secondary">{t("ui.layout")}</span>
           </span>
         }
         customButtonClassName="flex flex-grow justify-center items-center text-secondary text-13"

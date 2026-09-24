@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useForm } from "react-hook-form";
 import { Button } from "@plane/propel/button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -20,6 +21,7 @@ type IInstanceImageConfigForm = {
 type ImageConfigFormValues = Record<TInstanceImageConfigurationKeys, string>;
 
 export function InstanceImageConfigForm(props: IInstanceImageConfigForm) {
+  const { t } = useTranslation();
   const { config } = props;
   // store hooks
   const { updateInstanceConfigurations } = useInstance();
@@ -41,8 +43,8 @@ export function InstanceImageConfigForm(props: IInstanceImageConfigForm) {
       .then(() =>
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success",
-          message: "Image Configuration Settings updated successfully",
+          title: t("success"),
+          message: t("ui.image_configuration_settings_updated_successfully"),
         })
       )
       .catch((err) => console.error(err));
@@ -55,7 +57,7 @@ export function InstanceImageConfigForm(props: IInstanceImageConfigForm) {
           control={control}
           type="password"
           name="UNSPLASH_ACCESS_KEY"
-          label="Access key from your Unsplash account"
+          label={t("ui.access_key_from_your_unsplash_account")}
           description={
             <>
               You will find your access key in your Unsplash developer console.&nbsp;
@@ -64,9 +66,9 @@ export function InstanceImageConfigForm(props: IInstanceImageConfigForm) {
                 target="_blank"
                 className="text-accent-primary hover:underline"
                 rel="noreferrer"
-                aria-label="Unsplash developer account documentation"
+                aria-label={t("ui.unsplash_developer_account_documentation")}
               >
-                Learn more.
+                {t("ui.learn_more_2")}
               </a>
             </>
           }

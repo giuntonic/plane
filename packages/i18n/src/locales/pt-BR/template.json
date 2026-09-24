@@ -98,58 +98,58 @@
         "page": {
           "template": {
             "name": {
-              "placeholder": "Nomeie swoj szablon strony.",
+              "placeholder": "Dê um nome ao seu template de página.",
               "validation": {
-                "required": "Nazwa szablonu jest wymagana",
-                "maxLength": "Nazwa szablonu powinna mieć mniej niż 255 znaków"
+                "required": "O nome do template é obrigatório",
+                "maxLength": "O nome do template deve ter menos de 255 caracteres"
               }
             },
             "description": {
-              "placeholder": "Opisz, kiedy i jak używać tego szablonu."
+              "placeholder": "Descreva quando e como usar este template."
             }
           },
           "name": {
             "placeholder": "Nieznana strona",
             "validation": {
-              "maxLength": "Nazwa strony powinna mieć mniej niż 255 znaków"
+              "maxLength": "O nome da página deve ter menos de 255 caracteres"
             }
           },
           "button": {
-            "create": "Utwórz szablon strony",
-            "update": "Aktualizuj szablon strony"
+            "create": "Criar template de página",
+            "update": "Atualizar template de página"
           }
         },
         "publish": {
           "action": "{isPublished, select, true {Configurações de publicação} other {Publicar no Marketplace}}",
           "unpublish_action": "Remover do Marketplace",
-          "title": "Upewnij się, że szablon jest odkrywalny i rozpoznawalny.",
+          "title": "Torne seu template fácil de encontrar e reconhecer.",
           "name": {
-            "label": "Nazwa szablonu",
-            "placeholder": "Nazwij swoj szablon",
+            "label": "Nome do template",
+            "placeholder": "Dê um nome ao seu template",
             "validation": {
-              "required": "Nazwa szablonu jest wymagana",
-              "maxLength": "Nazwa szablonu powinna mieć mniej niż 255 znaków"
+              "required": "O nome do template é obrigatório",
+              "maxLength": "O nome do template deve ter menos de 255 caracteres"
             }
           },
           "short_description": {
-            "label": "Krótki opis",
-            "placeholder": "Ten szablon jest idealny dla menedżerów projektów, którzy zarządzają wieloma projektami jednocześnie.",
+            "label": "Descrição curta",
+            "placeholder": "Este template é ótimo para gerentes de projeto que gerenciam vários projetos ao mesmo tempo.",
             "validation": {
-              "required": "Krótki opis jest wymagany"
+              "required": "A descrição curta é obrigatória"
             }
           },
           "description": {
-            "label": "Opis",
+            "label": "Descrição",
             "placeholder": "Aumente a produtividade e otimize a comunicação com nossa integração de Fala-para-Texto.\n• Transcrição em tempo real: Converta palavras faladas em texto preciso instantaneamente.\n• Criação de tarefas e comentários: Adicione tarefas, descrições e comentários através de comandos de voz.",
             "validation": {
-              "required": "Opis jest wymagany"
+              "required": "A descrição é obrigatória"
             }
           },
           "category": {
-            "label": "Kategoria",
-            "placeholder": "Wybierz, gdzie uważasz, że pasuje najlepiej. Możesz wybrać więcej niż jedną.",
+            "label": "Categoria",
+            "placeholder": "Escolha onde você acha que ele se encaixa melhor. Você pode escolher mais de uma.",
             "validation": {
-              "required": "Przynajmniej jedna kategoria jest wymagana"
+              "required": "Pelo menos uma categoria é obrigatória"
             }
           },
           "keywords": {
@@ -169,35 +169,35 @@
             }
           },
           "company_name": {
-            "label": "Nazwa firmy",
+            "label": "Nome da empresa",
             "placeholder": "Pespo Hub",
             "validation": {
-              "required": "Nazwa firmy jest wymagana",
-              "maxLength": "Nazwa firmy powinna mieć mniej niż 255 znaków"
+              "required": "O nome da empresa é obrigatório",
+              "maxLength": "O nome da empresa deve ter menos de 255 caracteres"
             }
           },
           "contact_email": {
-            "label": "Email podpory",
+            "label": "E-mail de contato",
             "placeholder": "help@plane.so",
             "validation": {
-              "invalid": "Nieprawidłowy adres e-mail",
-              "maxLength": "Email podpory powinien mieć mniej niż 255 znaków"
+              "invalid": "Endereço de e-mail inválido",
+              "maxLength": "O e-mail de contato deve ter menos de 255 caracteres"
             }
           },
           "privacy_policy_url": {
-            "label": "Link do Twojej polityki prywatności",
+            "label": "Link para sua política de privacidade",
             "placeholder": "https://planes.so/privacy-policy",
             "validation": {
-              "invalid": "Nieprawidłowy URL",
-              "maxLength": "URL powinien mieć mniej niż 800 znaków"
+              "invalid": "URL inválida",
+              "maxLength": "A URL deve ter menos de 800 caracteres"
             }
           },
           "terms_of_service_url": {
-            "label": "Link do Twoich warunków użycia",
+            "label": "Link para seus termos de uso",
             "placeholder": "https://planes.so/terms-of-use",
             "validation": {
-              "invalid": "Nieprawidłowy URL",
-              "maxLength": "URL powinien mieć mniej niż 800 znaków"
+              "invalid": "URL inválida",
+              "maxLength": "A URL deve ter menos de 800 caracteres"
             }
           },
           "cover_image": {
@@ -216,9 +216,9 @@
             }
           },
           "attach_screenshots": {
-            "label": "Dołącz dokumenty i obrazy, które uważasz, że sprawią, że widzowie tego szablonu będą zainteresowani.",
+            "label": "Inclua imagens que você acha que vão despertar o interesse de quem vir este template.",
             "validation": {
-              "required": "Przynajmniej jedno zrzut ekranu jest wymagane"
+              "required": "Pelo menos uma captura de tela é obrigatória"
             }
           }
         }

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState } from "react";
 
 import { useTheme } from "next-themes";
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export function SwitchAccountModal(props: Props) {
+  const { t } = useTranslation();
   const { isOpen, onClose } = props;
   // states
   const [switchingAccount, setSwitchingAccount] = useState(false);
@@ -49,8 +51,8 @@ export function SwitchAccountModal(props: Props) {
       .catch(() =>
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Failed to sign out. Please try again.",
+          title: t("toast.error"),
+          message: t("ui.failed_to_sign_out_please_try_again"),
         })
       )
       .finally(() => setSwitchingAccount(false));
@@ -92,7 +94,7 @@ export function SwitchAccountModal(props: Props) {
                     </div>
                     <div className="flex flex-col gap-y-6 py-3">
                       <Dialog.Title as="h3" className="text-20 leading-6 font-medium text-primary">
-                        Switch account
+                        {t("ui.switch_account")}
                       </Dialog.Title>
                       {userData?.email && (
                         <div className="text-14 font-regular text-secondary">

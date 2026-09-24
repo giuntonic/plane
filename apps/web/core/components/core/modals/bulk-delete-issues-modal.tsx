@@ -104,7 +104,7 @@ export const BulkDeleteIssuesModal = observer(function BulkDeleteIssuesModal(pro
       setToast({
         type: TOAST_TYPE.ERROR,
         title: t("toast.error"),
-        message: t("work_item.bulk_delete_modal.select_at_least_one"),
+        message: t("ui.bulk_delete_select_at_least_one"),
       });
       return;
     }
@@ -116,7 +116,7 @@ export const BulkDeleteIssuesModal = observer(function BulkDeleteIssuesModal(pro
         setToast({
           type: TOAST_TYPE.SUCCESS,
           title: t("toast.success"),
-          message: t("work_item.bulk_delete_modal.deleted_successfully"),
+          message: t("ui.bulk_delete_deleted_successfully"),
         });
         handleClose();
       })
@@ -133,9 +133,7 @@ export const BulkDeleteIssuesModal = observer(function BulkDeleteIssuesModal(pro
     issues.length > 0 ? (
       <li className="p-2">
         {query === "" && (
-          <h2 className="mt-4 mb-2 px-3 text-11 font-semibold text-primary">
-            {t("work_item.bulk_delete_modal.select_to_delete")}
-          </h2>
+          <h2 className="mt-4 mb-2 px-3 text-11 font-semibold text-primary">{t("ui.bulk_delete_select_to_delete")}</h2>
         )}
         <ul className="text-13 text-secondary">
           {issues.map((issue) => (
@@ -180,7 +178,7 @@ export const BulkDeleteIssuesModal = observer(function BulkDeleteIssuesModal(pro
             <input
               type="text"
               className="h-12 w-full border-0 bg-transparent pr-4 pl-11 text-primary outline-none focus:ring-0 sm:text-13"
-              placeholder={t("search.placeholder")}
+              placeholder={t("ui.search")}
               onChange={(event) => setQuery(event.target.value)}
             />
           </div>
@@ -205,7 +203,7 @@ export const BulkDeleteIssuesModal = observer(function BulkDeleteIssuesModal(pro
               {t("common.cancel")}
             </Button>
             <Button variant="error-fill" size="lg" onClick={handleSubmit(handleDelete)} loading={isSubmitting}>
-              {isSubmitting ? `${t("common.deleting")}...` : t("work_item.bulk_delete_modal.delete_selected")}
+              {isSubmitting ? `${t("common.deleting")}...` : t("ui.bulk_delete_delete_selected")}
             </Button>
           </div>
         )}

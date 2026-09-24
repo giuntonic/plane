@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import Link from "next/link";
 // types
 import type { TPageNavigationTabs } from "@plane/types";
@@ -20,15 +21,21 @@ type TPageTabNavigation = {
 const pageTabs: { key: TPageNavigationTabs; label: string }[] = [
   {
     key: "public",
-    label: "Public",
+    get label() {
+      return i18nInstance.t("public");
+    },
   },
   {
     key: "private",
-    label: "Private",
+    get label() {
+      return i18nInstance.t("private");
+    },
   },
   {
     key: "archived",
-    label: "Archived",
+    get label() {
+      return i18nInstance.t("ui.archived");
+    },
   },
 ];
 

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 import { Loader } from "@plane/ui";
@@ -17,6 +18,7 @@ import type { Route } from "./+types/page";
 import { InstanceImageConfigForm } from "./form";
 
 const InstanceImagePage = observer(function InstanceImagePage(_props: Route.ComponentProps) {
+  const { t } = useTranslation();
   // store
   const { formattedConfig, fetchInstanceConfigurations } = useInstance();
 
@@ -25,8 +27,8 @@ const InstanceImagePage = observer(function InstanceImagePage(_props: Route.Comp
   return (
     <PageWrapper
       header={{
-        title: "Third-party image libraries",
-        description: "Let your users search and choose images from third-party libraries",
+        title: t("ui.third_party_image_libraries"),
+        description: t("ui.let_your_users_search_and_choose_images"),
       }}
     >
       {formattedConfig ? (
@@ -41,6 +43,12 @@ const InstanceImagePage = observer(function InstanceImagePage(_props: Route.Comp
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "Images Settings - God Mode" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.images_settings_god_mode");
+    },
+  },
+];
 
 export default InstanceImagePage;

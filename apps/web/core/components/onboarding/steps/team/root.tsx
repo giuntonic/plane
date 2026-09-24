@@ -145,7 +145,7 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
             rules={{
               pattern: {
                 value: emailRegex,
-                message: "Invalid Email ID",
+                message: t("ui.invalid_email_id"),
               },
             }}
             render={({ field: { value, onChange, ref } }) => (
@@ -302,15 +302,15 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
       .then(async () => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Invitations sent successfully.",
+          title: t("toast.success"),
+          message: t("ui.invitations_sent_successfully"),
         });
         await nextStep();
       })
       .catch((err) => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
+          title: t("toast.error"),
           message: err?.error,
         });
       });
@@ -343,10 +343,7 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
         if (e.code === "Enter") e.preventDefault();
       }}
     >
-      <CommonOnboardingHeader
-        title={t("team_setup_step.title")}
-        description={t("team_setup_step.description")}
-      />
+      <CommonOnboardingHeader title={t("team_setup_step.title")} description={t("team_setup_step.description")} />
       <div className="w-full py-4 text-13">
         <div className="group relative mx-8 grid grid-cols-10 gap-4 py-2">
           <div className="col-span-6 px-1 text-13 font-medium text-secondary">{t("email")}</div>

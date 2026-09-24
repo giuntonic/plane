@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { AlertCircle } from "lucide-react";
 // ui
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export function TransferIssues(props: Props) {
+  const { t } = useTranslation();
   const { handleClick, canTransferIssues = false, disabled = false } = props;
   return (
     <div className="-mt-2 mb-4 flex items-center justify-between px-4 pt-6">
@@ -28,7 +30,7 @@ export function TransferIssues(props: Props) {
       {canTransferIssues && (
         <div>
           <Button variant="primary" size="lg" prependIcon={<TransferIcon />} onClick={handleClick} disabled={disabled}>
-            Transfer work items
+            {t("ui.transfer_work_items")}
           </Button>
         </div>
       )}

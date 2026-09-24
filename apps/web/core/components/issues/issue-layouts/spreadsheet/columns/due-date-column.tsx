@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { observer } from "mobx-react";
 import { DueDatePropertyIcon } from "@plane/propel/icons";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export const SpreadsheetDueDateColumn = observer(function SpreadsheetDueDateColumn(props: Props) {
+  const { t } = useTranslation();
   const { issue, onChange, disabled, onClose } = props;
   // store hooks
   const { getStateById } = useProjectState();
@@ -47,7 +49,7 @@ export const SpreadsheetDueDateColumn = observer(function SpreadsheetDueDateColu
           );
         }}
         disabled={disabled}
-        placeholder="Due date"
+        placeholder={t("due_date")}
         icon={<DueDatePropertyIcon className="h-3 w-3 flex-shrink-0" />}
         buttonVariant="transparent-with-text"
         buttonContainerClassName="w-full"

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import Link from "next/link";
 // plane packages
 import type { TAdminAuthErrorInfo } from "@plane/constants";
@@ -22,56 +23,77 @@ const errorCodeMessages: {
 } = {
   // admin
   [EAdminAuthErrorCodes.ADMIN_ALREADY_EXIST]: {
-    title: `Admin already exists`,
-    message: () => `Admin already exists. Please try again.`,
+    get title() {
+      return i18nInstance.t("auth_errors.admin_already_exists");
+    },
+    message: () => i18nInstance.t("auth_errors.admin_already_exists_please_try_again"),
   },
   [EAdminAuthErrorCodes.REQUIRED_ADMIN_EMAIL_PASSWORD_FIRST_NAME]: {
-    title: `Email, password and first name required`,
-    message: () => `Email, password and first name required. Please try again.`,
+    get title() {
+      return i18nInstance.t("auth_errors.email_password_and_first_name_required");
+    },
+    message: () => i18nInstance.t("auth_errors.email_password_and_first_name_required_please_try"),
   },
   [EAdminAuthErrorCodes.INVALID_ADMIN_EMAIL]: {
-    title: `Invalid admin email`,
-    message: () => `Invalid admin email. Please try again.`,
+    get title() {
+      return i18nInstance.t("auth_errors.invalid_admin_email");
+    },
+    message: () => i18nInstance.t("auth_errors.invalid_admin_email_please_try_again"),
   },
   [EAdminAuthErrorCodes.INVALID_ADMIN_PASSWORD]: {
-    title: `Invalid admin password`,
-    message: () => `Invalid admin password. Please try again.`,
+    get title() {
+      return i18nInstance.t("auth_errors.invalid_admin_password");
+    },
+    message: () => i18nInstance.t("auth_errors.invalid_admin_password_please_try_again"),
   },
   [EAdminAuthErrorCodes.REQUIRED_ADMIN_EMAIL_PASSWORD]: {
-    title: `Email and password required`,
-    message: () => `Email and password required. Please try again.`,
+    get title() {
+      return i18nInstance.t("auth_errors.email_and_password_required");
+    },
+    message: () => i18nInstance.t("auth_errors.email_and_password_required_please_try_again"),
   },
   [EAdminAuthErrorCodes.ADMIN_AUTHENTICATION_FAILED]: {
-    title: `Authentication failed`,
-    message: () => `Authentication failed. Please try again.`,
+    get title() {
+      return i18nInstance.t("auth_errors.authentication_failed");
+    },
+    message: () => i18nInstance.t("auth_errors.authentication_failed_please_try_again"),
   },
   [EAdminAuthErrorCodes.ADMIN_USER_ALREADY_EXIST]: {
-    title: `Admin user already exists`,
+    get title() {
+      return i18nInstance.t("auth_errors.admin_user_already_exists");
+    },
     message: () => (
       <div>
-        Admin user already exists.&nbsp;
+        {i18nInstance.t("auth_errors.admin_user_already_exists_2")}&nbsp;
         <Link className="font-medium underline underline-offset-4 transition-all hover:font-bold" href={`/admin`}>
-          Sign In
+          {i18nInstance.t("ui.sign_in")}
         </Link>
-        &nbsp;now.
+        &nbsp;{i18nInstance.t("auth_errors.now")}
       </div>
     ),
   },
   [EAdminAuthErrorCodes.ADMIN_USER_DOES_NOT_EXIST]: {
-    title: `Admin user does not exist`,
+    get title() {
+      return i18nInstance.t("auth_errors.admin_user_does_not_exist");
+    },
     message: () => (
       <div>
-        Admin user does not exist.&nbsp;
+        {i18nInstance.t("auth_errors.admin_user_does_not_exist_2")}&nbsp;
         <Link className="font-medium underline underline-offset-4 transition-all hover:font-bold" href={`/admin`}>
-          Sign In
+          {i18nInstance.t("ui.sign_in")}
         </Link>
-        &nbsp;now.
+        &nbsp;{i18nInstance.t("auth_errors.now")}
       </div>
     ),
   },
   [EAdminAuthErrorCodes.ADMIN_USER_DEACTIVATED]: {
-    title: `User account deactivated`,
-    message: () => `User account deactivated. Please contact ${SUPPORT_EMAIL ? SUPPORT_EMAIL : "administrator"}.`,
+    get title() {
+      return i18nInstance.t("auth_errors.user_account_deactivated");
+    },
+    message: () =>
+      i18nInstance.t("auth_errors.user_account_deactivated_please_contact_contact", {
+        contact: SUPPORT_EMAIL ? SUPPORT_EMAIL : i18nInstance.t("auth_errors.administrator"),
+      }),
   },
 };
 
@@ -92,8 +114,10 @@ export const authErrorHandler = (errorCode: EAdminAuthErrorCodes, email?: string
     return {
       type: EErrorAlertType.BANNER_ALERT,
       code: errorCode,
-      title: errorCodeMessages[errorCode]?.title || "Error",
-      message: errorCodeMessages[errorCode]?.message(email) || "Something went wrong. Please try again.",
+      title: errorCodeMessages[errorCode]?.title || i18nInstance.t("auth_errors.error"),
+      message:
+        errorCodeMessages[errorCode]?.message(email) ||
+        i18nInstance.t("auth_errors.something_went_wrong_please_try_again"),
     };
 
   return undefined;

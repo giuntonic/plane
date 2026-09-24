@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import type { TSticky } from "@plane/types";
 
 export const STICKY_COLORS_LIST: {
@@ -13,42 +14,58 @@ export const STICKY_COLORS_LIST: {
 }[] = [
   {
     key: "gray",
-    label: "Gray",
+    get label() {
+      return i18nInstance.t("ui.gray");
+    },
     backgroundColor: "var(--editor-colors-gray-background)",
   },
   {
     key: "peach",
-    label: "Peach",
+    get label() {
+      return i18nInstance.t("ui.peach");
+    },
     backgroundColor: "var(--editor-colors-peach-background)",
   },
   {
     key: "pink",
-    label: "Pink",
+    get label() {
+      return i18nInstance.t("ui.pink");
+    },
     backgroundColor: "var(--editor-colors-pink-background)",
   },
   {
     key: "orange",
-    label: "Orange",
+    get label() {
+      return i18nInstance.t("ui.orange");
+    },
     backgroundColor: "var(--editor-colors-orange-background)",
   },
   {
     key: "green",
-    label: "Green",
+    get label() {
+      return i18nInstance.t("ui.green");
+    },
     backgroundColor: "var(--editor-colors-green-background)",
   },
   {
     key: "light-blue",
-    label: "Light blue",
+    get label() {
+      return i18nInstance.t("ui.light_blue");
+    },
     backgroundColor: "var(--editor-colors-light-blue-background)",
   },
   {
     key: "dark-blue",
-    label: "Dark blue",
+    get label() {
+      return i18nInstance.t("ui.dark_blue");
+    },
     backgroundColor: "var(--editor-colors-dark-blue-background)",
   },
   {
     key: "purple",
-    label: "Purple",
+    get label() {
+      return i18nInstance.t("ui.purple");
+    },
     backgroundColor: "var(--editor-colors-purple-background)",
   },
 ];
@@ -58,10 +75,11 @@ type TProps = {
 };
 
 export function ColorPalette(props: TProps) {
+  const { t } = useTranslation();
   const { handleUpdate } = props;
   return (
     <div className="shadow absolute bottom-5 left-0 z-10 mb-2 w-56 rounded-md bg-surface-1 p-2">
-      <div className="mb-2 text-13 font-semibold text-placeholder">Background colors</div>
+      <div className="mb-2 text-13 font-semibold text-placeholder">{t("ui.background_colors")}</div>
       <div className="flex flex-wrap gap-2">
         {STICKY_COLORS_LIST.map((color) => (
           <button

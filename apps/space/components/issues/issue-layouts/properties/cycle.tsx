@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane ui
 import { CycleIcon } from "@plane/propel/icons";
@@ -19,12 +20,13 @@ type Props = {
 };
 
 export const IssueBlockCycle = observer(function IssueBlockCycle({ cycleId, shouldShowBorder = true }: Props) {
+  const { t } = useTranslation();
   const { getCycleById } = useCycle();
 
   const cycle = getCycleById(cycleId);
 
   return (
-    <Tooltip tooltipHeading="Cycle" tooltipContent={cycle?.name ?? "No Cycle"}>
+    <Tooltip tooltipHeading={t("common.cycle")} tooltipContent={cycle?.name ?? "No Cycle"}>
       <div
         className={cn(
           "flex h-full w-full items-center justify-between gap-1 rounded-sm px-2.5 py-1 text-11 duration-300 focus:outline-none",

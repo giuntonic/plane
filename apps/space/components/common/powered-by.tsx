@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { WEBSITE_URL } from "@plane/constants";
 // assets
 import { PlaneLogo } from "@plane/propel/icons";
@@ -13,6 +14,7 @@ type TPoweredBy = {
 };
 
 export function PoweredBy(props: TPoweredBy) {
+  const { t } = useTranslation();
   // props
   const { disabled = false } = props;
 
@@ -27,7 +29,7 @@ export function PoweredBy(props: TPoweredBy) {
     >
       <PlaneLogo className="h-3 w-auto text-primary" />
       <div className="text-11">
-        Powered by <span className="font-semibold">Plane Publish</span>
+        Powered by <span className="font-semibold">{t("ui.plane_publish")}</span>
       </div>
     </a>
   );

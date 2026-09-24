@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -41,7 +42,9 @@ const integrationDetails: { [key: string]: any } = {
   },
   slack: {
     logo: SlackLogo,
-    installed: "Activate Slack on individual projects to sync with specific channels.",
+    get installed() {
+      return i18nInstance.t("ui.activate_slack_on_individual_projects_to_sync");
+    },
     notInstalled: "Connect with Slack with your Plane workspace to sync project work items.",
   },
 };
@@ -50,6 +53,7 @@ const integrationDetails: { [key: string]: any } = {
 const integrationService = new IntegrationService();
 
 export const SingleIntegrationCard = observer(function SingleIntegrationCard({ integration }: Props) {
+  const { t } = useTranslation();
   // states
   const [deletingIntegration, setDeletingIntegration] = useState(false);
   // router
@@ -91,7 +95,7 @@ export const SingleIntegrationCard = observer(function SingleIntegrationCard({ i
 
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Deleted successfully!",
+          title: t("ui.deleted_successfully"),
           message: `${integration.title} integration deleted successfully.`,
         });
       })
@@ -100,7 +104,7 @@ export const SingleIntegrationCard = observer(function SingleIntegrationCard({ i
 
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
+          title: t("toast.error"),
           message: `${integration.title} integration could not be deleted. Please try again.`,
         });
       });

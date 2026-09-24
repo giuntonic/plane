@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 import { DashboardIcon } from "@plane/propel/icons";
@@ -17,6 +18,7 @@ import { useProject } from "@/hooks/store/use-project";
 import type { Route } from "./+types/page";
 
 function ProjectDashboardEmbedPage({ params }: Route.ComponentProps) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId } = params;
   const { currentProjectDetails } = useProject();
 
@@ -40,7 +42,7 @@ function ProjectDashboardEmbedPage({ params }: Route.ComponentProps) {
           <iframe
             key={data.url}
             src={data.url}
-            title="Dashboard"
+            title={t("ui.dashboard")}
             className="h-full w-full border-0"
             allowTransparency
           />
@@ -49,8 +51,8 @@ function ProjectDashboardEmbedPage({ params }: Route.ComponentProps) {
             <DashboardIcon className="size-10 text-tertiary" />
             <p className="text-16 font-medium text-primary">Nenhum dashboard configurado</p>
             <p className="max-w-90 text-13 text-tertiary">
-              Esse projeto ainda não tem um dashboard do Metabase vinculado. Fale com o administrador do workspace
-              pra configurar.
+              Esse projeto ainda não tem um dashboard do Metabase vinculado. Fale com o administrador do workspace pra
+              configurar.
             </p>
           </div>
         )}

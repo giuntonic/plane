@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useRef, useState } from "react";
 // Plane
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -19,6 +20,7 @@ export const useGanttResizable = (
   ganttContainerRef: React.RefObject<HTMLDivElement | null>,
   updateBlockDates?: (updates: IBlockUpdateDependencyData[]) => Promise<void>
 ) => {
+  const { t } = useTranslation();
   // refs
   const initialPositionRef = useRef<{ marginLeft: number; width: number; offsetX: number }>({
     marginLeft: 0,
@@ -131,7 +133,7 @@ export const useGanttResizable = (
         setToast({
           type: TOAST_TYPE.ERROR,
           title: "Error",
-          message: "Something went wrong while updating block dates",
+          message: t("ui.something_went_wrong_while_updating_block_dates"),
         });
       }
 

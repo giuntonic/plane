@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
@@ -30,6 +31,7 @@ type Props = {
 };
 
 export const PageVersionsMainContent = observer(function PageVersionsMainContent(props: Props) {
+  const { t } = useTranslation();
   const {
     activeVersion,
     editorComponent,
@@ -60,14 +62,14 @@ export const PageVersionsMainContent = observer(function PageVersionsMainContent
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Page version restored.",
+          title: t("ui.page_version_restored"),
         });
         handleClose();
       })
       .catch(() =>
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Failed to restore page version.",
+          title: t("ui.failed_to_restore_page_version"),
         })
       )
       .finally(() => setIsRestoring(false));
@@ -90,11 +92,11 @@ export const PageVersionsMainContent = observer(function PageVersionsMainContent
               <TriangleAlert className="size-10" />
             </span>
             <div>
-              <h6 className="text-16 font-semibold">Something went wrong!</h6>
-              <p className="text-13 text-tertiary">The version could not be loaded, please try again.</p>
+              <h6 className="text-16 font-semibold">{t("ui.something_went_wrong")}</h6>
+              <p className="text-13 text-tertiary">{t("ui.the_version_could_not_be_loaded_please")}</p>
             </div>
             <Button variant="link" onClick={handleRetry} loading={isRetrying}>
-              Try again
+              {t("ui.try_again")}
             </Button>
           </div>
         </div>
@@ -109,7 +111,7 @@ export const PageVersionsMainContent = observer(function PageVersionsMainContent
               </h6>
               <span className="flex flex-shrink-0 items-center gap-1 rounded-sm bg-accent-primary/20 px-1.5 py-1 text-11 font-medium text-accent-primary">
                 <EyeIcon className="size-3 flex-shrink-0" />
-                View only
+                {t("ui.view_only")}
               </span>
             </div>
             {restoreEnabled && (

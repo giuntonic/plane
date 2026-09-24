@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
@@ -25,6 +26,7 @@ import { useInstance } from "@/hooks/store";
 import type { Route } from "./+types/page";
 
 const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(_props: Route.ComponentProps) {
+  const { t } = useTranslation();
   // theme
   const { resolvedTheme: resolvedThemeAdmin } = useTheme();
   const resolvedTheme = resolveGeneralTheme(resolvedThemeAdmin);
@@ -55,7 +57,7 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
           if (!canDisable) {
             setToast({
               type: TOAST_TYPE.ERROR,
-              title: "Cannot disable authentication",
+              title: t("ui.cannot_disable_authentication"),
               message:
                 "At least one authentication method must remain enabled. Please enable another method before disabling this one.",
             });
@@ -74,9 +76,9 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
       const updateConfigPromise = updateInstanceConfigurations(payload);
 
       setPromiseToast(updateConfigPromise, {
-        loading: "Saving configuration",
+        loading: t("ui.saving_configuration_2"),
         success: {
-          title: "Success",
+          title: t("success"),
           message: () => "Configuration saved successfully",
         },
         error: {
@@ -113,8 +115,8 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
   return (
     <PageWrapper
       header={{
-        title: "Manage authentication modes for your instance",
-        description: "Configure authentication modes for your team and restrict sign-ups to be invite only.",
+        title: t("ui.manage_authentication_modes_for_your_instance"),
+        description: t("ui.configure_authentication_modes_for_your_team_and"),
       }}
     >
       {formattedConfig ? (
@@ -122,9 +124,9 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
           <div className={cn("flex w-full items-center gap-14 rounded-sm")}>
             <div className="flex grow items-center gap-4">
               <div className="grow">
-                <div className="pb-1 text-16 font-medium">Allow anyone to sign up even without an invite</div>
+                <div className="pb-1 text-16 font-medium">{t("ui.allow_anyone_to_sign_up_even_without")}</div>
                 <div className={cn("text-11 leading-5 font-regular text-tertiary")}>
-                  Toggling this off will only let users sign up when they are invited.
+                  {t("ui.toggling_this_off_will_only_let_users")}
                 </div>
               </div>
             </div>
@@ -145,7 +147,7 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
               </div>
             </div>
           </div>
-          <div className="text-lg pt-6 font-medium">Available authentication modes</div>
+          <div className="text-lg pt-6 font-medium">{t("ui.available_authentication_modes")}</div>
           {authenticationModes.map((method) => (
             <AuthenticationMethodCard
               key={method.key}
@@ -171,6 +173,12 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "Authentication Settings - Plane Web" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.authentication_settings_plane_web");
+    },
+  },
+];
 
 export default InstanceAuthenticationPage;

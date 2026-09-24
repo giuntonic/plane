@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Ref } from "react";
 import React, { useEffect, useState, useRef, Fragment } from "react";
 import type { Placement } from "@popperjs/core";
@@ -42,6 +43,7 @@ type FormData = {
 };
 
 export function GptAssistantPopover(props: Props) {
+  const { t } = useTranslation();
   const {
     isOpen,
     handleClose,
@@ -97,7 +99,7 @@ export function GptAssistantPopover(props: Props) {
 
     setToast({
       type: TOAST_TYPE.ERROR,
-      title: "Error!",
+      title: t("toast.error"),
       message: errorMessage,
     });
 
@@ -123,8 +125,8 @@ export function GptAssistantPopover(props: Props) {
   const handleInvalidTask = () => {
     setToast({
       type: TOAST_TYPE.ERROR,
-      title: "Error!",
-      message: "Please enter some task to get AI assistance.",
+      title: t("toast.error"),
+      message: t("ui.please_enter_some_task_to_get_ai"),
     });
   };
 
@@ -185,7 +187,7 @@ export function GptAssistantPopover(props: Props) {
         onClose();
       }}
     >
-      Use this response
+      {t("ui.use_this_response")}
     </Button>
   );
 

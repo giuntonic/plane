@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 import type { TIssue } from "@plane/types";
@@ -20,6 +21,7 @@ export type TIssueParentSiblings = {
 };
 
 export const IssueParentSiblings = observer(function IssueParentSiblings(props: TIssueParentSiblings) {
+  const { t } = useTranslation();
   const { workspaceSlug, currentIssue, parentIssue } = props;
   // hooks
   const {
@@ -53,7 +55,7 @@ export const IssueParentSiblings = observer(function IssueParentSiblings(props: 
         )
       ) : (
         <div className="flex items-center gap-2 px-1 py-1 text-left text-11 whitespace-nowrap text-secondary">
-          No sibling work items
+          {t("ui.no_sibling_work_items")}
         </div>
       )}
     </div>

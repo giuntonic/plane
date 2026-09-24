@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
 // plane imports
 import { getButtonStyling } from "@plane/propel/button";
@@ -22,9 +23,24 @@ const PAGE_SORTING_KEY_OPTIONS: {
   key: TPageFiltersSortKey;
   label: string;
 }[] = [
-  { key: "name", label: "Name" },
-  { key: "created_at", label: "Date created" },
-  { key: "updated_at", label: "Date modified" },
+  {
+    key: "name",
+    get label() {
+      return i18nInstance.t("name");
+    },
+  },
+  {
+    key: "created_at",
+    get label() {
+      return i18nInstance.t("ui.date_created");
+    },
+  },
+  {
+    key: "updated_at",
+    get label() {
+      return i18nInstance.t("ui.date_modified");
+    },
+  },
 ];
 
 export function PageOrderByDropdown(props: Props) {

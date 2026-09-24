@@ -154,8 +154,8 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
     } else
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "You already have a cycle on the given dates, if you want to create a draft cycle, remove the dates.",
+        title: t("toast.error"),
+        message: t("ui.you_already_have_a_cycle_on_the"),
       });
   };
 

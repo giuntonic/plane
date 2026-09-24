@@ -76,7 +76,7 @@ export const usePowerKModuleContextBasedActions = (): TPowerKCommandConfig[] => 
     } catch {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Some error occurred",
+        title: t("ui.some_error_occurred"),
       });
     }
   }, [addModuleToFavorites, removeModuleFromFavorites, workspaceSlug, moduleDetails, isFavorite]);

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { SyntheticEvent } from "react";
 import React, { useRef } from "react";
 import { observer } from "mobx-react";
@@ -42,6 +43,7 @@ type Props = {
 };
 
 export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
+  const { t } = useTranslation();
   const { moduleId } = props;
   // refs
   const parentRef = useRef(null);
@@ -78,13 +80,13 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
     );
 
     setPromiseToast(addToFavoritePromise, {
-      loading: "Adding module to favorites...",
+      loading: t("ui.adding_module_to_favorites"),
       success: {
-        title: "Success!",
+        title: t("toast.success"),
         message: () => "Module added to favorites.",
       },
       error: {
-        title: "Error!",
+        title: t("toast.error"),
         message: () => "Couldn't add the module to favorites. Please try again.",
       },
     });
@@ -102,13 +104,13 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
     );
 
     setPromiseToast(removeFromFavoritePromise, {
-      loading: "Removing module from favorites...",
+      loading: t("ui.removing_module_from_favorites"),
       success: {
-        title: "Success!",
+        title: t("toast.success"),
         message: () => "Module removed from favorites.",
       },
       error: {
-        title: "Error!",
+        title: t("toast.error"),
         message: () => "Couldn't remove the module from favorites. Please try again.",
       },
     });
@@ -126,14 +128,14 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Module updated successfully.",
+          title: t("toast.success"),
+          message: t("ui.module_updated_successfully"),
         });
       })
       .catch((err) => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
+          title: t("toast.error"),
           message: err?.detail ?? "Module could not be updated. Please try again.",
         });
       });
@@ -217,7 +219,7 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
                   <ButtonAvatars showTooltip={false} userIds={moduleLeadDetails?.id} />
                 </span>
               ) : (
-                <Tooltip tooltipContent="No lead">
+                <Tooltip tooltipContent={t("ui.no_lead")}>
                   <SquareUser className="mx-1 h-4 w-4 text-tertiary" />
                 </Tooltip>
               )}
@@ -239,7 +241,7 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
                   });
                 }}
                 placeholder={{
-                  from: "Start date",
+                  from: t("start_date"),
                   to: "End date",
                 }}
                 disabled={isDisabled}

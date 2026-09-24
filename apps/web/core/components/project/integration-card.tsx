@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useParams } from "next/navigation";
 import useSWR, { mutate } from "swr";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -26,11 +27,15 @@ type Props = {
 const integrationDetails: { [key: string]: any } = {
   github: {
     logo: GithubLogo,
-    description: "Select GitHub repository to enable sync.",
+    get description() {
+      return i18nInstance.t("ui.select_github_repository_to_enable_sync");
+    },
   },
   slack: {
     logo: SlackLogo,
-    description: "Get regular updates and control which notification you want to receive.",
+    get description() {
+      return i18nInstance.t("ui.get_regular_updates_and_control_which_notification");
+    },
   },
 };
 
@@ -38,6 +43,7 @@ const integrationDetails: { [key: string]: any } = {
 const projectService = new ProjectService();
 
 export function IntegrationCard({ integration }: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId } = useParams();
 
   const { data: syncedGithubRepository } = useSWR(projectId ? PROJECT_GITHUB_REPOSITORY(projectId) : null, () =>
@@ -68,7 +74,7 @@ export function IntegrationCard({ integration }: Props) {
 
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
+          title: t("toast.success"),
           message: `${login}/${name} repository synced with the project successfully.`,
         });
       })
@@ -76,8 +82,8 @@ export function IntegrationCard({ integration }: Props) {
         console.error(err);
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Repository could not be synced with the project. Please try again.",
+          title: t("toast.error"),
+          message: t("ui.repository_could_not_be_synced_with_the"),
         });
       });
   };

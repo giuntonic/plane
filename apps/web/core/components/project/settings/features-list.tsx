@@ -6,7 +6,7 @@
 
 import { observer } from "mobx-react";
 // plane imports
-import { useTranslation } from "@plane/i18n";
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { setPromiseToast } from "@plane/propel/toast";
 import { Tooltip } from "@plane/propel/tooltip";
 import type { IProject } from "@plane/types";
@@ -31,8 +31,12 @@ const PROJECT_FEATURES_LIST = {
   cycles: {
     key: "cycles",
     property: "cycle_view",
-    title: "Cycles",
-    description: "Timebox work as you see fit per project and change frequency from one period to the next.",
+    get title() {
+      return i18nInstance.t("cycles");
+    },
+    get description() {
+      return i18nInstance.t("ui.timebox_work_as_you_see_fit_per");
+    },
     icon: <CycleIcon className="h-5 w-5 flex-shrink-0 rotate-180 text-tertiary" />,
     isPro: false,
     isEnabled: true,
@@ -40,8 +44,12 @@ const PROJECT_FEATURES_LIST = {
   modules: {
     key: "modules",
     property: "module_view",
-    title: "Modules",
-    description: "Group work into sub-project-like set-ups with their own leads and assignees.",
+    get title() {
+      return i18nInstance.t("modules");
+    },
+    get description() {
+      return i18nInstance.t("ui.group_work_into_sub_project_like_set");
+    },
     icon: <ModuleIcon width={20} height={20} className="flex-shrink-0 text-tertiary" />,
     isPro: false,
     isEnabled: true,
@@ -49,8 +57,12 @@ const PROJECT_FEATURES_LIST = {
   views: {
     key: "views",
     property: "issue_views_view",
-    title: "Views",
-    description: "Save sorts, filters, and display options for later or share them.",
+    get title() {
+      return i18nInstance.t("views");
+    },
+    get description() {
+      return i18nInstance.t("ui.save_sorts_filters_and_display_options_for");
+    },
     icon: <ViewsIcon className="h-5 w-5 flex-shrink-0 text-tertiary" />,
     isPro: false,
     isEnabled: true,
@@ -58,8 +70,12 @@ const PROJECT_FEATURES_LIST = {
   pages: {
     key: "pages",
     property: "page_view",
-    title: "Pages",
-    description: "Write anything like you write anything.",
+    get title() {
+      return i18nInstance.t("pages");
+    },
+    get description() {
+      return i18nInstance.t("ui.write_anything_like_you_write_anything");
+    },
     icon: <PageIcon className="h-5 w-5 flex-shrink-0 text-tertiary" />,
     isPro: false,
     isEnabled: true,
@@ -67,8 +83,12 @@ const PROJECT_FEATURES_LIST = {
   inbox: {
     key: "intake",
     property: "inbox_view",
-    title: "Intake",
-    description: "Consider and discuss work items before you add them to your project.",
+    get title() {
+      return i18nInstance.t("intake");
+    },
+    get description() {
+      return i18nInstance.t("ui.consider_and_discuss_work_items_before_you");
+    },
     icon: <IntakeIcon className="h-5 w-5 flex-shrink-0 text-tertiary" />,
     isPro: false,
     isEnabled: true,
@@ -93,13 +113,13 @@ export const ProjectFeaturesList = observer(function ProjectFeaturesList(props: 
     const updateProjectPromise = updateProject(workspaceSlug, projectId, settingsPayload);
 
     setPromiseToast(updateProjectPromise, {
-      loading: "Updating project feature...",
+      loading: t("ui.updating_project_feature"),
       success: {
-        title: "Success!",
+        title: t("toast.success"),
         message: () => "Project feature updated successfully.",
       },
       error: {
-        title: "Error!",
+        title: t("toast.error"),
         message: () => "Something went wrong while updating project feature. Please try again.",
       },
     });
@@ -120,7 +140,7 @@ export const ProjectFeaturesList = observer(function ProjectFeaturesList(props: 
                   <span className="flex items-center gap-2">
                     {t(featureItem.key)}
                     {featureItem.isPro && (
-                      <Tooltip tooltipContent="Pro feature" position="top">
+                      <Tooltip tooltipContent={t("ui.pro_feature")} position="top">
                         <UpgradeBadge className="rounded-sm" />
                       </Tooltip>
                     )}

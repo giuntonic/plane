@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 // icons
@@ -58,6 +59,7 @@ const defaultFromData: TFormData = {
 };
 
 export function InstanceSetupForm() {
+  const { t } = useTranslation();
   // search params
   const searchParams = useSearchParams();
   const firstNameParam = searchParams?.get("first_name") || undefined;
@@ -142,7 +144,7 @@ export function InstanceSetupForm() {
       <div className="mt-10 flex w-full flex-grow flex-col items-center justify-center py-6">
         <div className="relative flex w-full max-w-[22.5rem] flex-col gap-6">
           <FormHeader
-            heading="Setup your Plane Instance"
+            heading={t("ui.setup_your_plane_instance")}
             subHeading="Post setup you will be able to manage this Plane instance."
           />
           {errorData.type &&
@@ -171,7 +173,7 @@ export function InstanceSetupForm() {
                   name="first_name"
                   type="text"
                   inputSize="md"
-                  placeholder="Wilber"
+                  placeholder={t("ui.wilber")}
                   value={formData.first_name}
                   onChange={(e) => {
                     const validation = validatePersonName(e.target.value);
@@ -194,7 +196,7 @@ export function InstanceSetupForm() {
                   name="last_name"
                   type="text"
                   inputSize="md"
-                  placeholder="Wright"
+                  placeholder={t("ui.wright")}
                   value={formData.last_name}
                   onChange={(e) => {
                     const validation = validatePersonName(e.target.value);
@@ -239,7 +241,7 @@ export function InstanceSetupForm() {
                 name="company_name"
                 type="text"
                 inputSize="md"
-                placeholder="Company name"
+                placeholder={t("ui.company_name")}
                 value={formData.company_name}
                 onChange={(e) => {
                   const validation = validateCompanyName(e.target.value, false);
@@ -262,7 +264,7 @@ export function InstanceSetupForm() {
                   name="password"
                   type={showPassword.password ? "text" : "password"}
                   inputSize="md"
-                  placeholder="New password"
+                  placeholder={t("ui.new_password")}
                   value={formData.password}
                   onChange={(e) => handleFormChange("password", e.target.value)}
                   hasError={errorData.type && errorData.type === EErrorCodes.INVALID_PASSWORD ? true : false}
@@ -273,7 +275,7 @@ export function InstanceSetupForm() {
                 {showPassword.password ? (
                   <button
                     type="button"
-                    aria-label="Hide password"
+                    aria-label={t("ui.hide_password")}
                     className="absolute top-3.5 right-3 flex items-center justify-center text-placeholder"
                     onClick={() => handleShowPassword("password")}
                   >
@@ -282,7 +284,7 @@ export function InstanceSetupForm() {
                 ) : (
                   <button
                     type="button"
-                    aria-label="Show password"
+                    aria-label={t("ui.show_password")}
                     className="absolute top-3.5 right-3 flex items-center justify-center text-placeholder"
                     onClick={() => handleShowPassword("password")}
                   >
@@ -308,7 +310,7 @@ export function InstanceSetupForm() {
                   inputSize="md"
                   value={formData.confirm_password}
                   onChange={(e) => handleFormChange("confirm_password", e.target.value)}
-                  placeholder="Confirm password"
+                  placeholder={t("ui.confirm_password")}
                   className="w-full border border-subtle !bg-surface-1 pr-12 placeholder:text-placeholder"
                   onFocus={() => setIsRetryPasswordInputFocused(true)}
                   onBlur={() => setIsRetryPasswordInputFocused(false)}
@@ -317,7 +319,7 @@ export function InstanceSetupForm() {
                 {showPassword.retypePassword ? (
                   <button
                     type="button"
-                    aria-label="Hide password"
+                    aria-label={t("ui.hide_password")}
                     className="absolute top-3.5 right-3 flex items-center justify-center text-placeholder"
                     onClick={() => handleShowPassword("retypePassword")}
                   >
@@ -326,7 +328,7 @@ export function InstanceSetupForm() {
                 ) : (
                   <button
                     type="button"
-                    aria-label="Show password"
+                    aria-label={t("ui.show_password")}
                     className="absolute top-3.5 right-3 flex items-center justify-center text-placeholder"
                     onClick={() => handleShowPassword("retypePassword")}
                   >
@@ -359,7 +361,7 @@ export function InstanceSetupForm() {
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:text-blue-600 flex-shrink-0 text-13 font-medium"
                 >
-                  See More
+                  {t("ui.see_more")}
                 </a>
               </label>
             </div>

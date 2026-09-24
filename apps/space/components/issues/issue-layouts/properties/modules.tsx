@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane ui
 import { ModuleIcon } from "@plane/propel/icons";
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export const IssueBlockModules = observer(function IssueBlockModules({ moduleIds, shouldShowBorder = true }: Props) {
+  const { t } = useTranslation();
   const { getModulesByIds } = useModule();
 
   const modules = getModulesByIds(moduleIds ?? []);
@@ -27,7 +29,7 @@ export const IssueBlockModules = observer(function IssueBlockModules({ moduleIds
 
   return (
     <div className="relative flex h-full flex-wrap items-center gap-1">
-      <Tooltip tooltipHeading="Modules" tooltipContent={modulesString}>
+      <Tooltip tooltipHeading={t("modules")} tooltipContent={modulesString}>
         {modules.length <= 1 ? (
           <div
             key={modules?.[0]?.id}

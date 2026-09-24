@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane ui
 import { StateGroupIcon } from "@plane/propel/icons";
@@ -29,6 +30,7 @@ type Props = {
 );
 
 export const IssueBlockState = observer(function IssueBlockState(props: Props) {
+  const { t } = useTranslation();
   const { shouldShowBorder = true } = props;
   // store hooks
   const { getStateById } = useStates();
@@ -37,7 +39,7 @@ export const IssueBlockState = observer(function IssueBlockState(props: Props) {
   if (!state) return null;
 
   return (
-    <Tooltip tooltipHeading="State" tooltipContent={state.name}>
+    <Tooltip tooltipHeading={t("state")} tooltipContent={state.name}>
       <div
         className={cn("flex h-full w-full items-center justify-between gap-1 rounded-sm px-2.5 py-1 text-11", {
           "border-[0.5px] border-strong": shouldShowBorder,

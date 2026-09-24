@@ -133,8 +133,8 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
     await signOut().catch(() =>
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Failed to sign out. Please try again.",
+        title: t("toast.error"),
+        message: t("ui.failed_to_sign_out_please_try_again"),
       })
     );
   };
@@ -173,7 +173,11 @@ export const WorkspaceAuthWrapper = observer(function WorkspaceAuthWrapper(props
           </div>
           <div className="relative flex h-full w-full flex-grow flex-col items-center justify-center space-y-3">
             <div className="relative flex-shrink-0">
-              <img src={WorkSpaceNotAvailable} className="h-[220px] object-contain object-center" alt="Plane logo" />
+              <img
+                src={WorkSpaceNotAvailable}
+                className="h-[220px] object-contain object-center"
+                alt={t("ui.plane_logo_2")}
+              />
             </div>
             <h3 className="text-center text-16 font-semibold">{t("workspace_not_found.title")}</h3>
             <p className="text-center text-13 text-secondary">{t("workspace_not_found.description")}</p>

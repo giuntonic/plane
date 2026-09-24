@@ -5,6 +5,7 @@
  */
 
 // ui
+import { useTranslation } from "@plane/i18n";
 import { Tooltip } from "@plane/propel/tooltip";
 import type { IIssueLabel } from "@plane/types";
 // types
@@ -18,6 +19,7 @@ type IssueLabelsListProps = {
 };
 
 export function IssueLabelsList(props: IssueLabelsListProps) {
+  const { t } = useTranslation();
   const { labels } = props;
   const { isMobile } = usePlatformOS();
   return (
@@ -26,7 +28,7 @@ export function IssueLabelsList(props: IssueLabelsListProps) {
         <>
           <Tooltip
             position="top"
-            tooltipHeading="Labels"
+            tooltipHeading={t("labels")}
             tooltipContent={labels.map((l) => l?.name).join(", ")}
             isMobile={isMobile}
           >

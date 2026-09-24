@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { NewTabIcon, EditIcon, TrashIcon } from "@plane/propel/icons";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { Tooltip } from "@plane/propel/tooltip";
@@ -22,6 +23,7 @@ export type TIssueLinkDetail = {
 };
 
 export function IssueLinkDetail(props: TIssueLinkDetail) {
+  const { t } = useTranslation();
   // props
   const { linkId, linkOperations, isNotAllowed } = props;
   // hooks
@@ -53,8 +55,8 @@ export function IssueLinkDetail(props: TIssueLinkDetail) {
             copyTextToClipboard(linkDetail.url);
             setToast({
               type: TOAST_TYPE.SUCCESS,
-              title: "Link copied!",
-              message: "Link copied to clipboard",
+              title: t("common.link_copied"),
+              message: t("common.link_copied_to_clipboard"),
             });
           }}
         >

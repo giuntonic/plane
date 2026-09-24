@@ -5,6 +5,7 @@
  */
 
 // helpers
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { EAuthModes } from "@/types/auth";
 
 type TAuthHeader = {
@@ -22,8 +23,12 @@ type TAuthHeaderDetails = {
 
 const Titles: TAuthHeaderDetails = {
   [EAuthModes.SIGN_IN]: {
-    header: "Sign in to upvote or comment",
-    subHeader: "Contribute in nudging the features you want to get built.",
+    get header() {
+      return i18nInstance.t("ui.sign_in_to_upvote_or_comment");
+    },
+    get subHeader() {
+      return i18nInstance.t("ui.contribute_in_nudging_the_features_you_want");
+    },
   },
   [EAuthModes.SIGN_UP]: {
     header: "View, comment, and do more",
@@ -32,6 +37,7 @@ const Titles: TAuthHeaderDetails = {
 };
 
 export function AuthHeader(props: TAuthHeader) {
+  const { t } = useTranslation();
   const { authMode } = props;
 
   const getHeaderSubHeader = (mode: EAuthModes | null): TAuthHeaderContent => {
@@ -40,8 +46,8 @@ export function AuthHeader(props: TAuthHeader) {
     }
 
     return {
-      header: "Comment or react to work items",
-      subHeader: "Use plane to add your valuable inputs to features.",
+      header: t("ui.comment_or_react_to_work_items"),
+      subHeader: t("ui.use_plane_to_add_your_valuable_inputs"),
     };
   };
 

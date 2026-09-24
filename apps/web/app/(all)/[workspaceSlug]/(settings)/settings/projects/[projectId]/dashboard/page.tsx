@@ -69,7 +69,11 @@ function DashboardSettingsPage({ params }: Route.ComponentProps) {
       setToast({ type: TOAST_TYPE.SUCCESS, title: "Sucesso!", message: t("project_settings.dashboard.saved") });
       if (showPreview) mutateEmbed();
     } catch {
-      setToast({ type: TOAST_TYPE.ERROR, title: "Error!", message: t("project_settings.dashboard.save_error") });
+      setToast({
+        type: TOAST_TYPE.ERROR,
+        title: t("toast.error"),
+        message: t("project_settings.dashboard.save_error"),
+      });
     } finally {
       setSaving(false);
     }
@@ -130,7 +134,12 @@ function DashboardSettingsPage({ params }: Route.ComponentProps) {
         {showPreview && (
           <div className="mt-6 max-w-160">
             {embed?.configured && embed.url ? (
-              <iframe key={embed.url} src={embed.url} title="Dashboard preview" className="h-100 w-full rounded-md border border-subtle" />
+              <iframe
+                key={embed.url}
+                src={embed.url}
+                title={t("ui.dashboard_preview")}
+                className="h-100 w-full rounded-md border border-subtle"
+              />
             ) : (
               <p className="text-13 text-tertiary">{t("project_settings.dashboard.not_configured")}</p>
             )}

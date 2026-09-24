@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import type { FC, ReactNode } from "react";
 import {
   RotateCcw,
@@ -193,7 +194,9 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
                 {activity.new_value}
               </a>
             ) : (
-              <span className="font-medium text-primary">{activity.old_value || "Unknown cycle"}</span>
+              <span className="font-medium text-primary">
+                {activity.old_value || i18nInstance.t("ui.unknown_cycle")}
+              </span>
             )}
           </>
         ),
@@ -206,7 +209,7 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
               {verb} this project {verb === "removed" ? "from" : "to"} the module{" "}
             </span>
             <span className="font-medium text-primary">
-              {verb === "removed" ? oldValue : newValue || "Unknown module"}
+              {verb === "removed" ? oldValue : newValue || i18nInstance.t("ui.unknown_module")}
             </span>
           </>
         ),
@@ -216,7 +219,9 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
         message: (
           <>
             {verb} the label{" "}
-            <span className="font-medium text-primary">{newValue || oldValue || "Untitled label"}</span>
+            <span className="font-medium text-primary">
+              {newValue || oldValue || i18nInstance.t("ui.untitled_label")}
+            </span>
           </>
         ),
       };
@@ -229,7 +234,9 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
         message: (
           <>
             {newValue ? "created" : "removed"} the project page{" "}
-            <span className="font-medium text-primary">{newValue || oldValue || "Untitled page"}</span>
+            <span className="font-medium text-primary">
+              {newValue || oldValue || i18nInstance.t("ui.untitled_page")}
+            </span>
           </>
         ),
       };

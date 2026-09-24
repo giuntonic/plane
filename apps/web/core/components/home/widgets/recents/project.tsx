@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useRouter } from "next/navigation";
 // plane types
 import { Logo } from "@plane/propel/emoji-icon-picker";
@@ -20,6 +21,7 @@ type BlockProps = {
   workspaceSlug: string;
 };
 export function RecentProject(props: BlockProps) {
+  const { t } = useTranslation();
   const { activity, ref, workspaceSlug } = props;
   // router
   const router = useRouter();
@@ -63,7 +65,7 @@ export function RecentProject(props: BlockProps) {
                 }
                 buttonClassName={projectDetails?.project_members?.length > 0 ? "hover:bg-transparent px-0" : ""}
                 showTooltip={projectDetails?.project_members?.length === 0}
-                placeholder="Assignees"
+                placeholder={t("assignees")}
                 optionsClassName="z-10"
                 tooltipContent=""
               />

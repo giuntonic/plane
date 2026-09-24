@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useState } from "react";
 import { TwitterPicker } from "react-color";
 import { Button } from "@plane/propel/button";
@@ -30,6 +31,7 @@ function PopoverButton({ color }: { color?: string }) {
 }
 
 export function StateForm(props: TStateForm) {
+  const { t } = useTranslation();
   const { data, onSubmit, onCancel, buttonDisabled, buttonTitle } = props;
   // states
   const [formData, setFromData] = useState<Partial<IState> | undefined>(undefined);
@@ -77,7 +79,7 @@ export function StateForm(props: TStateForm) {
           id="name"
           type="text"
           name="name"
-          placeholder="Name"
+          placeholder={t("name")}
           value={formData?.name}
           onChange={(e) => handleFormData("name", e.target.value)}
           hasError={(errors && Boolean(errors.name)) || false}
@@ -90,7 +92,7 @@ export function StateForm(props: TStateForm) {
         <TextArea
           id="description"
           name="description"
-          placeholder="Describe this state for your members."
+          placeholder={t("ui.describe_this_state_for_your_members")}
           value={formData?.description}
           onChange={(e) => handleFormData("description", e.target.value)}
           hasError={(errors && Boolean(errors.description)) || false}

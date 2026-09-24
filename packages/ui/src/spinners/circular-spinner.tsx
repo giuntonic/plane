@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import * as React from "react";
 // helpers
 import { cn } from "../utils";
@@ -15,6 +16,7 @@ export interface ISpinner extends React.SVGAttributes<SVGElement> {
 }
 
 export function Spinner({ height = "32px", width = "32px", className = "" }: ISpinner) {
+  const { t } = useTranslation();
   return (
     <div role="status">
       <svg
@@ -35,7 +37,7 @@ export function Spinner({ height = "32px", width = "32px", className = "" }: ISp
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only">{t("ui.loading")}</span>
     </div>
   );
 }

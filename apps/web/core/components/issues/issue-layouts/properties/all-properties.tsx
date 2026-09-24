@@ -260,7 +260,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
             renderByDefault={isMobile}
             showTooltip
             renderPlaceholder={false}
-            customTooltipHeading="Date Range"
+            customTooltipHeading={t("ui.date_range")}
           />
         </div>
       </WithDisplayPropertiesHOC>

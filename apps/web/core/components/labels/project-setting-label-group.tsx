@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { observer } from "mobx-react";
@@ -37,6 +38,7 @@ type Props = {
 };
 
 export const ProjectSettingLabelGroup = observer(function ProjectSettingLabelGroup(props: Props) {
+  const { t } = useTranslation();
   const {
     label,
     labelChildren,
@@ -60,7 +62,7 @@ export const ProjectSettingLabelGroup = observer(function ProjectSettingLabelGro
         setIsUpdating(true);
       },
       isVisible: true,
-      text: "Edit label",
+      text: t("ui.edit_label"),
       key: "edit_label",
     },
     {
@@ -69,7 +71,7 @@ export const ProjectSettingLabelGroup = observer(function ProjectSettingLabelGro
         handleLabelDelete(label);
       },
       isVisible: true,
-      text: "Delete label",
+      text: t("ui.delete_label"),
       key: "delete_label",
     },
   ];

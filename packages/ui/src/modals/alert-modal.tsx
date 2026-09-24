@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { LucideIcon } from "lucide-react";
 import { AlertTriangle, Info } from "lucide-react";
 import React from "react";
@@ -61,16 +62,19 @@ export function AlertModalCore(props: Props) {
     isSubmitting,
     isOpen,
     position = EModalPosition.CENTER,
-    primaryButtonText = {
-      loading: "Deleting",
-      default: "Delete",
-    },
-    secondaryButtonText = "Cancel",
+    primaryButtonText: primaryButtonTextProp,
+    secondaryButtonText: secondaryButtonTextProp,
     title,
     variant = "danger",
     width = EModalWidth.XL,
     customIcon,
   } = props;
+  const { t } = useTranslation();
+  const primaryButtonText = primaryButtonTextProp ?? {
+    loading: t("common.deleting"),
+    default: t("common.delete"),
+  };
+  const secondaryButtonText = secondaryButtonTextProp ?? t("common.cancel");
 
   const Icon = VARIANT_ICONS[variant];
 

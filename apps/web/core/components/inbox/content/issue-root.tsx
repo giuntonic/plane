@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import { observer } from "mobx-react";
@@ -46,6 +47,7 @@ type Props = {
 };
 
 export const InboxIssueMainContent = observer(function InboxIssueMainContent(props: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId, inboxIssue, isEditable, isSubmitting, setIsSubmitting } = props;
   // refs
   const editorRef = useRef<EditorRefApi>(null);
@@ -82,16 +84,16 @@ export const InboxIssueMainContent = observer(function InboxIssueMainContent(pro
         try {
           await removeIssue(workspaceSlug, projectId, _issueId);
           setToast({
-            title: "Success!",
+            title: t("toast.success"),
             type: TOAST_TYPE.SUCCESS,
-            message: "Work item deleted successfully",
+            message: t("ui.work_item_deleted_successfully"),
           });
         } catch (error) {
           console.log("Error in deleting work item:", error);
           setToast({
-            title: "Error!",
+            title: t("toast.error"),
             type: TOAST_TYPE.ERROR,
-            message: "Work item delete failed",
+            message: t("ui.work_item_delete_failed"),
           });
         }
       },
@@ -100,9 +102,9 @@ export const InboxIssueMainContent = observer(function InboxIssueMainContent(pro
           await inboxIssue.updateIssue(data);
         } catch (_error) {
           setToast({
-            title: "Work item update failed",
+            title: t("ui.work_item_update_failed"),
             type: TOAST_TYPE.ERROR,
-            message: "Work item update failed",
+            message: t("ui.work_item_update_failed"),
           });
         }
       },

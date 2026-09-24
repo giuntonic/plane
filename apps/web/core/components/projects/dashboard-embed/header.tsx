@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { DashboardIcon } from "@plane/propel/icons";
@@ -16,6 +17,7 @@ import { CommonProjectBreadcrumbs } from "@/components/breadcrumbs/common";
 import { useProject } from "@/hooks/store/use-project";
 
 export const ProjectDashboardEmbedHeader = observer(function ProjectDashboardEmbedHeader() {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId } = useParams();
   const { loader: currentProjectDetailsLoader } = useProject();
 
@@ -28,7 +30,7 @@ export const ProjectDashboardEmbedHeader = observer(function ProjectDashboardEmb
             <Breadcrumbs.Item
               component={
                 <BreadcrumbLink
-                  label="Dashboard"
+                  label={t("ui.dashboard")}
                   href={`/${workspaceSlug}/projects/${projectId}/dashboard/`}
                   icon={<DashboardIcon className="h-4 w-4 text-tertiary" />}
                   isLast

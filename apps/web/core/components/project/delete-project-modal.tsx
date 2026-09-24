@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { AlertTriangle } from "lucide-react";
@@ -28,6 +29,7 @@ const defaultValues = {
 };
 
 export function DeleteProjectModal(props: DeleteProjectModal) {
+  const { t } = useTranslation();
   const { isOpen, project, onClose } = props;
   // store hooks
   const { deleteProject } = useProject();
@@ -63,14 +65,14 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
       handleClose();
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "Project deleted successfully.",
+        title: t("toast.success"),
+        message: t("ui.project_deleted_successfully"),
       });
     } catch (_error) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Something went wrong. Please try again later.",
+        title: t("toast.error"),
+        message: t("ui.something_went_wrong_please_try_again_later"),
       });
     }
   };
@@ -83,7 +85,7 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
             <AlertTriangle className="h-6 w-6 text-danger-primary" aria-hidden="true" />
           </span>
           <span className="flex items-center justify-start">
-            <h3 className="text-18 font-medium 2xl:text-20">Delete project</h3>
+            <h3 className="text-18 font-medium 2xl:text-20">{t("ui.delete_project")}</h3>
           </span>
         </div>
         <span>
@@ -108,7 +110,7 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
                 onChange={onChange}
                 ref={ref}
                 hasError={Boolean(errors.projectName)}
-                placeholder="Project name"
+                placeholder={t("project_name")}
                 className="mt-2 w-full"
                 autoComplete="off"
               />
@@ -131,7 +133,7 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
                 onChange={onChange}
                 ref={ref}
                 hasError={Boolean(errors.confirmDelete)}
-                placeholder="Enter 'delete my project'"
+                placeholder={t("ui.enter_delete_my_project")}
                 className="mt-2 w-full"
                 autoComplete="off"
               />

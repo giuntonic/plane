@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useRef, useState } from "react";
 // plane imports
 import { useOutsideClickDetector } from "@plane/hooks";
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export function PageSearchInput(props: Props) {
+  const { t } = useTranslation();
   const { searchQuery, updateSearchQuery } = props;
   // states
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -64,7 +66,7 @@ export function PageSearchInput(props: Props) {
         <input
           ref={inputRef}
           className="ml-2 w-full max-w-[234px] border-none bg-transparent text-13 text-primary placeholder:text-placeholder focus:outline-none"
-          placeholder="Search pages"
+          placeholder={t("ui.search_pages")}
           value={searchQuery}
           onChange={(e) => updateSearchQuery(e.target.value)}
           onKeyDown={handleInputKeyDown}
