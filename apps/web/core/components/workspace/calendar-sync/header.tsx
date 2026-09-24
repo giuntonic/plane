@@ -7,7 +7,9 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { observer } from "mobx-react";
 // plane imports
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
+import { Switch } from "@plane/propel/switch";
 // hooks
 import { useAppRouter } from "@/hooks/use-app-router";
 
@@ -30,10 +32,23 @@ type Props = {
   activeMonthDate: Date;
   setActiveMonthDate: (date: Date) => void;
   isGoogleConnected: boolean;
+  onlyMine: boolean;
+  setOnlyMine: (value: boolean) => void;
+  showGoogleEvents: boolean;
+  setShowGoogleEvents: (value: boolean) => void;
 };
 
 export const CalendarSyncHeader = observer(function CalendarSyncHeader(props: Props) {
-  const { activeMonthDate, setActiveMonthDate, isGoogleConnected } = props;
+  const {
+    activeMonthDate,
+    setActiveMonthDate,
+    isGoogleConnected,
+    onlyMine,
+    setOnlyMine,
+    showGoogleEvents,
+    setShowGoogleEvents,
+  } = props;
+  const { t } = useTranslation();
   const router = useAppRouter();
 
   const goToMonth = (offset: number) => {
@@ -41,7 +56,7 @@ export const CalendarSyncHeader = observer(function CalendarSyncHeader(props: Pr
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-subtle-1 px-4 py-2.5">
+    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-subtle-1 px-4 py-2.5">
       <div className="flex items-center gap-2">
         <Button variant="secondary" size="sm" onClick={() => goToMonth(-1)}>
           <ChevronLeft className="size-4" />
@@ -57,11 +72,22 @@ export const CalendarSyncHeader = observer(function CalendarSyncHeader(props: Pr
         </Button>
       </div>
 
-      {!isGoogleConnected && (
-        <Button variant="link" onClick={() => router.push("/settings/profile/google-calendar/")}>
-          Conectar Google Calendar
-        </Button>
-      )}
+      <div className="flex flex-wrap items-center gap-4">
+        <label className="flex items-center gap-2 text-body-xs-medium text-secondary">
+          <Switch value={onlyMine} onChange={setOnlyMine} />
+          {t("google_calendar_integration.calendar_view.only_mine")}
+        </label>
+        {isGoogleConnected ? (
+          <label className="flex items-center gap-2 text-body-xs-medium text-secondary">
+            <Switch value={showGoogleEvents} onChange={setShowGoogleEvents} />
+            {t("google_calendar_integration.calendar_view.show_google")}
+          </label>
+        ) : (
+          <Button variant="link" onClick={() => router.push("/settings/profile/google-calendar/")}>
+            Conectar Google Calendar
+          </Button>
+        )}
+      </div>
     </div>
   );
 });

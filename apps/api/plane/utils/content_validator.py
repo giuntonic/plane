@@ -77,6 +77,8 @@ CUSTOM_TAGS = {
     "image-component",
     # Pespo: embed de vídeo (Clapshot)
     "clapshot-embed-component",
+    # Pespo: embed de arquivo do Google Drive (Docs/Sheets/Slides/PDF…)
+    "google-drive-embed-component",
 }
 ALLOWED_TAGS = nh3.ALLOWED_TAGS | CUSTOM_TAGS
 
@@ -137,6 +139,7 @@ ATTRIBUTES = {
     },
     "mention-component": {"id", "entity_identifier", "entity_name"},
     "clapshot-embed-component": {"url"},
+    "google-drive-embed-component": {"url", "name", "mime_type", "mode", "height"},
     "th": {
         "colspan",
         "rowspan",

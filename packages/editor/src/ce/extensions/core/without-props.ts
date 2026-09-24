@@ -7,5 +7,9 @@
 import type { Extensions } from "@tiptap/core";
 // local imports
 import { ClapshotEmbedExtensionConfig } from "../clapshot-embed";
+import { GoogleDriveEmbedExtensionConfig } from "../google-drive-embed";
 
-export const CoreEditorAdditionalExtensionsWithoutProps: Extensions = [ClapshotEmbedExtensionConfig];
+export const CoreEditorAdditionalExtensionsWithoutProps: Extensions = [
+  ClapshotEmbedExtensionConfig,
+  GoogleDriveEmbedExtensionConfig,
+];

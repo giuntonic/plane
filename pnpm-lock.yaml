@@ -571,7 +571,7 @@ overrides:
   morgan: 1.11.0
 
 patchedDependencies:
-  '@headlessui/react@2.2.10': b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08
+  '@headlessui/react@2.2.10': e5ed88dc6866ea83218d3212e05fe098be78d2f4ee15b2eea8b66e38edc1865e
   react-color@2.19.3: 311b81530f5338988f8b57718f24870a7550637159d8360d69f668cba2f2033f
 
 importers:
@@ -613,7 +613,7 @@ importers:
         version: 5.2.30
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=e5ed88dc6866ea83218d3212e05fe098be78d2f4ee15b2eea8b66e38edc1865e)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@plane/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -882,7 +882,7 @@ importers:
         version: 5.2.30
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=e5ed88dc6866ea83218d3212e05fe098be78d2f4ee15b2eea8b66e38edc1865e)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@plane/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -1036,7 +1036,7 @@ importers:
         version: 5.2.30
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=e5ed88dc6866ea83218d3212e05fe098be78d2f4ee15b2eea8b66e38edc1865e)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@plane/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -1296,7 +1296,7 @@ importers:
         version: 0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=e5ed88dc6866ea83218d3212e05fe098be78d2f4ee15b2eea8b66e38edc1865e)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@hocuspocus/provider':
         specifier: 'catalog:'
         version: 2.15.2(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
@@ -1769,7 +1769,7 @@ importers:
         version: 1.1.0
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=e5ed88dc6866ea83218d3212e05fe098be78d2f4ee15b2eea8b66e38edc1865e)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@plane/constants':
         specifier: workspace:*
         version: link:../constants
@@ -1982,6 +1982,9 @@ importers:
       typescript:
         specifier: 5.8.3
         version: 5.8.3
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.8(@opentelemetry/api@1.9.1)(@types/node@22.12.0)(@vitest/coverage-v8@4.1.8)(vite@8.0.16(@types/node@22.12.0)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.43.1)(tsx@4.20.6)(yaml@2.8.3))
 
 packages:
 
@@ -10711,7 +10714,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@headlessui/react@2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@headlessui/react@2.2.10(patch_hash=e5ed88dc6866ea83218d3212e05fe098be78d2f4ee15b2eea8b66e38edc1865e)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@react-aria/focus': 3.22.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)

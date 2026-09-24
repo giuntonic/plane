@@ -9,6 +9,13 @@ from plane.app.views import (
     BulkDeleteIssuesEndpoint,
     SubIssuesEndpoint,
     IssueLinkViewSet,
+    IssueGoogleDriveFileEndpoint,
+    IssueCalendarEventEndpoint,
+    IssueCalendarEventLinkEndpoint,
+    IssueCalendarEventInstantEndpoint,
+    IssueCalendarEventDetailEndpoint,
+    IssueGoogleDriveFileDetailEndpoint,
+    IssueGoogleDriveImportEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -122,6 +129,43 @@ urlpatterns = [
             }
         ),
         name="project-issue-links",
+    ),
+    # Pespo: Google Calendar meetings linked to a work item
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/",
+        IssueCalendarEventEndpoint.as_view(),
+        name="project-issue-calendar-events",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/link/",
+        IssueCalendarEventLinkEndpoint.as_view(),
+        name="project-issue-calendar-events-link",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/instant/",
+        IssueCalendarEventInstantEndpoint.as_view(),
+        name="project-issue-calendar-events-instant",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/<uuid:pk>/",
+        IssueCalendarEventDetailEndpoint.as_view(),
+        name="project-issue-calendar-event-detail",
+    ),
+    # Pespo: Google Drive files linked to / copied into a work item
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/google-drive-files/",
+        IssueGoogleDriveFileEndpoint.as_view(),
+        name="project-issue-google-drive-files",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/google-drive-files/import/",
+        IssueGoogleDriveImportEndpoint.as_view(),
+        name="project-issue-google-drive-import",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/google-drive-files/<uuid:pk>/",
+        IssueGoogleDriveFileDetailEndpoint.as_view(),
+        name="project-issue-google-drive-file-detail",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/",

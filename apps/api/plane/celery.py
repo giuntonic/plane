@@ -55,6 +55,12 @@ app.conf.beat_schedule = {
         "task": "plane.bgtasks.google_calendar_sync_task.sync_google_calendars",
         "schedule": schedule(run_every=timedelta(minutes=10)),
     },
+    # Google -> Plane edits (two-way sync); push notifications usually get
+    # there first, this catches the ones that didn't arrive.
+    "pull-google-calendars": {
+        "task": "plane.bgtasks.google_calendar_sync_task.pull_google_calendars",
+        "schedule": schedule(run_every=timedelta(minutes=2)),
+    },
     # Occurs once every day
     "check-every-day-to-delete-hard-delete": {
         "task": "plane.bgtasks.deletion_task.hard_delete",
