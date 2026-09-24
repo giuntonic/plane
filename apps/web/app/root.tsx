@@ -5,6 +5,7 @@
  */
 
 import { i18nInstance } from "@plane/i18n";
+import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Links, Meta, Outlet, Scripts } from "react-router";
 import type { LinksFunction } from "react-router";
@@ -118,9 +119,13 @@ export default function Root() {
 
 export function HydrateFallback() {
   const { resolvedTheme } = useTheme();
+  // The prerendered index.html contains the server branch below (an empty div). next-themes
+  // already knows the theme on the first client render, so rendering the spinner right away
+  // made hydration diverge (React #418). Match the server output until after mount.
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => setIsMounted(true), []);
 
-  // if we are on the server or the theme is not resolved, return an empty div
-  if (typeof window === "undefined" || resolvedTheme === undefined) return <div />;
+  if (!isMounted || resolvedTheme === undefined) return <div />;
 
   return (
     <div className="relative flex h-screen w-full items-center justify-center bg-canvas">
