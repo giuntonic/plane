@@ -346,6 +346,24 @@ Nesta leva ela foi corrigida e ampliada:
      altura ajustável (arrastando a borda de baixo) e "Abrir no Google". Funciona em páginas colaborativas
      (live) e fica só-leitura nas páginas publicadas.
   3. **Configurações → Perfil → Google Drive** — conectar/desconectar.
+- **Correções depois do primeiro uso em produção (2026-09-24):**
+  - *Anexar pelo painel lateral da tarefa fechava a tarefa sem anexar.* O painel (peek) fecha em
+    qualquer `mousedown` fora dele, exceto em modais registrados na store ou em elementos com
+    `data-prevent-outside-click`. O seletor do Drive (e os modais do Calendar) não eram nenhum dos
+    dois, então clicar no arquivo fechava a tarefa e o seletor sumia junto. `ModalCore`
+    (`packages/ui`) ganhou a prop opcional `preventOutsideClick`, que marca o modal inteiro (fundo
+    incluso); usada no seletor, no visualizador e no "Agendar reunião". **Qualquer modal novo aberto
+    de dentro da tarefa precisa dessa prop.** Verificado no navegador (Playwright).
+  - *"Ative os cookies" no embed.* O preview/editor do Google em iframe precisa de cookies de
+    terceiros, que muitos navegadores bloqueiam. "Visualizar" agora usa uma prévia do próprio Pespo
+    Hub: `GET /api/users/me/google-drive/files/<id>/preview/` busca o arquivo com a conexão Drive de
+    **quem está vendo** (as permissões do Drive continuam valendo) e devolve Docs/Sheets/Slides em PDF,
+    desenhos em PNG, PDFs e imagens como estão (nunca HTML/SVG), com `X-Frame-Options: SAMEORIGIN` —
+    só funciona porque web e API estão no mesmo domínio (`plane.pespo.com.br`). Sem conexão, sem
+    acesso ou tipo sem prévia, mostra uma página de aviso com link "Abrir no Google". "Editar"
+    continua no editor do Google (precisa dos cookies); o iframe ganhou
+    `allow-storage-access-by-user-activation` pra o botão do Google conseguir pedir acesso. Em páginas
+    públicas (`space`, sem login) o embed continua usando a prévia do Google.
 - **Como a permissão funciona:** o Plane nunca compartilha arquivos. Navegar/vincular/copiar usa o token
   de quem está fazendo a ação; visualizar/editar no iframe usa a sessão Google do próprio navegador de quem
   está olhando — quem não tem acesso ao arquivo no Drive vê a tela de "pedir acesso" do Google. Se o

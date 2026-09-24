@@ -9,6 +9,7 @@ import {
   getGoogleDriveEmbedUrl,
   getGoogleDriveKindFromMimeType,
   getGoogleDriveOpenUrl,
+  getGoogleDriveProxyPreviewUrl,
   isGoogleDriveKindEditable,
   parseGoogleDriveUrl,
 } from "./google-drive";
@@ -88,5 +89,21 @@ describe("mime type and open url helpers", () => {
       "https://docs.google.com/presentation/d/p1/edit"
     );
     expect(getGoogleDriveOpenUrl({ fileId: "x", kind: "file" })).toBe("https://drive.google.com/file/d/x/view");
+  });
+});
+
+describe("getGoogleDriveProxyPreviewUrl", () => {
+  it("points at Plane's API preview", () => {
+    expect(getGoogleDriveProxyPreviewUrl({ fileId: "doc1", kind: "document" }, "https://hub.example.com/")).toBe(
+      "https://hub.example.com/api/users/me/google-drive/files/doc1/preview/"
+    );
+    expect(getGoogleDriveProxyPreviewUrl({ fileId: "pdf1", kind: "file" })).toBe(
+      "/api/users/me/google-drive/files/pdf1/preview/"
+    );
+  });
+
+  it("has no proxy preview for folders or invalid ids", () => {
+    expect(getGoogleDriveProxyPreviewUrl({ fileId: "f1", kind: "folder" })).toBe("");
+    expect(getGoogleDriveProxyPreviewUrl({ fileId: "../x", kind: "document" })).toBe("");
   });
 });

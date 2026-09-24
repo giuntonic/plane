@@ -39,6 +39,19 @@ EXPORT_FORMATS = {
     "application/vnd.google-apps.drawing": ("image/png", "png"),
 }
 
+# Inline preview (cookie-free viewer): everything Google-native becomes a PDF
+# (or PNG for drawings), which the browser renders itself.
+PREVIEW_EXPORT_FORMATS = {
+    "application/vnd.google-apps.document": ("application/pdf", "pdf"),
+    "application/vnd.google-apps.spreadsheet": ("application/pdf", "pdf"),
+    "application/vnd.google-apps.presentation": ("application/pdf", "pdf"),
+    "application/vnd.google-apps.drawing": ("image/png", "png"),
+}
+
+# Binary types that are safe to serve inline from Plane's own origin (no
+# HTML/SVG — those could run script on our domain).
+PREVIEW_INLINE_MIME_TYPES = {"application/pdf", "image/png", "image/jpeg", "image/gif", "image/webp"}
+
 # Kinds of blank files Plane can create straight in the user's Drive.
 CREATABLE_KINDS = {
     "document": "application/vnd.google-apps.document",
@@ -179,11 +192,12 @@ def create_file(access_token, name, kind, parent_id=None):
     return response.json()
 
 
-def download_file(access_token, file, max_bytes):
+def download_file(access_token, file, max_bytes, export_formats=None):
     """Downloads (or exports, for Google-native files) a Drive file.
     Returns (content_bytes, filename, mime_type). Streams the body and
     aborts as soon as it goes over max_bytes, so a huge file never gets
-    fully buffered in memory."""
+    fully buffered in memory. `export_formats` overrides which format each
+    Google-native type is exported to (default: EXPORT_FORMATS)."""
     file_id = file["id"]
     if not is_valid_drive_id(file_id):
         raise ValueError("Invalid file id")
@@ -192,7 +206,7 @@ def download_file(access_token, file, max_bytes):
     if mime_type == FOLDER_MIME_TYPE:
         raise GoogleDriveNotExportable("Folders can't be attached")
 
-    export = export_format_for(mime_type)
+    export = (export_formats or EXPORT_FORMATS).get(mime_type)
     if export:
         url = f"{DRIVE_API_BASE}/files/{file_id}/export"
         params = {"mimeType": export[0]}
@@ -217,7 +231,20 @@ def download_file(access_token, file, max_bytes):
                 raise GoogleDriveFileTooLarge()
             chunks.append(chunk)
 
-    return b"".join(chunks), attachment_filename(file.get("name") or "arquivo", mime_type), content_type
+    name = file.get("name") or "arquivo"
+    if export and not name.lower().endswith(f".{export[1]}"):
+        name = f"{name}.{export[1]}"
+    return b"".join(chunks), name, content_type
+
+
+def download_preview(access_token, file, max_bytes):
+    """Content to show a file inline without Google's embed (and its
+    third-party cookies): Google-native files exported to PDF/PNG, PDFs and
+    images as-is. Raises GoogleDriveNotExportable for anything else."""
+    mime_type = file.get("mimeType", "")
+    if mime_type not in PREVIEW_EXPORT_FORMATS and mime_type not in PREVIEW_INLINE_MIME_TYPES:
+        raise GoogleDriveNotExportable(f"{mime_type} has no inline preview")
+    return download_file(access_token, file, max_bytes, export_formats=PREVIEW_EXPORT_FORMATS)
 
 
 def serialize_file(file):

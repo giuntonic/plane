@@ -3,14 +3,17 @@
 # See the LICENSE file for details.
 
 # Python imports
+import html
 import uuid
 from datetime import timedelta
 from urllib.parse import urlencode
 
 # Django imports
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 
 # Third party imports
 import requests
@@ -227,3 +230,98 @@ class GoogleDriveFileDetailEndpoint(BaseAPIView):
         except Exception as e:
             return drive_error_response(e)
         return Response(gdrive.serialize_file(file), status=status.HTTP_200_OK)
+
+
+# Largest file the inline preview will fetch from Drive.
+PREVIEW_MAX_BYTES = 40 * 1024 * 1024
+
+
+def _preview_message(title, body, link=None):
+    """Small self-contained HTML page shown inside the preview iframe when
+    there's nothing to render (not connected, unsupported type, too big)."""
+    link_html = (
+        f'<p><a href="{html.escape(link)}" target="_blank" rel="noopener noreferrer">Abrir no Google</a></p>'
+        if link
+        else ""
+    )
+    page = f"""<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<style>body{{font:14px system-ui,sans-serif;color:#555;display:grid;place-items:center;height:100vh;margin:0;
+text-align:center;padding:0 24px}}h1{{font-size:15px;color:#222;margin:0 0 6px}}a{{color:#3f76ff}}</style></head>
+<body><div><h1>{html.escape(title)}</h1><p>{html.escape(body)}</p>{link_html}</div></body></html>"""
+    response = HttpResponse(page, content_type="text/html; charset=utf-8")
+    response["Content-Security-Policy"] = "default-src 'none'; style-src 'unsafe-inline'; sandbox allow-popups"
+    response["Cache-Control"] = "no-store"
+    return response
+
+
+def _safe_google_link(link):
+    # Only ever link back to Google's own hosts.
+    if isinstance(link, str) and link.startswith(("https://docs.google.com/", "https://drive.google.com/")):
+        return link
+    return None
+
+
+@method_decorator(xframe_options_sameorigin, name="dispatch")
+class GoogleDriveFilePreviewEndpoint(BaseAPIView):
+    """Serves a Drive file for viewing inside Plane without Google's embed.
+    Google's /preview iframe needs third-party cookies, which many browsers
+    block ("ative os cookies"); here the file is fetched server-side with the
+    *viewer's* own Drive connection (so Drive permissions still apply) and
+    served from Plane's origin: Docs/Sheets/Slides as PDF, drawings as PNG,
+    PDFs and images as-is. Framable only by Plane itself (SAMEORIGIN)."""
+
+    def get(self, request, file_id):
+        if not gdrive.is_valid_drive_id(file_id):
+            return _preview_message("Arquivo inválido", "O link do arquivo não é válido.")
+        try:
+            connection, access_token = get_drive_access_token(request.user)
+        except Exception as e:
+            log_exception(e)
+            return _preview_message(
+                "Não foi possível acessar o Google Drive",
+                "Reconecte sua conta em Configurações → Perfil → Google Drive.",
+            )
+        if not connection:
+            return _preview_message(
+                "Conecte seu Google Drive",
+                "Para ver este arquivo aqui, conecte sua conta em Configurações → Perfil → Google Drive.",
+                f"https://drive.google.com/open?id={file_id}",
+            )
+
+        try:
+            file = gdrive.get_file(access_token, file_id)
+        except requests.HTTPError as e:
+            code = e.response.status_code if e.response is not None else None
+            if code in (403, 404):
+                return _preview_message(
+                    "Sem acesso a este arquivo",
+                    "Sua conta Google não tem acesso a este arquivo no Drive. Peça acesso ao dono.",
+                    f"https://drive.google.com/open?id={file_id}",
+                )
+            log_exception(e)
+            return _preview_message("Erro no Google Drive", "Tente novamente em instantes.")
+        except Exception as e:
+            log_exception(e)
+            return _preview_message("Erro no Google Drive", "Tente novamente em instantes.")
+
+        link = _safe_google_link(file.get("webViewLink"))
+        try:
+            content, filename, content_type = gdrive.download_preview(access_token, file, PREVIEW_MAX_BYTES)
+        except gdrive.GoogleDriveNotExportable:
+            return _preview_message("Prévia indisponível", "Este tipo de arquivo não tem prévia no Pespo Hub.", link)
+        except gdrive.GoogleDriveFileTooLarge:
+            return _preview_message("Arquivo grande demais", "Abra este arquivo direto no Google.", link)
+        except Exception as e:
+            log_exception(e)
+            return _preview_message("Erro no Google Drive", "Tente novamente em instantes.", link)
+
+        if content_type not in gdrive.PREVIEW_INLINE_MIME_TYPES:
+            return _preview_message("Prévia indisponível", "Este tipo de arquivo não tem prévia no Pespo Hub.", link)
+
+        response = HttpResponse(content, content_type=content_type)
+        ascii_name = "".join(c if c.isascii() and c not in '"\\\r\n' else "_" for c in filename)
+        response["Content-Disposition"] = f'inline; filename="{ascii_name}"'
+        response["X-Content-Type-Options"] = "nosniff"
+        # Per-user content (served with the viewer's own token): never shared caches.
+        response["Cache-Control"] = "private, max-age=300"
+        return response

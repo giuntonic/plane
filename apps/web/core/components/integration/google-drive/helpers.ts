@@ -24,3 +24,22 @@ export const getGoogleDriveErrorKey = (error: unknown): string =>
 /** Path of the current screen, so the OAuth flow brings the user back to it. */
 export const getCurrentPathForRedirect = (): string =>
   typeof window === "undefined" ? "/" : `${window.location.pathname}${window.location.search}`;
+
+/**
+ * Sandbox for iframes that show Google's own editor/preview. The src is always
+ * built from a validated Drive id on a Google origin, so allow-same-origin only
+ * grants Google its own cookies — never access to Plane's origin.
+ * allow-storage-access-by-user-activation lets Google's "enable cookies" prompt
+ * ask the browser for its cookies when third-party cookies are blocked.
+ */
+export const GOOGLE_EMBED_SANDBOX = [
+  "allow-scripts",
+  "allow-same-origin",
+  "allow-forms",
+  "allow-popups",
+  "allow-popups-to-escape-sandbox",
+  "allow-downloads",
+  "allow-modals",
+  "allow-storage-access-by-user-activation",
+  "allow-top-navigation-by-user-activation",
+].join(" ");

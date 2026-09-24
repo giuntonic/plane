@@ -18,6 +18,12 @@ type Props = {
   position?: EModalPosition;
   width?: EModalWidth;
   className?: string;
+  /**
+   * Marks the whole modal (backdrop included) with `data-prevent-outside-click`,
+   * so panels that close on outside clicks (e.g. the work item peek overview)
+   * stay open while this modal is used on top of them.
+   */
+  preventOutsideClick?: boolean;
 };
 export function ModalCore(props: Props) {
   const {
@@ -27,11 +33,17 @@ export function ModalCore(props: Props) {
     position = EModalPosition.CENTER,
     width = EModalWidth.XXL,
     className = "",
+    preventOutsideClick = false,
   } = props;
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-30" onClose={() => handleClose && handleClose()}>
+      <Dialog
+        as="div"
+        className="relative z-30"
+        onClose={() => handleClose && handleClose()}
+        data-prevent-outside-click={preventOutsideClick ? "true" : undefined}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

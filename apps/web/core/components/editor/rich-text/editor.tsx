@@ -6,10 +6,11 @@
 
 import { forwardRef, useMemo } from "react";
 // plane imports
+import { API_BASE_URL } from "@plane/constants";
 import { RichTextEditorWithRef } from "@plane/editor";
 import type { EditorRefApi, IRichTextEditorProps, TFileHandler } from "@plane/editor";
 import type { MakeOptional, TSearchEntityRequestPayload, TSearchResponse } from "@plane/types";
-import { cn } from "@plane/utils";
+import { cn, getGoogleDriveProxyPreviewUrl } from "@plane/utils";
 // components
 import { EditorMentionsRoot } from "@/components/editor/embeds/mentions";
 import { pickGoogleDriveFile } from "@/components/integration/google-drive/picker-store";
@@ -19,6 +20,10 @@ import { useMember } from "@/hooks/store/use-member";
 import { useParseEditorContent } from "@/hooks/use-parse-editor-content";
 // plane web hooks
 import { useEditorFlagging } from "@/hooks/use-editor-flagging";
+
+// Cookie-free Drive preview served by Plane's API (see google-drive-embed).
+const googleDrivePreviewUrl = (ref: Parameters<typeof getGoogleDriveProxyPreviewUrl>[0]) =>
+  getGoogleDriveProxyPreviewUrl(ref, API_BASE_URL);
 
 type RichTextEditorWrapperProps = MakeOptional<
   Omit<IRichTextEditorProps, "fileHandler" | "mentionHandler" | "extendedEditorProps">,
@@ -72,7 +77,11 @@ export const RichTextEditor = forwardRef(function RichTextEditor(
   const { getEditorFileHandlers } = useEditorConfig();
   // Pespo: "Aprovar edição" do Clapshot + seletor do Google Drive do bloco /google-drive
   const extendedEditorProps = useMemo(
-    () => ({ onApproveEdit, onPickGoogleDriveFile: editable ? pickGoogleDriveFile : undefined }),
+    () => ({
+      onApproveEdit,
+      onPickGoogleDriveFile: editable ? pickGoogleDriveFile : undefined,
+      getGoogleDrivePreviewUrl: googleDrivePreviewUrl,
+    }),
     [onApproveEdit, editable]
   );
   // parse content

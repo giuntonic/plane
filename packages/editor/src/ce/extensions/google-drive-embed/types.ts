@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import type { TGoogleDriveFileRef } from "@plane/utils";
+
 // Pespo: bloco de embed de arquivo do Google Drive (Docs/Sheets/Slides/PDF…).
 // Os nomes dos atributos são minúsculos/snake_case porque viram atributos HTML
 // e precisam bater com a allowlist de apps/api/plane/utils/content_validator.py.
@@ -34,6 +36,12 @@ export type TGoogleDrivePickedFile = {
 export type TGoogleDriveEmbedExtensionOptions = {
   /** Opens the host app's Drive picker; undefined where there is none (e.g. public pages). */
   onPickGoogleDriveFile?: () => Promise<TGoogleDrivePickedFile | null>;
+  /**
+   * Cookie-free preview URL served by the host app (Plane's API fetches the
+   * file with the viewer's own Drive connection). Undefined where there is
+   * none — e.g. public pages — and the embed falls back to Google's preview.
+   */
+  getPreviewUrl?: (ref: TGoogleDriveFileRef) => string;
 };
 
 export const GOOGLE_DRIVE_EMBED_DEFAULT_HEIGHT = 600;

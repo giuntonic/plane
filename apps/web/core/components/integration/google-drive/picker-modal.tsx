@@ -333,7 +333,7 @@ export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(p
   };
 
   return (
-    <ModalCore isOpen={isOpen} handleClose={resetAndClose} width={EModalWidth.XXL}>
+    <ModalCore preventOutsideClick isOpen={isOpen} handleClose={resetAndClose} width={EModalWidth.XXL}>
       <div className="flex items-center justify-between gap-2 px-5 pt-5 pb-3">
         <h3 className="flex items-center gap-2 text-h5-medium text-primary">
           <HardDrive className="size-4" />

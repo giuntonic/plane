@@ -158,7 +158,12 @@ export const IssueScheduleMeetingModal = observer(function IssueScheduleMeetingM
     writableCalendars.find((c) => (calendarId === "primary" ? c.primary : c.id === calendarId))?.summary ?? calendarId;
 
   return (
-    <ModalCore isOpen={isOpen} handleClose={() => !isSubmitting && onClose()} width={EModalWidth.XL}>
+    <ModalCore
+      preventOutsideClick
+      isOpen={isOpen}
+      handleClose={() => !isSubmitting && onClose()}
+      width={EModalWidth.XL}
+    >
       {status && !status.connected ? (
         <div className="flex flex-col items-center gap-3 px-5 py-10 text-center">
           <CalendarPlus className="size-8 text-tertiary" />

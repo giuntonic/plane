@@ -17,6 +17,7 @@ export type IEditorExtensionOptions = unknown;
 export type IEditorPropsExtended = {
   onApproveEdit?: () => Promise<void>;
   onPickGoogleDriveFile?: TGoogleDriveEmbedExtensionOptions["onPickGoogleDriveFile"];
+  getGoogleDrivePreviewUrl?: TGoogleDriveEmbedExtensionOptions["getPreviewUrl"];
 };
 
 export type ICollaborativeDocumentEditorPropsExtended = unknown;

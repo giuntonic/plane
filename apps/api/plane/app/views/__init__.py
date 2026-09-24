@@ -51,6 +51,7 @@ from .user.google_drive import (
     GoogleDriveDisconnectEndpoint,
     GoogleDriveFilesEndpoint,
     GoogleDriveFileDetailEndpoint,
+    GoogleDriveFilePreviewEndpoint,
 )
 
 

@@ -20,6 +20,9 @@ export const CoreEditorAdditionalExtensions = (props: TCoreAdditionalExtensionsP
   const { extendedEditorProps } = props;
   return [
     ClapshotEmbedExtension({ onApproveEdit: extendedEditorProps?.onApproveEdit }),
-    GoogleDriveEmbedExtension({ onPickGoogleDriveFile: extendedEditorProps?.onPickGoogleDriveFile }),
+    GoogleDriveEmbedExtension({
+      onPickGoogleDriveFile: extendedEditorProps?.onPickGoogleDriveFile,
+      getPreviewUrl: extendedEditorProps?.getGoogleDrivePreviewUrl,
+    }),
   ];
 };

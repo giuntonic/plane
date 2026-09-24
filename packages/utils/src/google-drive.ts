@@ -122,3 +122,14 @@ export const getGoogleDriveOpenUrl = (ref: TGoogleDriveFileRef): string => {
 
   return `https://docs.google.com/${segment}/d/${id}/edit`;
 };
+
+/**
+ * Plane's own cookie-free preview of a Drive file (served by the API with the
+ * viewer's Drive connection — see GoogleDriveFilePreviewEndpoint). Google's
+ * embed needs third-party cookies, which many browsers block; this doesn't.
+ * Returns "" for folders (they only have Google's folder view) and invalid ids.
+ */
+export const getGoogleDriveProxyPreviewUrl = (ref: TGoogleDriveFileRef, apiBaseUrl = ""): string => {
+  if (ref.kind === "folder" || !isValidGoogleDriveId(ref.fileId)) return "";
+  return `${apiBaseUrl.replace(/\/$/, "")}/api/users/me/google-drive/files/${encodeURIComponent(ref.fileId)}/preview/`;
+};
