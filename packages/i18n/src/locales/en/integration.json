@@ -422,7 +422,11 @@
       "unlinked": "Meeting unlinked",
       "all_day": "All day",
       "guests": "{count, plural, one {# guest} other {# guests}}",
-      "past": "Past"
+      "past": "Past",
+      "meet_now": "Meet now",
+      "meet_now_tooltip": "Start a Google Meet now and invite the assignees",
+      "meet_now_created": "Meeting created and invitations sent to the assignees",
+      "meet_now_no_link": "The meeting was created, but Google didn't return a Meet link."
     },
     "schedule_modal": {
       "title": "Schedule meeting",
@@ -459,7 +463,7 @@
       "no_permission": "You can't edit this work item."
     },
     "errors": {
-      "not_connected": "Google Calendar is not connected.",
+      "not_connected": "Google Calendar is not connected. Connect it in Settings → Profile → Google Calendar.",
       "forbidden": "Google Calendar denied access. Try reconnecting your account.",
       "not_found": "The event wasn't found in Google Calendar.",
       "generic": "Something went wrong talking to Google Calendar."

@@ -22,7 +22,7 @@ from rest_framework.response import Response
 from .. import BaseAPIView
 from plane.app.permissions import allow_permission, ROLE
 from plane.bgtasks.issue_activities_task import issue_activity
-from plane.db.models import GoogleCalendarConnection, Issue, IssueCalendarEvent
+from plane.db.models import GoogleCalendarConnection, Issue, IssueAssignee, IssueCalendarEvent
 from plane.utils import google_calendar as gcal
 from plane.utils.exception_logger import log_exception
 from plane.utils.host import base_host
@@ -30,6 +30,8 @@ from plane.utils.host import base_host
 MAX_ATTENDEES = 100
 # The requester's own meetings are refreshed from Google at most this often.
 REFRESH_INTERVAL = timedelta(minutes=5)
+# Default length of a "Meet agora" meeting.
+INSTANT_MEETING_MINUTES = 30
 
 
 def _issue_url(issue):
@@ -224,41 +226,108 @@ class IssueCalendarEventEndpoint(BaseAPIView):
             if email.lower() not in {e.lower() for e in emails}:
                 emails.append(email)
 
-        calendar_id = request.data.get("calendar_id") or "primary"
-        summary = (request.data.get("summary") or issue.name).strip()[:1024]
-        description = (request.data.get("description") or "").strip()
-        body = {
-            "summary": summary,
-            "description": f"{description}\n\n{_issue_url(issue)}".strip(),
-            "start": start,
-            "end": end,
-            "attendees": [{"email": e} for e in emails],
-            "extendedProperties": {"private": {gcal.ISSUE_PROPERTY: str(issue.id)}},
-            "source": {"title": f"{issue.project.identifier}-{issue.sequence_id}", "url": _issue_url(issue)},
-        }
-        with_meet = bool(request.data.get("with_meet", True))
-        if with_meet:
-            body["conferenceData"] = {
-                "createRequest": {"requestId": uuid.uuid4().hex, "conferenceSolutionKey": {"type": "hangoutsMeet"}}
-            }
+        return _create_meeting(
+            request,
+            issue,
+            connection,
+            summary=(request.data.get("summary") or issue.name).strip()[:1024],
+            description=(request.data.get("description") or "").strip(),
+            start=start,
+            end=end,
+            emails=emails,
+            with_meet=bool(request.data.get("with_meet", True)),
+            calendar_id=request.data.get("calendar_id") or "primary",
+        )
+
+
+class IssueCalendarEventInstantEndpoint(BaseAPIView):
+    """ "Meet agora": a Google Meet starting right now, in the requester's
+    calendar, inviting the work item's assignees. One click, no form."""
+
+    @allow_permission([ROLE.ADMIN, ROLE.MEMBER])
+    def post(self, request, slug, project_id, issue_id):
+        issue = (
+            Issue.issue_objects.filter(workspace__slug=slug, project_id=project_id, pk=issue_id)
+            .select_related("project", "workspace")
+            .first()
+        )
+        if not issue:
+            return Response({"error": "Work item not found"}, status=status.HTTP_404_NOT_FOUND)
+        connection = GoogleCalendarConnection.objects.filter(user=request.user).first()
+        if not connection:
+            return _connection_error()
 
         try:
-            access_token = gcal.get_valid_access_token(connection)
-            event = gcal.create_event(access_token, calendar_id, body, with_meet=with_meet, send_updates="all")
-        except Exception as e:
-            return _google_error(e)
+            duration = int(request.data.get("duration_minutes") or INSTANT_MEETING_MINUTES)
+        except (TypeError, ValueError):
+            return Response({"error": "Invalid duration"}, status=status.HTTP_400_BAD_REQUEST)
+        if not 5 <= duration <= 480:
+            return Response({"error": "Invalid duration"}, status=status.HTTP_400_BAD_REQUEST)
 
-        row = IssueCalendarEvent(
-            issue=issue,
-            project_id=issue.project_id,
-            workspace_id=issue.workspace_id,
-            google_event_id=event["id"],
-            calendar_id=calendar_id,
+        # Current assignees (IssueAssignee's default manager skips removed
+        # ones); the organiser is added by Google itself.
+        emails = sorted(
+            {
+                email
+                for email in IssueAssignee.objects.filter(issue=issue)
+                .exclude(assignee=request.user)
+                .values_list("assignee__email", flat=True)
+                if email
+            }
         )
-        _fill_from_event(row, event)
-        row.save()
-        _log_activity(request, issue, "created", row.html_link)
-        return Response(_serialize(row, request.user), status=status.HTTP_201_CREATED)
+        start = timezone.now().replace(second=0, microsecond=0)
+        return _create_meeting(
+            request,
+            issue,
+            connection,
+            summary=f"{issue.project.identifier}-{issue.sequence_id} · {issue.name}"[:1024],
+            description="",
+            start={"dateTime": start.isoformat()},
+            end={"dateTime": (start + timedelta(minutes=duration)).isoformat()},
+            emails=emails,
+            with_meet=True,
+            calendar_id="primary",
+        )
+
+
+def _create_meeting(request, issue, connection, *, summary, description, start, end, emails, with_meet, calendar_id):
+    """Creates the Google event (with Meet and invitations) and links it to
+    the work item. Shared by the scheduling form and "Meet agora"."""
+    body = {
+        "summary": summary,
+        "description": f"{description}\n\n{_issue_url(issue)}".strip(),
+        "start": start,
+        "end": end,
+        "attendees": [{"email": e} for e in emails],
+        "extendedProperties": {"private": {gcal.ISSUE_PROPERTY: str(issue.id)}},
+        "source": {"title": f"{issue.project.identifier}-{issue.sequence_id}", "url": _issue_url(issue)},
+    }
+    if with_meet:
+        body["conferenceData"] = {
+            "createRequest": {"requestId": uuid.uuid4().hex, "conferenceSolutionKey": {"type": "hangoutsMeet"}}
+        }
+
+    try:
+        access_token = gcal.get_valid_access_token(connection)
+        event = gcal.create_event(access_token, calendar_id, body, with_meet=with_meet, send_updates="all")
+        # Google occasionally answers with the Meet still "pending": read
+        # the event back once to get the link.
+        if with_meet and not _meet_link(event):
+            event = gcal.get_event(access_token, calendar_id, event["id"])
+    except Exception as e:
+        return _google_error(e)
+
+    row = IssueCalendarEvent(
+        issue=issue,
+        project_id=issue.project_id,
+        workspace_id=issue.workspace_id,
+        google_event_id=event["id"],
+        calendar_id=calendar_id,
+    )
+    _fill_from_event(row, event)
+    row.save()
+    _log_activity(request, issue, "created", row.html_link)
+    return Response(_serialize(row, request.user), status=status.HTTP_201_CREATED)
 
 
 class IssueCalendarEventLinkEndpoint(BaseAPIView):

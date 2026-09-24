@@ -12,6 +12,7 @@ from plane.app.views import (
     IssueGoogleDriveFileEndpoint,
     IssueCalendarEventEndpoint,
     IssueCalendarEventLinkEndpoint,
+    IssueCalendarEventInstantEndpoint,
     IssueCalendarEventDetailEndpoint,
     IssueGoogleDriveFileDetailEndpoint,
     IssueGoogleDriveImportEndpoint,
@@ -139,6 +140,11 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/link/",
         IssueCalendarEventLinkEndpoint.as_view(),
         name="project-issue-calendar-events-link",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/instant/",
+        IssueCalendarEventInstantEndpoint.as_view(),
+        name="project-issue-calendar-events-instant",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/<uuid:pk>/",

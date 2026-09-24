@@ -41,6 +41,22 @@ export class IssueCalendarEventService extends APIService {
       });
   }
 
+  /** "Meet agora": a Google Meet starting now, inviting the work item's assignees. */
+  async startNow(
+    workspaceSlug: string,
+    projectId: string,
+    issueId: string,
+    durationMinutes?: number
+  ): Promise<TIssueCalendarEvent> {
+    return this.post(`${this.basePath(workspaceSlug, projectId, issueId)}instant/`, {
+      duration_minutes: durationMinutes,
+    })
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
   /** Links an existing Google event to the work item. */
   async link(
     workspaceSlug: string,

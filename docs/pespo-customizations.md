@@ -290,6 +290,10 @@ Nesta leva ela foi corrigida e ampliada:
   item na descrição; o Google manda os convites. Seção "Reuniões" no item com "Entrar no Meet", abrir no
   Google, desvincular e cancelar (só quem organizou; os convidados são avisados). A lista se atualiza com
   remarcações/cancelamentos feitos no Google.
+- **"Meet agora" no item de trabalho:** um clique cria um Google Meet começando na hora (30 min) no
+  Google Calendar de quem clicou, convida os responsáveis atuais e abre o Meet numa aba nova (a aba é
+  aberta de forma síncrona no clique, senão o navegador bloquearia o popup). Endpoint
+  `…/issues/<id>/calendar-events/instant/`; a reunião aparece em "Reuniões".
 - **Visão `/calendar`:** busca os itens por período (paginado); tarefas de vários dias aparecem em todos
   os dias; **arrastar um item pra outro dia muda as datas** (início e entrega andam juntos); filtro "Só
   meus itens"; liga/desliga eventos do Google; o detalhe do evento mostra horário, local, convidados,

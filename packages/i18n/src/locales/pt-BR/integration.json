@@ -422,7 +422,11 @@
       "unlinked": "Reunião desvinculada",
       "all_day": "Dia inteiro",
       "guests": "{count, plural, one {# convidado} many {# convidados} other {# convidados}}",
-      "past": "Anteriores"
+      "past": "Anteriores",
+      "meet_now": "Meet agora",
+      "meet_now_tooltip": "Começar um Google Meet agora e convidar os responsáveis",
+      "meet_now_created": "Reunião criada e convites enviados aos responsáveis",
+      "meet_now_no_link": "A reunião foi criada, mas o Google não devolveu o link do Meet."
     },
     "schedule_modal": {
       "title": "Agendar reunião",
@@ -459,7 +463,7 @@
       "no_permission": "Você não pode editar este item de trabalho."
     },
     "errors": {
-      "not_connected": "O Google Calendar não está conectado.",
+      "not_connected": "O Google Calendar não está conectado. Conecte em Configurações → Perfil → Google Calendar.",
       "forbidden": "O Google Calendar negou o acesso. Tente reconectar sua conta.",
       "not_found": "O evento não foi encontrado no Google Calendar.",
       "generic": "Algo deu errado ao falar com o Google Calendar."

@@ -605,3 +605,66 @@ class TestMeetings:
             format="json",
         )
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.contract
+class TestInstantMeet:
+    def _url(self, workspace, project, issue):
+        return reverse(
+            "project-issue-calendar-events-instant",
+            kwargs={"slug": workspace.slug, "project_id": project.id, "issue_id": issue.id},
+        )
+
+    @pytest.mark.django_db
+    def test_meet_now_invites_current_assignees(self, session_client, workspace, project, issue, connection):
+        ana = User.objects.create(email="ana@pespo.com", username="ana")
+        bia = User.objects.create(email="bia@pespo.com", username="bia")
+        for user in (ana, bia):
+            ProjectMember.objects.create(project=project, member=user, role=15, is_active=True)
+            IssueAssignee.objects.create(issue=issue, assignee=user, project=project, workspace=workspace)
+        # Removed assignee (soft-deleted row) must not be invited.
+        with mock.patch("plane.db.mixins.soft_delete_related_objects"):
+            IssueAssignee.objects.filter(issue=issue, assignee=bia).delete()
+
+        created = {
+            "id": "now1",
+            "summary": "CAL-1 · Entregar arte",
+            "start": {"dateTime": "2026-09-24T12:00:00+00:00"},
+            "end": {"dateTime": "2026-09-24T12:30:00+00:00"},
+            "htmlLink": "https://calendar.google.com/event?eid=now1",
+            "conferenceData": {"createRequest": {"status": {"statusCode": "pending"}}},
+        }
+        ready = {**created, "hangoutLink": "https://meet.google.com/now-link-abc"}
+        with (
+            mock.patch(f"{GCAL}.create_event", return_value=created) as create_event,
+            mock.patch(f"{GCAL}.get_event", return_value=ready) as get_event,
+            mock.patch("plane.app.views.issue.calendar_event.issue_activity"),
+        ):
+            response = session_client.post(self._url(workspace, project, issue), {}, format="json")
+
+        assert response.status_code == status.HTTP_201_CREATED
+        # The Meet came back "pending", so the event was read once more.
+        get_event.assert_called_once()
+        assert response.data["meet_link"] == "https://meet.google.com/now-link-abc"
+        _, calendar_id, body = create_event.call_args.args
+        assert calendar_id == "primary"
+        # The requester (also an assignee) is the organiser — not re-invited.
+        assert body["attendees"] == [{"email": "ana@pespo.com"}]
+        assert body["summary"] == "CAL-1 · Entregar arte"
+        assert body["conferenceData"]["createRequest"]["conferenceSolutionKey"] == {"type": "hangoutsMeet"}
+        start = body["start"]["dateTime"]
+        end = body["end"]["dateTime"]
+        from datetime import datetime
+
+        assert (datetime.fromisoformat(end) - datetime.fromisoformat(start)) == timedelta(minutes=30)
+        assert IssueCalendarEvent.objects.filter(issue=issue, google_event_id="now1").exists()
+
+    @pytest.mark.django_db
+    def test_meet_now_rejects_bad_duration(self, session_client, workspace, project, issue, connection):
+        response = session_client.post(self._url(workspace, project, issue), {"duration_minutes": 9999}, format="json")
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    @pytest.mark.django_db
+    def test_meet_now_requires_connection(self, session_client, workspace, project, issue):
+        response = session_client.post(self._url(workspace, project, issue), {}, format="json")
+        assert response.data["code"] == "GOOGLE_CALENDAR_NOT_CONNECTED"

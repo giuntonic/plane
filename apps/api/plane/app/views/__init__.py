@@ -170,6 +170,7 @@ from .issue.link import IssueLinkViewSet
 from .issue.calendar_event import (
     IssueCalendarEventEndpoint,
     IssueCalendarEventLinkEndpoint,
+    IssueCalendarEventInstantEndpoint,
     IssueCalendarEventDetailEndpoint,
 )
 
