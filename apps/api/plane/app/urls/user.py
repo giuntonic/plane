@@ -28,6 +28,14 @@ from plane.app.views import (
     GoogleCalendarSyncNowEndpoint,
     GoogleCalendarEventsEndpoint,
     ## End Google Calendar
+    ## Google Drive
+    GoogleDriveConnectEndpoint,
+    GoogleDriveCallbackEndpoint,
+    GoogleDriveStatusEndpoint,
+    GoogleDriveDisconnectEndpoint,
+    GoogleDriveFilesEndpoint,
+    GoogleDriveFileDetailEndpoint,
+    ## End Google Drive
 )
 
 urlpatterns = [
@@ -81,6 +89,23 @@ urlpatterns = [
     ),
     path("users/me/google-calendar/events/", GoogleCalendarEventsEndpoint.as_view(), name="google-calendar-events"),
     ## End Google Calendar
+    # Google Drive (personal connection — used by the work item attachments
+    # widget and the Page/description embed)
+    path("users/me/google-drive/connect/", GoogleDriveConnectEndpoint.as_view(), name="google-drive-connect"),
+    path("users/me/google-drive/callback/", GoogleDriveCallbackEndpoint.as_view(), name="google-drive-callback"),
+    path("users/me/google-drive/status/", GoogleDriveStatusEndpoint.as_view(), name="google-drive-status"),
+    path(
+        "users/me/google-drive/disconnect/",
+        GoogleDriveDisconnectEndpoint.as_view(),
+        name="google-drive-disconnect",
+    ),
+    path("users/me/google-drive/files/", GoogleDriveFilesEndpoint.as_view(), name="google-drive-files"),
+    path(
+        "users/me/google-drive/files/<str:file_id>/",
+        GoogleDriveFileDetailEndpoint.as_view(),
+        name="google-drive-file-detail",
+    ),
+    ## End Google Drive
     path(
         "users/me/instance-admin/",
         UserEndpoint.as_view({"get": "retrieve_instance_admin"}),

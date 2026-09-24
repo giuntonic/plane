@@ -327,5 +327,64 @@
     "finished": "Finished",
     "error": "Error",
     "cancelled": "Cancelled"
+  },
+  "google_drive_integration": {
+    "title": "Google Drive",
+    "description": "Connect your Google Drive to attach, view and edit Drive files in work items and to embed Google Docs and Sheets in Pages.",
+    "connect": "Connect Google Drive",
+    "connected_title": "Google Drive connected",
+    "connected_as": "Connected as {email}",
+    "disconnect": "Disconnect",
+    "disconnected": "Google Drive disconnected",
+    "not_configured": "Google Drive is not configured on this instance.",
+    "how_it_works": "Files linked from Drive stay in Drive: everyone opens them with their own Google account and sees the latest version. Use \"Copy to attachments\" when you need a frozen copy stored in Pespo Hub.",
+    "not_connected_title": "Connect your Google Drive",
+    "not_connected_description": "Connect once to browse your Drive from here. You'll come back to this screen afterwards.",
+    "errors": {
+      "forbidden": "Google Drive denied access. Try reconnecting your account.",
+      "not_found": "The file wasn't found in Google Drive or you don't have access to it.",
+      "too_large": "The file is larger than the attachment size limit.",
+      "not_exportable": "This kind of file can't be copied into Pespo Hub.",
+      "type_not_allowed": "This file type isn't allowed as an attachment.",
+      "generic": "Something went wrong talking to Google Drive."
+    },
+    "picker": {
+      "title": "Choose a file from Google Drive",
+      "search_placeholder": "Search in Drive",
+      "my_drive": "My Drive",
+      "shared": "Shared with me",
+      "recent": "Recent",
+      "starred": "Starred",
+      "empty": "No files here",
+      "load_more": "Load more",
+      "select": "Select",
+      "cancel": "Cancel",
+      "new_document": "New Google Docs",
+      "new_spreadsheet": "New Google Sheets",
+      "new_presentation": "New Google Slides",
+      "new_file_name": "Name of the new file",
+      "create": "Create",
+      "modified": "Modified {date}"
+    },
+    "widget": {
+      "title": "Google Drive",
+      "add": "Google Drive",
+      "attach_link": "Link from Drive",
+      "attach_copy": "Copy to attachments",
+      "linked": "Drive file linked",
+      "copied": "File copied to attachments",
+      "open": "Open in Google",
+      "preview": "Preview",
+      "edit": "Edit",
+      "remove": "Remove",
+      "removed": "Drive file removed",
+      "added_by": "Added by {name}"
+    },
+    "viewer": {
+      "open_in_google": "Open in Google",
+      "view_mode": "View",
+      "edit_mode": "Edit",
+      "blocked_hint": "If the file doesn't load here, open it in Google — your browser may be blocking Google's sign-in inside the page."
+    }
   }
 }

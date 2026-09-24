@@ -327,5 +327,64 @@
     "finished": "Finalizado",
     "error": "Erro",
     "cancelled": "Cancelado"
+  },
+  "google_drive_integration": {
+    "title": "Google Drive",
+    "description": "Conecte seu Google Drive para anexar, visualizar e editar arquivos do Drive nos itens de trabalho e para incorporar Google Docs e Google Sheets nas Páginas.",
+    "connect": "Conectar Google Drive",
+    "connected_title": "Google Drive conectado",
+    "connected_as": "Conectado como {email}",
+    "disconnect": "Desconectar",
+    "disconnected": "Google Drive desconectado",
+    "not_configured": "O Google Drive não está configurado nesta instância.",
+    "how_it_works": "Arquivos vinculados do Drive continuam no Drive: cada pessoa abre com a própria conta Google e sempre vê a versão mais recente. Use \"Copiar para anexos\" quando precisar de uma cópia congelada guardada no Pespo Hub.",
+    "not_connected_title": "Conecte seu Google Drive",
+    "not_connected_description": "Conecte uma vez para navegar pelo seu Drive por aqui. Depois você volta para esta mesma tela.",
+    "errors": {
+      "forbidden": "O Google Drive negou o acesso. Tente reconectar sua conta.",
+      "not_found": "O arquivo não foi encontrado no Google Drive ou você não tem acesso a ele.",
+      "too_large": "O arquivo é maior que o limite de tamanho de anexos.",
+      "not_exportable": "Esse tipo de arquivo não pode ser copiado para o Pespo Hub.",
+      "type_not_allowed": "Esse tipo de arquivo não é permitido como anexo.",
+      "generic": "Algo deu errado ao falar com o Google Drive."
+    },
+    "picker": {
+      "title": "Escolha um arquivo do Google Drive",
+      "search_placeholder": "Pesquisar no Drive",
+      "my_drive": "Meu Drive",
+      "shared": "Compartilhados comigo",
+      "recent": "Recentes",
+      "starred": "Com estrela",
+      "empty": "Nenhum arquivo aqui",
+      "load_more": "Carregar mais",
+      "select": "Selecionar",
+      "cancel": "Cancelar",
+      "new_document": "Novo Google Docs",
+      "new_spreadsheet": "Novo Google Sheets",
+      "new_presentation": "Novo Google Slides",
+      "new_file_name": "Nome do novo arquivo",
+      "create": "Criar",
+      "modified": "Modificado em {date}"
+    },
+    "widget": {
+      "title": "Google Drive",
+      "add": "Google Drive",
+      "attach_link": "Vincular do Drive",
+      "attach_copy": "Copiar para anexos",
+      "linked": "Arquivo do Drive vinculado",
+      "copied": "Arquivo copiado para os anexos",
+      "open": "Abrir no Google",
+      "preview": "Visualizar",
+      "edit": "Editar",
+      "remove": "Remover",
+      "removed": "Arquivo do Drive removido",
+      "added_by": "Adicionado por {name}"
+    },
+    "viewer": {
+      "open_in_google": "Abrir no Google",
+      "view_mode": "Visualizar",
+      "edit_mode": "Editar",
+      "blocked_hint": "Se o arquivo não carregar aqui, abra no Google — seu navegador pode estar bloqueando o login do Google dentro da página."
+    }
   }
 }

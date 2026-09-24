@@ -9,6 +9,7 @@ import type { Extensions } from "@tiptap/core";
 import type { IEditorProps } from "@/types";
 // local imports
 import { ClapshotEmbedExtension } from "../clapshot-embed";
+import { GoogleDriveEmbedExtension } from "../google-drive-embed";
 
 export type TCoreAdditionalExtensionsProps = Pick<
   IEditorProps,
@@ -17,5 +18,8 @@ export type TCoreAdditionalExtensionsProps = Pick<
 
 export const CoreEditorAdditionalExtensions = (props: TCoreAdditionalExtensionsProps): Extensions => {
   const { extendedEditorProps } = props;
-  return [ClapshotEmbedExtension({ onApproveEdit: extendedEditorProps?.onApproveEdit })];
+  return [
+    ClapshotEmbedExtension({ onApproveEdit: extendedEditorProps?.onApproveEdit }),
+    GoogleDriveEmbedExtension({ onPickGoogleDriveFile: extendedEditorProps?.onPickGoogleDriveFile }),
+  ];
 };

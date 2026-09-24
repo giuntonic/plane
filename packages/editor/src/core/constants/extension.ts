@@ -11,6 +11,8 @@ export enum CORE_EXTENSIONS {
   CALLOUT = "calloutComponent",
   // Pespo: embed de vídeo (Clapshot) dentro de descrições/páginas/comentários.
   CLAPSHOT_EMBED = "clapshotEmbedComponent",
+  // Pespo: embed de arquivo do Google Drive (Docs/Sheets/Slides/PDF…).
+  GOOGLE_DRIVE_EMBED = "googleDriveEmbedComponent",
   CHARACTER_COUNT = "characterCount",
   CODE_BLOCK = "codeBlock",
   CODE_INLINE = "code",
@@ -77,4 +79,5 @@ export const BLOCK_NODE_TYPES = [
   CORE_EXTENSIONS.CALLOUT,
   CORE_EXTENSIONS.WORK_ITEM_EMBED,
   CORE_EXTENSIONS.CLAPSHOT_EMBED,
+  CORE_EXTENSIONS.GOOGLE_DRIVE_EMBED,
 ];

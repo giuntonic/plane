@@ -9,6 +9,9 @@ from plane.app.views import (
     BulkDeleteIssuesEndpoint,
     SubIssuesEndpoint,
     IssueLinkViewSet,
+    IssueGoogleDriveFileEndpoint,
+    IssueGoogleDriveFileDetailEndpoint,
+    IssueGoogleDriveImportEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -122,6 +125,22 @@ urlpatterns = [
             }
         ),
         name="project-issue-links",
+    ),
+    # Pespo: Google Drive files linked to / copied into a work item
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/google-drive-files/",
+        IssueGoogleDriveFileEndpoint.as_view(),
+        name="project-issue-google-drive-files",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/google-drive-files/import/",
+        IssueGoogleDriveImportEndpoint.as_view(),
+        name="project-issue-google-drive-import",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/google-drive-files/<uuid:pk>/",
+        IssueGoogleDriveFileDetailEndpoint.as_view(),
+        name="project-issue-google-drive-file-detail",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/",

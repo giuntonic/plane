@@ -25,6 +25,8 @@ class GoogleCalendarOAuthProvider(OauthAdapter):
     userinfo_url = "https://www.googleapis.com/oauth2/v2/userinfo"
     scope = "https://www.googleapis.com/auth/calendar openid email"
     provider = "google"
+    # Subclasses (e.g. GoogleDriveOAuthProvider) only change scope + callback.
+    callback_path = "/api/users/me/google-calendar/callback/"
 
     def __init__(self, request, code=None, state=None):
         (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET) = get_configuration_value(
@@ -41,8 +43,7 @@ class GoogleCalendarOAuthProvider(OauthAdapter):
             )
 
         redirect_uri = (
-            f"""{"https" if request.is_secure() else "http"}://{request.get_host()}"""
-            "/api/users/me/google-calendar/callback/"
+            f"""{"https" if request.is_secure() else "http"}://{request.get_host()}{self.callback_path}"""
         )
         url_params = {
             "client_id": GOOGLE_CLIENT_ID,

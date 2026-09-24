@@ -67,6 +67,7 @@ export type TEditorCommands =
   | "emoji"
   | "external-embed"
   | "clapshot-embed"
+  | "google-drive-embed"
   | TExtendedEditorCommands;
 
 export type TCommandExtraProps = {

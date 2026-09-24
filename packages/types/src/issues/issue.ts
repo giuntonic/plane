@@ -155,7 +155,13 @@ export type TBulkOperationsPayload = {
   properties: Partial<TBulkIssueProperties>;
 };
 
-export type TWorkItemWidgets = "sub-work-items" | "relations" | "links" | "attachments" | "peca-marking";
+export type TWorkItemWidgets =
+  | "sub-work-items"
+  | "relations"
+  | "links"
+  | "attachments"
+  | "peca-marking"
+  | "google-drive";
 
 export type TIssueServiceType = EIssueServiceType.ISSUES | EIssueServiceType.EPICS | EIssueServiceType.WORK_ITEMS;
 

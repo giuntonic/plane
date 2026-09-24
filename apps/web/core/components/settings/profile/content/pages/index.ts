@@ -17,4 +17,5 @@ export const PROFILE_SETTINGS_PAGES_MAP: Record<TProfileSettingsTabs, React.Lazy
   "google-calendar": lazy(() =>
     import("./google-calendar").then((m) => ({ default: m.GoogleCalendarProfileSettings }))
   ),
+  "google-drive": lazy(() => import("./google-drive").then((m) => ({ default: m.GoogleDriveProfileSettings }))),
 };

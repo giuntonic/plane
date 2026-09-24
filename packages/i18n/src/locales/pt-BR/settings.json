@@ -104,7 +104,8 @@
       "notifications": "Notificações",
       "api-tokens": "Tokens de Acesso Pessoal",
       "connections": "Conexões",
-      "google-calendar": "Google Calendar"
+      "google-calendar": "Google Calendar",
+      "google-drive": "Google Drive"
     },
     "tabs": {
       "summary": "Resumo",

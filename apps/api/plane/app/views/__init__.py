@@ -43,6 +43,15 @@ from .user.google_calendar import (
     GoogleCalendarEventsEndpoint,
 )
 
+from .user.google_drive import (
+    GoogleDriveConnectEndpoint,
+    GoogleDriveCallbackEndpoint,
+    GoogleDriveStatusEndpoint,
+    GoogleDriveDisconnectEndpoint,
+    GoogleDriveFilesEndpoint,
+    GoogleDriveFileDetailEndpoint,
+)
+
 
 from .base import BaseAPIView, BaseViewSet
 
@@ -156,6 +165,12 @@ from .issue.comment import IssueCommentViewSet, CommentReactionViewSet
 from .issue.label import LabelViewSet, BulkCreateIssueLabelsEndpoint
 
 from .issue.link import IssueLinkViewSet
+
+from .issue.google_drive import (
+    IssueGoogleDriveFileEndpoint,
+    IssueGoogleDriveFileDetailEndpoint,
+    IssueGoogleDriveImportEndpoint,
+)
 
 from .issue.relation import IssueRelationViewSet
 

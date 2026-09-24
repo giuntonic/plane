@@ -20,6 +20,7 @@ from .draft import (
 from .estimate import Estimate, EstimatePoint
 from .exporter import ExporterHistory
 from .google_calendar import GoogleCalendarConnection, SyncedCalendarEvent
+from .google_drive import GoogleDriveConnection, IssueGoogleDriveFile
 from .importer import Importer
 from .intake import Intake, IntakeIssue
 from .integration import (

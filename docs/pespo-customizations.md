@@ -239,6 +239,79 @@ Correções feitas depois do merge:
 
 ---
 
+## Integração com o Google Drive (2026-09-24)
+
+- **O quê:** conexão real, por usuário, com o Google Drive (OAuth, mesmo client do Google Calendar),
+  usada em três lugares:
+  1. **Itens de trabalho** — botão "Google Drive" na fileira de ações (ao lado de "Anexar"), com duas
+     opções:
+     - **Vincular do Drive:** guarda só os metadados no Plane (tabela `issue_google_drive_files`); o
+       arquivo continua no Drive, sempre na versão mais recente. Aparece na seção "Google Drive" do item,
+       com **Visualizar** e **Editar** (Docs/Sheets/Slides abertos dentro do Plane, num modal com iframe),
+       **Abrir no Google** e **Remover**. Entra no histórico de atividade como link.
+     - **Copiar para anexos:** baixa o arquivo pelo backend e cria um anexo normal do Plane (Docs e
+       Slides viram PDF, Sheets vira XLSX, Drawings vira PNG). Respeita `FILE_SIZE_LIMIT` e
+       `ATTACHMENT_MIME_TYPES`. É uma cópia congelada, visível pra quem não tem acesso ao arquivo no Drive.
+     - O seletor navega por Meu Drive / Compartilhados comigo / Recentes / Com estrela, pastas, busca, e
+       permite criar um Google Docs/Sheets/Slides novo já vinculado.
+  2. **Páginas (e descrições)** — bloco `/google-drive` no editor: abre o seletor do Drive (ou aceita um
+     link colado) e incorpora o Docs/Sheets/Slides/PDF em iframe, com alternância **Visualizar/Editar**,
+     altura ajustável (arrastando a borda de baixo) e "Abrir no Google". Funciona em páginas colaborativas
+     (live) e fica só-leitura nas páginas publicadas.
+  3. **Configurações → Perfil → Google Drive** — conectar/desconectar.
+- **Como a permissão funciona:** o Plane nunca compartilha arquivos. Navegar/vincular/copiar usa o token
+  de quem está fazendo a ação; visualizar/editar no iframe usa a sessão Google do próprio navegador de quem
+  está olhando — quem não tem acesso ao arquivo no Drive vê a tela de "pedir acesso" do Google. Se o
+  navegador bloquear cookies de terceiros (Safari, Chrome com bloqueio ativado), o iframe pode pedir login;
+  o botão "Abrir no Google" resolve.
+- **Configuração no Google Cloud (obrigatória antes de usar):** no mesmo projeto/client OAuth do Calendar
+  (`GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`):
+  1. Ativar a **Google Drive API** (APIs & Services → Library).
+  2. Adicionar o redirect URI `https://<domínio>/api/users/me/google-drive/callback/` no client OAuth.
+  3. Adicionar o escopo `https://www.googleapis.com/auth/drive` na tela de consentimento. É um escopo
+     "restrito": com o app do tipo **Interno** (Google Workspace) não precisa de verificação do Google; se
+     o app for Externo, só funciona pra usuários de teste até passar pela verificação.
+- **Arquivos novos:**
+  - Backend: modelos `GoogleDriveConnection` (tokens criptografados, igual ao Calendar) e
+    `IssueGoogleDriveFile` em `apps/api/plane/db/models/google_drive.py`, migration
+    `0130_googledriveconnection_issuegoogledrivefile.py`, provider OAuth
+    `authentication/provider/oauth/google_drive.py` (herda do `GoogleCalendarOAuthProvider`, que ganhou o
+    atributo `callback_path`), cliente da API `utils/google_drive.py` (reaproveita refresh/revoke de
+    `utils/google_calendar.py`), views `app/views/user/google_drive.py` (conexão, navegação, criar arquivo)
+    e `app/views/issue/google_drive.py` (vincular, remover, copiar para anexos), serializer
+    `app/serializers/google_drive.py`. Rotas `users/me/google-drive/…` e
+    `workspaces/<slug>/projects/<id>/issues/<id>/google-drive-files/…`.
+  - Testes: `tests/unit/utils/test_google_drive.py` e `tests/contract/app/test_google_drive_app.py`
+    (o Google é sempre mockado).
+  - Frontend: serviço `apps/web/core/services/google-drive.service.ts`; componentes compartilhados em
+    `apps/web/core/components/integration/google-drive/` (seletor, visualizador, `picker-store.ts` +
+    `picker-host.tsx` — ponte que deixa o editor abrir o seletor, montada em `GlobalModals`); widget do
+    item em `issue-detail-widgets/google-drive/`; página de configurações
+    `settings/profile/content/pages/google-drive.tsx`; tipos em `packages/types/src/google-drive.ts`;
+    helpers de URL (extrair id, montar URL de preview/edição) em `packages/utils/src/google-drive.ts`,
+    com testes vitest (`pnpm --filter @plane/utils test` — primeiro teste desse pacote).
+  - Editor: extensão `packages/editor/src/ce/extensions/google-drive-embed/`, registrada nos mesmos
+    pontos do Clapshot (`CORE_EXTENSIONS.GOOGLE_DRIVE_EMBED`, `BLOCK_NODE_TYPES`, `TEditorCommands`,
+    `ce/extensions/core/extensions.ts`, `without-props.ts`, `slash-commands.tsx`) + o callback
+    `onPickGoogleDriveFile` em `IEditorPropsExtended`.
+  - **Allowlist do sanitizador** (a pegadinha do Clapshot): `google-drive-embed-component` com os
+    atributos `url`, `name`, `mime_type`, `mode`, `height` em `apps/api/plane/utils/content_validator.py`.
+  - i18n: bloco `google_drive_integration.*` em `integration.json` e `profile.actions.google-drive` em
+    `settings.json` (só `en` e `pt-BR`, como as outras chaves da Pespo). O node do editor usa textos em
+    português fixos, como o do Clapshot.
+- **Segurança:** o iframe nunca usa a URL crua salva no documento — só o id extraído e validado, sempre em
+  domínio do Google (por isso ali `allow-scripts` + `allow-same-origin` é seguro, diferente do Clapshot).
+  O backend busca os metadados no próprio Drive (nunca confia em nome/link vindos do navegador), valida
+  todo id antes de usar em URL ou query, e o `next_path` do OAuth só aceita caminhos relativos.
+- **Deploy:** rebuildar `api` (migration nova), `web`, `space` e `live` (o `live` precisa do node novo
+  pra converter páginas).
+- **Risco de upgrade:** médio. Pontos do `core/` que um merge pode reescrever: as mesmas duas linhas do
+  Clapshot em `core/constants/extension.ts`/`core/types/editor.ts`, `action-buttons.tsx` e
+  `issue-detail-widget-collapsibles.tsx` (botão + seção), a lista `openWidgets` em
+  `store/issue/issue-details/root.store.ts` e `TWorkItemWidgets` em `packages/types/src/issues/issue.ts`.
+
+---
+
 ## Widget de Tarefas + homepage em blocos (2026-09-04)
 
 - **O quê:** a homepage do workspace (`apps/web/core/components/home/`) passou de uma lista de

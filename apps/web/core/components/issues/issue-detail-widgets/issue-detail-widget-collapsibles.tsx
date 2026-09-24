@@ -13,6 +13,7 @@ import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useTimeLineRelationOptions } from "@/components/relations";
 // local imports
 import { AttachmentsCollapsible } from "./attachments";
+import { GoogleDriveCollapsible } from "./google-drive";
 import { LinksCollapsible } from "./links";
 import { PecaMarkingCollapsible } from "./peca-marking";
 import { RelationsCollapsible } from "./relations";
@@ -81,6 +82,15 @@ export const IssueDetailWidgetCollapsibles = observer(function IssueDetailWidget
       )}
       {shouldRenderAttachments && (
         <AttachmentsCollapsible
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          disabled={disabled}
+          issueServiceType={issueServiceType}
+        />
+      )}
+      {!hideWidgets?.includes("google-drive") && (
+        <GoogleDriveCollapsible
           workspaceSlug={workspaceSlug}
           projectId={projectId}
           issueId={issueId}
