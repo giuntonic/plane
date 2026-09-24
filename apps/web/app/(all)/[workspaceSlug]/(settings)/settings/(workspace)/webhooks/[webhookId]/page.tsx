@@ -8,6 +8,7 @@ import { useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { IWebhook } from "@plane/types";
 // ui
@@ -33,6 +34,7 @@ function WebhookDetailsPage({ params }: Route.ComponentProps) {
   const { currentWebhook, fetchWebhookById, updateWebhook } = useWebhook();
   const { currentWorkspace } = useWorkspace();
   const { allowPermissions } = useUserPermissions();
+  const { t } = useTranslation();
 
   // TODO: fix this error
   // useEffect(() => {
@@ -40,7 +42,9 @@ function WebhookDetailsPage({ params }: Route.ComponentProps) {
   // }, [clearSecretKey, isCreated]);
   // derived values
   const isAdmin = allowPermissions([EUserPermissions.ADMIN], EUserPermissionsLevel.WORKSPACE);
-  const pageTitle = currentWorkspace?.name ? `${currentWorkspace.name} - Webhook` : undefined;
+  const pageTitle = currentWorkspace?.name
+    ? `${currentWorkspace.name} - ${t("workspace_settings.settings.webhooks.title")}`
+    : undefined;
 
   useSWR(
     isAdmin ? `WEBHOOK_DETAILS_${workspaceSlug}_${webhookId}` : null,
@@ -64,14 +68,14 @@ function WebhookDetailsPage({ params }: Route.ComponentProps) {
       await updateWebhook(workspaceSlug, formData.id, payload);
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "Webhook updated successfully.",
+        title: t("toast.success"),
+        message: t("ui.webhook_updated_successfully"),
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
+        title: t("toast.error"),
         message: error?.error ?? "Something went wrong. Please try again.",
       });
     }
@@ -82,7 +86,7 @@ function WebhookDetailsPage({ params }: Route.ComponentProps) {
       <>
         <PageHead title={pageTitle} />
         <div className="mt-10 flex h-full w-full justify-center p-4">
-          <p className="text-13 text-tertiary">You are not authorized to access this page.</p>
+          <p className="text-13 text-tertiary">{t("ui.you_are_not_authorized_to_access_this")}</p>
         </div>
       </>
     );

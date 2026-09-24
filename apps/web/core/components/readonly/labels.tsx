@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect } from "react";
 import { observer } from "mobx-react";
 // plane imports
@@ -23,6 +24,7 @@ export type TReadonlyLabelsProps = {
 };
 
 export const ReadonlyLabels = observer(function ReadonlyLabels(props: TReadonlyLabelsProps) {
+  const { t } = useTranslation();
   const { className, value, projectId, workspaceSlug } = props;
 
   const { getLabelById, fetchProjectLabels } = useLabel();
@@ -43,7 +45,7 @@ export const ReadonlyLabels = observer(function ReadonlyLabels(props: TReadonlyL
         <>
           <Tooltip
             position="top"
-            tooltipHeading="Labels"
+            tooltipHeading={t("labels")}
             tooltipContent={labels.map((l) => l?.name).join(", ")}
             isMobile={isMobile}
             disabled={labels.length === 0}
@@ -51,7 +53,7 @@ export const ReadonlyLabels = observer(function ReadonlyLabels(props: TReadonlyL
             <div className="flex h-full items-center gap-1 rounded-sm py-1 text-body-xs-bold">
               <span className="h-2 w-2 flex-shrink-0 rounded-full bg-accent-primary" />
               <span>{value.length}</span>
-              <span>Labels</span>
+              <span>{t("labels")}</span>
             </div>
           </Tooltip>
         </>

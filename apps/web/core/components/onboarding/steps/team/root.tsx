@@ -20,7 +20,7 @@ import { XCircle } from "lucide-react";
 import { Listbox } from "@headlessui/react";
 // plane imports
 import type { EUserPermissions } from "@plane/constants";
-import { ROLE, ROLE_DETAILS } from "@plane/constants";
+import { ROLE_DETAILS } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { PlusIcon, CheckIcon, ChevronDownIcon } from "@plane/propel/icons";
@@ -145,7 +145,7 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
             rules={{
               pattern: {
                 value: emailRegex,
-                message: "Invalid Email ID",
+                message: t("ui.invalid_email_id"),
               },
             }}
             render={({ field: { value, onChange, ref } }) => (
@@ -192,7 +192,7 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
                       !getValues(`emails.${index}.role_active`) ? "text-placeholder" : "text-primary"
                     } sm:text-13`}
                   >
-                    {ROLE[value]}
+                    {t(ROLE_DETAILS[value as keyof typeof ROLE_DETAILS].i18n_title)}
                   </span>
 
                   <ChevronDownIcon
@@ -250,7 +250,7 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
       {email && !emailRegex.test(email) && (
         <div className="mx-8 my-1">
           <span className="text-13">🤥</span>{" "}
-          <span className="mt-1 text-11 text-danger-primary">That doesn{"'"}t look like an email address.</span>
+          <span className="mt-1 text-11 text-danger-primary">{t("ui.jsx_that_doesnt_look_like_an_email_address")}</span>
         </div>
       )}
     </div>
@@ -259,6 +259,8 @@ const InviteMemberInput = observer(function InviteMemberInput(props: InviteMembe
 
 export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
   const { handleStepChange } = props;
+  // plane hooks
+  const { t } = useTranslation();
 
   const [isInvitationDisabled, setIsInvitationDisabled] = useState(true);
 
@@ -300,15 +302,15 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
       .then(async () => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Invitations sent successfully.",
+          title: t("toast.success"),
+          message: t("ui.invitations_sent_successfully"),
         });
         await nextStep();
       })
       .catch((err) => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
+          title: t("toast.error"),
           message: err?.error,
         });
       });
@@ -341,14 +343,11 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
         if (e.code === "Enter") e.preventDefault();
       }}
     >
-      <CommonOnboardingHeader
-        title="Invite your teammates"
-        description="Work in plane happens best with your team. Invite them now to use Plane to its potential."
-      />
+      <CommonOnboardingHeader title={t("team_setup_step.title")} description={t("team_setup_step.description")} />
       <div className="w-full py-4 text-13">
         <div className="group relative mx-8 grid grid-cols-10 gap-4 py-2">
-          <div className="col-span-6 px-1 text-13 font-medium text-secondary">Email</div>
-          <div className="col-span-4 px-1 text-13 font-medium text-secondary">Role</div>
+          <div className="col-span-6 px-1 text-13 font-medium text-secondary">{t("email")}</div>
+          <div className="col-span-4 px-1 text-13 font-medium text-secondary">{t("role")}</div>
         </div>
         <div className="mb-3 space-y-3 sm:space-y-4">
           {fields.map((field, index) => (
@@ -374,7 +373,7 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
           onClick={appendField}
         >
           <PlusIcon className="h-4 w-4" strokeWidth={2} />
-          Add another
+          {t("team_setup_step.add_another")}
         </button>
       </div>
       <div className="mx-auto flex w-full flex-col items-center justify-center gap-4 px-8 sm:px-2">
@@ -385,10 +384,10 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
           className="w-full"
           disabled={isInvitationDisabled || !isValid || isSubmitting}
         >
-          {isSubmitting ? <Spinner height="20px" width="20px" /> : "Continue"}
+          {isSubmitting ? <Spinner height="20px" width="20px" /> : t("team_setup_step.continue")}
         </Button>
         <Button variant="ghost" size="xl" className="w-full" onClick={nextStep}>
-          I’ll do it later
+          {t("team_setup_step.do_it_later")}
         </Button>
       </div>
     </form>

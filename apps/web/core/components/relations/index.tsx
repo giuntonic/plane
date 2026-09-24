@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { CircleDot, XCircle } from "lucide-react";
 import { RelatedIcon, DuplicatePropertyIcon } from "@plane/propel/icons";
 import type { TRelationObject } from "@/components/issues/issue-detail-widgets/relations";
@@ -15,7 +16,9 @@ export const ISSUE_RELATION_OPTIONS: Record<TIssueRelationTypes, TRelationObject
     i18n_label: "issue.relation.relates_to",
     className: "bg-layer-1 text-secondary",
     icon: (size) => <RelatedIcon height={size} width={size} className="text-secondary" />,
-    placeholder: "Add related work items",
+    get placeholder() {
+      return i18nInstance.t("ui.add_related_work_items");
+    },
   },
   duplicate: {
     key: "duplicate",

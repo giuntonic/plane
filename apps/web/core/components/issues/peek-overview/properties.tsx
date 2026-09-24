@@ -134,7 +134,7 @@ export const PeekOverviewProperties = observer(function PeekOverviewProperties(p
               userIds={createdByDetails?.display_name?.includes("-intake") ? null : createdByDetails?.id}
             />
             <span className="grow truncate text-body-xs-medium leading-5 text-secondary">
-              {createdByDetails?.display_name?.includes("-intake") ? "Plane" : createdByDetails?.display_name}
+              {createdByDetails?.display_name?.includes("-intake") ? "Pespo Hub" : createdByDetails?.display_name}
             </span>
           </SidebarPropertyListItem>
         )}
@@ -195,7 +195,7 @@ export const PeekOverviewProperties = observer(function PeekOverviewProperties(p
               className="group w-full grow"
               buttonContainerClassName="w-full text-left h-7.5"
               buttonClassName={`text-body-xs-medium ${issue?.estimate_point !== undefined ? "" : "text-placeholder"}`}
-              placeholder="None"
+              placeholder={t("none")}
               hideIcon
               dropdownArrow
               dropdownArrowClassName="h-3.5 w-3.5 hidden group-hover:inline"

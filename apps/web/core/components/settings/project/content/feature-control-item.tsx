@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { setPromiseToast } from "@plane/propel/toast";
@@ -25,6 +26,7 @@ type Props = {
 };
 
 export const ProjectSettingsFeatureControlItem = observer(function ProjectSettingsFeatureControlItem(props: Props) {
+  const { t } = useTranslation();
   const { description, disabled, featureProperty, projectId, title, value, workspaceSlug } = props;
   // store hooks
   const { getProjectById, updateProject } = useProject();
@@ -41,13 +43,13 @@ export const ProjectSettingsFeatureControlItem = observer(function ProjectSettin
     const updateProjectPromise = updateProject(workspaceSlug, projectId, settingsPayload);
 
     setPromiseToast(updateProjectPromise, {
-      loading: "Updating project feature...",
+      loading: t("ui.updating_project_feature"),
       success: {
-        title: "Success!",
+        title: t("toast.success"),
         message: () => "Project feature updated successfully.",
       },
       error: {
-        title: "Error!",
+        title: t("toast.error"),
         message: () => "Something went wrong while updating project feature. Please try again.",
       },
     });

@@ -111,5 +111,13 @@
       "success_message": "Página removida da coleção.",
       "error_message": "Não foi possível remover a página da coleção. Tente novamente."
     }
-  }
+  },
+  "delete_modal": {
+    "title": "Excluir página",
+    "confirmation": "Tem certeza de que deseja excluir a página {name}? A página será excluída permanentemente. Essa ação não pode ser desfeita.",
+    "success": "Página excluída com sucesso.",
+    "error": "Não foi possível excluir a página. Tente novamente."
+  },
+  "add_page": "Adicionar página",
+  "create_error": "Não foi possível criar a página. Tente novamente."
 }

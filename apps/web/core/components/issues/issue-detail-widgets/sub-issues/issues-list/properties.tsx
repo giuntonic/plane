@@ -153,7 +153,7 @@ export const SubIssuesListItemProperties = observer(function SubIssuesListItemPr
             buttonClassName={shouldHighlight ? "text-danger-primary" : ""}
             disabled={!canEdit}
             showTooltip
-            customTooltipHeading="Date Range"
+            customTooltipHeading={t("ui.date_range")}
             renderPlaceholder={false}
             renderInPortal
           />

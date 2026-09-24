@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 // types
@@ -32,6 +33,7 @@ type Props = {
 };
 
 export const ViewQuickActions = observer(function ViewQuickActions(props: Props) {
+  const { t } = useTranslation();
   const { parentRef, projectId, view, workspaceSlug, customClassName } = props;
   // states
   const [createUpdateViewModal, setCreateUpdateViewModal] = useState(false);
@@ -51,8 +53,8 @@ export const ViewQuickActions = observer(function ViewQuickActions(props: Props)
     copyUrlToClipboard(viewLink).then(() => {
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Link Copied!",
-        message: "View link copied to clipboard.",
+        title: t("ui.link_copied"),
+        message: t("view_link_copied_to_clipboard"),
       });
     });
   const handleOpenInNewTab = () => window.open(`/${viewLink}`, "_blank");

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
@@ -21,6 +22,7 @@ import { CreateUpdateWorkspaceViewModal } from "./modal";
 type Props = { viewId: string };
 
 export const GlobalViewListItem = observer(function GlobalViewListItem(props: Props) {
+  const { t } = useTranslation();
   const { viewId } = props;
   // states
   const [updateViewModal, setUpdateViewModal] = useState(false);
@@ -58,7 +60,7 @@ export const GlobalViewListItem = observer(function GlobalViewListItem(props: Pr
                     >
                       <span className="flex items-center justify-start gap-2">
                         <EditIcon width={14} height={14} strokeWidth={2} />
-                        <span>Edit View</span>
+                        <span>{t("ui.jsx_edit_view")}</span>
                       </span>
                     </CustomMenu.MenuItem>
                     <CustomMenu.MenuItem
@@ -68,7 +70,7 @@ export const GlobalViewListItem = observer(function GlobalViewListItem(props: Pr
                     >
                       <span className="flex items-center justify-start gap-2">
                         <TrashIcon width={14} height={14} strokeWidth={2} />
-                        <span>Delete View</span>
+                        <span>{t("ui.jsx_delete_view")}</span>
                       </span>
                     </CustomMenu.MenuItem>
                   </CustomMenu>

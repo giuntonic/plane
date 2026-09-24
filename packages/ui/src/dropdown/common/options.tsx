@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Combobox } from "@headlessui/react";
 
 import React from "react";
@@ -16,6 +17,7 @@ import type { IMultiSelectDropdownOptions, ISingleSelectDropdownOptions } from "
 import { DropdownOptionsLoader, InputSearch } from ".";
 
 export function DropdownOptions(props: IMultiSelectDropdownOptions | ISingleSelectDropdownOptions) {
+  const { t } = useTranslation();
   const {
     isOpen,
     query,
@@ -86,7 +88,7 @@ export function DropdownOptions(props: IMultiSelectDropdownOptions | ISingleSele
                 ))}
               </ul>
             ) : (
-              <p className="px-1.5 py-1 text-placeholder italic">No matching results</p>
+              <p className="px-1.5 py-1 text-placeholder italic">{t("no_matching_results")}</p>
             )
           ) : loader ? (
             <> {loader} </>

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane types
 import { PriorityIcon, StateGroupIcon, WorkItemsIcon } from "@plane/propel/icons";
@@ -27,6 +28,7 @@ type BlockProps = {
   workspaceSlug: string;
 };
 export const RecentIssue = observer(function RecentIssue(props: BlockProps) {
+  const { t } = useTranslation();
   const { activity, ref, workspaceSlug } = props;
   // hooks
   const { getStateById } = useProjectState();
@@ -98,7 +100,7 @@ export const RecentIssue = observer(function RecentIssue(props: BlockProps) {
       }
       quickActionElement={
         <div className="flex gap-4">
-          <Tooltip tooltipHeading="State" tooltipContent={state?.name ?? "State"}>
+          <Tooltip tooltipHeading={t("state")} tooltipContent={state?.name ?? t("state")}>
             <div>
               <StateGroupIcon
                 stateGroup={state?.group ?? "backlog"}
@@ -108,7 +110,7 @@ export const RecentIssue = observer(function RecentIssue(props: BlockProps) {
               />
             </div>
           </Tooltip>
-          <Tooltip tooltipHeading="Priority" tooltipContent={issueDetails?.priority ?? "Priority"}>
+          <Tooltip tooltipHeading={t("priority")} tooltipContent={issueDetails?.priority ?? t("priority")}>
             <div>
               <PriorityIcon priority={issueDetails?.priority} withContainer size={12} />
             </div>
@@ -124,7 +126,7 @@ export const RecentIssue = observer(function RecentIssue(props: BlockProps) {
                 buttonVariant={issueDetails?.assignees?.length > 0 ? "transparent-without-text" : "border-without-text"}
                 buttonClassName={issueDetails?.assignees?.length > 0 ? "hover:bg-transparent px-0" : ""}
                 showTooltip={issueDetails?.assignees?.length === 0}
-                placeholder="Assignees"
+                placeholder={t("assignees")}
                 optionsClassName="z-10"
                 tooltipContent=""
               />

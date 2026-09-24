@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import React from "react";
 import { observer } from "mobx-react";
 import { MoveRight } from "lucide-react";
@@ -29,7 +30,13 @@ const PEEK_MODES: {
   icon: any;
   label: string;
 }[] = [
-  { key: "side", icon: SidePanelIcon, label: "Side Peek" },
+  {
+    key: "side",
+    icon: SidePanelIcon,
+    get label() {
+      return i18nInstance.t("common.side_peek");
+    },
+  },
   {
     key: "modal",
     icon: CenterPanelIcon,
@@ -38,11 +45,14 @@ const PEEK_MODES: {
   {
     key: "full",
     icon: FullScreenPanelIcon,
-    label: "Full Screen",
+    get label() {
+      return i18nInstance.t("common.full_screen");
+    },
   },
 ];
 
 export const PeekOverviewHeader = observer(function PeekOverviewHeader(props: Props) {
+  const { t } = useTranslation();
   const { handleClose } = props;
 
   const { peekMode, setPeekMode } = useIssueDetails();
@@ -54,8 +64,12 @@ export const PeekOverviewHeader = observer(function PeekOverviewHeader(props: Pr
     copyTextToClipboard(urlToCopy).then(() => {
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Link copied!",
-        message: "Work item link copied to clipboard.",
+        get title() {
+          return i18nInstance.t("common.link_copied");
+        },
+        get message() {
+          return i18nInstance.t("ui.work_item_link_copied_to_clipboard");
+        },
       });
     });
   };

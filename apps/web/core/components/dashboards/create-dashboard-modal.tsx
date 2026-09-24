@@ -7,6 +7,7 @@
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 // plane package imports
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { Input, ModalCore } from "@plane/ui";
@@ -28,6 +29,7 @@ export function CreateDashboardModal(props: Props) {
   const { isOpen, handleClose, workspaceSlug, dashboardType, projectId } = props;
   const router = useRouter();
   const { createDashboard } = useDashboards();
+  const { t } = useTranslation();
 
   const {
     control,
@@ -44,10 +46,10 @@ export function CreateDashboardModal(props: Props) {
   const handleFormSubmit = async (formData: TDashboardCreatePayload) => {
     try {
       const dashboard = await createDashboard(workspaceSlug, { ...formData, dashboard_type: dashboardType }, projectId);
-      setToast({ type: TOAST_TYPE.SUCCESS, title: "Success!", message: "Dashboard created successfully." });
+      setToast({ type: TOAST_TYPE.SUCCESS, title: t("toast.success"), message: t("native_dashboards.created") });
       onClose();
       const basePath = projectId
-        ? `/${workspaceSlug}/projects/${projectId}/dashboard`
+        ? `/${workspaceSlug}/projects/${projectId}/dashboards`
         : dashboardType === "home"
           ? `/${workspaceSlug}/my-dashboards`
           : `/${workspaceSlug}/dashboards`;
@@ -55,8 +57,8 @@ export function CreateDashboardModal(props: Props) {
     } catch (error: any) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: error?.error ?? "Some error occurred. Please try again.",
+        title: t("toast.error"),
+        message: error?.error ?? t("common.error.message"),
       });
     }
   };
@@ -65,15 +67,15 @@ export function CreateDashboardModal(props: Props) {
     <ModalCore isOpen={isOpen} handleClose={onClose}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="space-y-5 p-5">
-          <h3 className="text-18 font-medium text-secondary">New dashboard</h3>
+          <h3 className="text-18 font-medium text-secondary">{t("native_dashboards.new")}</h3>
           <div>
             <label htmlFor="name" className="mb-2 block text-secondary">
-              Name
+              {t("common.name")}
             </label>
             <Controller
               control={control}
               name="name"
-              rules={{ required: "Name is required" }}
+              rules={{ required: t("native_dashboards.name_required") }}
               render={({ field: { value, onChange, ref } }) => (
                 <Input
                   id="name"
@@ -82,7 +84,7 @@ export function CreateDashboardModal(props: Props) {
                   onChange={onChange}
                   ref={ref}
                   hasError={Boolean(errors.name)}
-                  placeholder="e.g. Engineering overview"
+                  placeholder={t("native_dashboards.name_placeholder")}
                   className="w-full"
                 />
               )}
@@ -91,10 +93,10 @@ export function CreateDashboardModal(props: Props) {
         </div>
         <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
           <Button variant="secondary" size="lg" onClick={onClose}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
-            Create dashboard
+            {t("native_dashboards.create")}
           </Button>
         </div>
       </form>

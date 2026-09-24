@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,6 +24,7 @@ import { useWorkspace } from "@/hooks/store";
 const instanceWorkspaceService = new InstanceWorkspaceService();
 
 export function WorkspaceCreateForm() {
+  const { t } = useTranslation();
   // router
   const router = useRouter();
   // states
@@ -62,16 +64,16 @@ export function WorkspaceCreateForm() {
             .then(async () => {
               setToast({
                 type: TOAST_TYPE.SUCCESS,
-                title: "Success!",
-                message: "Workspace created successfully.",
+                title: t("toast.success"),
+                message: t("ui.workspace_created_successfully"),
               });
               router.push(`/workspace`);
             })
             .catch(() => {
               setToast({
                 type: TOAST_TYPE.ERROR,
-                title: "Error!",
-                message: "Workspace could not be created. Please try again.",
+                title: t("toast.error"),
+                message: t("ui.workspace_could_not_be_created_please_try"),
               });
             });
         } else setSlugError(true);
@@ -79,8 +81,8 @@ export function WorkspaceCreateForm() {
       .catch(() => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "Some error occurred while creating workspace. Please try again.",
+          title: t("toast.error"),
+          message: t("ui.some_error_occurred_while_creating_workspace_please"),
         });
       });
   };
@@ -97,7 +99,7 @@ export function WorkspaceCreateForm() {
     <div className="space-y-8">
       <div className="grid-col grid w-full max-w-4xl grid-cols-1 items-start justify-between gap-x-10 gap-y-6 lg:grid-cols-2">
         <div className="flex flex-col gap-1">
-          <h4 className="text-13 text-tertiary">Name your workspace</h4>
+          <h4 className="text-13 text-tertiary">{t("ui.name_your_workspace")}</h4>
           <div className="flex flex-col gap-1">
             <Controller
               control={control}
@@ -119,7 +121,7 @@ export function WorkspaceCreateForm() {
                   }}
                   ref={ref}
                   hasError={Boolean(errors.name)}
-                  placeholder="Something familiar and recognizable is always best."
+                  placeholder={t("ui.something_familiar_and_recognizable_is_always_best")}
                   className="w-full"
                 />
               )}
@@ -128,7 +130,7 @@ export function WorkspaceCreateForm() {
           </div>
         </div>
         <div className="flex flex-col gap-1">
-          <h4 className="text-13 text-tertiary">Set your workspace&apos;s URL</h4>
+          <h4 className="text-13 text-tertiary">{t("ui.set_your_workspaces_url")}</h4>
           <div className="flex w-full items-center gap-0.5 rounded-md border-[0.5px] border-subtle px-3">
             <span className="text-13 whitespace-nowrap text-secondary">{workspaceBaseURL}</span>
             <Controller
@@ -155,26 +157,26 @@ export function WorkspaceCreateForm() {
               )}
             />
           </div>
-          {slugError && <p className="text-13 text-danger-primary">This URL is taken. Try something else.</p>}
+          {slugError && <p className="text-13 text-danger-primary">{t("ui.this_url_is_taken_try_something_else")}</p>}
           {invalidSlug && (
             <p className="text-13 text-danger-primary">{`URLs can contain only ( - ), ( _ ) and alphanumeric characters.`}</p>
           )}
           {errors.slug && <span className="text-11 text-danger-primary">{errors.slug.message}</span>}
         </div>
         <div className="flex flex-col gap-1">
-          <h4 className="text-13 text-tertiary">How many people will use this workspace?</h4>
+          <h4 className="text-13 text-tertiary">{t("ui.how_many_people_will_use_this_workspace")}</h4>
           <div className="w-full">
             <Controller
               name="organization_size"
               control={control}
-              rules={{ required: "This is a required field." }}
+              rules={{ required: t("ui.this_is_a_required_field") }}
               render={({ field: { value, onChange } }) => (
                 <CustomSelect
                   value={value}
                   onChange={onChange}
                   label={
                     ORGANIZATION_SIZE.find((c) => c === value) ?? (
-                      <span className="text-placeholder">Select a range</span>
+                      <span className="text-placeholder">{t("ui.select_a_range")}</span>
                     )
                   }
                   buttonClassName="!border-[0.5px] !border-subtle !shadow-none"
@@ -202,10 +204,10 @@ export function WorkspaceCreateForm() {
           disabled={!isValid}
           loading={isSubmitting}
         >
-          {isSubmitting ? "Creating workspace" : "Create workspace"}
+          {isSubmitting ? t("ui.creating_workspace") : t("create_workspace")}
         </Button>
         <Link className={getButtonStyling("secondary", "lg")} href="/workspace">
-          Go back
+          {t("common.go_back")}
         </Link>
       </div>
     </div>

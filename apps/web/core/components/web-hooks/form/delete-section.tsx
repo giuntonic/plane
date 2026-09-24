@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Disclosure, Transition } from "@headlessui/react";
 import { Button } from "@plane/propel/button";
 import { ChevronDownIcon, ChevronUpIcon } from "@plane/propel/icons";
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export function WebhookDeleteSection(props: Props) {
+  const { t } = useTranslation();
   const { openDeleteModal } = props;
 
   return (
@@ -20,7 +22,7 @@ export function WebhookDeleteSection(props: Props) {
       {({ open }) => (
         <div className="w-full">
           <Disclosure.Button as="button" type="button" className="flex w-full items-center justify-between py-4">
-            <span className="text-16 tracking-tight">Danger zone</span>
+            <span className="text-16 tracking-tight">{t("ui.danger_zone")}</span>
             {open ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
           </Disclosure.Button>
 
@@ -36,13 +38,10 @@ export function WebhookDeleteSection(props: Props) {
           >
             <Disclosure.Panel>
               <div className="flex flex-col gap-8">
-                <span className="text-13 tracking-tight">
-                  Once a webhook is deleted, it cannot be restored. Future events will no longer be delivered to this
-                  webhook.
-                </span>
+                <span className="text-13 tracking-tight">{t("ui.jsx_once_a_webhook_is_deleted_it_cannot")}</span>
                 <div>
                   <Button variant="error-fill" size="lg" onClick={openDeleteModal}>
-                    Delete webhook
+                    {t("ui.delete_webhook")}
                   </Button>
                 </div>
               </div>

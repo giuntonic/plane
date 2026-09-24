@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 // plane imports
 import { WORKSPACE_DEFAULT_SEARCH_RESULT } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import type { IWorkspaceSearchResults } from "@plane/types";
 import { cn } from "@plane/utils";
 // hooks
@@ -32,6 +33,7 @@ type Props = {
 
 export function PowerKModalSearchMenu(props: Props) {
   const { activePage, context, isWorkspaceLevel, searchTerm, updateSearchTerm, handleSearchMenuClose } = props;
+  const { t } = useTranslation();
   // states
   const [resultsCount, setResultsCount] = useState(0);
   const [isSearching, setIsSearching] = useState(false);
@@ -80,6 +82,12 @@ export function PowerKModalSearchMenu(props: Props) {
     togglePowerKModal(false);
   };
 
+  const searchResultsLabel = t(
+    isWorkspaceLevel ? "power_k.search_menu.results_for_workspace" : "power_k.search_menu.results_for_project",
+    { query: searchTerm }
+  );
+  const [searchResultsLabelPrefix, searchResultsLabelSuffix] = searchResultsLabel.split(searchTerm);
+
   return (
     <>
       {searchTerm.trim() !== "" && (
@@ -89,13 +97,9 @@ export function PowerKModalSearchMenu(props: Props) {
               "animate-pulse": isSearching,
             })}
           >
-            Search results for{" "}
-            <span className="font-medium">
-              {'"'}
-              {searchTerm}
-              {'"'}
-            </span>{" "}
-            in {isWorkspaceLevel ? "workspace" : "project"}:
+            {searchResultsLabelPrefix}
+            <span className="font-medium">{searchTerm}</span>
+            {searchResultsLabelSuffix}
           </h5>
         </div>
       )}

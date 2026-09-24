@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useEffect } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -42,6 +43,7 @@ import { usePlatformOS } from "@/hooks/use-platform-os";
 // types
 
 export function IssueLink({ activity }: { activity: IIssueActivity }) {
+  const { t } = useTranslation();
   // router params
   const { workspaceSlug } = useParams();
   const { isMobile } = usePlatformOS();
@@ -56,7 +58,7 @@ export function IssueLink({ activity }: { activity: IIssueActivity }) {
 
   return (
     <Tooltip
-      tooltipContent={activity?.issue_detail ? activity.issue_detail.name : "This work item has been deleted"}
+      tooltipContent={activity?.issue_detail ? activity.issue_detail.name : t("ui.this_work_item_has_been_deleted")}
       isMobile={isMobile}
     >
       {activity?.issue_detail ? (
@@ -161,11 +163,11 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            added a new assignee <UserLink activity={activity} />
+            {i18nInstance.t("ui.jsx_added_a_new_assignee")} <UserLink activity={activity} />
             {showIssue && (
               <>
                 {" "}
-                to <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_to")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -173,11 +175,11 @@ const activityDetails: {
       else
         return (
           <>
-            removed the assignee <UserLink activity={activity} />
+            {i18nInstance.t("ui.jsx_removed_the_assignee")} <UserLink activity={activity} />
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -190,13 +192,13 @@ const activityDetails: {
       if (activity.new_value === "restore")
         return (
           <>
-            restored <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_restored")} <IssueLink activity={activity} />
           </>
         );
       else
         return (
           <>
-            archived <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_archived")} <IssueLink activity={activity} />
           </>
         );
     },
@@ -207,11 +209,11 @@ const activityDetails: {
       if (activity.verb === "created")
         return (
           <>
-            uploaded a new attachment
+            {i18nInstance.t("ui.jsx_uploaded_a_new_attachment")}
             {showIssue && (
               <>
                 {" "}
-                to <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_to")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -219,11 +221,11 @@ const activityDetails: {
       else
         return (
           <>
-            removed an attachment
+            {i18nInstance.t("ui.jsx_removed_an_attachment")}
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -234,11 +236,11 @@ const activityDetails: {
   description: {
     message: (activity, showIssue) => (
       <>
-        updated the description
+        {i18nInstance.t("ui.jsx_updated_the_description")}
         {showIssue && (
           <>
             {" "}
-            of <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_of")} <IssueLink activity={activity} />
           </>
         )}
       </>
@@ -250,11 +252,11 @@ const activityDetails: {
       if (!activity.new_value)
         return (
           <>
-            removed the estimate point
+            {i18nInstance.t("ui.jsx_removed_the_estimate_point")}
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -262,11 +264,11 @@ const activityDetails: {
       else
         return (
           <>
-            set the estimate point to {activity.new_value}
+            {i18nInstance.t("ui.jsx_set_the_estimate_point_to")} {activity.new_value}
             {showIssue && (
               <>
                 {" "}
-                for <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_for")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -279,19 +281,19 @@ const activityDetails: {
       if (activity.verb === "created")
         return (
           <>
-            created <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_created")} <IssueLink activity={activity} />
           </>
         );
       else if (activity.verb === "converted")
         return (
           <>
-            converted <IssueLink activity={activity} /> to an epic
+            {i18nInstance.t("ui.jsx_converted")} <IssueLink activity={activity} /> {i18nInstance.t("ui.jsx_to_an_epic")}
           </>
         );
       else
         return (
           <>
-            deleted <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_deleted")} <IssueLink activity={activity} />
           </>
         );
     },
@@ -302,19 +304,20 @@ const activityDetails: {
       if (activity.verb === "created")
         return (
           <>
-            created <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_created")} <IssueLink activity={activity} />
           </>
         );
       else if (activity.verb === "converted")
         return (
           <>
-            converted <IssueLink activity={activity} /> to a work item
+            {i18nInstance.t("ui.jsx_converted")} <IssueLink activity={activity} />{" "}
+            {i18nInstance.t("ui.jsx_to_a_work_item")}
           </>
         );
       else
         return (
           <>
-            deleted <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_deleted")} <IssueLink activity={activity} />
           </>
         );
     },
@@ -325,7 +328,7 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <span className="overflow-hidden">
-            added a new label{" "}
+            {i18nInstance.t("ui.jsx_added_a_new_label")}{" "}
             <span className="inline-flex items-center gap-2 rounded-full border border-strong px-2 py-0.5 text-11">
               <LabelPill labelId={activity.new_identifier ?? ""} workspaceSlug={workspaceSlug} />
               <span className="line-clamp-1 flex-shrink font-medium break-all text-primary">{activity.new_value}</span>
@@ -333,7 +336,7 @@ const activityDetails: {
             {showIssue && (
               <span className="">
                 {" "}
-                to <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_to")} <IssueLink activity={activity} />
               </span>
             )}
           </span>
@@ -341,7 +344,7 @@ const activityDetails: {
       else
         return (
           <>
-            removed the label{" "}
+            {i18nInstance.t("ui.jsx_removed_the_label")}{" "}
             <span className="inline-flex items-center gap-2 rounded-full border border-strong px-2 py-0.5 text-11">
               <LabelPill labelId={activity.old_identifier ?? ""} workspaceSlug={workspaceSlug} />
               <span className="line-clamp-1 flex-shrink font-medium break-all text-primary">{activity.old_value}</span>
@@ -349,7 +352,7 @@ const activityDetails: {
             {showIssue && (
               <span>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </span>
             )}
           </>
@@ -362,19 +365,19 @@ const activityDetails: {
       if (activity.verb === "created")
         return (
           <>
-            added this{" "}
+            {i18nInstance.t("ui.jsx_added_this")}{" "}
             <a
               href={`${activity.new_value}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
             >
-              link
+              {i18nInstance.t("ui.jsx_link")}
             </a>
             {showIssue && (
               <>
                 {" "}
-                to <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_to")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -382,19 +385,19 @@ const activityDetails: {
       else if (activity.verb === "updated")
         return (
           <>
-            updated the{" "}
+            {i18nInstance.t("ui.jsx_updated_the")}{" "}
             <a
               href={`${activity.old_value}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
             >
-              link
+              {i18nInstance.t("ui.jsx_link")}
             </a>
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -402,19 +405,19 @@ const activityDetails: {
       else
         return (
           <>
-            removed this{" "}
+            {i18nInstance.t("ui.jsx_removed_this")}{" "}
             <a
               href={`${activity.old_value}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
             >
-              link
+              {i18nInstance.t("ui.jsx_link")}
             </a>
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -428,8 +431,8 @@ const activityDetails: {
         return (
           <>
             <span className="flex-shrink-0">
-              added {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
-              <span className="whitespace-nowrap">to the cycle</span>{" "}
+              {i18nInstance.t("ui.jsx_added")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+              <span className="whitespace-nowrap">{i18nInstance.t("ui.jsx_to_the_cycle")}</span>{" "}
             </span>
             <a
               href={`/${workspaceSlug}/projects/${activity.project}/cycles/${activity.new_identifier}`}
@@ -444,7 +447,7 @@ const activityDetails: {
       else if (activity.verb === "updated")
         return (
           <>
-            <span className="flex-shrink-0 whitespace-nowrap">set the cycle to </span>
+            <span className="flex-shrink-0 whitespace-nowrap">{i18nInstance.t("ui.jsx_set_the_cycle_to")} </span>
             <a
               href={`/${workspaceSlug}/projects/${activity.project}/cycles/${activity.new_identifier}`}
               target="_blank"
@@ -458,7 +461,8 @@ const activityDetails: {
       else
         return (
           <>
-            removed <IssueLink activity={activity} /> from the cycle{" "}
+            {i18nInstance.t("ui.jsx_removed")} <IssueLink activity={activity} />{" "}
+            {i18nInstance.t("ui.jsx_from_the_cycle")}{" "}
             <a
               href={`/${workspaceSlug}/projects/${activity.project}/cycles/${activity.old_identifier}`}
               target="_blank"
@@ -477,7 +481,8 @@ const activityDetails: {
       if (activity.verb === "created")
         return (
           <>
-            added {showIssue ? <IssueLink activity={activity} /> : "this work item"} to the module{" "}
+            {i18nInstance.t("ui.jsx_added")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_to_the_module")}{" "}
             <a
               href={`/${workspaceSlug}/projects/${activity.project}/modules/${activity.new_identifier}`}
               target="_blank"
@@ -491,7 +496,7 @@ const activityDetails: {
       else if (activity.verb === "updated")
         return (
           <>
-            set the module to{" "}
+            {i18nInstance.t("ui.jsx_set_the_module_to")}{" "}
             <a
               href={`/${workspaceSlug}/projects/${activity.project}/modules/${activity.new_identifier}`}
               target="_blank"
@@ -505,7 +510,8 @@ const activityDetails: {
       else
         return (
           <>
-            removed <IssueLink activity={activity} /> from the module{" "}
+            {i18nInstance.t("ui.jsx_removed")} <IssueLink activity={activity} />{" "}
+            {i18nInstance.t("ui.jsx_from_the_module")}{" "}
             <a
               href={`/${workspaceSlug}/projects/${activity.project}/modules/${activity.old_identifier}`}
               target="_blank"
@@ -522,11 +528,11 @@ const activityDetails: {
   name: {
     message: (activity, showIssue) => (
       <>
-        set the title to <span className="break-all">{activity.new_value}</span>
+        {i18nInstance.t("ui.jsx_set_the_title_to")} <span className="break-all">{activity.new_value}</span>
         {showIssue && (
           <>
             {" "}
-            of <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_of")} <IssueLink activity={activity} />
           </>
         )}
       </>
@@ -538,11 +544,12 @@ const activityDetails: {
       if (!activity.new_value)
         return (
           <>
-            removed the parent <span className="font-medium whitespace-nowrap text-primary">{activity.old_value}</span>
+            {i18nInstance.t("ui.jsx_removed_the_parent")}{" "}
+            <span className="font-medium whitespace-nowrap text-primary">{activity.old_value}</span>
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -550,11 +557,12 @@ const activityDetails: {
       else
         return (
           <>
-            set the parent to <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>
+            {i18nInstance.t("ui.jsx_set_the_parent_to")}{" "}
+            <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>
             {showIssue && (
               <>
                 {" "}
-                for <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_for")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -565,14 +573,14 @@ const activityDetails: {
   priority: {
     message: (activity, showIssue) => (
       <>
-        set the priority to{" "}
+        {i18nInstance.t("ui.jsx_set_the_priority_to")}{" "}
         <span className="font-medium text-primary">
           {activity.new_value ? capitalizeFirstLetter(activity.new_value) : "None"}
         </span>
         {showIssue && (
           <>
             {" "}
-            for <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_for")} <IssueLink activity={activity} />
           </>
         )}
       </>
@@ -584,14 +592,15 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            marked that {showIssue ? <IssueLink activity={activity} /> : "this work item"} relates to{" "}
+            {i18nInstance.t("ui.jsx_marked_that")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_relates_to")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>.
           </>
         );
       else
         return (
           <>
-            removed the relation from{" "}
+            {i18nInstance.t("ui.jsx_removed_the_relation_from")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.old_value}</span>.
           </>
         );
@@ -603,14 +612,15 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            marked {showIssue ? <IssueLink activity={activity} /> : "this work item"} is blocking work item{" "}
+            {i18nInstance.t("ui.jsx_marked")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_is_blocking_work_item")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>.
           </>
         );
       else
         return (
           <>
-            removed the blocking work item{" "}
+            {i18nInstance.t("ui.jsx_removed_the_blocking_work_item")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.old_value}</span>.
           </>
         );
@@ -622,14 +632,16 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            marked {showIssue ? <IssueLink activity={activity} /> : "this work item"} is being blocked by{" "}
+            {i18nInstance.t("ui.jsx_marked")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_is_being_blocked_by")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>.
           </>
         );
       else
         return (
           <>
-            removed {showIssue ? <IssueLink activity={activity} /> : "this work item"} being blocked by work item{" "}
+            {i18nInstance.t("ui.jsx_removed")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_being_blocked_by_work_item")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.old_value}</span>.
           </>
         );
@@ -641,14 +653,16 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            marked {showIssue ? <IssueLink activity={activity} /> : "this work item"} as duplicate of{" "}
+            {i18nInstance.t("ui.jsx_marked")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_as_duplicate_of")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>.
           </>
         );
       else
         return (
           <>
-            removed {showIssue ? <IssueLink activity={activity} /> : "this work item"} as a duplicate of{" "}
+            {i18nInstance.t("ui.jsx_removed")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_as_a_duplicate_of")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.old_value}</span>.
           </>
         );
@@ -658,11 +672,12 @@ const activityDetails: {
   state: {
     message: (activity, showIssue) => (
       <>
-        set the state to <span className="font-medium break-all text-primary">{activity.new_value}</span>
+        {i18nInstance.t("ui.jsx_set_the_state_to")}{" "}
+        <span className="font-medium break-all text-primary">{activity.new_value}</span>
         {showIssue && (
           <>
             {" "}
-            for <IssueLink activity={activity} />
+            {i18nInstance.t("ui.jsx_for")} <IssueLink activity={activity} />
           </>
         )}
       </>
@@ -674,11 +689,11 @@ const activityDetails: {
       if (!activity.new_value)
         return (
           <>
-            removed the start date
+            {i18nInstance.t("ui.jsx_removed_the_start_date")}
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -686,14 +701,14 @@ const activityDetails: {
       else
         return (
           <>
-            set the start date to{" "}
+            {i18nInstance.t("ui.jsx_set_the_start_date_to")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">
               {renderFormattedDate(activity.new_value)}
             </span>
             {showIssue && (
               <>
                 {" "}
-                for <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_for")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -706,11 +721,11 @@ const activityDetails: {
       if (!activity.new_value)
         return (
           <>
-            removed the due date
+            {i18nInstance.t("ui.jsx_removed_the_due_date")}
             {showIssue && (
               <>
                 {" "}
-                from <IssueLink activity={activity} />
+                {i18nInstance.t("ui.jsx_from")} <IssueLink activity={activity} />
               </>
             )}
           </>
@@ -718,7 +733,7 @@ const activityDetails: {
       else
         return (
           <>
-            set the due date to{" "}
+            {i18nInstance.t("ui.jsx_set_the_due_date_to")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">
               {renderFormattedDate(activity.new_value)}
             </span>

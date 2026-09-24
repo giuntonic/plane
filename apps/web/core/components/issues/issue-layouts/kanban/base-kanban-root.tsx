@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { FC } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
@@ -53,6 +54,7 @@ export interface IBaseKanBanLayout {
 }
 
 export const BaseKanBanRoot = observer(function BaseKanBanRoot(props: IBaseKanBanLayout) {
+  const { t } = useTranslation();
   const {
     QuickActions,
     addIssuesToView,
@@ -256,7 +258,7 @@ export const BaseKanBanRoot = observer(function BaseKanBanRoot(props: IBaseKanBa
             isDragOverDelete ? "bg-danger-primary blur-2xl" : ""
           } transition duration-300`}
         >
-          Drop here to delete the work item.
+          {t("ui.drop_here_to_delete_the_work_item")}
         </div>
       </div>
       <IssueLayoutHOC layout={EIssueLayoutTypes.KANBAN}>

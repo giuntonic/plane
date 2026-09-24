@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { cn } from "@plane/utils";
 
@@ -32,11 +33,12 @@ interface FormFieldProps {
 }
 
 export function FormField({ label, htmlFor, children, className, optional = false }: FormFieldProps) {
+  const { t } = useTranslation();
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       <Label htmlFor={htmlFor}>
         {label}
-        {optional && <span className="text-13 text-placeholder"> (optional)</span>}
+        {optional && <span className="text-13 text-placeholder"> {t("ui.jsx_optional")}</span>}
       </Label>
       {children}
     </div>

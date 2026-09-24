@@ -13,7 +13,14 @@ import useSWR from "swr";
 // plane package imports
 import { Download } from "lucide-react";
 import type { ChartXAxisDateGrouping } from "@plane/constants";
-import { ANALYTICS_X_AXIS_VALUES, ANALYTICS_Y_AXIS_VALUES, CHART_COLOR_PALETTES, EChartModels } from "@plane/constants";
+import {
+  ANALYTICS_X_AXIS_I18N_KEYS,
+  ANALYTICS_X_AXIS_VALUES,
+  ANALYTICS_Y_AXIS_I18N_KEYS,
+  ANALYTICS_Y_AXIS_VALUES,
+  CHART_COLOR_PALETTES,
+  EChartModels,
+} from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { BarChart } from "@plane/propel/charts/bar-chart";
@@ -95,7 +102,7 @@ const PriorityChart = observer(function PriorityChart(props: Props) {
       parsedBars = [
         {
           key: "count",
-          label: "Count",
+          label: t("common.count"),
           stackId: "bar-one",
           fill: (payload) => generateBarColor(payload.key, { x_axis, y_axis, group_by }, baseColors, workspaceStates),
           textClassName: "",
@@ -139,14 +146,14 @@ const PriorityChart = observer(function PriorityChart(props: Props) {
     return parsedBars;
   }, [chart_model, group_by, parsedData, resolvedTheme, workspaceStates, x_axis, y_axis]);
 
-  const yAxisLabel = useMemo(
-    () => ANALYTICS_Y_AXIS_VALUES.find((item) => item.value === props.y_axis)?.label ?? props.y_axis,
-    [props.y_axis]
-  );
-  const xAxisLabel = useMemo(
-    () => ANALYTICS_X_AXIS_VALUES.find((item) => item.value === props.x_axis)?.label ?? props.x_axis,
-    [props.x_axis]
-  );
+  const yAxisLabel = useMemo(() => {
+    const key = ANALYTICS_Y_AXIS_I18N_KEYS[props.y_axis];
+    return key ? t(key) : (ANALYTICS_Y_AXIS_VALUES.find((item) => item.value === props.y_axis)?.label ?? props.y_axis);
+  }, [props.y_axis, t]);
+  const xAxisLabel = useMemo(() => {
+    const key = ANALYTICS_X_AXIS_I18N_KEYS[props.x_axis];
+    return key ? t(key) : (ANALYTICS_X_AXIS_VALUES.find((item) => item.value === props.x_axis)?.label ?? props.x_axis);
+  }, [props.x_axis, t]);
 
   const defaultColumns: ColumnDef<TChartDatum>[] = useMemo(
     () => [
@@ -163,13 +170,13 @@ const PriorityChart = observer(function PriorityChart(props: Props) {
       },
       {
         accessorKey: "count",
-        header: () => <div className="text-right">Count</div>,
+        header: () => <div className="text-right">{t("common.count")}</div>,
         cell: ({ row }) => <div className="text-right">{row.original.count}</div>,
         meta: {
           export: {
             key: "Count",
             value: (row) => row.original.count,
-            label: "Count",
+            label: t("common.count"),
           },
         },
       },

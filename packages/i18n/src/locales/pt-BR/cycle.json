@@ -20,7 +20,17 @@
   },
   "cycle": {
     "label": "{count, plural, one {Ciclo} other {Ciclos}}",
-    "no_cycle": "Nenhum ciclo"
+    "no_cycle": "Nenhum ciclo",
+    "delete_confirmation": "Tem certeza de que deseja excluir o ciclo \"{name}\"? Todos os dados relacionados ao ciclo serão removidos permanentemente. Essa ação não pode ser desfeita.",
+    "created_successfully": "Ciclo criado com sucesso.",
+    "updated_successfully": "Ciclo atualizado com sucesso.",
+    "create_error": "Erro ao criar o ciclo. Tente novamente.",
+    "update_error": "Erro ao atualizar o ciclo. Tente novamente.",
+    "no_matching_cycles": {
+      "title": "Nenhum ciclo encontrado",
+      "remove_filters": "Remova os filtros para ver todos os ciclos",
+      "remove_search": "Remova o critério de busca para ver todos os ciclos"
+    }
   },
   "active_cycle_analytics": {
     "empty_state": {
@@ -37,5 +47,13 @@
         "title": "Adicione etiquetas aos itens de trabalho para ver a\n divisão do trabalho por etiquetas."
       }
     }
+  },
+  "transfer_issues": {
+    "title": "Transferir itens de trabalho",
+    "search_placeholder": "Buscar um ciclo...",
+    "no_current_cycle": "Você não possui nenhum ciclo atual. Crie um para transferir os itens de trabalho.",
+    "success": "Os itens de trabalho foram transferidos com sucesso",
+    "error": "Não foi possível transferir os itens de trabalho. Tente novamente.",
+    "fetch_error": "Não foi possível buscar os detalhes do ciclo"
   }
 }

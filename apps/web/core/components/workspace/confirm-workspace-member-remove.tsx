@@ -54,7 +54,7 @@ export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMe
           </div>
           <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
             <h3 className="text-h5-medium leading-6 text-primary">
-              {currentUser?.id === userDetails.id ? "Leave workspace?" : `Remove ${userDetails?.display_name}?`}
+              {currentUser?.id === userDetails.id ? t("ui.leave_workspace") : `Remove ${userDetails?.display_name}?`}
             </h3>
             <div className="mt-2">
               {currentUser?.id === userDetails.id ? (
@@ -64,8 +64,9 @@ export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMe
               ) : (
                 <p className="text-body-xs-regular text-secondary">
                   {/* TODO: Add translation here */}
-                  Are you sure you want to remove member- <span className="font-bold">{userDetails?.display_name}</span>
-                  ? They will no longer have access to this workspace. This action cannot be undone.
+                  {t("ui.jsx_are_you_sure_you_want_to_remove")}{" "}
+                  <span className="font-bold">{userDetails?.display_name}</span>
+                  {t("ui.jsx_they_will_no_longer_have_access_to_2")}
                 </p>
               )}
             </div>

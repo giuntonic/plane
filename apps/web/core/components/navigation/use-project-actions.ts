@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback, useState } from "react";
 import { setToast, TOAST_TYPE } from "@plane/propel/toast";
 import { copyUrlToClipboard } from "@plane/utils";
@@ -16,6 +17,7 @@ type UseProjectActionsProps = {
 };
 
 export const useProjectActions = ({ workspaceSlug, projectId, activeItem }: UseProjectActionsProps) => {
+  const { t } = useTranslation();
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const [leaveProjectModalOpen, setLeaveProjectModalOpen] = useState(false);
 
@@ -30,14 +32,14 @@ export const useProjectActions = ({ workspaceSlug, projectId, activeItem }: UseP
       await copyUrlToClipboard(pathToCopy);
       setToast({
         type: TOAST_TYPE.INFO,
-        title: "Link copied!",
-        message: "Project link copied to clipboard.",
+        title: t("common.link_copied"),
+        message: t("ui.project_link_copied_to_clipboard"),
       });
     } catch (_error) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Copy failed",
-        message: "We couldn't copy the link. Please try again.",
+        title: t("ui.copy_failed"),
+        message: t("ui.we_couldnt_copy_the_link_please_try"),
       });
     }
   }, [activeItem, projectId, workspaceSlug]);

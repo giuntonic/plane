@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState, useEffect, useRef } from "react";
 import { observer } from "mobx-react";
 // hooks
@@ -12,6 +13,7 @@ import { ProductUpdatesFallback } from "@/components/global/product-updates/fall
 import { useInstance } from "@/hooks/store/use-instance";
 
 export const ProductUpdatesChangelog = observer(function ProductUpdatesChangelog() {
+  const { t } = useTranslation();
   // refs
   const isLoadingRef = useRef(true);
   // states
@@ -65,7 +67,7 @@ export const ProductUpdatesChangelog = observer(function ProductUpdatesChangelog
   if (shouldShowFallback) {
     return (
       <ProductUpdatesFallback
-        description="We're having trouble fetching the updates. Please visit our changelog to view the latest updates."
+        description={t("ui.were_having_trouble_fetching_the_updates_please")}
         variant={config?.is_self_managed ? "self-managed" : "cloud"}
       />
     );

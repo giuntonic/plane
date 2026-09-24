@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { E_PASSWORD_STRENGTH } from "@plane/constants";
 
 export interface StrengthInfo {
@@ -19,31 +20,31 @@ export const getStrengthInfo = (strength: E_PASSWORD_STRENGTH): StrengthInfo => 
   switch (strength) {
     case E_PASSWORD_STRENGTH.EMPTY:
       return {
-        message: "Please enter your password",
+        message: i18nInstance.t("ui.please_enter_your_password"),
         textColor: "text-primary",
         activeFragments: 0,
       };
     case E_PASSWORD_STRENGTH.LENGTH_NOT_VALID:
       return {
-        message: "Password is too short",
+        message: i18nInstance.t("ui.password_is_too_short"),
         textColor: "text-danger-primary",
         activeFragments: 1,
       };
     case E_PASSWORD_STRENGTH.STRENGTH_NOT_VALID:
       return {
-        message: "Password is weak",
+        message: i18nInstance.t("ui.password_is_weak"),
         textColor: "text-orange-500",
         activeFragments: 2,
       };
     case E_PASSWORD_STRENGTH.STRENGTH_VALID:
       return {
-        message: "Password is strong",
+        message: i18nInstance.t("ui.password_is_strong"),
         textColor: "text-success-primary",
         activeFragments: 3,
       };
     default:
       return {
-        message: "Please enter your password",
+        message: i18nInstance.t("ui.please_enter_your_password"),
         textColor: "text-primary",
         activeFragments: 0,
       };

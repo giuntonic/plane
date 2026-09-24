@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useParams } from "next/navigation";
 // react-hook-form
 import { Controller, useForm } from "react-hook-form";
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export function SelectMonthModal({ type, initialValues, isOpen, handleClose, handleChange }: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId } = useParams();
 
   const {
@@ -48,7 +50,7 @@ export function SelectMonthModal({ type, initialValues, isOpen, handleClose, han
     <ModalCore isOpen={isOpen} handleClose={onClose} position={EModalPosition.CENTER} width={EModalWidth.XXL}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <h3 className="text-16 leading-6 font-medium text-primary">Customize time range</h3>
+          <h3 className="text-16 leading-6 font-medium text-primary">{t("common.customize_time_range")}</h3>
           <div className="mt-8 flex items-center gap-2">
             <div className="flex w-full flex-col justify-center gap-1">
               {type === "auto-close" ? (
@@ -71,18 +73,18 @@ export function SelectMonthModal({ type, initialValues, isOpen, handleClose, han
                           onChange={onChange}
                           ref={ref}
                           hasError={Boolean(errors.close_in)}
-                          placeholder="Enter Months"
+                          placeholder={t("ui.enter_months")}
                           className="w-full border-subtle"
                           min={1}
                           max={12}
                         />
-                        <span className="absolute top-2.5 right-8 text-13 text-secondary">Months</span>
+                        <span className="absolute top-2.5 right-8 text-13 text-secondary">{t("ui.months")}</span>
                       </div>
                     )}
                   />
 
                   {errors.close_in && (
-                    <span className="px-1 text-13 text-danger-primary">Select a month between 1 and 12.</span>
+                    <span className="px-1 text-13 text-danger-primary">{t("ui.select_a_month_between_1_and_12")}</span>
                   )}
                 </>
               ) : (
@@ -105,17 +107,17 @@ export function SelectMonthModal({ type, initialValues, isOpen, handleClose, han
                           onChange={onChange}
                           ref={ref}
                           hasError={Boolean(errors.archive_in)}
-                          placeholder="Enter Months"
+                          placeholder={t("ui.enter_months")}
                           className="w-full border-subtle"
                           min={1}
                           max={12}
                         />
-                        <span className="absolute top-2.5 right-8 text-13 text-secondary">Months</span>
+                        <span className="absolute top-2.5 right-8 text-13 text-secondary">{t("ui.months")}</span>
                       </div>
                     )}
                   />
                   {errors.archive_in && (
-                    <span className="px-1 text-13 text-danger-primary">Select a month between 1 and 12.</span>
+                    <span className="px-1 text-13 text-danger-primary">{t("ui.select_a_month_between_1_and_12")}</span>
                   )}
                 </>
               )}
@@ -124,10 +126,10 @@ export function SelectMonthModal({ type, initialValues, isOpen, handleClose, han
         </div>
         <div className="mt-5 flex justify-end gap-2">
           <Button variant="secondary" size="lg" onClick={onClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Submit"}
+            {isSubmitting ? t("ui.submitting") : t("submit")}
           </Button>
         </div>
       </form>

@@ -6,17 +6,18 @@
 
 import { AreaChart, BarChart3, Donut, LineChart, PieChart, Radar, ScatterChart } from "lucide-react";
 // plane package imports
+import { useTranslation } from "@plane/i18n";
 import { CustomSelect } from "@plane/ui";
 import type { TDashboardChartType } from "@plane/types";
 
-const CHART_TYPE_OPTIONS: { value: TDashboardChartType; label: string; icon: React.ElementType }[] = [
-  { value: "bar-chart", label: "Bar chart", icon: BarChart3 },
-  { value: "line-chart", label: "Line chart", icon: LineChart },
-  { value: "area-chart", label: "Area chart", icon: AreaChart },
-  { value: "pie-chart", label: "Pie chart", icon: PieChart },
-  { value: "donut-chart", label: "Donut chart", icon: Donut },
-  { value: "radar-chart", label: "Radar chart", icon: Radar },
-  { value: "scatter-chart", label: "Scatter chart", icon: ScatterChart },
+const CHART_TYPE_OPTIONS: { value: TDashboardChartType; i18nKey: string; icon: React.ElementType }[] = [
+  { value: "bar-chart", i18nKey: "native_dashboards.chart_types.bar", icon: BarChart3 },
+  { value: "line-chart", i18nKey: "native_dashboards.chart_types.line", icon: LineChart },
+  { value: "area-chart", i18nKey: "native_dashboards.chart_types.area", icon: AreaChart },
+  { value: "pie-chart", i18nKey: "native_dashboards.chart_types.pie", icon: PieChart },
+  { value: "donut-chart", i18nKey: "native_dashboards.chart_types.donut", icon: Donut },
+  { value: "radar-chart", i18nKey: "native_dashboards.chart_types.radar", icon: Radar },
+  { value: "scatter-chart", i18nKey: "native_dashboards.chart_types.scatter", icon: ScatterChart },
 ];
 
 type Props = {
@@ -26,6 +27,7 @@ type Props = {
 
 export function SelectChartType(props: Props) {
   const { value, onChange } = props;
+  const { t } = useTranslation();
   const selected = CHART_TYPE_OPTIONS.find((option) => option.value === value);
 
   return (
@@ -37,10 +39,10 @@ export function SelectChartType(props: Props) {
         selected ? (
           <div className="flex items-center gap-2">
             <selected.icon className="size-3.5" />
-            {selected.label}
+            {t(selected.i18nKey)}
           </div>
         ) : (
-          "Select chart type"
+          t("native_dashboards.widget.select_chart_type")
         )
       }
     >
@@ -48,7 +50,7 @@ export function SelectChartType(props: Props) {
         <CustomSelect.Option key={option.value} value={option.value}>
           <div className="flex items-center gap-2">
             <option.icon className="size-3.5" />
-            {option.label}
+            {t(option.i18nKey)}
           </div>
         </CustomSelect.Option>
       ))}

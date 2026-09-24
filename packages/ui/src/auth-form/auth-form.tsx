@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState, useMemo } from "react";
 import { E_PASSWORD_STRENGTH } from "@plane/constants";
 import { Button } from "../button/button";
@@ -59,6 +60,7 @@ export function AuthForm({
   alternateModeText,
   alternateModeButtonText,
 }: AuthFormProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState<AuthFormData>({
     email: initialData.email || "",
     password: initialData.password || "",
@@ -117,17 +119,17 @@ export function AuthForm({
 
   const getSubmitButtonText = () => {
     if (submitButtonText) return submitButtonText;
-    return mode === "sign-in" ? "Sign In" : "Create Account";
+    return mode === "sign-in" ? t("ui.sign_in") : t("ui.create_account_2");
   };
 
   const getAlternateModeText = () => {
     if (alternateModeText) return alternateModeText;
-    return mode === "sign-in" ? "Don't have an account?" : "Already have an account?";
+    return mode === "sign-in" ? "Don't have an account?" : t("ui.already_have_an_account");
   };
 
   const getAlternateModeButtonText = () => {
     if (alternateModeButtonText) return alternateModeButtonText;
-    return mode === "sign-in" ? "Sign Up" : "Sign In";
+    return mode === "sign-in" ? t("ui.sign_up_2") : t("ui.sign_in");
   };
 
   return (
@@ -137,7 +139,7 @@ export function AuthForm({
         id="email"
         name="email"
         type="email"
-        label="Email"
+        label={t("email")}
         value={formData.email}
         onChange={handleInputChange("email")}
         placeholder="name@company.com"
@@ -151,12 +153,12 @@ export function AuthForm({
       <AuthPasswordInput
         id="password"
         name="password"
-        label={mode === "sign-in" ? "Password" : "Set a password"}
+        label={mode === "sign-in" ? t("password") : t("ui.set_a_password")}
         value={formData.password}
         onChange={handleInputChange("password")}
         onPasswordChange={handlePasswordChange}
         onPasswordStrengthChange={handlePasswordStrengthChange}
-        placeholder="Enter password"
+        placeholder={t("ui.enter_password")}
         error={passwordError}
         showPasswordStrength={showPasswordStrength && mode === "sign-up"}
         disabled={disabled}

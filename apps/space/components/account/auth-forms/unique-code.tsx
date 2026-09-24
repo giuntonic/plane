@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useEffect, useState } from "react";
 import { CircleCheck, XCircle } from "lucide-react";
 // plane imports
@@ -38,6 +39,7 @@ const defaultValues: TUniqueCodeFormValues = {
 };
 
 export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
+  const { t } = useTranslation();
   const { mode, email, nextPath, handleEmailClear, generateEmailUniqueCode } = props;
   // derived values
   const defaultResetTimerValue = 5;
@@ -87,7 +89,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
       <input type="hidden" value={nextPath} name="next_path" />
       <div className="space-y-1">
         <label className="text-13 font-medium text-tertiary" htmlFor="email">
-          Email
+          {t("auth.common.email.label")}
         </label>
         <div className={`relative flex items-center rounded-md border border-subtle bg-surface-1`}>
           <Input
@@ -112,7 +114,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
 
       <div className="space-y-1">
         <label className="text-13 font-medium text-tertiary" htmlFor="code">
-          Unique code
+          {t("ui.unique_code")}
         </label>
         <Input
           name="code"
@@ -126,7 +128,7 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
         <div className="flex w-full items-center justify-between px-1 pt-1 text-11">
           <p className="flex items-center gap-1 font-medium text-success-primary">
             <CircleCheck height={12} width={12} />
-            Paste the code sent to your email
+            {t("ui.paste_the_code_sent_to_your_email")}
           </p>
           <button
             type="button"
@@ -141,15 +143,21 @@ export function AuthUniqueCodeForm(props: TAuthUniqueCodeForm) {
             {resendTimerCode > 0
               ? `Resend in ${resendTimerCode}s`
               : isRequestingNewCode
-                ? "Requesting new code"
-                : "Resend"}
+                ? t("ui.requesting_new_code")
+                : t("common.resend")}
           </button>
         </div>
       </div>
 
       <div className="space-y-2.5">
         <Button type="submit" variant="primary" className="w-full" size="xl" disabled={isButtonDisabled}>
-          {isRequestingNewCode ? "Sending code" : isSubmitting ? <Spinner height="20px" width="20px" /> : "Continue"}
+          {isRequestingNewCode ? (
+            t("ui.sending_code")
+          ) : isSubmitting ? (
+            <Spinner height="20px" width="20px" />
+          ) : (
+            t("common.continue")
+          )}
         </Button>
       </div>
     </form>

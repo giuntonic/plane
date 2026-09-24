@@ -14,12 +14,43 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@plane/propel/icons";
 // constants
 import { getDate } from "@plane/utils";
 import { MONTHS_LIST } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { useCalendarView } from "@/hooks/store/use-calendar-view";
 import type { ICycleIssuesFilter } from "@/store/issue/cycle";
 import type { IModuleIssuesFilter } from "@/store/issue/module";
 import type { IProjectIssuesFilter } from "@/store/issue/project";
 import type { IProjectViewIssuesFilter } from "@/store/issue/project-views";
 // helpers
+
+const MONTH_KEYS: Record<number, string> = {
+  1: "january",
+  2: "february",
+  3: "march",
+  4: "april",
+  5: "may",
+  6: "june",
+  7: "july",
+  8: "august",
+  9: "september",
+  10: "october",
+  11: "november",
+  12: "december",
+};
+
+const MONTH_SHORT_KEYS: Record<number, string> = {
+  1: "jan",
+  2: "feb",
+  3: "mar",
+  4: "apr",
+  5: "may_short",
+  6: "jun",
+  7: "jul",
+  8: "aug",
+  9: "sep",
+  10: "oct",
+  11: "nov",
+  12: "dec",
+};
 
 interface Props {
   issuesFilterStore: IProjectIssuesFilter | IModuleIssuesFilter | ICycleIssuesFilter | IProjectViewIssuesFilter;
@@ -28,6 +59,7 @@ export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(p
   const { issuesFilterStore } = props;
 
   const issueCalendarView = useCalendarView();
+  const { t } = useTranslation();
 
   const calendarLayout = issuesFilterStore.issueFilters?.displayFilters?.calendar?.layout ?? "month";
 
@@ -51,26 +83,26 @@ export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(p
   const getWeekLayoutHeader = (): string => {
     const allDaysOfActiveWeek = issueCalendarView.allDaysOfActiveWeek;
 
-    if (!allDaysOfActiveWeek) return "Week view";
+    if (!allDaysOfActiveWeek) return t("common.week_view");
 
     const daysList = Object.keys(allDaysOfActiveWeek);
 
     const firstDay = getDate(daysList[0]);
     const lastDay = getDate(daysList[daysList.length - 1]);
 
-    if (!firstDay || !lastDay) return "Week view";
+    if (!firstDay || !lastDay) return t("common.week_view");
 
     if (firstDay.getMonth() === lastDay.getMonth() && firstDay.getFullYear() === lastDay.getFullYear())
-      return `${MONTHS_LIST[firstDay.getMonth() + 1].title} ${firstDay.getFullYear()}`;
+      return `${t(`common.months.${MONTH_KEYS[firstDay.getMonth() + 1]}`)} ${firstDay.getFullYear()}`;
 
     if (firstDay.getFullYear() !== lastDay.getFullYear()) {
-      return `${MONTHS_LIST[firstDay.getMonth() + 1].shortTitle} ${firstDay.getFullYear()} - ${
-        MONTHS_LIST[lastDay.getMonth() + 1].shortTitle
-      } ${lastDay.getFullYear()}`;
+      return `${t(`common.months_short.${MONTH_SHORT_KEYS[firstDay.getMonth() + 1]}`)} ${firstDay.getFullYear()} - ${t(
+        `common.months_short.${MONTH_SHORT_KEYS[lastDay.getMonth() + 1]}`
+      )} ${lastDay.getFullYear()}`;
     } else
-      return `${MONTHS_LIST[firstDay.getMonth() + 1].shortTitle} - ${
-        MONTHS_LIST[lastDay.getMonth() + 1].shortTitle
-      } ${lastDay.getFullYear()}`;
+      return `${t(`common.months_short.${MONTH_SHORT_KEYS[firstDay.getMonth() + 1]}`)} - ${t(
+        `common.months_short.${MONTH_SHORT_KEYS[lastDay.getMonth() + 1]}`
+      )} ${lastDay.getFullYear()}`;
   };
 
   const handleDateChange = (date: Date) => {
@@ -89,7 +121,7 @@ export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(p
           disabled={calendarLayout === "week"}
         >
           {calendarLayout === "month"
-            ? `${MONTHS_LIST[activeMonthDate.getMonth() + 1].title} ${activeMonthDate.getFullYear()}`
+            ? `${t(`common.months.${MONTH_KEYS[activeMonthDate.getMonth() + 1]}`)} ${activeMonthDate.getFullYear()}`
             : getWeekLayoutHeader()}
         </button>
       </Popover.Button>
@@ -143,7 +175,7 @@ export const CalendarMonthsDropdown = observer(function CalendarMonthsDropdown(p
                     handleDateChange(newDate);
                   }}
                 >
-                  {month.shortTitle}
+                  {t(`common.months_short.${MONTH_SHORT_KEYS[index + 1]}`)}
                 </button>
               ))}
             </div>

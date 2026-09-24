@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { BoardLayoutIcon, ListLayoutIcon, TimelineLayoutIcon } from "@plane/propel/icons";
 import type { IBaseLayoutConfig } from "@plane/types";
 
@@ -11,16 +12,22 @@ export const BASE_LAYOUTS: IBaseLayoutConfig[] = [
   {
     key: "list",
     icon: ListLayoutIcon,
-    label: "List Layout",
+    get label() {
+      return i18nInstance.t("ui.list_layout_2");
+    },
   },
   {
     key: "kanban",
     icon: BoardLayoutIcon,
-    label: "Board Layout",
+    get label() {
+      return i18nInstance.t("ui.board_layout");
+    },
   },
   {
     key: "gantt",
     icon: TimelineLayoutIcon,
-    label: "Gantt Layout",
+    get label() {
+      return i18nInstance.t("ui.gantt_layout");
+    },
   },
 ];

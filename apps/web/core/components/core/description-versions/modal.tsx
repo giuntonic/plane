@@ -69,7 +69,7 @@ export const DescriptionVersionsModal = observer(function DescriptionVersionsMod
     setToast({
       type: TOAST_TYPE.SUCCESS,
       title: t("toast.success"),
-      message: "Markdown copied to clipboard.",
+      message: t("ui.markdown_copied_to_clipboard"),
     });
   }, [t]);
 

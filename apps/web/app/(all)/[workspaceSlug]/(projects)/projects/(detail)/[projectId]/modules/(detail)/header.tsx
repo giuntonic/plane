@@ -16,6 +16,7 @@ import {
   EUserPermissions,
   EUserPermissionsLevel,
 } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { ModuleIcon } from "@plane/propel/icons";
 import { Tooltip } from "@plane/propel/tooltip";
@@ -60,6 +61,7 @@ export const ModuleIssuesHeader = observer(function ModuleIssuesHeader() {
   const moduleId = routerModuleId ? routerModuleId.toString() : undefined;
   // hooks
   const { isMobile } = usePlatformOS();
+  const { t } = useTranslation();
   // store hooks
   const {
     issuesFilter: { issueFilters },
@@ -138,7 +140,7 @@ export const ModuleIssuesHeader = observer(function ModuleIssuesHeader() {
               <Breadcrumbs.Item
                 component={
                   <BreadcrumbLink
-                    label="Modules"
+                    label={t("common.modules")}
                     href={`/${workspaceSlug}/projects/${projectId}/modules/`}
                     icon={<ModuleIcon className="h-4 w-4 text-tertiary" />}
                     isLast
@@ -206,7 +208,7 @@ export const ModuleIssuesHeader = observer(function ModuleIssuesHeader() {
             </div>
             {moduleId && <WorkItemFiltersToggle entityType={EIssuesStoreType.MODULE} entityId={moduleId} />}
             <FiltersDropdown
-              title="Display"
+              title={t("common.display")}
               placement="bottom-end"
               miniIcon={<SlidersHorizontal className="size-3.5" />}
             >
@@ -228,7 +230,7 @@ export const ModuleIssuesHeader = observer(function ModuleIssuesHeader() {
           {canUserCreateIssue ? (
             <>
               <Button className="hidden md:block" onClick={() => setAnalyticsModal(true)} variant="secondary" size="lg">
-                <span className="hidden @4xl:flex">Analytics</span>
+                <span className="hidden @4xl:flex">{t("analytics")}</span>
                 <span className="@4xl:hidden">
                   <ChartNoAxesColumn className="size-3.5" />
                 </span>
@@ -241,7 +243,7 @@ export const ModuleIssuesHeader = observer(function ModuleIssuesHeader() {
                   toggleCreateIssueModal(true, EIssuesStoreType.MODULE);
                 }}
               >
-                Add work item
+                {t("add_work_item")}
               </Button>
             </>
           ) : (

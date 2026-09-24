@@ -59,6 +59,9 @@ export interface IProject extends IPartialProject {
   members?: string[];
   timezone?: string;
   next_work_item_sequence?: number;
+  // Pespo: dashboard do Metabase embutido no projeto
+  metabase_dashboard_id?: string | null;
+  metabase_cliente_id?: string | null;
 }
 
 export type TProjectAnalyticsCountParams = {

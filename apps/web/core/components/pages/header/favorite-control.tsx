@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { Star } from "lucide-react";
 // ui
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export const PageFavoriteControl = observer(function PageFavoriteControl({ page }: Props) {
+  const { t } = useTranslation();
   // derived values
   const { is_favorite, canCurrentUserFavoritePage } = page;
   // page operations
@@ -35,7 +37,7 @@ export const PageFavoriteControl = observer(function PageFavoriteControl({ page 
       onClick={() => {
         pageOperations.toggleFavorite();
       }}
-      aria-label={is_favorite ? "Remove favorite" : "Add to favorites"}
+      aria-label={is_favorite ? t("ui.remove_favorite") : t("add_to_favorites")}
       className={
         is_favorite ? "[&_svg]:fill-(--color-label-yellow-icon) [&_svg]:stroke-(--color-label-yellow-icon)" : ""
       }

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { Earth, Info, Minus } from "lucide-react";
 // plane imports
@@ -28,6 +29,7 @@ type Props = {
 };
 
 export const BlockItemAction = observer(function BlockItemAction(props: Props) {
+  const { t } = useTranslation();
   const { page, parentRef, storeType } = props;
   // store hooks
   const { getUserDetails } = useMember();
@@ -43,12 +45,12 @@ export const BlockItemAction = observer(function BlockItemAction(props: Props) {
     <>
       {/* page details */}
       <div className="cursor-default">
-        <Tooltip tooltipHeading="Owned by" tooltipContent={ownerDetails?.display_name}>
+        <Tooltip tooltipHeading={t("ui.owned_by_2")} tooltipContent={ownerDetails?.display_name}>
           <Avatar src={getFileURL(ownerDetails?.avatar_url ?? "")} name={ownerDetails?.display_name} />
         </Tooltip>
       </div>
       <div className="cursor-default text-tertiary">
-        <Tooltip tooltipContent={access === 0 ? "Public" : "Private"}>
+        <Tooltip tooltipContent={access === 0 ? t("public") : t("private")}>
           {access === 0 ? <Earth className="h-4 w-4" /> : <LockIcon className="h-4 w-4" />}
         </Tooltip>
       </div>

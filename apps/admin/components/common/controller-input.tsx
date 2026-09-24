@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState } from "react";
 import type { Control, FieldPath, FieldValues } from "react-hook-form";
 import { Controller } from "react-hook-form";
@@ -38,6 +39,7 @@ export type TControllerInputFormField<TFieldValues extends FieldValues = FieldVa
 };
 
 export function ControllerInput<TFieldValues extends FieldValues = FieldValues>(props: Props<TFieldValues>) {
+  const { t } = useTranslation();
   const { name, control, type, label, description, placeholder, error, required } = props;
   // states
   const [showPassword, setShowPassword] = useState(false);
@@ -70,7 +72,7 @@ export function ControllerInput<TFieldValues extends FieldValues = FieldValues>(
           (showPassword ? (
             <button
               type="button"
-              aria-label="Hide password"
+              aria-label={t("ui.hide_password")}
               className="absolute top-2.5 right-3 flex items-center justify-center text-placeholder"
               onClick={() => setShowPassword(false)}
             >
@@ -79,7 +81,7 @@ export function ControllerInput<TFieldValues extends FieldValues = FieldValues>(
           ) : (
             <button
               type="button"
-              aria-label="Show password"
+              aria-label={t("ui.show_password")}
               className="absolute top-2.5 right-3 flex items-center justify-center text-placeholder"
               onClick={() => setShowPassword(true)}
             >

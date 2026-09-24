@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState } from "react";
 import { observer } from "mobx-react";
 import { copyUrlToClipboard, generateWorkItemLink } from "@plane/utils";
@@ -23,6 +24,7 @@ type TCreateIssueToastActionItems = {
 export const CreateIssueToastActionItems = observer(function CreateIssueToastActionItems(
   props: TCreateIssueToastActionItems
 ) {
+  const { t } = useTranslation();
   const { workspaceSlug, issueId, isEpic = false } = props;
   // state
   const [copied, setCopied] = useState(false);
@@ -72,7 +74,7 @@ export const CreateIssueToastActionItems = observer(function CreateIssueToastAct
 
       {copied ? (
         <>
-          <span className="cursor-default px-2 py-1 text-secondary">Copied!</span>
+          <span className="cursor-default px-2 py-1 text-secondary">{t("common.copied")}</span>
         </>
       ) : (
         <>
@@ -80,7 +82,7 @@ export const CreateIssueToastActionItems = observer(function CreateIssueToastAct
             className="hidden cursor-pointer rounded-sm px-2 py-1 text-tertiary group-hover:flex hover:bg-surface-2 hover:text-secondary"
             onClick={copyToClipboard}
           >
-            Copy link
+            {t("copy_link")}
           </button>
         </>
       )}

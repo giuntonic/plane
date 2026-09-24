@@ -319,7 +319,8 @@ export function LabelDropdown(props: ILabelDropdownProps) {
                     {/* TODO: translate here */}
                     {query.length ? (
                       <>
-                        + Add <span className="text-primary">&quot;{query}&quot;</span> to labels
+                        {t("ui.jsx_add")} <span className="text-primary">&quot;{query}&quot;</span>{" "}
+                        {t("ui.jsx_to_labels")}
                       </>
                     ) : (
                       t("label.create.type")

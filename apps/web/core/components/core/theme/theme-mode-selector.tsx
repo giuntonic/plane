@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
@@ -15,12 +16,14 @@ type Props = {
 };
 
 export const CustomThemeModeSelector = observer(function CustomThemeModeSelector(props: Props) {
+  const { t } = useTranslation();
   const { control } = props;
 
   return (
     <div>
       <h6 className="text-h6-medium">
-        Choose color mode<span className="text-danger-primary">*</span>
+        {t("ui.jsx_choose_color_mode")}
+        <span className="text-danger-primary">*</span>
       </h6>
       <Controller
         control={control}
@@ -36,7 +39,7 @@ export const CustomThemeModeSelector = observer(function CustomThemeModeSelector
                 onChange={() => onChange(false)}
                 className="cursor-pointer"
               />
-              Light mode
+              {t("ui.light_mode")}
             </label>
             <label className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-subtle-1 bg-layer-2 px-3 py-2 text-body-sm-regular transition-colors hover:bg-layer-2-hover">
               <input
@@ -47,7 +50,7 @@ export const CustomThemeModeSelector = observer(function CustomThemeModeSelector
                 onChange={() => onChange(true)}
                 className="cursor-pointer"
               />
-              Dark mode
+              {t("ui.dark_mode")}
             </label>
           </div>
         )}

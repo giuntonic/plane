@@ -207,7 +207,7 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                         >
                           <div className="flex w-full min-w-24 flex-grow items-center gap-1.5 truncate">
                             <IssueIdentifier issueId={issue.id} projectId={projectId} size="xs" variant="secondary" />
-                            <Tooltip position="top-start" tooltipHeading="Title" tooltipContent={issue.name}>
+                            <Tooltip position="top-start" tooltipHeading={t("title")} tooltipContent={issue.name}>
                               <span className="truncate text-13 text-primary">{issue.name}</span>
                             </Tooltip>
                           </div>
@@ -224,7 +224,7 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                             />
                             {issue.target_date && (
                               <Tooltip
-                                tooltipHeading="Target Date"
+                                tooltipHeading={t("ui.target_date")}
                                 tooltipContent={renderFormattedDate(issue.target_date)}
                               >
                                 <div className="flex h-full cursor-pointer items-center gap-1.5 truncate rounded-sm bg-layer-1 px-2 py-0.5 text-11 group-hover:bg-surface-1">
@@ -301,7 +301,13 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                         title={
                           <div className="flex items-center gap-2">
                             <div className="h-5 w-5 rounded-full border-2 border-subtle bg-layer-1">
-                              <img src={userImage} height="100%" width="100%" className="rounded-full" alt="User" />
+                              <img
+                                src={userImage}
+                                height="100%"
+                                width="100%"
+                                className="rounded-full"
+                                alt={t("ui.user")}
+                              />
                             </div>
                             <span>{t("no_assignee")}</span>
                           </div>
@@ -341,7 +347,7 @@ export const ActiveCycleStats = observer(function ActiveCycleStats(props: Active
                             backgroundColor: label.color ?? "#000000",
                           }}
                         />
-                        <span className="truncate text-11 text-ellipsis">{label.label_name ?? "No labels"}</span>
+                        <span className="truncate text-11 text-ellipsis">{label.label_name ?? t("ui.no_labels")}</span>
                       </div>
                     }
                     completed={label.completed_issues}

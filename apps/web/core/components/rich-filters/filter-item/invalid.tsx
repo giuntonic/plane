@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { observer } from "mobx-react";
 import { CircleAlert } from "lucide-react";
@@ -19,6 +20,7 @@ export const InvalidFilterItem = observer(function InvalidFilterItem<
   P extends TFilterProperty,
   E extends TExternalFilter,
 >(props: IFilterItemProps<P, E>) {
+  const { t } = useTranslation();
   const { condition, filter, isDisabled = false, showTransition = true } = props;
 
   return (
@@ -26,13 +28,13 @@ export const InvalidFilterItem = observer(function InvalidFilterItem<
       conditionValue={condition.value}
       showTransition={showTransition}
       variant="error"
-      tooltipContent="This filter condition is no longer valid. The property may have been deleted or your access to it may have changed."
+      tooltipContent={t("ui.this_filter_condition_is_no_longer_valid")}
     >
       {/* Property section */}
       <FilterItemProperty
         conditionId={condition.id}
         icon={CircleAlert}
-        label="Invalid filter"
+        label={t("ui.invalid_filter")}
         filter={filter}
         isDisabled={isDisabled}
       />

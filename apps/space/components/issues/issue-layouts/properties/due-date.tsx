@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { DueDatePropertyIcon } from "@plane/propel/icons";
 import { Tooltip } from "@plane/propel/tooltip";
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export const IssueBlockDate = observer(function IssueBlockDate(props: Props) {
+  const { t } = useTranslation();
   const { due_date, stateId, shouldHighLight = true, shouldShowBorder = true } = props;
   const { getStateById } = useStates();
 
@@ -30,7 +32,7 @@ export const IssueBlockDate = observer(function IssueBlockDate(props: Props) {
   const formattedDate = renderFormattedDate(due_date);
 
   return (
-    <Tooltip tooltipHeading="Due Date" tooltipContent={formattedDate}>
+    <Tooltip tooltipHeading={t("ui.due_date")} tooltipContent={formattedDate}>
       <div
         className={cn("flex h-full items-center gap-1 rounded-sm px-2.5 py-1 text-11 text-primary", {
           "text-danger-primary": shouldHighLight && due_date && shouldHighlightIssueDueDate(due_date, state?.group),
@@ -38,7 +40,7 @@ export const IssueBlockDate = observer(function IssueBlockDate(props: Props) {
         })}
       >
         <DueDatePropertyIcon className="size-3 flex-shrink-0" />
-        {formattedDate ? formattedDate : "No Date"}
+        {formattedDate ? formattedDate : t("ui.no_date")}
       </div>
     </Tooltip>
   );

@@ -206,8 +206,9 @@ export const IssueLabelSelect = observer(function IssueLabelSelect(props: IIssue
                   >
                     {query.length ? (
                       <>
-                        {/* TODO: Translate here */}+ Add <span className="text-primary">&quot;{query}&quot;</span> to
-                        labels
+                        {/* TODO: Translate here */}
+                        {t("ui.jsx_add")} <span className="text-primary">&quot;{query}&quot;</span>{" "}
+                        {t("ui.jsx_to_labels")}
                       </>
                     ) : (
                       t("label.create.type")

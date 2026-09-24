@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { isEmpty } from "lodash-es";
 import Link from "next/link";
@@ -37,6 +38,7 @@ const GITLAB_FORM_SWITCH_FIELD: TControllerSwitchFormField<GitlabConfigFormValue
 };
 
 export function InstanceGitlabConfigForm(props: Props) {
+  const { t } = useTranslation();
   const { config } = props;
   // states
   const [isDiscardChangesModalOpen, setIsDiscardChangesModalOpen] = useState(false);
@@ -63,10 +65,11 @@ export function InstanceGitlabConfigForm(props: Props) {
     {
       key: "GITLAB_HOST",
       type: "text",
-      label: "Host",
+      label: t("ui.host"),
       description: (
         <>
-          This is either https://gitlab.com or the <CodeBlock>domain.tld</CodeBlock> where you host GitLab.
+          {t("ui.jsx_this_is_either_https_gitlab_com_or")} <CodeBlock>domain.tld</CodeBlock>{" "}
+          {t("ui.jsx_where_you_host_gitlab")}
         </>
       ),
       placeholder: "https://gitlab.com",
@@ -76,17 +79,17 @@ export function InstanceGitlabConfigForm(props: Props) {
     {
       key: "GITLAB_CLIENT_ID",
       type: "text",
-      label: "Application ID",
+      label: t("ui.application_id"),
       description: (
         <>
-          Get this from your{" "}
+          {t("ui.jsx_get_this_from_your")}{" "}
           <a
             href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
             target="_blank"
             className="text-accent-primary hover:underline"
             rel="noreferrer"
           >
-            GitLab OAuth application settings
+            {t("ui.gitlab_oauth_application_settings")}
           </a>
           .
         </>
@@ -98,17 +101,17 @@ export function InstanceGitlabConfigForm(props: Props) {
     {
       key: "GITLAB_CLIENT_SECRET",
       type: "password",
-      label: "Secret",
+      label: t("ui.secret"),
       description: (
         <>
-          The client secret is also found in your{" "}
+          {t("ui.jsx_the_client_secret_is_also_found_in")}{" "}
           <a
             href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
             target="_blank"
             className="text-accent-primary hover:underline"
             rel="noreferrer"
           >
-            GitLab OAuth application settings
+            {t("ui.gitlab_oauth_application_settings")}
           </a>
           .
         </>
@@ -122,18 +125,19 @@ export function InstanceGitlabConfigForm(props: Props) {
   const GITLAB_SERVICE_FIELD: TCopyField[] = [
     {
       key: "Callback_URL",
-      label: "Callback URL",
+      label: t("ui.callback_url"),
       url: `${originURL}/auth/gitlab/callback/`,
       description: (
         <>
-          We will auto-generate this. Paste this into the <CodeBlock darkerShade>Redirect URI</CodeBlock> field of your{" "}
+          {t("ui.jsx_we_will_auto_generate_this_paste_this_2")}{" "}
+          <CodeBlock darkerShade>{t("ui.jsx_redirect_uri")}</CodeBlock> {t("ui.jsx_field_of_your")}{" "}
           <a
             href="https://docs.gitlab.com/ee/integration/oauth_provider.html"
             target="_blank"
             className="text-accent-primary hover:underline"
             rel="noreferrer"
           >
-            GitLab OAuth application
+            {t("ui.gitlab_oauth_application")}
           </a>
           .
         </>
@@ -148,8 +152,8 @@ export function InstanceGitlabConfigForm(props: Props) {
       const response = await updateInstanceConfigurations(payload);
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Done!",
-        message: "Your GitLab authentication is configured. You should test it now.",
+        title: t("ui.done"),
+        message: t("ui.your_gitlab_authentication_is_configured_you_should"),
       });
       reset({
         GITLAB_HOST: response.find((item) => item.key === "GITLAB_HOST")?.value,
@@ -179,7 +183,7 @@ export function InstanceGitlabConfigForm(props: Props) {
       <div className="flex flex-col gap-8">
         <div className="grid w-full grid-cols-2 gap-x-12 gap-y-8">
           <div className="col-span-2 flex flex-col gap-y-4 pt-1 md:col-span-1">
-            <div className="pt-2.5 text-18 font-medium">GitLab-provided details for Plane</div>
+            <div className="pt-2.5 text-18 font-medium">{t("ui.gitlab_provided_details_for_plane")}</div>
             {GITLAB_FORM_FIELDS.map((field) => (
               <ControllerInput
                 key={field.key}
@@ -203,17 +207,17 @@ export function InstanceGitlabConfigForm(props: Props) {
                   loading={isSubmitting}
                   disabled={!isDirty}
                 >
-                  {isSubmitting ? "Saving" : "Save changes"}
+                  {isSubmitting ? t("saving") : t("save_changes")}
                 </Button>
                 <Link href="/authentication" className={getButtonStyling("secondary", "lg")} onClick={handleGoBack}>
-                  Go back
+                  {t("common.go_back")}
                 </Link>
               </div>
             </div>
           </div>
           <div className="col-span-2 md:col-span-1">
             <div className="flex flex-col gap-y-4 rounded-lg bg-layer-3 px-6 pt-1.5 pb-4">
-              <div className="pt-2 text-18 font-medium">Plane-provided details for GitLab</div>
+              <div className="pt-2 text-18 font-medium">{t("ui.plane_provided_details_for_gitlab")}</div>
               {GITLAB_SERVICE_FIELD.map((field) => (
                 <CopyField key={field.key} label={field.label} url={field.url} description={field.description} />
               ))}

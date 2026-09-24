@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // icons
 import type { LucideIcon } from "lucide-react";
@@ -61,6 +62,7 @@ export const ButtonAvatars = observer(function ButtonAvatars(props: AvatarProps)
 });
 
 export const IssueBlockMembers = observer(function IssueBlockMembers({ memberIds, shouldShowBorder = true }: Props) {
+  const { t } = useTranslation();
   const { getMembersByIds } = useMember();
 
   const members = getMembersByIds(memberIds);
@@ -75,7 +77,7 @@ export const IssueBlockMembers = observer(function IssueBlockMembers({ memberIds
         <div className="flex items-center gap-1.5 text-secondary">
           <ButtonAvatars members={members} showTooltip={false} />
           {!shouldShowBorder && members.length <= 1 && (
-            <span>{members?.[0]?.member__display_name ?? "No Assignees"}</span>
+            <span>{members?.[0]?.member__display_name ?? t("ui.no_assignees")}</span>
           )}
         </div>
       </div>

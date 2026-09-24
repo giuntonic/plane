@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import Link from "next/link";
 // headless ui
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function ConfirmDiscardModal(props: Props) {
+  const { t } = useTranslation();
   const { isOpen, handleClose, onDiscardHref } = props;
 
   return (
@@ -50,22 +52,20 @@ export function ConfirmDiscardModal(props: Props) {
                   <div className="sm:flex sm:items-start">
                     <div className="mt-3 text-center sm:mt-0 sm:text-left">
                       <Dialog.Title as="h3" className="text-16 leading-6 font-medium text-tertiary">
-                        You have unsaved changes
+                        {t("ui.you_have_unsaved_changes")}
                       </Dialog.Title>
                       <div className="mt-2">
-                        <p className="text-13 text-placeholder">
-                          Changes you made will be lost if you go back. Do you wish to go back?
-                        </p>
+                        <p className="text-13 text-placeholder">{t("ui.jsx_changes_you_made_will_be_lost_if")}</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center justify-end gap-2 p-4 sm:px-6">
                   <Button variant="secondary" size="lg" onClick={handleClose}>
-                    Keep editing
+                    {t("ui.keep_editing")}
                   </Button>
                   <Link href={onDiscardHref} className={getButtonStyling("primary", "base")}>
-                    Go back
+                    {t("common.go_back")}
                   </Link>
                 </div>
               </Dialog.Panel>

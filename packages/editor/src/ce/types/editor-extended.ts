@@ -6,7 +6,13 @@
 
 export type IEditorExtensionOptions = unknown;
 
-export type IEditorPropsExtended = unknown;
+// Pespo: callback pro botão "Aprovar edição" do embed do Clapshot — ver
+// packages/editor/src/ce/extensions/clapshot-embed. Threading segue o
+// mesmo padrão do fileHandler (apps/web fecha sobre suas próprias stores
+// e injeta a função aqui, o editor genérico nunca conhece @/hooks/store).
+export type IEditorPropsExtended = {
+  onApproveEdit?: () => Promise<void>;
+};
 
 export type ICollaborativeDocumentEditorPropsExtended = unknown;
 

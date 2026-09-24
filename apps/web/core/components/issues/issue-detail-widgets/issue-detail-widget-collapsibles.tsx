@@ -14,6 +14,7 @@ import { useTimeLineRelationOptions } from "@/components/relations";
 // local imports
 import { AttachmentsCollapsible } from "./attachments";
 import { LinksCollapsible } from "./links";
+import { PecaMarkingCollapsible } from "./peca-marking";
 import { RelationsCollapsible } from "./relations";
 import { SubIssuesCollapsible } from "./sub-issues";
 
@@ -80,6 +81,15 @@ export const IssueDetailWidgetCollapsibles = observer(function IssueDetailWidget
       )}
       {shouldRenderAttachments && (
         <AttachmentsCollapsible
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          disabled={disabled}
+          issueServiceType={issueServiceType}
+        />
+      )}
+      {!hideWidgets?.includes("peca-marking") && (
+        <PecaMarkingCollapsible
           workspaceSlug={workspaceSlug}
           projectId={projectId}
           issueId={issueId}

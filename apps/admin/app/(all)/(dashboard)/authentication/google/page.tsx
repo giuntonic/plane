@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
@@ -24,6 +25,7 @@ import { InstanceGoogleConfigForm } from "./form";
 const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthenticationPage(
   _props: Route.ComponentProps
 ) {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig, updateInstanceConfigurations } = useInstance();
   // state
@@ -43,13 +45,13 @@ const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthent
     const updateConfigPromise = updateInstanceConfigurations(payload);
 
     setPromiseToast(updateConfigPromise, {
-      loading: "Saving Configuration",
+      loading: t("ui.saving_configuration"),
       success: {
-        title: "Configuration saved",
+        title: t("ui.configuration_saved"),
         message: () => `Google authentication is now ${value === "1" ? "active" : "disabled"}.`,
       },
       error: {
-        title: "Error",
+        title: t("error"),
         message: () => "Failed to save configuration",
       },
     });
@@ -70,7 +72,7 @@ const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthent
           name="Google"
           description="Allow members to login or sign up to plane with their Google
             accounts."
-          icon={<img src={GoogleLogo} height={24} width={24} alt="Google Logo" />}
+          icon={<img src={GoogleLogo} height={24} width={24} alt={t("ui.google_logo")} />}
           config={
             <ToggleSwitch
               value={Boolean(parseInt(enableGoogleConfig))}
@@ -105,6 +107,12 @@ const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthent
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "Google Authentication - God Mode" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.google_authentication_god_mode");
+    },
+  },
+];
 
 export default InstanceGoogleAuthenticationPage;

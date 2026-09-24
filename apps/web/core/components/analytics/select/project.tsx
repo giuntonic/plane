@@ -6,6 +6,7 @@
 
 import { observer } from "mobx-react";
 // plane package imports
+import { useTranslation } from "@plane/i18n";
 import { getButtonStyling } from "@plane/propel/button";
 import { Logo } from "@plane/propel/emoji-icon-picker";
 import { ChevronDownIcon, ProjectIcon } from "@plane/propel/icons";
@@ -23,6 +24,7 @@ type Props = {
 export const ProjectSelect = observer(function ProjectSelect(props: Props) {
   const { value, onChange, projectIds } = props;
   const { getProjectById } = useProject();
+  const { t } = useTranslation();
 
   const options = projectIds?.map((projectId) => {
     const projectDetails = getProjectById(projectId);
@@ -59,7 +61,7 @@ export const ProjectSelect = observer(function ProjectSelect(props: Props) {
                   ?.filter((p) => value.includes(p))
                   .map((p) => getProjectById(p)?.name)
                   .join(", ")
-              : "All projects"}
+              : t("workspace_analytics.all_projects")}
           <ChevronDownIcon className="h-3 w-3" aria-hidden="true" />
         </div>
       }

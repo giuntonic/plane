@@ -8,6 +8,7 @@ import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import { LayoutDashboard } from "lucide-react";
 // plane imports
+import { useTranslation } from "@plane/i18n";
 import { Breadcrumbs, Header } from "@plane/ui";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
@@ -15,6 +16,7 @@ import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
 import { useDashboards } from "@/hooks/store/use-dashboards";
 
 export const MyDashboardDetailHeader = observer(function MyDashboardDetailHeader() {
+  const { t } = useTranslation();
   const params = useParams();
   const workspaceSlug = params.workspaceSlug.toString();
   const dashboardId = params.dashboardId?.toString();
@@ -29,7 +31,7 @@ export const MyDashboardDetailHeader = observer(function MyDashboardDetailHeader
             component={
               <BreadcrumbLink
                 href={`/${workspaceSlug}/my-dashboards/`}
-                label="My dashboards"
+                label={t("sidebar.my_dashboards")}
                 icon={<LayoutDashboard className="h-4 w-4 text-tertiary" />}
               />
             }

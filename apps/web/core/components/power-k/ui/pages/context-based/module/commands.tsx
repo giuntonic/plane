@@ -46,8 +46,8 @@ export const usePowerKModuleContextBasedActions = (): TPowerKCommandConfig[] => 
         () => {
           setToast({
             type: TOAST_TYPE.ERROR,
-            title: "Error!",
-            message: "Module could not be updated. Please try again.",
+            title: t("toast.error"),
+            message: t("module.could_not_be_updated"),
           });
         }
       );
@@ -76,7 +76,7 @@ export const usePowerKModuleContextBasedActions = (): TPowerKCommandConfig[] => 
     } catch {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Some error occurred",
+        title: t("ui.some_error_occurred"),
       });
     }
   }, [addModuleToFavorites, removeModuleFromFavorites, workspaceSlug, moduleDetails, isFavorite]);

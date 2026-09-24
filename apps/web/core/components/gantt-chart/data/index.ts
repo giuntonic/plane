@@ -4,9 +4,44 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 // types
 import type { WeekMonthDataType, ChartDataType, TGanttViews } from "@plane/types";
 import { EStartOfTheWeek } from "@plane/types";
+
+// Pespo: shortTitle values here don't always line up with the i18n key
+// names in common.json (e.g. "thurs" vs "thu", "sept" vs "sep"), so we
+// map them explicitly instead of assuming a 1:1 match.
+const DAY_SHORT_I18N_KEY: Record<string, string> = {
+  sun: "sun",
+  mon: "mon",
+  tue: "tue",
+  wed: "wed",
+  thurs: "thu",
+  fri: "fri",
+  sat: "sat",
+};
+
+const MONTH_SHORT_I18N_KEY: Record<string, string> = {
+  jan: "jan",
+  feb: "feb",
+  mar: "mar",
+  apr: "apr",
+  may: "may_short",
+  jun: "jun",
+  jul: "jul",
+  aug: "aug",
+  sept: "sep",
+  oct: "oct",
+  nov: "nov",
+  dec: "dec",
+};
+
+export const translateDayShort = (shortTitle: string) =>
+  i18nInstance.t(`common.days_short.${DAY_SHORT_I18N_KEY[shortTitle] ?? shortTitle}`);
+export const translateMonthFull = (title: string) => i18nInstance.t(`common.months.${title}`);
+export const translateMonthShort = (shortTitle: string) =>
+  i18nInstance.t(`common.months_short.${MONTH_SHORT_I18N_KEY[shortTitle] ?? shortTitle}`);
 
 // constants
 export const generateWeeks = (startOfWeek: EStartOfTheWeek = EStartOfTheWeek.SUNDAY): WeekMonthDataType[] => [
@@ -40,10 +75,38 @@ export const months: WeekMonthDataType[] = [
 ];
 
 export const quarters: WeekMonthDataType[] = [
-  { key: 0, shortTitle: "Q1", title: "Jan - Mar", abbreviation: "Q1" },
-  { key: 1, shortTitle: "Q2", title: "Apr - Jun", abbreviation: "Q2" },
-  { key: 2, shortTitle: "Q3", title: "Jul - Sept", abbreviation: "Q3" },
-  { key: 3, shortTitle: "Q4", title: "Oct - Dec", abbreviation: "Q4" },
+  {
+    key: 0,
+    shortTitle: "Q1",
+    get title() {
+      return i18nInstance.t("ui.jan_mar");
+    },
+    abbreviation: "Q1",
+  },
+  {
+    key: 1,
+    shortTitle: "Q2",
+    get title() {
+      return i18nInstance.t("ui.apr_jun");
+    },
+    abbreviation: "Q2",
+  },
+  {
+    key: 2,
+    shortTitle: "Q3",
+    get title() {
+      return i18nInstance.t("ui.jul_sept");
+    },
+    abbreviation: "Q3",
+  },
+  {
+    key: 3,
+    shortTitle: "Q4",
+    get title() {
+      return i18nInstance.t("ui.oct_dec");
+    },
+    abbreviation: "Q4",
+  },
 ];
 
 export const charCapitalize = (word: string) => `${word.charAt(0).toUpperCase()}${word.substring(1)}`;

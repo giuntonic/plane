@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState, useRef } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
@@ -20,23 +21,30 @@ import { useInstance, useTheme } from "@/hooks/store";
 
 const helpOptions = [
   {
-    name: "Documentation",
+    get name() {
+      return i18nInstance.t("documentation");
+    },
     href: "https://docs.plane.so/",
     Icon: PageIcon,
   },
   {
-    name: "Join our Forum",
+    get name() {
+      return i18nInstance.t("ui.join_our_forum");
+    },
     href: "https://forum.plane.so",
     Icon: MessageSquare,
   },
   {
-    name: "Report a bug",
+    get name() {
+      return i18nInstance.t("ui.report_a_bug");
+    },
     href: "https://github.com/makeplane/plane/issues/new/choose",
     Icon: GithubIcon,
   },
 ];
 
 export const AdminSidebarHelpSection = observer(function AdminSidebarHelpSection() {
+  const { t } = useTranslation();
   // states
   const [isNeedHelpOpen, setIsNeedHelpOpen] = useState(false);
   // store
@@ -57,7 +65,12 @@ export const AdminSidebarHelpSection = observer(function AdminSidebarHelpSection
       )}
     >
       <div className={`flex items-center gap-1 ${isSidebarCollapsed ? "flex-col justify-center" : "w-full"}`}>
-        <Tooltip tooltipContent="Redirect to Plane" position="right" className="ml-4" disabled={!isSidebarCollapsed}>
+        <Tooltip
+          tooltipContent={t("ui.redirect_to_plane")}
+          position="right"
+          className="ml-4"
+          disabled={!isSidebarCollapsed}
+        >
           <a
             href={redirectionLink}
             className={`relative flex items-center gap-1 rounded-sm bg-layer-1 px-2 py-1 text-body-xs-medium whitespace-nowrap text-secondary`}
@@ -66,10 +79,10 @@ export const AdminSidebarHelpSection = observer(function AdminSidebarHelpSection
             {!isSidebarCollapsed && "Redirect to Plane"}
           </a>
         </Tooltip>
-        <Tooltip tooltipContent="Help" position={isSidebarCollapsed ? "right" : "top"} className="ml-4">
+        <Tooltip tooltipContent={t("ui.help")} position={isSidebarCollapsed ? "right" : "top"} className="ml-4">
           <button
             type="button"
-            aria-label="Help"
+            aria-label={t("ui.help")}
             className={`ml-auto grid place-items-center rounded-md p-1.5 text-secondary outline-none hover:bg-layer-1-hover hover:text-primary ${
               isSidebarCollapsed ? "w-full" : ""
             }`}
@@ -78,10 +91,14 @@ export const AdminSidebarHelpSection = observer(function AdminSidebarHelpSection
             <HelpCircle className="size-4" />
           </button>
         </Tooltip>
-        <Tooltip tooltipContent="Toggle sidebar" position={isSidebarCollapsed ? "right" : "top"} className="ml-4">
+        <Tooltip
+          tooltipContent={t("ui.toggle_sidebar")}
+          position={isSidebarCollapsed ? "right" : "top"}
+          className="ml-4"
+        >
           <button
             type="button"
-            aria-label="Toggle sidebar"
+            aria-label={t("ui.toggle_sidebar")}
             className={`grid place-items-center rounded-md p-1.5 text-secondary outline-none hover:bg-layer-1-hover hover:text-primary ${
               isSidebarCollapsed ? "w-full" : ""
             }`}

@@ -19,6 +19,7 @@ from .draft import (
 )
 from .estimate import Estimate, EstimatePoint
 from .exporter import ExporterHistory
+from .google_calendar import GoogleCalendarConnection, SyncedCalendarEvent
 from .importer import Importer
 from .intake import Intake, IntakeIssue
 from .integration import (
@@ -75,6 +76,7 @@ from .workspace import (
     WorkspaceTheme,
     WorkspaceUserProperties,
     WorkspaceUserLink,
+    WorkspaceUserTask,
     WorkspaceHomePreference,
     WorkspaceUserPreference,
 )

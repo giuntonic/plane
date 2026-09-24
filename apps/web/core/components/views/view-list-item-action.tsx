@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -33,6 +34,7 @@ type Props = {
 };
 
 export const ViewListItemAction = observer(function ViewListItemAction(props: Props) {
+  const { t } = useTranslation();
   const { parentRef, view } = props;
   // states
   const [createUpdateViewModal, setCreateUpdateViewModal] = useState(false);
@@ -91,7 +93,7 @@ export const ViewListItemAction = observer(function ViewListItemAction(props: Pr
       )}
       <DeleteProjectViewModal data={view} isOpen={deleteViewModal} onClose={() => setDeleteViewModal(false)} />
       <div className="cursor-default text-tertiary">
-        <Tooltip tooltipContent={access === EViewAccess.PUBLIC ? "Public" : "Private"}>
+        <Tooltip tooltipContent={access === EViewAccess.PUBLIC ? t("public") : t("private")}>
           {access === EViewAccess.PUBLIC ? <Earth className="h-4 w-4" /> : <LockIcon className="h-4 w-4" />}
         </Tooltip>
       </div>
@@ -103,7 +105,7 @@ export const ViewListItemAction = observer(function ViewListItemAction(props: Pr
           onClick={() => setPublishModalOpen(true)}
         >
           <span className="size-1.5 flex-shrink-0 rounded-full bg-success-primary" />
-          Live
+          {t("common.live")}
         </div>
       ) : (
         <></>

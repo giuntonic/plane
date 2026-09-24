@@ -52,8 +52,8 @@ export const DeleteModuleModal = observer(function DeleteModuleModal(props: Prop
         handleClose();
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Module deleted successfully.",
+          title: t("toast.success"),
+          message: t("ui.module_deleted_successfully"),
         });
       })
       .catch((errors) => {
@@ -76,12 +76,12 @@ export const DeleteModuleModal = observer(function DeleteModuleModal(props: Prop
       handleSubmit={handleDeletion}
       isSubmitting={isDeleteLoading}
       isOpen={isOpen}
-      title="Delete module"
+      title={t("ui.delete_module")}
       content={
         <>
-          Are you sure you want to delete module-{" "}
-          <span className="font-medium break-all text-primary">{data?.name}</span>? All of the data related to the
-          module will be permanently removed. This action cannot be undone.
+          {t("ui.jsx_are_you_sure_you_want_to_delete_3")}{" "}
+          <span className="font-medium break-all text-primary">{data?.name}</span>
+          {t("ui.jsx_all_of_the_data_related_to_the")}
         </>
       }
     />

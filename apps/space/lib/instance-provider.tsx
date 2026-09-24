@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { Link } from "react-router";
 import { useTheme } from "next-themes";
@@ -22,6 +23,7 @@ import { useInstance } from "@/hooks/store/use-instance";
 import { useUser } from "@/hooks/store/use-user";
 
 export const InstanceProvider = observer(function InstanceProvider({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation();
   const { fetchInstanceInfo, instance, error } = useInstance();
   const { fetchCurrentUser } = useUser();
   const { resolvedTheme } = useTheme();
@@ -58,7 +60,11 @@ export const InstanceProvider = observer(function InstanceProvider({ children }:
             </div>
           </div>
           <div className="absolute inset-0 z-0">
-            <img src={patternBackground} className="h-full w-screen object-cover" alt="Plane background pattern" />
+            <img
+              src={patternBackground}
+              className="h-full w-screen object-cover"
+              alt={t("ui.plane_background_pattern")}
+            />
           </div>
           <div className="relative z-10 flex-grow">
             <div className="relative mx-auto flex h-full w-full items-center justify-center overflow-y-auto px-6 py-10">

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 // ui
 import { Button } from "@plane/propel/button";
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function SingleExport({ service, refreshing }: Props) {
+  const { t } = useTranslation();
   const provider = service.provider;
 
   const [isLoading] = useState(false);
@@ -35,7 +37,7 @@ export function SingleExport({ service, refreshing }: Props) {
       <div>
         <h4 className="flex items-center gap-2 text-13">
           <span>
-            Export to{" "}
+            {t("ui.jsx_export_to")}{" "}
             <span className="font-medium">
               {provider === "csv" ? "CSV" : provider === "xlsx" ? "Excel" : provider === "json" ? "JSON" : ""}
             </span>{" "}
@@ -53,12 +55,14 @@ export function SingleExport({ service, refreshing }: Props) {
                       : ""
             }`}
           >
-            {refreshing ? "Refreshing..." : service.status}
+            {refreshing ? t("ui.refreshing") : service.status}
           </span>
         </h4>
         <div className="mt-2 flex items-center gap-2 text-11 text-secondary">
           <span>{renderFormattedDate(service.created_at)}</span>|
-          <span>Exported by {service?.initiated_by_detail?.display_name}</span>
+          <span>
+            {t("ui.jsx_exported_by")} {service?.initiated_by_detail?.display_name}
+          </span>
         </div>
       </div>
       {checkExpiry(service.created_at) ? (
@@ -67,14 +71,14 @@ export function SingleExport({ service, refreshing }: Props) {
             <div>
               <a target="_blank" href={service?.url} rel="noopener noreferrer">
                 <Button variant="primary" className="w-full">
-                  {isLoading ? "Downloading..." : "Download"}
+                  {isLoading ? t("ui.downloading") : t("ui.download")}
                 </Button>
               </a>
             </div>
           )}
         </>
       ) : (
-        <div className="text-11 text-danger-primary">Expired</div>
+        <div className="text-11 text-danger-primary">{t("ui.expired")}</div>
       )}
     </div>
   );

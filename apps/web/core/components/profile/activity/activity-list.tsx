@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export const ActivityList = observer(function ActivityList(props: Props) {
+  const { t } = useTranslation();
   const { activity } = props;
   // params
   const { workspaceSlug } = useParams();
@@ -72,7 +74,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                             : activityItem.actor_detail.display_name}
                         </div>
                         <p className="mt-0.5 text-11 text-secondary">
-                          Commented {calculateTimeAgo(activityItem.created_at)}
+                          {t("ui.jsx_commented_2")} {calculateTimeAgo(activityItem.created_at)}
                         </p>
                       </div>
                       <div className="issue-comments-section p-0">
@@ -102,7 +104,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
               ) &&
               !activityItem.field ? (
                 <span>
-                  created <IssueLink activity={activityItem} />
+                  {t("ui.jsx_created")} <IssueLink activity={activityItem} />
                 </span>
               ) : (
                 <ActivityMessage activity={activityItem} showIssue />
@@ -145,7 +147,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                         <div className="min-w-0 flex-1 border-b border-subtle py-4">
                           <div className="text-13 break-words text-secondary">
                             {activityItem.field === "archived_at" && activityItem.new_value !== "restore" ? (
-                              <span className="text-gray font-medium">Plane</span>
+                              <span className="text-gray font-medium">Pespo Hub</span>
                             ) : activityItem.actor_detail.is_bot ? (
                               <span className="text-gray font-medium">{activityItem.actor_detail.first_name} Bot</span>
                             ) : (
@@ -155,7 +157,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                               >
                                 <span className="text-gray font-medium">
                                   {currentUser?.id === activityItem.actor_detail.id
-                                    ? "You"
+                                    ? t("you")
                                     : activityItem.actor_detail.display_name}
                                 </span>
                               </Link>

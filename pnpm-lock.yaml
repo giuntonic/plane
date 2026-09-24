@@ -571,6 +571,7 @@ overrides:
   morgan: 1.11.0
 
 patchedDependencies:
+  '@headlessui/react@2.2.10': b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08
   react-color@2.19.3: 311b81530f5338988f8b57718f24870a7550637159d8360d69f668cba2f2033f
 
 importers:
@@ -612,13 +613,16 @@ importers:
         version: 5.2.30
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@plane/constants':
         specifier: workspace:*
         version: link:../../packages/constants
       '@plane/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
+      '@plane/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@plane/propel':
         specifier: workspace:*
         version: link:../../packages/propel
@@ -878,7 +882,7 @@ importers:
         version: 5.2.30
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@plane/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -1032,7 +1036,7 @@ importers:
         version: 5.2.30
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@plane/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -1292,7 +1296,7 @@ importers:
         version: 0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@hocuspocus/provider':
         specifier: 'catalog:'
         version: 2.15.2(y-protocols@1.0.6(yjs@13.6.27))(yjs@13.6.27)
@@ -1561,6 +1565,9 @@ importers:
       '@plane/hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@plane/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@plane/types':
         specifier: workspace:*
         version: link:../types
@@ -1762,13 +1769,16 @@ importers:
         version: 1.1.0
       '@headlessui/react':
         specifier: 'catalog:'
-        version: 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@plane/constants':
         specifier: workspace:*
         version: link:../constants
       '@plane/hooks':
         specifier: workspace:*
         version: link:../hooks
+      '@plane/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@plane/propel':
         specifier: workspace:*
         version: link:../propel
@@ -1884,6 +1894,9 @@ importers:
       '@plane/constants':
         specifier: workspace:*
         version: link:../constants
+      '@plane/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@plane/types':
         specifier: workspace:*
         version: link:../types
@@ -10698,7 +10711,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@headlessui/react@2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@headlessui/react@2.2.10(patch_hash=b93329d3a0a4ffec93bf6082f3787e5774cb1b9fee80a7a962c0e35aa307df08)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@floating-ui/react': 0.26.28(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@react-aria/focus': 3.22.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)

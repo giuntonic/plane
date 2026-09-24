@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import type { TLoader } from "@plane/types";
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export const IssueLayoutHOC = observer(function IssueLayoutHOC(props: Props) {
+  const { t } = useTranslation();
   const { getIssueLoader, getGroupIssueCount } = props;
 
   const issueCount = getGroupIssueCount(undefined, undefined, false);
@@ -34,7 +36,7 @@ export const IssueLayoutHOC = observer(function IssueLayoutHOC(props: Props) {
   }
 
   if (getGroupIssueCount(undefined, undefined, false) === 0) {
-    return <div className="grid size-full place-items-center text-secondary">No work items found</div>;
+    return <div className="grid size-full place-items-center text-secondary">{t("ui.no_work_items_found")}</div>;
   }
 
   return <>{props.children}</>;

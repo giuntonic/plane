@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { RefObject } from "react";
 import { useState } from "react";
 import { observer } from "mobx-react";
@@ -31,6 +32,7 @@ type Props<T extends IBaseLayoutsBaseItem> = {
 };
 
 export const BaseGanttSidebar = observer(function BaseGanttSidebar<T extends IBaseLayoutsBaseItem>(props: Props<T>) {
+  const { t } = useTranslation();
   const {
     blockUpdateHandler,
     blockIds,
@@ -123,7 +125,8 @@ export const BaseGanttSidebar = observer(function BaseGanttSidebar<T extends IBa
                             {duration && (
                               <div className="flex-shrink-0 text-13 text-secondary">
                                 <span>
-                                  {duration} day{duration > 1 ? "s" : ""}
+                                  {duration} {t("ui.jsx_day")}
+                                  {duration > 1 ? "s" : ""}
                                 </span>
                               </div>
                             )}

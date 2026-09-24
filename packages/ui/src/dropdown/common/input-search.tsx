@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Combobox } from "@headlessui/react";
 import React, { useEffect, useRef } from "react";
 import { SearchIcon } from "@plane/propel/icons";
@@ -22,6 +23,7 @@ interface IInputSearch {
 }
 
 export function InputSearch(props: IInputSearch) {
+  const { t } = useTranslation();
   const { isOpen, query, updateQuery, inputIcon, inputContainerClassName, inputClassName, inputPlaceholder, isMobile } =
     props;
 
@@ -58,7 +60,7 @@ export function InputSearch(props: IInputSearch) {
         )}
         value={query}
         onChange={(e) => updateQuery(e.target.value)}
-        placeholder={inputPlaceholder ?? "Search"}
+        placeholder={inputPlaceholder ?? t("search")}
         onKeyDown={searchInputKeyDown}
       />
     </div>

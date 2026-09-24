@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { EIconSize } from "@plane/constants";
 import { StateGroupIcon, CloseIcon } from "@plane/propel/icons";
@@ -13,6 +14,7 @@ import { useProjectInbox } from "@/hooks/store/use-project-inbox";
 import { useProjectState } from "@/hooks/store/use-project-state";
 
 export const InboxIssueAppliedFiltersState = observer(function InboxIssueAppliedFiltersState() {
+  const { t } = useTranslation();
   // hooks
   const { inboxFilters, handleInboxIssueFilters } = useProjectInbox();
   const { getStateById } = useProjectState();
@@ -28,7 +30,7 @@ export const InboxIssueAppliedFiltersState = observer(function InboxIssueApplied
   if (filteredValues.length === 0) return <></>;
   return (
     <Tag>
-      <div className="text-11 text-secondary">State</div>
+      <div className="text-11 text-secondary">{t("state")}</div>
       {filteredValues.map((value) => {
         const optionDetail = currentOptionDetail(value);
         if (!optionDetail) return <></>;

@@ -195,8 +195,8 @@
         "primary_button": {
           "text": "Create your first work item",
           "comic": {
-            "title": "Work items are building blocks in Plane.",
-            "description": "Redesign the Plane UI, Rebrand the company, or Launch the new fuel injection system are examples of work items that likely have sub-work items."
+            "title": "Work items are building blocks in Pespo Hub.",
+            "description": "Redesign the Pespo Hub UI, Rebrand the company, or Launch the new fuel injection system are examples of work items that likely have sub-work items."
           }
         }
       },
@@ -271,8 +271,8 @@
   "project_page": {
     "empty_state": {
       "general": {
-        "title": "Write a note, a doc, or a full knowledge base. Get Galileo, Plane's AI assistant, to help you get started",
-        "description": "Pages are thoughts potting space in Plane. Take down meeting notes, format them easily, embed work items, lay them out using a library of components, and keep them all in your project's context. To make short work of any doc, invoke Galileo, Plane's AI, with a shortcut or the click of a button.",
+        "title": "Write a note, a doc, or a full knowledge base. Get Galileo, Pespo Hub's AI assistant, to help you get started",
+        "description": "Pages are thoughts potting space in Pespo Hub. Take down meeting notes, format them easily, embed work items, lay them out using a library of components, and keep them all in your project's context. To make short work of any doc, invoke Galileo, Pespo Hub's AI, with a shortcut or the click of a button.",
         "primary_button": {
           "text": "Create your first page"
         }
@@ -413,6 +413,25 @@
           "message": "Something went wrong."
         }
       }
+    },
+    "leave_modal": {
+      "title": "Leave Project",
+      "confirmation": "Are you sure you want to leave the project - \"{name}\"? All of the work items associated with you will become inaccessible.",
+      "enter_project_name": "Enter the project name {name} to continue:",
+      "enter_project_name_placeholder": "Enter project name",
+      "confirm_phrase": "Leave Project",
+      "confirm_instruction": "To confirm, type {phrase} below:",
+      "confirm_placeholder": "Enter 'leave project'",
+      "name_required_error": "Please enter the project name as shown in the description.",
+      "confirm_phrase_error": "Please confirm leaving the project by typing the '{phrase}'.",
+      "fill_all_fields_error": "Please fill all fields.",
+      "leaving": "Leaving..."
+    },
+    "join_modal": {
+      "title": "Join Project?",
+      "confirmation": "Are you sure you want to join the project {name}? Please click the 'Join Project' button below to continue.",
+      "join": "Join Project",
+      "joining": "Joining..."
     }
   }
 }

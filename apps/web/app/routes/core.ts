@@ -62,11 +62,6 @@ export const coreRoutes: RouteConfigEntry[] = [
         // Workspace Home
         route(":workspaceSlug", "./(all)/[workspaceSlug]/(projects)/page.tsx"),
 
-        // Active Cycles
-        layout("./(all)/[workspaceSlug]/(projects)/active-cycles/layout.tsx", [
-          route(":workspaceSlug/active-cycles", "./(all)/[workspaceSlug]/(projects)/active-cycles/page.tsx"),
-        ]),
-
         // Analytics
         layout("./(all)/[workspaceSlug]/(projects)/analytics/[tabId]/layout.tsx", [
           route(":workspaceSlug/analytics/:tabId", "./(all)/[workspaceSlug]/(projects)/analytics/[tabId]/page.tsx"),
@@ -97,6 +92,11 @@ export const coreRoutes: RouteConfigEntry[] = [
         // Browse
         layout("./(all)/[workspaceSlug]/(projects)/browse/[workItem]/layout.tsx", [
           route(":workspaceSlug/browse/:workItem", "./(all)/[workspaceSlug]/(projects)/browse/[workItem]/page.tsx"),
+        ]),
+
+        // Calendar
+        layout("./(all)/[workspaceSlug]/(projects)/calendar/layout.tsx", [
+          route(":workspaceSlug/calendar", "./(all)/[workspaceSlug]/(projects)/calendar/page.tsx"),
         ]),
 
         // Drafts
@@ -239,20 +239,27 @@ export const coreRoutes: RouteConfigEntry[] = [
             ),
           ]),
 
-          // Dashboard list
-          layout("./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/(list)/layout.tsx", [
+          // Dashboard (Metabase embed) - Pespo
+          layout("./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/layout.tsx", [
             route(
               ":workspaceSlug/projects/:projectId/dashboard",
-              "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/(list)/page.tsx"
+              "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/page.tsx"
             ),
           ]),
-          // Dashboard detail
+          // Dashboards (native) list
+          layout("./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboards/(list)/layout.tsx", [
+            route(
+              ":workspaceSlug/projects/:projectId/dashboards",
+              "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboards/(list)/page.tsx"
+            ),
+          ]),
+          // Dashboards (native) detail
           layout(
-            "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/[dashboardId]/layout.tsx",
+            "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboards/[dashboardId]/layout.tsx",
             [
               route(
-                ":workspaceSlug/projects/:projectId/dashboard/:dashboardId",
-                "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/[dashboardId]/page.tsx"
+                ":workspaceSlug/projects/:projectId/dashboards/:dashboardId",
+                "./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboards/[dashboardId]/page.tsx"
               ),
             ]
           ),
@@ -305,10 +312,6 @@ export const coreRoutes: RouteConfigEntry[] = [
           route(
             ":workspaceSlug/settings/members",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/members/page.tsx"
-          ),
-          route(
-            ":workspaceSlug/settings/billing",
-            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/billing/page.tsx"
           ),
           route(
             ":workspaceSlug/settings/exports",
@@ -388,6 +391,13 @@ export const coreRoutes: RouteConfigEntry[] = [
               route(
                 ":workspaceSlug/settings/projects/:projectId/automations",
                 "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/automations/page.tsx"
+              ),
+            ]),
+            // Project Dashboard (Metabase embed) - Pespo
+            layout("./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/dashboard/layout.tsx", [
+              route(
+                ":workspaceSlug/settings/projects/:projectId/dashboard",
+                "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/dashboard/page.tsx"
               ),
             ]),
           ]),

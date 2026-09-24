@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useState, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 // plane imports
@@ -26,6 +27,7 @@ enum ESendEmailSteps {
 const instanceService = new InstanceService();
 
 export function SendTestEmailModal(props: Props) {
+  const { t } = useTranslation();
   const { isOpen, handleClose } = props;
 
   // state
@@ -58,7 +60,7 @@ export function SendTestEmailModal(props: Props) {
         setSendEmailStep(ESendEmailSteps.SUCCESS);
       })
       .catch((error) => {
-        setError(error?.error || "Failed to send email");
+        setError(error?.error || t("ui.failed_to_send_email"));
         setSendEmailStep(ESendEmailSteps.FAILED);
       })
       .finally(() => {
@@ -94,10 +96,10 @@ export function SendTestEmailModal(props: Props) {
               <Dialog.Panel className="relative w-full transform rounded-lg bg-surface-1 p-5 px-4 text-left shadow-raised-200 transition-all sm:max-w-xl">
                 <h3 className="text-16 leading-6 font-medium text-primary">
                   {sendEmailStep === ESendEmailSteps.SEND_EMAIL
-                    ? "Send test email"
+                    ? t("ui.send_test_email")
                     : sendEmailStep === ESendEmailSteps.SUCCESS
-                      ? "Email send"
-                      : "Failed"}{" "}
+                      ? t("ui.email_send")
+                      : t("ui.failed")}{" "}
                 </h3>
                 <div className="pt-6 pb-2">
                   {sendEmailStep === ESendEmailSteps.SEND_EMAIL && (
@@ -106,7 +108,7 @@ export function SendTestEmailModal(props: Props) {
                       type="email"
                       value={receiverEmail}
                       onChange={(e) => setReceiverEmail(e.target.value)}
-                      placeholder="Receiver email"
+                      placeholder={t("ui.receiver_email")}
                       className="w-full resize-none text-16"
                       tabIndex={0}
                     />
@@ -114,20 +116,20 @@ export function SendTestEmailModal(props: Props) {
                   {sendEmailStep === ESendEmailSteps.SUCCESS && (
                     <div className="flex flex-col gap-y-4 text-13">
                       <p>
-                        We have sent the test email to {receiverEmail}. Please check your spam folder if you cannot find
-                        it.
+                        {t("ui.jsx_we_have_sent_the_test_email_to")} {receiverEmail}
+                        {t("ui.jsx_please_check_your_spam_folder_if_you")}
                       </p>
-                      <p>If you still cannot find it, recheck your SMTP configuration and trigger a new test email.</p>
+                      <p>{t("ui.jsx_if_you_still_cannot_find_it_recheck")}</p>
                     </div>
                   )}
                   {sendEmailStep === ESendEmailSteps.FAILED && <div className="text-13">{error}</div>}
                   <div className="mt-5 flex items-center justify-end gap-2">
                     <Button variant="secondary" size="lg" onClick={handleClose} tabIndex={0}>
-                      {sendEmailStep === ESendEmailSteps.SEND_EMAIL ? "Cancel" : "Close"}
+                      {sendEmailStep === ESendEmailSteps.SEND_EMAIL ? t("cancel") : t("close")}
                     </Button>
                     {sendEmailStep === ESendEmailSteps.SEND_EMAIL && (
                       <Button variant="primary" size="lg" loading={isLoading} onClick={handleSubmit} tabIndex={0}>
-                        {isLoading ? "Sending email" : "Send email"}
+                        {isLoading ? t("ui.sending_email") : t("ui.send_email")}
                       </Button>
                     )}
                   </div>

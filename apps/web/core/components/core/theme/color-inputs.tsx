@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
@@ -16,6 +17,7 @@ type Props = {
 };
 
 export const CustomThemeColorInputs = observer(function CustomThemeColorInputs(props: Props) {
+  const { t } = useTranslation();
   const { control } = props;
 
   const handleValueChange = (val: string | undefined, onChange: (...args: unknown[]) => void) => {
@@ -30,17 +32,18 @@ export const CustomThemeColorInputs = observer(function CustomThemeColorInputs(p
       {/* Neutral Color */}
       <div className="flex flex-col gap-2">
         <h3 className="text-body-sm-medium">
-          Neutral color<span className="text-danger-primary">*</span>
+          {t("ui.jsx_neutral_color")}
+          <span className="text-danger-primary">*</span>
         </h3>
         <div className="w-full">
           <Controller
             control={control}
             name="background"
             rules={{
-              required: "Neutral color is required",
+              required: t("ui.neutral_color_is_required"),
               pattern: {
                 value: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
-                message: "Enter a valid hex code",
+                message: t("ui.enter_a_valid_hex_code"),
               },
             }}
             render={({ field: { value, onChange } }) => (
@@ -63,17 +66,18 @@ export const CustomThemeColorInputs = observer(function CustomThemeColorInputs(p
       {/* Brand Color */}
       <div className="flex flex-col gap-2">
         <h3 className="text-body-sm-medium">
-          Brand color<span className="text-danger-primary">*</span>
+          {t("ui.jsx_brand_color")}
+          <span className="text-danger-primary">*</span>
         </h3>
         <div className="w-full">
           <Controller
             control={control}
             name="primary"
             rules={{
-              required: "Brand color is required",
+              required: t("ui.brand_color_is_required"),
               pattern: {
                 value: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
-                message: "Enter a valid hex code",
+                message: t("ui.enter_a_valid_hex_code"),
               },
             }}
             render={({ field: { value, onChange } }) => (

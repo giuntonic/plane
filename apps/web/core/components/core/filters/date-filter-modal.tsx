@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@plane/propel/button";
 import { Calendar } from "@plane/propel/calendar";
@@ -31,6 +32,7 @@ const defaultValues: TFormValues = {
 };
 
 export function DateFilterModal({ title, handleClose, isOpen, onSelect }: Props) {
+  const { t } = useTranslation();
   const { handleSubmit, watch, control } = useForm<TFormValues>({
     defaultValues,
   });
@@ -113,15 +115,15 @@ export function DateFilterModal({ title, handleClose, isOpen, onSelect }: Props)
         </div>
         {watch("filterType") === "range" && (
           <h6 className="flex items-center gap-1 text-11">
-            <span className="text-secondary">After:</span>
+            <span className="text-secondary">{t("ui.after")}</span>
             <span>{renderFormattedDate(watch("date1"))}</span>
-            <span className="ml-1 text-secondary">Before:</span>
+            <span className="ml-1 text-secondary">{t("ui.before")}</span>
             {!isInvalid && <span>{renderFormattedDate(watch("date2"))}</span>}
           </h6>
         )}
         <div className="flex justify-end gap-4">
           <Button variant="secondary" size="lg" onClick={handleClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button
             variant="primary"
@@ -130,7 +132,7 @@ export function DateFilterModal({ title, handleClose, isOpen, onSelect }: Props)
             onClick={handleSubmit(handleFormSubmit)}
             disabled={isInvalid}
           >
-            Apply
+            {t("common.apply")}
           </Button>
         </div>
       </form>

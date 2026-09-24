@@ -184,3 +184,28 @@ class TestDashboardWidgetChart:
         assert response.status_code == status.HTTP_200_OK
         counts = {item["key"]: item["count"] for item in response.data["data"]}
         assert counts == {"started": 2, "backlog": 1}
+
+    @pytest.mark.django_db
+    def test_project_scoped_chart_route(self, session_client, workspace, project, create_user):
+        state = State.objects.create(name="Todo", project=project, workspace=workspace, group="unstarted")
+        Issue.objects.create(name="Issue 1", workspace=workspace, project=project, state=state, created_by=create_user)
+
+        dashboard = Dashboard.objects.create(workspace=workspace, project=project, name="Project overview")
+        widget = DashboardWidget.objects.create(
+            dashboard=dashboard, chart_type=DashboardWidget.ChartType.BAR, x_axis="STATE_GROUPS"
+        )
+
+        url = reverse(
+            "project-dashboard-widget-chart",
+            kwargs={
+                "slug": workspace.slug,
+                "project_id": project.id,
+                "dashboard_id": dashboard.id,
+                "widget_id": widget.id,
+            },
+        )
+        response = session_client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        counts = {item["key"]: item["count"] for item in response.data["data"]}
+        assert counts == {"unstarted": 1}

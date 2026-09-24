@@ -44,10 +44,10 @@ export const CustomThemeSelector = observer(function CustomThemeSelector() {
       };
     }
 
-    // Fallback to defaults
+    // Fallback to defaults (cor de marca da Pespo)
     return {
       theme: "custom",
-      primary: "#3f76ff",
+      primary: "#6C5CE7",
       background: "#1a1a1a",
       darkPalette: false,
     };
@@ -80,7 +80,7 @@ export const CustomThemeSelector = observer(function CustomThemeSelector() {
       setToast({
         type: TOAST_TYPE.SUCCESS,
         title: t("success"),
-        message: "Reloading to apply changes...",
+        message: t("ui.reloading_to_apply_changes"),
       });
       // reload the page after showing the toast
       setTimeout(() => {
@@ -117,7 +117,7 @@ export const CustomThemeSelector = observer(function CustomThemeSelector() {
       <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         {/* Save Theme Button */}
         <Button variant="primary" size="lg" type="submit" loading={isSubmitting || isLoadingPalette}>
-          {isSubmitting ? t("common.saving") : isLoadingPalette ? "Generating" : t("set_theme")}
+          {isSubmitting ? t("common.saving") : isLoadingPalette ? t("ui.generating") : t("set_theme")}
         </Button>
         {/* Import/Export Section */}
         <CustomThemeDownloadConfigButton getValues={getValues} />

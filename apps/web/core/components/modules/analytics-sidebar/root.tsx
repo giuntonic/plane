@@ -100,14 +100,14 @@ export const ModuleAnalyticsSidebar = observer(function ModuleAnalyticsSidebar(p
       await deleteModuleLink(workspaceSlug.toString(), projectId.toString(), moduleId.toString(), linkId);
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "Module link deleted successfully.",
+        title: t("toast.success"),
+        message: t("ui.module_link_deleted_successfully"),
       });
     } catch (_error) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Some error occurred",
+        title: t("toast.error"),
+        message: t("ui.some_error_occurred"),
       });
     }
   };
@@ -119,8 +119,8 @@ export const ModuleAnalyticsSidebar = observer(function ModuleAnalyticsSidebar(p
     });
     setToast({
       type: TOAST_TYPE.SUCCESS,
-      title: "Success!",
-      message: "Module updated successfully.",
+      title: t("toast.success"),
+      message: t("ui.module_updated_successfully"),
     });
   };
 

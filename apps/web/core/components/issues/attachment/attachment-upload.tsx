@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback, useState } from "react";
 import { observer } from "mobx-react";
 import { useDropzone } from "react-dropzone";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(props: Props) {
+  const { t } = useTranslation();
   const { workspaceSlug, disabled = false, attachmentOperations } = props;
   // states
   const [isLoading, setIsLoading] = useState(false);
@@ -58,13 +60,13 @@ export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(pro
       <input {...getInputProps()} />
       <span className="flex items-center gap-2">
         {isDragActive ? (
-          <p>Drop here...</p>
+          <p>{t("ui.jsx_drop_here")}</p>
         ) : fileError ? (
           <p className="text-center text-danger-primary">{fileError}</p>
         ) : isLoading ? (
-          <p className="text-center">Uploading...</p>
+          <p className="text-center">{t("ui.uploading")}</p>
         ) : (
-          <p className="text-center">Click or drag a file here</p>
+          <p className="text-center">{t("ui.click_or_drag_a_file_here")}</p>
         )}
       </span>
     </div>

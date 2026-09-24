@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { AlertTriangle } from "lucide-react";
@@ -28,6 +29,7 @@ const defaultValues = {
 };
 
 export function DeleteProjectModal(props: DeleteProjectModal) {
+  const { t } = useTranslation();
   const { isOpen, project, onClose } = props;
   // store hooks
   const { deleteProject } = useProject();
@@ -63,14 +65,14 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
       handleClose();
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "Project deleted successfully.",
+        title: t("toast.success"),
+        message: t("ui.project_deleted_successfully"),
       });
     } catch (_error) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Something went wrong. Please try again later.",
+        title: t("toast.error"),
+        message: t("ui.something_went_wrong_please_try_again_later"),
       });
     }
   };
@@ -83,18 +85,20 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
             <AlertTriangle className="h-6 w-6 text-danger-primary" aria-hidden="true" />
           </span>
           <span className="flex items-center justify-start">
-            <h3 className="text-18 font-medium 2xl:text-20">Delete project</h3>
+            <h3 className="text-18 font-medium 2xl:text-20">{t("ui.delete_project")}</h3>
           </span>
         </div>
         <span>
           <p className="text-13 leading-7 text-secondary">
-            Are you sure you want to delete project <span className="font-semibold break-words">{project?.name}</span>?
-            All of the data related to the project will be permanently removed. This action cannot be undone
+            {t("ui.jsx_are_you_sure_you_want_to_delete_4")}{" "}
+            <span className="font-semibold break-words">{project?.name}</span>
+            {t("ui.jsx_all_of_the_data_related_to_the_2")}
           </p>
         </span>
         <div className="text-secondary">
           <p className="text-13 break-words">
-            Enter the project name <span className="font-medium text-primary">{project?.name}</span> to continue:
+            {t("ui.jsx_enter_the_project_name")} <span className="font-medium text-primary">{project?.name}</span>{" "}
+            {t("ui.jsx_to_continue")}
           </p>
           <Controller
             control={control}
@@ -108,7 +112,7 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
                 onChange={onChange}
                 ref={ref}
                 hasError={Boolean(errors.projectName)}
-                placeholder="Project name"
+                placeholder={t("project_name")}
                 className="mt-2 w-full"
                 autoComplete="off"
               />
@@ -117,7 +121,8 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
         </div>
         <div className="text-secondary">
           <p className="text-13">
-            To confirm, type <span className="font-medium text-primary">delete my project</span> below:
+            {t("ui.jsx_to_confirm_type")} <span className="font-medium text-primary">delete my project</span>{" "}
+            {t("ui.jsx_below")}
           </p>
           <Controller
             control={control}
@@ -131,7 +136,7 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
                 onChange={onChange}
                 ref={ref}
                 hasError={Boolean(errors.confirmDelete)}
-                placeholder="Enter 'delete my project'"
+                placeholder={t("ui.enter_delete_my_project")}
                 className="mt-2 w-full"
                 autoComplete="off"
               />
@@ -140,10 +145,10 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
         </div>
         <div className="flex justify-end gap-2">
           <Button variant="secondary" size="lg" onClick={handleClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="error-fill" size="lg" type="submit" disabled={!canDelete} loading={isSubmitting}>
-            {isSubmitting ? "Deleting" : "Delete project"}
+            {isSubmitting ? t("deleting") : t("ui.delete_project")}
           </Button>
         </div>
       </form>

@@ -42,14 +42,16 @@ function AutomationSettingsPage({ params }: Route.ComponentProps) {
     } catch {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Something went wrong. Please try again.",
+        title: t("toast.error"),
+        message: t("something_went_wrong_please_try_again"),
       });
     }
   };
 
   // derived values
-  const pageTitle = projectDetails?.name ? `${projectDetails?.name} - Automations` : undefined;
+  const pageTitle = projectDetails?.name
+    ? `${projectDetails?.name} - ${t("project_settings.automations.label")}`
+    : undefined;
 
   if (workspaceUserInfo && !canPerformProjectAdminActions) {
     return <NotAuthorizedView section="settings" isProjectView className="h-auto" />;

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
@@ -50,6 +51,7 @@ const defaultFromData: TFormData = {
 };
 
 export function InstanceSignInForm() {
+  const { t } = useTranslation();
   // search params
   const searchParams = useSearchParams();
   const emailParam = searchParams.get("email") || undefined;
@@ -114,8 +116,8 @@ export function InstanceSignInForm() {
       <div className="mt-10 flex w-full flex-grow flex-col items-center justify-center py-6">
         <div className="relative flex w-full max-w-[22.5rem] flex-col gap-6">
           <FormHeader
-            heading="Manage your Plane instance"
-            subHeading="Configure instance-wide settings to secure your instance"
+            heading={t("ui.manage_your_plane_instance")}
+            subHeading={t("ui.configure_instance_wide_settings_to_secure_your")}
           />
           <form
             className="space-y-4"
@@ -133,7 +135,7 @@ export function InstanceSignInForm() {
 
             <div className="w-full space-y-1">
               <label className="text-13 font-medium text-tertiary" htmlFor="email">
-                Email <span className="text-danger-primary">*</span>
+                {t("auth.common.email.label")} <span className="text-danger-primary">*</span>
               </label>
               <Input
                 className="w-full border border-subtle !bg-surface-1 placeholder:text-placeholder"
@@ -151,7 +153,7 @@ export function InstanceSignInForm() {
 
             <div className="w-full space-y-1">
               <label className="text-13 font-medium text-tertiary" htmlFor="password">
-                Password <span className="text-danger-primary">*</span>
+                {t("password")} <span className="text-danger-primary">*</span>
               </label>
               <div className="relative">
                 <Input
@@ -160,7 +162,7 @@ export function InstanceSignInForm() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   inputSize="md"
-                  placeholder="Enter your password"
+                  placeholder={t("ui.enter_your_password")}
                   value={formData.password}
                   onChange={(e) => handleFormChange("password", e.target.value)}
                   autoComplete="off"
@@ -168,7 +170,7 @@ export function InstanceSignInForm() {
                 {showPassword ? (
                   <button
                     type="button"
-                    aria-label="Hide password"
+                    aria-label={t("ui.hide_password")}
                     className="absolute top-3.5 right-3 flex items-center justify-center text-placeholder"
                     onClick={() => setShowPassword(false)}
                   >
@@ -177,7 +179,7 @@ export function InstanceSignInForm() {
                 ) : (
                   <button
                     type="button"
-                    aria-label="Show password"
+                    aria-label={t("ui.show_password")}
                     className="absolute top-3.5 right-3 flex items-center justify-center text-placeholder"
                     onClick={() => setShowPassword(true)}
                   >
@@ -188,7 +190,7 @@ export function InstanceSignInForm() {
             </div>
             <div className="py-2">
               <Button type="submit" size="xl" className="w-full" disabled={isButtonDisabled}>
-                {isSubmitting ? <Spinner height="20px" width="20px" /> : "Sign in"}
+                {isSubmitting ? <Spinner height="20px" width="20px" /> : t("ui.sign_in_2")}
               </Button>
             </div>
           </form>

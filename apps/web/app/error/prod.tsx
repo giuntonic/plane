@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useTheme } from "next-themes";
 // plane imports
 import { Button } from "@plane/propel/button";
@@ -16,12 +17,16 @@ import DefaultLayout from "@/layouts/default-layout";
 const linkMap = [
   {
     key: "mail_to",
-    label: "Contact Support",
+    get label() {
+      return i18nInstance.t("ui.contact_support");
+    },
     value: "mailto:support@plane.so",
   },
   {
     key: "status",
-    label: "Status Page",
+    get label() {
+      return i18nInstance.t("ui.status_page");
+    },
     value: "https://status.plane.so/",
   },
   {
@@ -37,6 +42,7 @@ interface ProdErrorComponentProps {
 }
 
 export function ProdErrorComponent({ onGoHome }: ProdErrorComponentProps) {
+  const { t } = useTranslation();
   // hooks
   const { resolvedTheme } = useTheme();
 
@@ -57,10 +63,11 @@ export function ProdErrorComponent({ onGoHome }: ProdErrorComponentProps) {
         </div>
         <div className="relative mt-4 flex w-full flex-col gap-4">
           <div className="flex flex-col gap-2.5">
-            <h1 className="text-left text-18 font-semibold text-primary">&#x1F6A7; Looks like something went wrong!</h1>
+            <h1 className="text-left text-18 font-semibold text-primary">
+              {t("ui.jsx_looks_like_something_went_wrong")}
+            </h1>
             <span className="text-left text-14 font-medium text-secondary">
-              We track these errors automatically and working on getting things back up and running. If the problem
-              persists feel free to contact us. In the meantime, try refreshing.
+              {t("ui.jsx_we_track_these_errors_automatically_and_working")}
             </span>
           </div>
 
@@ -81,7 +88,7 @@ export function ProdErrorComponent({ onGoHome }: ProdErrorComponentProps) {
 
           <div className="flex items-center justify-start gap-6">
             <Button variant="primary" size="lg" onClick={onGoHome}>
-              Go to home
+              {t("ui.go_to_home")}
             </Button>
           </div>
         </div>

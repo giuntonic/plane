@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Ref } from "react";
 import React, { useEffect, useState, useRef, Fragment } from "react";
 import type { Placement } from "@popperjs/core";
@@ -42,6 +43,7 @@ type FormData = {
 };
 
 export function GptAssistantPopover(props: Props) {
+  const { t } = useTranslation();
   const {
     isOpen,
     handleClose,
@@ -97,7 +99,7 @@ export function GptAssistantPopover(props: Props) {
 
     setToast({
       type: TOAST_TYPE.ERROR,
-      title: "Error!",
+      title: t("toast.error"),
       message: errorMessage,
     });
 
@@ -123,8 +125,8 @@ export function GptAssistantPopover(props: Props) {
   const handleInvalidTask = () => {
     setToast({
       type: TOAST_TYPE.ERROR,
-      title: "Error!",
-      message: "Please enter some task to get AI assistance.",
+      title: t("toast.error"),
+      message: t("ui.please_enter_some_task_to_get_ai"),
     });
   };
 
@@ -185,15 +187,15 @@ export function GptAssistantPopover(props: Props) {
         onClose();
       }}
     >
-      Use this response
+      {t("ui.use_this_response")}
     </Button>
   );
 
   const generateResponseButtonText = isSubmitting
-    ? "Generating response..."
+    ? t("ui.generating_response")
     : response === ""
-      ? "Generate response"
-      : "Generate again";
+      ? t("ui.generate_response")
+      : t("ui.generate_again");
 
   return (
     <Popover as="div" className={`relative w-min text-left`}>
@@ -222,7 +224,7 @@ export function GptAssistantPopover(props: Props) {
           <div className="vertical-scroll-enable max-h-72 space-y-4 overflow-y-auto">
             {prompt && (
               <div className="text-13">
-                Content:
+                {t("ui.jsx_content")}
                 <RichTextEditor
                   editable={false}
                   id="ai-assistant-content"
@@ -237,7 +239,7 @@ export function GptAssistantPopover(props: Props) {
             )}
             {response !== "" && (
               <div className="page-block-section max-h-[8rem] text-13">
-                Response:
+                {t("ui.jsx_response")}
                 <RichTextEditor
                   editable={false}
                   id="ai-assistant-response"
@@ -250,10 +252,7 @@ export function GptAssistantPopover(props: Props) {
               </div>
             )}
             {invalidResponse && (
-              <div className="text-13 text-danger-primary">
-                No response could be generated. This may be due to insufficient content or task information. Please try
-                again.
-              </div>
+              <div className="text-13 text-danger-primary">{t("ui.jsx_no_response_could_be_generated_this_may")}</div>
             )}
           </div>
           <Controller
@@ -268,7 +267,7 @@ export function GptAssistantPopover(props: Props) {
                 onChange={onChange}
                 ref={ref}
                 placeholder={`${
-                  prompt && prompt !== "" ? "Tell AI what action to perform on this content..." : "Ask AI anything..."
+                  prompt && prompt !== "" ? t("ui.tell_ai_what_action_to_perform_on") : t("ui.ask_ai_anything")
                 }`}
                 className="w-full"
                 autoFocus
@@ -282,13 +281,13 @@ export function GptAssistantPopover(props: Props) {
               <>
                 <div className="flex items-start justify-center gap-2 text-13 text-accent-primary">
                   <AlertCircle className="h-4 w-4" />
-                  <p>By using this feature, you consent to sharing the message with a 3rd party service. </p>
+                  <p>{t("ui.jsx_by_using_this_feature_you_consent_to")} </p>
                 </div>
               </>
             )}
             <div className="flex items-center gap-2">
               <Button variant="secondary" onClick={onClose}>
-                Close
+                {t("close")}
               </Button>
               <Button variant="primary" onClick={handleSubmit(handleAIResponse)} loading={isSubmitting}>
                 {generateResponseButtonText}

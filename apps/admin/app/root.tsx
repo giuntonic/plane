@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { ReactNode } from "react";
 import { Links, Meta, Outlet, Scripts } from "react-router";
 import type { LinksFunction } from "react-router";
@@ -89,9 +90,10 @@ export function HydrateFallback() {
 }
 
 export function ErrorBoundary({ error: _error }: Route.ErrorBoundaryProps) {
+  const { t } = useTranslation();
   return (
     <div>
-      <p>Something went wrong.</p>
+      <p>{t("ui.jsx_something_went_wrong")}</p>
     </div>
   );
 }

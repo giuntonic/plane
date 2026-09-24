@@ -76,8 +76,8 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       display_name: user.display_name || "",
       email: user.email || "",
       role: profile.role || "Product / Project Manager",
-      language: profile.language || "en",
-      user_timezone: user.user_timezone || "Asia/Kolkata",
+      language: profile.language || "pt-BR",
+      user_timezone: user.user_timezone || "America/Sao_Paulo",
     },
   });
   // derived values
@@ -98,8 +98,8 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       .then(() => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
-          title: "Success!",
-          message: "Profile picture deleted successfully.",
+          title: t("toast.success"),
+          message: t("ui.profile_picture_deleted_successfully"),
         });
         setValue("avatar_url", "");
         return;
@@ -107,8 +107,8 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       .catch(() => {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error!",
-          message: "There was some error in deleting your profile picture. Please try again.",
+          title: t("toast.error"),
+          message: t("ui.there_was_some_error_in_deleting_your"),
         });
       })
       .finally(() => {
@@ -140,7 +140,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       setToast({
         type: TOAST_TYPE.ERROR,
         title: t("toast.error"),
-        message: error instanceof Error ? error.message : "Failed to process cover image",
+        message: error instanceof Error ? error.message : t("ui.failed_to_process_cover_image"),
       });
       setIsLoading(false);
       return;
@@ -176,14 +176,14 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
       .finally(() => setIsLoading(false));
 
     setPromiseToast(updatePromise, {
-      loading: "Updating...",
+      loading: t("ui.updating"),
       success: {
-        title: "Success!",
-        message: () => `Profile updated successfully.`,
+        title: t("toast.success"),
+        message: () => t("ui.profile_updated_successfully"),
       },
       error: {
-        title: "Error!",
-        message: () => `There was some error in updating your profile. Please try again.`,
+        title: t("toast.error"),
+        message: () => t("ui.profile_update_failed"),
       },
     });
   };
@@ -215,7 +215,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
             <CoverImage
               src={userCover}
               className="h-44 w-full rounded-lg"
-              alt={currentUser?.first_name ?? "Cover image"}
+              alt={currentUser?.first_name ?? t("cover_image")}
             />
             <div className="absolute -bottom-6 left-6 flex items-end justify-between">
               <div className="flex gap-3">
@@ -275,7 +275,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   control={control}
                   name="first_name"
                   rules={{
-                    required: "Please enter first name",
+                    required: t("first_name_required"),
                     validate: validatePersonName,
                   }}
                   render={({ field: { value, onChange, ref } }) => (
@@ -287,7 +287,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                       onChange={onChange}
                       ref={ref}
                       hasError={Boolean(errors.first_name)}
-                      placeholder="Enter your first name"
+                      placeholder={t("first_name_placeholder")}
                       className={`w-full rounded-md ${errors.first_name ? "border-danger-strong" : ""}`}
                       maxLength={50}
                       autoComplete="on"
@@ -313,7 +313,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                       onChange={onChange}
                       ref={ref}
                       hasError={Boolean(errors.last_name)}
-                      placeholder="Enter your last name"
+                      placeholder={t("last_name_placeholder")}
                       className="w-full rounded-md"
                       maxLength={50}
                       autoComplete="on"
@@ -331,7 +331,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   control={control}
                   name="display_name"
                   rules={{
-                    required: "Display name is required.",
+                    required: t("display_name_required"),
                     validate: validateDisplayName,
                   }}
                   render={({ field: { value, onChange, ref } }) => (
@@ -343,7 +343,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                       onChange={onChange}
                       ref={ref}
                       hasError={Boolean(errors?.display_name)}
-                      placeholder="Enter your display name"
+                      placeholder={t("display_name_placeholder")}
                       className={`w-full ${errors?.display_name ? "border-danger-strong" : ""}`}
                       maxLength={50}
                     />
@@ -362,7 +362,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                   control={control}
                   name="email"
                   rules={{
-                    required: "Email is required.",
+                    required: t("email_required"),
                   }}
                   render={({ field: { value, ref } }) => (
                     <Input
@@ -372,7 +372,7 @@ export const GeneralProfileSettingsForm = observer(function GeneralProfileSettin
                       value={value}
                       ref={ref}
                       hasError={Boolean(errors.email)}
-                      placeholder="Enter your email"
+                      placeholder={t("email_placeholder")}
                       className={`w-full cursor-not-allowed rounded-md !bg-surface-2 ${
                         errors.email ? "border-danger-strong" : ""
                       }`}

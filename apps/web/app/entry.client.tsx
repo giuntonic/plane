@@ -13,6 +13,8 @@ import polyfills from "@/lib/polyfills";
 import { isStaleAssetErrorMessage, recoverFromStaleAsset } from "@/lib/stale-asset-error";
 
 void polyfills;
+// cache-bust: force a fresh content hash for this entry chunk on deploy
+// (Cloudflare was serving a stale cached copy of this file across redeploys)
 
 // Production-only: in dev these errors come from the dev server itself (restarts,
 // stale optimized deps) and auto-reloading would mask them.

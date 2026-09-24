@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 // plane imports
@@ -23,6 +24,7 @@ import useLocalStorage from "@/hooks/use-local-storage";
 import type { Route } from "./+types/page";
 
 function ModuleIssuesPage({ params }: Route.ComponentProps) {
+  const { t } = useTranslation();
   // router
   const router = useAppRouter();
   const { workspaceSlug, projectId, moduleId } = params;
@@ -53,10 +55,10 @@ function ModuleIssuesPage({ params }: Route.ComponentProps) {
       {error ? (
         <EmptyState
           image={emptyModule}
-          title="Module does not exist"
-          description="The module you are looking for does not exist or has been deleted."
+          title={t("ui.module_does_not_exist")}
+          description={t("ui.the_module_you_are_looking_for_does")}
           primaryButton={{
-            text: "View other modules",
+            text: t("ui.view_other_modules"),
             onClick: () => router.push(`/${workspaceSlug}/projects/${projectId}/modules`),
           }}
         />

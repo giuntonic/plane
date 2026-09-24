@@ -6,7 +6,8 @@
 
 import { useState } from "react";
 // plane imports
-import { ROLE } from "@plane/constants";
+import { ROLE_DETAILS } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import type { IWorkspaceMemberInvitation } from "@plane/types";
 import { Checkbox, Spinner } from "@plane/ui";
@@ -36,6 +37,7 @@ export function WorkspaceJoinInvitesStep(props: Props) {
   // store hooks
   const { fetchWorkspaces } = useWorkspace();
   const { fetchCurrentUserSettings } = useUserSettings();
+  const { t } = useTranslation();
 
   // handle invitation
   const handleInvitation = (workspace_invitation: IWorkspaceMemberInvitation, action: "accepted" | "withdraw") => {
@@ -67,7 +69,10 @@ export function WorkspaceJoinInvitesStep(props: Props) {
 
   return invitations && invitations.length > 0 ? (
     <div className="flex flex-col gap-10">
-      <CommonOnboardingHeader title="Join invites or create a workspace" description="All your work — unified." />
+      <CommonOnboardingHeader
+        title={t("workspace_invitations_step.join_or_create_title")}
+        description={t("workspace_invitations_step.join_or_create_description")}
+      />
       <div className="flex flex-col gap-3">
         {invitations &&
           invitations.length > 0 &&
@@ -89,7 +94,9 @@ export function WorkspaceJoinInvitesStep(props: Props) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-13 font-medium">{truncateText(invitedWorkspace?.name, 30)}</div>
-                  <p className="text-11 text-secondary">{ROLE[invitation.role]}</p>
+                  <p className="text-11 text-secondary">
+                    {t(ROLE_DETAILS[invitation.role as keyof typeof ROLE_DETAILS].i18n_title)}
+                  </p>
                 </div>
                 <span className={`flex-shrink-0`}>
                   <Checkbox checked={isSelected} />
@@ -106,7 +113,7 @@ export function WorkspaceJoinInvitesStep(props: Props) {
           onClick={submitInvitations}
           disabled={isJoiningWorkspaces || !invitationsRespond.length}
         >
-          {isJoiningWorkspaces ? <Spinner height="20px" width="20px" /> : "Continue"}
+          {isJoiningWorkspaces ? <Spinner height="20px" width="20px" /> : t("common.continue")}
         </Button>
         <Button
           variant="ghost"
@@ -115,11 +122,11 @@ export function WorkspaceJoinInvitesStep(props: Props) {
           onClick={handleCurrentViewChange}
           disabled={isJoiningWorkspaces}
         >
-          Create new workspace
+          {t("workspace_invitations_step.create_new_workspace")}
         </Button>
       </div>
     </div>
   ) : (
-    <div>No Invitations found</div>
+    <div>{t("workspace_invitations_step.no_invitations_found")}</div>
   );
 }

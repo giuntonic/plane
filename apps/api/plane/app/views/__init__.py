@@ -24,11 +24,23 @@ from .project.member import (
     ProjectMemberPreferenceEndpoint,
 )
 
+from .project.metabase import ProjectMetabaseEmbedEndpoint
+
 from .user.base import (
     UserEndpoint,
     UpdateUserOnBoardedEndpoint,
     UpdateUserTourCompletedEndpoint,
     UserActivityEndpoint,
+)
+
+from .user.google_calendar import (
+    GoogleCalendarConnectEndpoint,
+    GoogleCalendarCallbackEndpoint,
+    GoogleCalendarStatusEndpoint,
+    GoogleCalendarPreferencesEndpoint,
+    GoogleCalendarDisconnectEndpoint,
+    GoogleCalendarSyncNowEndpoint,
+    GoogleCalendarEventsEndpoint,
 )
 
 
@@ -81,6 +93,7 @@ from .workspace.estimate import WorkspaceEstimatesEndpoint
 from .workspace.module import WorkspaceModulesEndpoint
 from .workspace.cycle import WorkspaceCyclesEndpoint
 from .workspace.quick_link import QuickLinkViewSet
+from .workspace.task import WorkspaceUserTaskViewSet
 from .workspace.sticky import WorkspaceStickyViewSet
 
 from .state.base import StateViewSet, IntakeStateEndpoint

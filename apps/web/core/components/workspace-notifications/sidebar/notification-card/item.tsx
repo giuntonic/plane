@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { Clock } from "lucide-react";
@@ -25,6 +26,7 @@ type TNotificationItem = {
 };
 
 export const NotificationItem = observer(function NotificationItem(props: TNotificationItem) {
+  const { t } = useTranslation();
   const { workspaceSlug, notificationId } = props;
   // hooks
   const { currentSelectedNotificationId, setCurrentSelectedNotificationId } = useWorkspaceNotifications();
@@ -126,7 +128,7 @@ export const NotificationItem = observer(function NotificationItem(props: TNotif
                 <p className="flex flex-shrink-0 items-center justify-end gap-x-1 text-tertiary">
                   <Clock className="h-4 w-4" />
                   <span>
-                    Till {renderFormattedDate(notification.snoozed_till)},&nbsp;
+                    {t("ui.jsx_till")} {renderFormattedDate(notification.snoozed_till)},&nbsp;
                     {renderFormattedTime(notification.snoozed_till, "12-hour")}
                   </span>
                 </p>

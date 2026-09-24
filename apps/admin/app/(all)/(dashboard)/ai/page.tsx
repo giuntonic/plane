@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 import { Loader } from "@plane/ui";
@@ -17,6 +18,7 @@ import type { Route } from "./+types/page";
 import { InstanceAIForm } from "./form";
 
 const InstanceAIPage = observer(function InstanceAIPage(_props: Route.ComponentProps) {
+  const { t } = useTranslation();
   // store
   const { fetchInstanceConfigurations, formattedConfig } = useInstance();
 
@@ -25,8 +27,8 @@ const InstanceAIPage = observer(function InstanceAIPage(_props: Route.ComponentP
   return (
     <PageWrapper
       header={{
-        title: "AI features for all your workspaces",
-        description: "Configure your AI API credentials so Plane AI features are turned on for all your workspaces.",
+        title: t("ui.ai_features_for_all_your_workspaces"),
+        description: t("ui.configure_your_ai_api_credentials_so_plane"),
       }}
     >
       {formattedConfig ? (
@@ -45,6 +47,12 @@ const InstanceAIPage = observer(function InstanceAIPage(_props: Route.ComponentP
   );
 });
 
-export const meta: Route.MetaFunction = () => [{ title: "Artificial Intelligence Settings - God Mode" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.artificial_intelligence_settings_god_mode");
+    },
+  },
+];
 
 export default InstanceAIPage;

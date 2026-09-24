@@ -6,14 +6,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
+import { Keyboard } from "lucide-react";
 // plane helpers
 import { useOutsideClickDetector } from "@plane/hooks";
+import { useTranslation } from "@plane/i18n";
 import { PreferencesIcon } from "@plane/propel/icons";
 import { ScrollArea } from "@plane/propel/scrollarea";
+import { Tooltip } from "@plane/propel/tooltip";
 // components
 import { CustomizeNavigationDialog } from "@/components/navigation/customize-navigation-dialog";
 // hooks
 import { useAppTheme } from "@/hooks/store/use-app-theme";
+import { usePowerK } from "@/hooks/store/use-power-k";
 import useSize from "@/hooks/use-window-size";
 // plane web components
 import { WorkspaceEditionBadge } from "@/components/workspace/edition-badge";
@@ -22,16 +26,19 @@ import { IconButton } from "@plane/propel/icon-button";
 
 type TSidebarWrapperProps = {
   title: string;
+  showCustomizeButton?: boolean;
   children: React.ReactNode;
   quickActions?: React.ReactNode;
 };
 
 export const SidebarWrapper = observer(function SidebarWrapper(props: TSidebarWrapperProps) {
-  const { title, children, quickActions } = props;
+  const { title, showCustomizeButton = false, children, quickActions } = props;
   // state
   const [isCustomizeNavDialogOpen, setIsCustomizeNavDialogOpen] = useState(false);
   // store hooks
   const { toggleSidebar, sidebarCollapsed } = useAppTheme();
+  const { toggleShortcutsListModal } = usePowerK();
+  const { t } = useTranslation();
   const windowSize = useSize();
   // refs
   const ref = useRef<HTMLDivElement>(null);
@@ -57,7 +64,7 @@ export const SidebarWrapper = observer(function SidebarWrapper(props: TSidebarWr
           <div className="flex items-center justify-between gap-2 px-2">
             <span className="pt-1 text-16 font-medium text-primary">{title}</span>
             <div className="flex items-center gap-2">
-              {title === "Projects" && (
+              {showCustomizeButton && (
                 <IconButton
                   size="base"
                   variant="ghost"
@@ -84,11 +91,15 @@ export const SidebarWrapper = observer(function SidebarWrapper(props: TSidebarWr
         {/* Help Section */}
         <div className="flex h-12 items-center justify-between border-t border-subtle bg-surface-1 p-3">
           <WorkspaceEditionBadge />
-          {/* TODO: To be checked if we need this */}
-          {/* <div className="flex items-center gap-2">
-          {!shouldRenderAppRail && <HelpMenu />}
-          {!isAppRailEnabled && <AppSidebarToggleButton />}
-        </div> */}
+          <Tooltip tooltipContent={t("keyboard_shortcuts")}>
+            <IconButton
+              size="base"
+              variant="ghost"
+              icon={Keyboard}
+              aria-label={t("keyboard_shortcuts")}
+              onClick={() => toggleShortcutsListModal(true)}
+            />
+          </Tooltip>
         </div>
       </div>
     </>

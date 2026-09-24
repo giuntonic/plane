@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback } from "react";
 // plane editor
 import type { TMentionSection, TMentionSuggestion } from "@plane/editor";
@@ -22,6 +23,7 @@ type TArgs = {
 };
 
 export const useEditorMention = (args: TArgs) => {
+  const { t } = useTranslation();
   const { enableAdvancedMentions = false, searchEntity } = args;
   // additional mentions
   const { editorMentionTypes, updateAdditionalSections } = useAdditionalEditorMention({
@@ -59,7 +61,7 @@ export const useEditorMention = (args: TArgs) => {
             }));
             suggestionSections.push({
               key: "users",
-              title: "Users",
+              title: t("common.users"),
               items,
             });
           }

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
@@ -19,17 +20,23 @@ const ARCHIVES_TAB_LIST: {
 }[] = [
   {
     key: "issues",
-    label: "Work items",
+    get label() {
+      return i18nInstance.t("issues");
+    },
     shouldRender: () => true,
   },
   {
     key: "cycles",
-    label: "Cycles",
+    get label() {
+      return i18nInstance.t("cycles");
+    },
     shouldRender: (projectDetails) => projectDetails.cycle_view,
   },
   {
     key: "modules",
-    label: "Modules",
+    get label() {
+      return i18nInstance.t("modules");
+    },
     shouldRender: (projectDetails) => projectDetails.module_view,
   },
 ];

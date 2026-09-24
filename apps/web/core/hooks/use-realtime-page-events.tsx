@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useCallback, useMemo } from "react";
 // plane imports
 import type { EventToPayloadMap } from "@plane/editor";
@@ -68,6 +69,7 @@ export const useRealtimePageEvents = ({
 
   const ACTION_HANDLERS = useMemo(
     function ACTION_HANDLERS() {
+      const { t } = useTranslation();
       return {
         archived: ({ pageIds, data }: { pageIds: string[]; data: EventToPayloadMap["archived"] }) => {
           pageIds.forEach((pageId) => {
@@ -119,7 +121,7 @@ export const useRealtimePageEvents = ({
               if (page.id === pageId && data?.user_id !== currentUser?.id) {
                 setToast({
                   type: TOAST_TYPE.ERROR,
-                  title: "Page deleted",
+                  title: t("ui.page_deleted"),
                   message: `Page deleted${getUserDisplayText(data.user_id)}`,
                 });
                 router.push(handlers.getRedirectionLink());
@@ -141,14 +143,14 @@ export const useRealtimePageEvents = ({
 
         error: ({ pageIds, data }: { pageIds: string[]; data: EventToPayloadMap["error"] }) => {
           const errorType = data.error_type;
-          const errorMessage = data.error_message || "An error occurred";
+          const errorMessage = data.error_message || t("ui.an_error_occurred");
           const errorCode = data.error_code;
 
           if (page.id && pageIds.includes(page.id)) {
             // Show toast notification
             setToast({
               type: TOAST_TYPE.ERROR,
-              title: errorType === "fetch" ? "Failed to load page" : "Failed to save page",
+              title: errorType === "fetch" ? t("ui.failed_to_load_page") : t("ui.failed_to_save_page"),
               message: errorMessage,
             });
 

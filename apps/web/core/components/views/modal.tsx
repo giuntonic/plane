@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // types
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -30,6 +31,7 @@ type Props = {
 };
 
 export const CreateUpdateProjectViewModal = observer(function CreateUpdateProjectViewModal(props: Props) {
+  const { t } = useTranslation();
   const { data, isOpen, onClose, preLoadedData, workspaceSlug, projectId } = props;
   // router
   const router = useAppRouter();
@@ -51,14 +53,14 @@ export const CreateUpdateProjectViewModal = observer(function CreateUpdateProjec
       router.push(`/${workspaceSlug}/projects/${projectId}/views/${res.id}`);
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "View created successfully.",
+        title: t("toast.success"),
+        message: t("ui.view_created_successfully"),
       });
     } catch (_error) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Failed to create view. Please try again.",
+        title: t("toast.error"),
+        message: t("ui.failed_to_create_view_please_try_again"),
       });
     }
   };
@@ -72,8 +74,8 @@ export const CreateUpdateProjectViewModal = observer(function CreateUpdateProjec
     } catch (_error) {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Failed to update view. Please try again.",
+        title: t("toast.error"),
+        message: t("ui.failed_to_update_view_please_try_again"),
       });
     }
   };

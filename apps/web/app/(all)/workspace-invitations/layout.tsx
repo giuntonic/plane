@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { Outlet } from "react-router";
 import type { Route } from "./+types/layout";
 
@@ -11,4 +12,10 @@ export default function WorkspaceInvitationsLayout() {
   return <Outlet />;
 }
 
-export const meta: Route.MetaFunction = () => [{ title: "Workspace Invitations" }];
+export const meta: Route.MetaFunction = () => [
+  {
+    get title() {
+      return i18nInstance.t("ui.workspace_invitations");
+    },
+  },
+];

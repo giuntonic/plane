@@ -17,7 +17,7 @@ import type { TGroupedIssues, TIssue, TIssueMap, TPaginationData, ICalendarDate 
 import { cn, renderFormattedPayloadDate } from "@plane/utils";
 import { highlightIssueOnDrop } from "@/components/issues/issue-layouts/utils";
 // helpers
-import { MONTHS_LIST } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 // helpers
 // types
 import type { ICycleIssuesFilter } from "@/store/issue/cycle";
@@ -53,6 +53,21 @@ type Props = {
   isEpic?: boolean;
 };
 
+const MONTH_SHORT_KEYS: Record<number, string> = {
+  1: "jan",
+  2: "feb",
+  3: "mar",
+  4: "apr",
+  5: "may_short",
+  6: "jun",
+  7: "jul",
+  8: "aug",
+  9: "sep",
+  10: "oct",
+  11: "nov",
+  12: "dec",
+};
+
 export const CalendarDayTile = observer(function CalendarDayTile(props: Props) {
   const {
     issuesFilterStore,
@@ -76,6 +91,7 @@ export const CalendarDayTile = observer(function CalendarDayTile(props: Props) {
   } = props;
 
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const { t } = useTranslation();
 
   const calendarLayout = issuesFilterStore?.issueFilters?.displayFilters?.calendar?.layout ?? "month";
 
@@ -112,8 +128,8 @@ export const CalendarDayTile = observer(function CalendarDayTile(props: Props) {
             if (diffInDays < 0) {
               setToast({
                 type: TOAST_TYPE.ERROR,
-                title: "Error!",
-                message: "Due date cannot be before the start date of the work item.",
+                title: t("toast.error"),
+                message: t("common.due_date_before_start_date_error"),
               });
               return;
             }
@@ -156,7 +172,8 @@ export const CalendarDayTile = observer(function CalendarDayTile(props: Props) {
               : "font-medium" // if week layout, highlight all days
           } ${isWeekend ? "bg-layer-1" : "bg-layer-transparent"} `}
         >
-          {date.date.getDate() === 1 && MONTHS_LIST[date.date.getMonth() + 1].shortTitle + " "}
+          {date.date.getDate() === 1 &&
+            t(`common.months_short.${MONTH_SHORT_KEYS[date.date.getMonth() + 1]}`) + " "}
           {isToday ? (
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent-primary text-on-color">
               {date.date.getDate()}

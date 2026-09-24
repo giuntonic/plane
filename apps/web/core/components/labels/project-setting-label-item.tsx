@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import type { Dispatch, SetStateAction } from "react";
 import { useState } from "react";
 import { useParams } from "next/navigation";
@@ -37,6 +38,7 @@ type Props = {
 };
 
 export function ProjectSettingLabelItem(props: Props) {
+  const { t } = useTranslation();
   const {
     label,
     setIsUpdating,
@@ -68,7 +70,7 @@ export function ProjectSettingLabelItem(props: Props) {
       CustomIcon: CloseIcon,
       onClick: removeFromGroup,
       isVisible: !!label.parent,
-      text: "Remove from group",
+      text: t("ui.remove_from_group"),
       key: "remove_from_group",
     },
     {
@@ -78,7 +80,7 @@ export function ProjectSettingLabelItem(props: Props) {
         setIsUpdating(true);
       },
       isVisible: true,
-      text: "Edit label",
+      text: t("ui.edit_label"),
       key: "edit_label",
     },
   ];

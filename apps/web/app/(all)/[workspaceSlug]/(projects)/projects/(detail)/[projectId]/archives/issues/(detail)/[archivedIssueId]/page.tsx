@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import { useRouter } from "next/navigation";
 import useSWR from "swr";
@@ -22,6 +23,7 @@ import { useProject } from "@/hooks/store/use-project";
 import type { Route } from "./+types/page";
 
 function ArchivedIssueDetailsPage({ params }: Route.ComponentProps) {
+  const { t } = useTranslation();
   // router
   const { workspaceSlug, projectId, archivedIssueId } = params;
   const router = useRouter();
@@ -69,14 +71,14 @@ function ArchivedIssueDetailsPage({ params }: Route.ComponentProps) {
         <>
           <Banner
             variant="warning"
-            title="This work item has been archived. Visit the Archives section to restore it."
+            title={t("ui.this_work_item_has_been_archived_visit")}
             icon={<ArchiveIcon className="size-4" />}
             action={
               <Button
                 variant="secondary"
                 onClick={() => router.push(`/${workspaceSlug}/projects/${projectId}/archives/issues/`)}
               >
-                Go to archives
+                {t("ui.go_to_archives")}
               </Button>
             }
             className="border-b border-subtle"

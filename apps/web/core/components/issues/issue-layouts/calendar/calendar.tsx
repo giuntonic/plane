@@ -24,7 +24,7 @@ import { EIssuesStoreType, EIssueLayoutTypes } from "@plane/types";
 import { Spinner } from "@plane/ui";
 import { renderFormattedPayloadDate, cn } from "@plane/utils";
 // constants
-import { MONTHS_LIST } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 // helpers
 // hooks
 import { useIssues } from "@/hooks/store/use-issues";
@@ -72,6 +72,21 @@ type Props = {
   isEpic?: boolean;
 };
 
+const MONTH_KEYS: Record<number, string> = {
+  1: "january",
+  2: "february",
+  3: "march",
+  4: "april",
+  5: "may",
+  6: "june",
+  7: "july",
+  8: "august",
+  9: "september",
+  10: "october",
+  11: "november",
+  12: "december",
+};
+
 export const CalendarChart = observer(function CalendarChart(props: Props) {
   const {
     issuesFilterStore,
@@ -96,6 +111,7 @@ export const CalendarChart = observer(function CalendarChart(props: Props) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   //refs
   const scrollableContainerRef = useRef<HTMLDivElement | null>(null);
+  const { t } = useTranslation();
   // store hooks
   const {
     issues: { viewFlags },
@@ -207,7 +223,7 @@ export const CalendarChart = observer(function CalendarChart(props: Props) {
             <div className="md:hidden">
               <p className="p-4 text-18 font-semibold">
                 {`${selectedDate.getDate()} ${
-                  MONTHS_LIST[selectedDate.getMonth() + 1].title
+                  t(`common.months.${MONTH_KEYS[selectedDate.getMonth() + 1]}`)
                 }, ${selectedDate.getFullYear()}`}
               </p>
               <CalendarIssueBlocks
@@ -235,7 +251,7 @@ export const CalendarChart = observer(function CalendarChart(props: Props) {
         <div className="md:hidden">
           <p className="p-4 text-18 font-semibold">
             {`${selectedDate.getDate()} ${
-              MONTHS_LIST[selectedDate.getMonth() + 1].title
+              t(`common.months.${MONTH_KEYS[selectedDate.getMonth() + 1]}`)
             }, ${selectedDate.getFullYear()}`}
           </p>
           <CalendarIssueBlocks

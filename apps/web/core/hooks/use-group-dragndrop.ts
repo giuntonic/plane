@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useParams } from "next/navigation";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { EIssuesStoreType, TIssue, TIssueGroupByOptions, TIssueOrderByOptions } from "@plane/types";
@@ -33,6 +34,7 @@ export const useGroupIssuesDragNDrop = (
   groupBy: TIssueGroupByOptions | undefined,
   subGroupBy?: TIssueGroupByOptions
 ) => {
+  const { t } = useTranslation();
   const { workspaceSlug } = useParams();
 
   const {
@@ -63,8 +65,8 @@ export const useGroupIssuesDragNDrop = (
   ) => {
     const errorToastProps = {
       type: TOAST_TYPE.ERROR,
-      title: "Error!",
-      message: "Error while updating work item",
+      title: t("toast.error"),
+      message: t("ui.error_while_updating_work_item"),
     };
     const moduleKey = ISSUE_FILTER_DEFAULT_DATA["module"];
     const cycleKey = ISSUE_FILTER_DEFAULT_DATA["cycle"];
@@ -117,9 +119,9 @@ export const useGroupIssuesDragNDrop = (
       orderBy !== "sort_order"
     ).catch((err) => {
       setToast({
-        title: "Error!",
+        title: t("toast.error"),
         type: TOAST_TYPE.ERROR,
-        message: err?.detail ?? "Failed to perform this action",
+        message: err?.detail ?? t("ui.failed_to_perform_this_action"),
       });
     });
   };

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useState, Fragment, useEffect } from "react";
 import { TwitterPicker } from "react-color";
 import { Controller, useForm } from "react-hook-form";
@@ -33,6 +34,7 @@ const defaultValues: Partial<IIssueLabel> = {
 };
 
 export function LabelCreate(props: ILabelCreate) {
+  const { t } = useTranslation();
   const { workspaceSlug, projectId, issueId, values, labelOperations, disabled = false } = props;
   // state
   const [isCreateToggle, setIsCreateToggle] = useState(false);
@@ -88,7 +90,7 @@ export function LabelCreate(props: ILabelCreate) {
         <div className="flex-shrink-0">
           {isCreateToggle ? <CloseIcon className="h-2.5 w-2.5" /> : <PlusIcon className="h-2.5 w-2.5" />}
         </div>
-        <div className="flex-shrink-0">{isCreateToggle ? "Cancel" : "New"}</div>
+        <div className="flex-shrink-0">{isCreateToggle ? t("cancel") : t("ui.new")}</div>
       </div>
 
       {isCreateToggle && (
@@ -131,7 +133,7 @@ export function LabelCreate(props: ILabelCreate) {
             control={control}
             name="name"
             rules={{
-              required: "This is required",
+              required: t("ui.this_is_required"),
             }}
             render={({ field: { value, onChange, ref } }) => (
               <Input
@@ -142,7 +144,7 @@ export function LabelCreate(props: ILabelCreate) {
                 onChange={onChange}
                 ref={ref}
                 hasError={Boolean(errors.name)}
-                placeholder="Title"
+                placeholder={t("title")}
                 className="w-full px-1.5 py-1 text-11"
                 disabled={isSubmitting}
               />

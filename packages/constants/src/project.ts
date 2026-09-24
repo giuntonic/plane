@@ -129,3 +129,7 @@ export enum EProjectFeatureKey {
   PAGES = "pages",
   INTAKE = "intake",
 }
+
+// Max length of a project identifier (the prefix of work item IDs, e.g. PESPO-12).
+// The API column allows 12; the UI has always capped it at 10.
+export const PROJECT_IDENTIFIER_MAX_LENGTH = 10;

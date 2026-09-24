@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 // icons
@@ -12,6 +13,7 @@ import { Lightbulb } from "lucide-react";
 import latestFeatures from "@/app/assets/onboarding/onboarding-pages.webp?url";
 
 export function LatestFeatureBlock() {
+  const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
 
   return (
@@ -19,9 +21,9 @@ export function LatestFeatureBlock() {
       <div className="mx-auto mt-16 flex rounded-[3.5px] border border-subtle bg-surface-1 py-2 sm:w-96">
         <Lightbulb className="mx-3 mr-2 h-7 w-7" />
         <p className="text-left text-13 text-primary">
-          Pages gets a facelift! Write anything and use Galileo to help you start.{" "}
+          {t("ui.jsx_pages_gets_a_facelift_write_anything_and")}{" "}
           <Link href="https://plane.so/changelog" target="_blank" rel="noopener noreferrer">
-            <span className="text-13 font-medium underline hover:cursor-pointer">Learn more</span>
+            <span className="text-13 font-medium underline hover:cursor-pointer">{t("ui.learn_more")}</span>
           </Link>
         </p>
       </div>
@@ -33,7 +35,7 @@ export function LatestFeatureBlock() {
         <div className="h-[90%]">
           <img
             src={latestFeatures}
-            alt="Plane Work items"
+            alt={t("ui.plane_work_items")}
             className={`-mt-2 ml-10 h-full rounded-md ${resolvedTheme === "dark" ? "bg-surface-1" : "bg-layer-2"}`}
           />
         </div>

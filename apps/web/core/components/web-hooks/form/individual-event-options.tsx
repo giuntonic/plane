@@ -6,39 +6,19 @@
 
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
+import { useTranslation } from "@plane/i18n";
 import type { IWebhook } from "@plane/types";
 import { Checkbox } from "@plane/ui";
 
-export const INDIVIDUAL_WEBHOOK_OPTIONS: {
+const INDIVIDUAL_WEBHOOK_OPTION_KEYS: {
   key: keyof IWebhook;
-  label: string;
-  description: string;
+  i18n_key: string;
 }[] = [
-  {
-    key: "project",
-    label: "Projects",
-    description: "Project created, updated, or deleted",
-  },
-  {
-    key: "cycle",
-    label: "Cycles",
-    description: "Cycle created, updated, or deleted",
-  },
-  {
-    key: "issue",
-    label: "Work items",
-    description: "Work item created, updated, deleted, added to a cycle or module",
-  },
-  {
-    key: "module",
-    label: "Modules",
-    description: "Module created, updated, or deleted",
-  },
-  {
-    key: "issue_comment",
-    label: "Work item comments",
-    description: "Comment posted, updated, or deleted",
-  },
+  { key: "project", i18n_key: "project" },
+  { key: "cycle", i18n_key: "cycle" },
+  { key: "issue", i18n_key: "issue" },
+  { key: "module", i18n_key: "module" },
+  { key: "issue_comment", i18n_key: "issue_comment" },
 ];
 
 type Props = {
@@ -46,9 +26,16 @@ type Props = {
 };
 
 export function WebhookIndividualEventOptions({ control }: Props) {
+  const { t } = useTranslation();
+  const individualWebhookOptions = INDIVIDUAL_WEBHOOK_OPTION_KEYS.map((option) => ({
+    key: option.key,
+    label: t(`workspace_settings.settings.webhooks.events.${option.i18n_key}.label`),
+    description: t(`workspace_settings.settings.webhooks.events.${option.i18n_key}.description`),
+  }));
+
   return (
     <div className="grid grid-cols-1 gap-x-4 gap-y-8 px-6 lg:grid-cols-2">
-      {INDIVIDUAL_WEBHOOK_OPTIONS.map((option) => (
+      {individualWebhookOptions.map((option) => (
         <Controller
           key={option.key}
           control={control}

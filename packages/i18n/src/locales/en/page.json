@@ -111,5 +111,13 @@
       "success_message": "Page removed from collection.",
       "error_message": "Page could not be removed from the collection. Please try again."
     }
-  }
+  },
+  "delete_modal": {
+    "title": "Delete page",
+    "confirmation": "Are you sure you want to delete page- {name}? The Page will be deleted permanently. This action cannot be undone.",
+    "success": "Page deleted successfully.",
+    "error": "Page could not be deleted. Please try again."
+  },
+  "add_page": "Add page",
+  "create_error": "Page could not be created. Please try again."
 }

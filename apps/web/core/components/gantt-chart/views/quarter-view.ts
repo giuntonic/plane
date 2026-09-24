@@ -6,7 +6,7 @@
 
 //
 import type { ChartDataType } from "@plane/types";
-import { quarters } from "../data";
+import { months, quarters, translateMonthShort } from "../data";
 import { getNumberOfDaysBetweenTwoDates } from "./helpers";
 import type { IMonthBlock } from "./month-view";
 import { getMonthsBetweenTwoDates } from "./month-view";
@@ -134,11 +134,13 @@ export const groupMonthsToQuarters = (monthBlocks: IMonthBlock[]): IQuarterMonth
       quartersMap[quarterKey].children.push(monthBlock);
     } else {
       const quarterData = quarters[quarterNumber];
+      const firstMonth = months[quarterNumber * 3];
+      const lastMonth = months[quarterNumber * 3 + 2];
       quartersMap[quarterKey] = {
         children: [monthBlock],
         quarterNumber,
         shortTitle: quarterData.shortTitle,
-        title: `${quarterData.title} ${year}`,
+        title: `${translateMonthShort(firstMonth.shortTitle)} - ${translateMonthShort(lastMonth.shortTitle)} ${year}`,
         year,
         today: todayQuarterNumber === quarterNumber && todayYear === year,
       };

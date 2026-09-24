@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Fragment, useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useTheme as useNextTheme } from "next-themes";
@@ -21,6 +22,7 @@ import { useTheme, useUser } from "@/hooks/store";
 const authService = new AuthService();
 
 export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
+  const { t } = useTranslation();
   // store hooks
   const { isSidebarCollapsed } = useTheme();
   const { currentUser, signOut } = useUser();
@@ -56,7 +58,7 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
           onClick={handleThemeSwitch}
         >
           <Palette className="h-4 w-4 stroke-[1.5]" />
-          Switch to {resolvedTheme === "dark" ? "light" : "dark"} mode
+          {t("ui.jsx_switch_to")} {resolvedTheme === "dark" ? "light" : "dark"} mode
         </Menu.Item>
       </div>
       <div className="py-2">
@@ -68,7 +70,7 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
             className="flex w-full items-center gap-2 rounded-sm px-2 py-1 hover:bg-layer-1-hover"
           >
             <LogOut className="h-4 w-4 stroke-[1.5]" />
-            Sign out
+            {t("sign_out")}
           </Menu.Item>
         </form>
       </div>
@@ -115,7 +117,7 @@ export const AdminSidebarDropdown = observer(function AdminSidebarDropdown() {
 
           {!isSidebarCollapsed && (
             <div className="flex w-full gap-2">
-              <h4 className="grow truncate text-body-md-medium text-primary">Instance admin</h4>
+              <h4 className="grow truncate text-body-md-medium text-primary">{t("ui.instance_admin")}</h4>
             </div>
           )}
         </div>

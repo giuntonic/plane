@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState } from "react";
 import type { PageProps } from "@react-pdf/renderer";
 import { pdf } from "@react-pdf/renderer";
@@ -69,15 +70,21 @@ const PAGE_FORMATS: {
   },
   {
     key: "LETTER",
-    label: "Letter",
+    get label() {
+      return i18nInstance.t("ui.letter");
+    },
   },
   {
     key: "LEGAL",
-    label: "Legal",
+    get label() {
+      return i18nInstance.t("ui.legal");
+    },
   },
   {
     key: "TABLOID",
-    label: "Tabloid",
+    get label() {
+      return i18nInstance.t("ui.tabloid");
+    },
   },
 ];
 
@@ -87,11 +94,15 @@ const CONTENT_VARIETY: {
 }[] = [
   {
     key: "everything",
-    label: "Everything",
+    get label() {
+      return i18nInstance.t("ui.everything");
+    },
   },
   {
     key: "no-assets",
-    label: "No images",
+    get label() {
+      return i18nInstance.t("ui.no_images");
+    },
   },
 ];
 
@@ -102,6 +113,7 @@ const defaultValues: TFormValues = {
 };
 
 export function ExportPageModal(props: Props) {
+  const { t } = useTranslation();
   const { editorRef, isOpen, onClose, pageTitle } = props;
   // states
   const [isExporting, setIsExporting] = useState(false);
@@ -186,16 +198,16 @@ export function ExportPageModal(props: Props) {
       }
       setToast({
         type: TOAST_TYPE.SUCCESS,
-        title: "Success!",
-        message: "Page exported successfully.",
+        title: t("toast.success"),
+        message: t("ui.page_exported_successfully"),
       });
       handleClose();
     } catch (error) {
       console.error("Error in exporting page:", error);
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: "Page could not be exported. Please try again later.",
+        title: t("toast.error"),
+        message: t("ui.page_could_not_be_exported_please_try"),
       });
     } finally {
       setIsExporting(false);
@@ -206,10 +218,10 @@ export function ExportPageModal(props: Props) {
     <ModalCore isOpen={isOpen} handleClose={handleClose} position={EModalPosition.CENTER} width={EModalWidth.SM}>
       <div>
         <div className="space-y-5 p-5">
-          <h3 className="text-18 font-medium text-secondary">Export page</h3>
+          <h3 className="text-18 font-medium text-secondary">{t("ui.export_page")}</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-2">
-              <h6 className="flex-shrink-0 text-13 text-secondary">Export format</h6>
+              <h6 className="flex-shrink-0 text-13 text-secondary">{t("ui.export_format")}</h6>
               <Controller
                 control={control}
                 name="export_format"
@@ -232,7 +244,7 @@ export function ExportPageModal(props: Props) {
               />
             </div>
             <div className="flex items-center justify-between gap-2">
-              <h6 className="flex-shrink-0 text-13 text-secondary">Include content</h6>
+              <h6 className="flex-shrink-0 text-13 text-secondary">{t("ui.include_content")}</h6>
               <Controller
                 control={control}
                 name="content_variety"
@@ -256,7 +268,7 @@ export function ExportPageModal(props: Props) {
             </div>
             {isPDFSelected && (
               <div className="flex items-center justify-between gap-2">
-                <h6 className="flex-shrink-0 text-13 text-secondary">Page format</h6>
+                <h6 className="flex-shrink-0 text-13 text-secondary">{t("ui.page_format")}</h6>
                 <Controller
                   control={control}
                   name="page_format"
@@ -283,10 +295,10 @@ export function ExportPageModal(props: Props) {
         </div>
         <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
           <Button variant="secondary" size="lg" onClick={handleClose}>
-            Cancel
+            {t("cancel")}
           </Button>
           <Button variant="primary" size="lg" loading={isExporting} onClick={handleExport}>
-            {isExporting ? "Exporting" : "Export"}
+            {isExporting ? t("ui.exporting") : t("export")}
           </Button>
         </div>
       </div>
