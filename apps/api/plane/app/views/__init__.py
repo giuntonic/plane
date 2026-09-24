@@ -41,6 +41,7 @@ from .user.google_calendar import (
     GoogleCalendarDisconnectEndpoint,
     GoogleCalendarSyncNowEndpoint,
     GoogleCalendarEventsEndpoint,
+    GoogleCalendarNotificationEndpoint,
 )
 
 from .user.google_drive import (
@@ -165,6 +166,12 @@ from .issue.comment import IssueCommentViewSet, CommentReactionViewSet
 from .issue.label import LabelViewSet, BulkCreateIssueLabelsEndpoint
 
 from .issue.link import IssueLinkViewSet
+
+from .issue.calendar_event import (
+    IssueCalendarEventEndpoint,
+    IssueCalendarEventLinkEndpoint,
+    IssueCalendarEventDetailEndpoint,
+)
 
 from .issue.google_drive import (
     IssueGoogleDriveFileEndpoint,

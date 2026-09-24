@@ -1583,6 +1583,16 @@ def issue_activity(
         # Save all the values to database
         issue_activities_created = IssueActivity.objects.bulk_create(issue_activities)
 
+        # Pespo: reflect the change on the assignees' Google Calendars right
+        # away (debounced; see google_calendar_sync_task).
+        if type.startswith("issue.activity."):
+            try:
+                from plane.bgtasks.google_calendar_sync_task import schedule_issue_calendar_sync
+
+                schedule_issue_calendar_sync(issue_id)
+            except Exception as e:
+                log_exception(e)
+
         if notification:
             notifications.delay(
                 type=type,

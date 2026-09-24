@@ -27,6 +27,7 @@ from plane.app.views import (
     GoogleCalendarDisconnectEndpoint,
     GoogleCalendarSyncNowEndpoint,
     GoogleCalendarEventsEndpoint,
+    GoogleCalendarNotificationEndpoint,
     ## End Google Calendar
     ## Google Drive
     GoogleDriveConnectEndpoint,
@@ -70,7 +71,11 @@ urlpatterns = [
     ## End Accounts
     # Google Calendar (personal connection, distinct from the /auth/google/ login flow)
     path("users/me/google-calendar/connect/", GoogleCalendarConnectEndpoint.as_view(), name="google-calendar-connect"),
-    path("users/me/google-calendar/callback/", GoogleCalendarCallbackEndpoint.as_view(), name="google-calendar-callback"),
+    path(
+        "users/me/google-calendar/callback/",
+        GoogleCalendarCallbackEndpoint.as_view(),
+        name="google-calendar-callback",
+    ),
     path("users/me/google-calendar/status/", GoogleCalendarStatusEndpoint.as_view(), name="google-calendar-status"),
     path(
         "users/me/google-calendar/preferences/",
@@ -88,6 +93,12 @@ urlpatterns = [
         name="google-calendar-sync-now",
     ),
     path("users/me/google-calendar/events/", GoogleCalendarEventsEndpoint.as_view(), name="google-calendar-events"),
+    # Google Calendar push notifications (no user session — see the view)
+    path(
+        "google-calendar/notifications/",
+        GoogleCalendarNotificationEndpoint.as_view(),
+        name="google-calendar-notifications",
+    ),
     ## End Google Calendar
     # Google Drive (personal connection — used by the work item attachments
     # widget and the Page/description embed)

@@ -10,6 +10,9 @@ from plane.app.views import (
     SubIssuesEndpoint,
     IssueLinkViewSet,
     IssueGoogleDriveFileEndpoint,
+    IssueCalendarEventEndpoint,
+    IssueCalendarEventLinkEndpoint,
+    IssueCalendarEventDetailEndpoint,
     IssueGoogleDriveFileDetailEndpoint,
     IssueGoogleDriveImportEndpoint,
     IssueAttachmentEndpoint,
@@ -125,6 +128,22 @@ urlpatterns = [
             }
         ),
         name="project-issue-links",
+    ),
+    # Pespo: Google Calendar meetings linked to a work item
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/",
+        IssueCalendarEventEndpoint.as_view(),
+        name="project-issue-calendar-events",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/link/",
+        IssueCalendarEventLinkEndpoint.as_view(),
+        name="project-issue-calendar-events-link",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/calendar-events/<uuid:pk>/",
+        IssueCalendarEventDetailEndpoint.as_view(),
+        name="project-issue-calendar-event-detail",
     ),
     # Pespo: Google Drive files linked to / copied into a work item
     path(
