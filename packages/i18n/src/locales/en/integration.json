@@ -384,7 +384,7 @@
       "open_in_google": "Open in Google",
       "view_mode": "View",
       "edit_mode": "Edit",
-      "blocked_hint": "If the file doesn't load here, open it in Google — your browser may be blocking Google's sign-in inside the page."
+      "blocked_hint": "Editing uses Google's own editor. If it asks you to enable cookies, click Google's button to allow it — or use \"Open in Google\"."
     }
   },
   "google_calendar_integration": {

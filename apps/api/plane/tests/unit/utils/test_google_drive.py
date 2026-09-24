@@ -150,3 +150,36 @@ def test_content_validator_keeps_google_drive_embed_and_its_attributes():
     for attribute in ('url="https://docs.google.com/document/d/abc/edit"', 'name="Ata"', 'mode="edit"', 'height="600"'):
         assert attribute in sanitized
     assert 'mime_type="application/vnd.google-apps.document"' in sanitized
+
+
+@pytest.mark.unit
+class TestDownloadPreview:
+    def test_sheets_are_previewed_as_pdf(self):
+        with mock.patch.object(gdrive.requests, "get", return_value=_FakeStreamResponse([b"%PDF"])) as get:
+            content, name, mime = gdrive.download_preview(
+                "tok", {"id": "s1", "name": "Custos", "mimeType": "application/vnd.google-apps.spreadsheet"}, 1000
+            )
+        assert (content, name, mime) == (b"%PDF", "Custos.pdf", "application/pdf")
+        assert get.call_args.kwargs["params"] == {"mimeType": "application/pdf"}
+
+    def test_images_are_served_as_is(self):
+        with mock.patch.object(gdrive.requests, "get", return_value=_FakeStreamResponse([b"img"])):
+            _, name, mime = gdrive.download_preview(
+                "tok", {"id": "i", "name": "a.webp", "mimeType": "image/webp"}, 1000
+            )
+        assert (name, mime) == ("a.webp", "image/webp")
+
+    @pytest.mark.parametrize("mime", ["text/html", "image/svg+xml", "application/zip", "video/mp4"])
+    def test_unsafe_or_unsupported_types_are_rejected_without_downloading(self, mime):
+        with mock.patch.object(gdrive.requests, "get") as get:
+            with pytest.raises(gdrive.GoogleDriveNotExportable):
+                gdrive.download_preview("tok", {"id": "x", "mimeType": mime}, 1000)
+        get.assert_not_called()
+
+    def test_attachment_copy_still_exports_sheets_as_xlsx(self):
+        with mock.patch.object(gdrive.requests, "get", return_value=_FakeStreamResponse([b"x"])):
+            _, name, mime = gdrive.download_file(
+                "tok", {"id": "s1", "name": "Custos", "mimeType": "application/vnd.google-apps.spreadsheet"}, 1000
+            )
+        assert name == "Custos.xlsx"
+        assert mime.endswith("spreadsheetml.sheet")

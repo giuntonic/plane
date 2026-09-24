@@ -384,7 +384,7 @@
       "open_in_google": "Abrir no Google",
       "view_mode": "Visualizar",
       "edit_mode": "Editar",
-      "blocked_hint": "Se o arquivo não carregar aqui, abra no Google — seu navegador pode estar bloqueando o login do Google dentro da página."
+      "blocked_hint": "A edição usa o editor do próprio Google. Se ele pedir para ativar cookies, clique no botão do Google para permitir — ou use \"Abrir no Google\"."
     }
   },
   "google_calendar_integration": {

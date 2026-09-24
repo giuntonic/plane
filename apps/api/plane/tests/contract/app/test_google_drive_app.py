@@ -209,6 +209,72 @@ class TestGoogleDrivePersonalConnection:
 
 
 @pytest.mark.contract
+class TestGoogleDrivePreview:
+    def _url(self, file_id="doc_123"):
+        return reverse("google-drive-file-preview", kwargs={"file_id": file_id})
+
+    @pytest.mark.django_db
+    def test_serves_pdf_inline_framable_only_by_plane(self, session_client, drive_connection):
+        with (
+            mock.patch("plane.utils.google_drive.get_valid_access_token", return_value="access"),
+            mock.patch("plane.utils.google_drive.get_file", return_value=dict(DOC)),
+            mock.patch(
+                "plane.utils.google_drive.download_preview",
+                return_value=(b"%PDF-1.4", 'Brie"fing.pdf', "application/pdf"),
+            ),
+        ):
+            response = session_client.get(self._url())
+        assert response.status_code == 200
+        assert response["Content-Type"] == "application/pdf"
+        assert response.content == b"%PDF-1.4"
+        assert response["X-Frame-Options"] == "SAMEORIGIN"
+        assert response["X-Content-Type-Options"] == "nosniff"
+        assert response["Content-Disposition"] == 'inline; filename="Brie_fing.pdf"'
+        assert response["Cache-Control"].startswith("private")
+
+    @pytest.mark.django_db
+    def test_not_connected_shows_a_message_page(self, session_client):
+        response = session_client.get(self._url())
+        assert response.status_code == 200
+        assert response["Content-Type"].startswith("text/html")
+        assert "Conecte seu Google Drive" in response.content.decode()
+        assert "sandbox" in response["Content-Security-Policy"]
+
+    @pytest.mark.django_db
+    def test_no_access_to_the_file(self, session_client, drive_connection):
+        error_response = requests.Response()
+        error_response.status_code = 404
+        with (
+            mock.patch("plane.utils.google_drive.get_valid_access_token", return_value="access"),
+            mock.patch("plane.utils.google_drive.get_file", side_effect=requests.HTTPError(response=error_response)),
+        ):
+            response = session_client.get(self._url())
+        assert "Sem acesso a este arquivo" in response.content.decode()
+
+    @pytest.mark.django_db
+    def test_unsupported_type_links_back_to_google_only(self, session_client, drive_connection):
+        from plane.utils import google_drive as gdrive
+
+        with (
+            mock.patch("plane.utils.google_drive.get_valid_access_token", return_value="access"),
+            mock.patch(
+                "plane.utils.google_drive.get_file",
+                return_value={**DOC, "mimeType": "application/zip", "webViewLink": "javascript:alert(1)"},
+            ),
+            mock.patch("plane.utils.google_drive.download_preview", side_effect=gdrive.GoogleDriveNotExportable()),
+        ):
+            response = session_client.get(self._url())
+        body = response.content.decode()
+        assert "Prévia indisponível" in body
+        assert "javascript:" not in body
+
+    @pytest.mark.django_db
+    def test_rejects_invalid_file_id(self, session_client, drive_connection):
+        response = session_client.get(self._url("bad..id"))
+        assert "Arquivo inválido" in response.content.decode()
+
+
+@pytest.mark.contract
 class TestIssueGoogleDriveFiles:
     @pytest.mark.django_db
     def test_link_file_uses_drive_metadata_not_request_body(

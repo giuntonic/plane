@@ -36,6 +36,7 @@ from plane.app.views import (
     GoogleDriveDisconnectEndpoint,
     GoogleDriveFilesEndpoint,
     GoogleDriveFileDetailEndpoint,
+    GoogleDriveFilePreviewEndpoint,
     ## End Google Drive
 )
 
@@ -115,6 +116,11 @@ urlpatterns = [
         "users/me/google-drive/files/<str:file_id>/",
         GoogleDriveFileDetailEndpoint.as_view(),
         name="google-drive-file-detail",
+    ),
+    path(
+        "users/me/google-drive/files/<str:file_id>/preview/",
+        GoogleDriveFilePreviewEndpoint.as_view(),
+        name="google-drive-file-preview",
     ),
     ## End Google Drive
     path(

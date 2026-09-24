@@ -43,7 +43,7 @@ export function GoogleDriveEmbedNodeView(props: NodeViewProps) {
   const { node, updateAttributes, deleteNode, selected, extension, editor } = props;
   const attrs = node.attrs as TGoogleDriveEmbedAttributes;
   const url = attrs[EGoogleDriveEmbedAttributeNames.URL];
-  const { onPickGoogleDriveFile } = extension.options as TGoogleDriveEmbedExtensionOptions;
+  const { onPickGoogleDriveFile, getPreviewUrl } = extension.options as TGoogleDriveEmbedExtensionOptions;
   const isEditable = editor.isEditable;
 
   const ref = parseGoogleDriveUrl(url);
@@ -213,7 +213,11 @@ export function GoogleDriveEmbedNodeView(props: NodeViewProps) {
   }
 
   const title = attrs[EGoogleDriveEmbedAttributeNames.NAME] || KIND_LABELS[kind] || "Google Drive";
-  const src = getGoogleDriveEmbedUrl(fileRef, editableKind ? mode : "preview");
+  const isEditingInGoogle = editableKind && mode === "edit";
+  // "Visualizar" prefers Plane's own preview: Google's embed needs third-party
+  // cookies, which many browsers block ("ative os cookies").
+  const proxySrc = isEditingInGoogle ? "" : (getPreviewUrl?.(fileRef) ?? "");
+  const src = proxySrc || getGoogleDriveEmbedUrl(fileRef, isEditingInGoogle ? "edit" : "preview");
 
   return (
     <NodeViewWrapper
@@ -270,19 +274,28 @@ export function GoogleDriveEmbedNodeView(props: NodeViewProps) {
         )}
       </div>
       <div className="relative w-full" style={{ height }}>
-        <iframe
-          key={src}
-          src={src}
-          title={title}
-          className="absolute top-0 left-0 h-full w-full border-none"
-          allow="clipboard-read; clipboard-write; fullscreen"
-          // Pespo: diferente do Clapshot, a src aqui nunca é a URL digitada — é
-          // montada a partir do id validado, sempre num domínio do Google. Por
-          // isso allow-same-origin é seguro (dá ao Google os próprios cookies,
-          // necessários pra editar) e não expõe a origem do Plane.
-          // oxlint-disable-next-line react/iframe-missing-sandbox -- cross-origin Google src, see above
-          sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads allow-modals"
-        />
+        {proxySrc ? (
+          // Plane's own API response (PDF/image, or a message page that sets its
+          // own CSP sandbox). A sandbox here would stop the browser's PDF viewer.
+          // oxlint-disable-next-line react/iframe-missing-sandbox -- same-origin preview, see above
+          <iframe key={src} src={src} title={title} className="absolute top-0 left-0 h-full w-full border-none" />
+        ) : (
+          <iframe
+            key={src}
+            src={src}
+            title={title}
+            className="absolute top-0 left-0 h-full w-full border-none"
+            allow="clipboard-read; clipboard-write; fullscreen; storage-access"
+            // Pespo: diferente do Clapshot, a src aqui nunca é a URL digitada — é
+            // montada a partir do id validado, sempre num domínio do Google. Por
+            // isso allow-same-origin é seguro (dá ao Google os próprios cookies,
+            // necessários pra editar) e não expõe a origem do Plane.
+            // allow-storage-access-by-user-activation deixa o botão "ativar
+            // cookies" do Google pedir acesso quando o navegador os bloqueia.
+            // oxlint-disable-next-line react/iframe-missing-sandbox -- cross-origin Google src, see above
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads allow-modals allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+          />
+        )}
         {/* Keeps the iframe from swallowing pointer events while resizing. */}
         {isResizing && <div className="absolute inset-0 cursor-row-resize" />}
       </div>

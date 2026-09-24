@@ -11,13 +11,14 @@ import { GoogleDriveEmbedExtensionConfig } from "./extension-config";
 import type { TGoogleDriveEmbedExtensionOptions } from "./types";
 
 export function GoogleDriveEmbedExtension(props: TGoogleDriveEmbedExtensionOptions = {}) {
-  const { onPickGoogleDriveFile } = props;
+  const { onPickGoogleDriveFile, getPreviewUrl } = props;
 
   return GoogleDriveEmbedExtensionConfig.extend<TGoogleDriveEmbedExtensionOptions>({
     addOptions() {
       return {
         ...this.parent?.(),
         onPickGoogleDriveFile,
+        getPreviewUrl,
       };
     },
 
