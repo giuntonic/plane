@@ -183,6 +183,18 @@ Correções feitas depois do merge:
   ref do filho com `null` no React 19, então todo dropdown com `usePopper` abria no canto superior
   esquerdo. **Ao atualizar o `@headlessui/react`, verificar se o bug foi corrigido upstream antes de
   remover o patch** (2.2.10 era a última versão e ainda tinha o bug).
+  - **Segunda correção no mesmo patch (2026-09-24): opções dos dropdowns não aceitavam clique.** O
+    `Combobox.Options` é "modal" por padrão no Headless UI v2 e marca com `inert` tudo que não seja o
+    input, o botão ou a lista (`useInertOthers`). Como o Plane põe o campo de busca (`Combobox.Input`)
+    *dentro* da lista, o laço que sobe a partir do input marcava como `inert` a `<div>` irmã que contém as
+    opções — elas apareciam, mas o clique caía no container (só o teclado funcionava). Sintoma relatado:
+    "não consigo alterar o status, nem na criação nem no dropdown"; afetava todos os dropdowns com busca
+    (estado, prioridade, responsáveis, etiquetas, ciclo, módulo…). O patch agora também pula nós que
+    estão *dentro* de um elemento permitido (`hooks/use-inert-others.js`, `headlessui.dev.cjs`,
+    `headlessui.prod.cjs`). Verificado no navegador (Playwright): mudar estado/prioridade no item e
+    escolher o estado no formulário de criação. **Ao atualizar o Headless UI, testar abrir um dropdown de
+    estado e clicar numa opção.** Pra editar o patch: `pnpm patch @headlessui/react@2.2.10`, editar e
+    `pnpm patch-commit <pasta>` (ele parte do patch atual).
 - `DashboardWidgetChartEndpoint` aceitava a rota de projeto sem `project_id` (500) — corrigido + teste.
 - Erro de hidratação (React #418) no `HydrateFallback` do `apps/web/app/root.tsx` — já existia antes.
 - Identificador do projeto: `PROJECT_IDENTIFIER_MAX_LENGTH` (10) em `@plane/constants`, usado no
