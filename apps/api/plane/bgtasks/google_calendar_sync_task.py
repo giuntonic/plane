@@ -35,7 +35,7 @@ from django.utils import timezone
 from celery import shared_task
 
 # Module imports
-from plane.db.models import GoogleCalendarConnection, Issue, ProjectMember, SyncedCalendarEvent
+from plane.db.models import GoogleCalendarConnection, Issue, IssueAssignee, ProjectMember, SyncedCalendarEvent
 from plane.settings.redis import redis_instance
 from plane.utils import google_calendar as gcal
 from plane.utils.exception_logger import log_exception
@@ -60,7 +60,10 @@ def _issue_url(issue):
 
 def _qualifying_issues(connection):
     issues = Issue.issue_objects.filter(
-        assignees__in=[connection.user],
+        # Through IssueAssignee, not `assignees__in`: removing an assignee
+        # soft-deletes the row, and the plain M2M join would still match it.
+        issue_assignee__assignee=connection.user,
+        issue_assignee__deleted_at__isnull=True,
         target_date__isnull=False,
         completed_at__isnull=True,
         # Only projects the user is still an active member of.
@@ -417,8 +420,9 @@ def sync_issue_calendar_events(self, issue_id):
     after it changed: its assignees with a connection, plus anyone who has
     it on their calendar already (e.g. just unassigned -> remove it)."""
     issue = Issue.all_objects.filter(pk=issue_id).select_related("project", "workspace").first()
+    assignee_ids = IssueAssignee.objects.filter(issue_id=issue_id).values_list("assignee_id", flat=True)
     connections = GoogleCalendarConnection.objects.filter(sync_enabled=True).filter(
-        Q(synced_events__issue_id=issue_id) | Q(user__in=issue.assignees.all() if issue else [])
+        Q(synced_events__issue_id=issue_id) | Q(user_id__in=list(assignee_ids))
     )
     for connection in connections.distinct():
         try:

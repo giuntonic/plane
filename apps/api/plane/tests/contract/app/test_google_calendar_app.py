@@ -227,6 +227,16 @@ class TestPush:
         assert not SyncedCalendarEvent.objects.filter(issue=issue).exists()
 
     @pytest.mark.django_db
+    def test_unassigned_user_loses_the_event(self, connection, issue, google):
+        """Regression: removing an assignee soft-deletes IssueAssignee, and the
+        old `assignees__in` query still matched it — the event never left."""
+        sync.sync_user_calendar(str(connection.id))
+        IssueAssignee.objects.filter(issue=issue).delete()  # soft delete, like the API
+        assert IssueAssignee.all_objects.filter(issue=issue).exists()
+        sync.sync_issue_calendar_events(str(issue.id))
+        assert not SyncedCalendarEvent.objects.filter(issue=issue).exists()
+
+    @pytest.mark.django_db
     def test_per_issue_sync_pushes_for_new_assignee(self, connection, issue, google):
         sync.sync_issue_calendar_events(str(issue.id))
         google["upsert"].assert_called_once()

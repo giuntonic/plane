@@ -239,6 +239,77 @@ Correções feitas depois do merge:
 
 ---
 
+## Integração com o Google Calendar — sincronização nos dois sentidos, reuniões e calendário (2026-09-24)
+
+A conexão pessoal com o Google Calendar já existia (agenda "Plane" com as tarefas atribuídas, só de ida,
+a cada 10 min, e a visão `/calendar` com eventos do Google por cima), mas não estava documentada aqui.
+Nesta leva ela foi corrigida e ampliada:
+
+- **Bugs corrigidos:**
+  - Desconectar fazia *soft delete* da conexão: os tokens ficavam no banco e **reconectar falhava sempre**
+    (`IntegrityError` no OneToOne do usuário). Agora apaga de verdade; a migration `0131` limpa as
+    linhas antigas e o callback revive uma conexão que tenha ficado soft-deleted.
+  - Eventos que saíam da agenda (tarefa concluída, sem data) também eram soft-deleted e bloqueavam a
+    mesma tarefa de voltar pra agenda depois (restrição única de `SyncedCalendarEvent`).
+  - Tirar alguém dos responsáveis não tirava o evento da agenda dessa pessoa (o `IssueAssignee` removido
+    é soft-deleted e o filtro `assignees__in` continuava encontrando).
+  - IDs de agenda com `#`/`@` (ex.: feriados) iam sem codificar na URL.
+  - A visão `/calendar` carregava só os 100 primeiros itens do workspace, sem olhar o mês.
+- **Sincronização nos dois sentidos (Google → Plane):** mover ou renomear no Google o evento de uma
+  tarefa muda as datas (início/entrega) e o título do item, com registro na atividade em nome da pessoa.
+  Só vale pra quem é membro/admin do projeto (edições de convidados são ignoradas). Apagar o evento no
+  Google **não** apaga nada no Plane — o evento volta na próxima sincronização (pra tirar da agenda:
+  concluir o item ou tirar a data). Pode ser desligada nas configurações.
+  - Como chega: o Google avisa via notificações push (`events.watch`) em
+    `POST /api/google-calendar/notifications/` (valida o token secreto de cada canal) e o Plane busca as
+    mudanças com `syncToken`; um pull a cada 2 min cobre notificações perdidas. As notificações só são
+    registradas se `WEB_URL` for **https** (o Google recusa http); canais são renovados sozinhos.
+  - Eco: `SyncedCalendarEvent.pushed_*` guarda o que o Plane escreveu por último, então a escrita do
+    próprio Plane nunca é lida de volta como edição.
+- **Plane → Google imediato:** qualquer atividade de item de trabalho (`issue_activity`) agenda a
+  sincronização daquele item pra todos os envolvidos (debounce de 5 s via Redis). A completa a cada 10
+  min continua como rede de segurança.
+- **Mais completo na agenda:** tarefas com data de início viram eventos de vários dias; cor pela
+  prioridade; lembretes (padrão da agenda, nenhum, ou N dias antes às 9h); filtro de projetos; opção de
+  uma agenda por projeto ("Plane · Projeto"); eventos marcados como "livre" (não bloqueiam horário);
+  a agenda "Plane" é recriada se for apagada no Google.
+- **Reuniões ligadas ao item de trabalho:** botão "Agendar reunião" no item → cria o evento no Google
+  Calendar de quem agenda, com **Google Meet**, convidados (atalho "Adicionar responsáveis") e link do
+  item na descrição; o Google manda os convites. Seção "Reuniões" no item com "Entrar no Meet", abrir no
+  Google, desvincular e cancelar (só quem organizou; os convidados são avisados). A lista se atualiza com
+  remarcações/cancelamentos feitos no Google.
+- **Visão `/calendar`:** busca os itens por período (paginado); tarefas de vários dias aparecem em todos
+  os dias; **arrastar um item pra outro dia muda as datas** (início e entrega andam juntos); filtro "Só
+  meus itens"; liga/desliga eventos do Google; o detalhe do evento mostra horário, local, convidados,
+  botão do Meet e o item vinculado; **"Criar item de trabalho a partir deste evento"** abre o formulário
+  preenchido e vincula o evento ao item criado.
+- **Configurações → Perfil → Google Calendar:** ganhou as opções acima (dois sentidos, agenda por
+  projeto, cor, lembretes, projetos) e mostra se as mudanças chegam em segundos ou em ~2 minutos.
+- **Arquivos:**
+  - Backend: `db/models/google_calendar.py` (campos novos em `GoogleCalendarConnection` e
+    `SyncedCalendarEvent`, modelo `IssueCalendarEvent`), migration `0131_google_calendar_two_way_sync.py`
+    (com a limpeza de dados), `utils/google_calendar.py` (cliente da API + regras puras da sincronização),
+    `bgtasks/google_calendar_sync_task.py` (motor: push, pull, canais), gancho no fim do
+    `bgtasks/issue_activities_task.issue_activity`, beat `pull-google-calendars` em `celery.py`, views
+    `app/views/user/google_calendar.py` (conexão, preferências, eventos, receptor de notificações) e
+    `app/views/issue/calendar_event.py` (reuniões). Rotas `users/me/google-calendar/…`,
+    `google-calendar/notifications/` e `…/issues/<id>/calendar-events/…`.
+  - Testes: `tests/unit/utils/test_google_calendar.py`, `tests/contract/app/test_google_calendar_app.py`.
+  - Frontend: `components/workspace/calendar-sync/` (visão do calendário), widget
+    `issue-detail-widgets/meetings/`, `settings/profile/content/pages/google-calendar.tsx`, serviço
+    `services/issue-calendar-event.service.ts`, tipos em `packages/types/src/google-calendar.ts`, i18n
+    `google_calendar_integration.*` em `integration.json` (en e pt-BR).
+- **Deploy:** rebuildar `api` (migration) e `web`. O **worker e o beat do Celery** precisam estar rodando
+  com a imagem nova (o beat tem uma tarefa nova). Conferir que `WEB_URL` no `.env` é o domínio público
+  com https — é ele que o Google chama. Quem já estava conectado não precisa reconectar (o escopo
+  `calendar` já cobre tudo); eventos antigos passam a sincronizar nos dois sentidos depois do primeiro
+  push.
+- **Risco de upgrade:** médio. Pontos do upstream tocados: o fim de `issue_activity`
+  (`issue_activities_task.py`), a lista `openWidgets` e `TWorkItemWidgets` (widget `"meetings"`),
+  `action-buttons.tsx`/`issue-detail-widget-collapsibles.tsx`.
+
+---
+
 ## Integração com o Google Drive (2026-09-24)
 
 - **O quê:** conexão real, por usuário, com o Google Drive (OAuth, mesmo client do Google Calendar),

@@ -139,7 +139,14 @@ export class IssueDetail implements IIssueDetail {
       issue: undefined,
     },
   };
-  openWidgets: TWorkItemWidgets[] = ["sub-work-items", "links", "attachments", "peca-marking", "google-drive"];
+  openWidgets: TWorkItemWidgets[] = [
+    "sub-work-items",
+    "links",
+    "attachments",
+    "peca-marking",
+    "google-drive",
+    "meetings",
+  ];
   lastWidgetAction: TWorkItemWidgets | null = null;
   isCreateIssueModalOpen: boolean = false;
   isIssueLinkModalOpen: boolean = false;

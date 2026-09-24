@@ -20,6 +20,7 @@ import type {
   IEmailCheckResponse,
   TGoogleCalendarStatus,
   TGoogleCalendarEvent,
+  TGoogleCalendarPreferences,
 } from "@plane/types";
 import { APIService } from "@/services/api.service";
 // types
@@ -300,10 +301,9 @@ export class UserService extends APIService {
       });
   }
 
-  async updateGoogleCalendarPreferences(data: {
-    sync_enabled?: boolean;
-    overlay_calendar_ids?: string[];
-  }): Promise<{ sync_enabled: boolean; overlay_calendar_ids: string[] }> {
+  async updateGoogleCalendarPreferences(
+    data: Partial<TGoogleCalendarPreferences>
+  ): Promise<TGoogleCalendarPreferences> {
     return this.patch("/api/users/me/google-calendar/preferences/", data)
       .then((response) => response?.data)
       .catch((error) => {

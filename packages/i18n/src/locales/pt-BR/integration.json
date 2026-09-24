@@ -386,5 +386,83 @@
       "edit_mode": "Editar",
       "blocked_hint": "Se o arquivo não carregar aqui, abra no Google — seu navegador pode estar bloqueando o login do Google dentro da página."
     }
+  },
+  "google_calendar_integration": {
+    "settings": {
+      "sync_section": "Itens de trabalho no Google Calendar",
+      "sync_description": "Os itens de trabalho atribuídos a você que têm data de entrega viram eventos de dia inteiro na agenda \"Plane\". Itens com data de início ocupam do início até a entrega.",
+      "two_way_title": "Sincronização nos dois sentidos",
+      "two_way_description": "Mover ou renomear o evento de um item de trabalho no Google Calendar atualiza as datas e o título do item no Pespo Hub.",
+      "realtime_on": "Mudanças feitas no Google aparecem no Pespo Hub em segundos.",
+      "realtime_off": "Mudanças feitas no Google aparecem no Pespo Hub em cerca de 2 minutos.",
+      "projects_title": "Projetos",
+      "projects_description": "Só os itens de trabalho dos projetos selecionados viram eventos. Sem nenhum selecionado, todos os projetos são sincronizados.",
+      "projects_all": "Todos os projetos",
+      "projects_selected": "{count, plural, one {# projeto} many {# projetos} other {# projetos}}",
+      "per_project_title": "Uma agenda por projeto",
+      "per_project_description": "Cria uma agenda \"Plane · nome do projeto\" para cada projeto em vez de uma única agenda \"Plane\", para você mostrar, esconder ou compartilhar cada uma separadamente.",
+      "color_title": "Colorir eventos pela prioridade",
+      "color_description": "Urgente em vermelho, alta em laranja, média em amarelo e baixa em azul.",
+      "reminders_title": "Lembretes",
+      "reminder_default": "Padrão da agenda",
+      "reminder_none": "Sem lembretes",
+      "reminder_days": "{count, plural, one {# dia antes, às 9h} many {# dias antes, às 9h} other {# dias antes, às 9h}}",
+      "saved": "Preferências salvas"
+    },
+    "meetings": {
+      "title": "Reuniões",
+      "schedule": "Agendar reunião",
+      "join_meet": "Entrar no Meet",
+      "open": "Abrir no Google Calendar",
+      "unlink": "Desvincular",
+      "cancel": "Cancelar reunião",
+      "cancel_confirm": "Cancelar esta reunião? Os convidados serão avisados pelo Google Calendar.",
+      "scheduled": "Reunião agendada e convites enviados",
+      "canceled": "Reunião cancelada",
+      "unlinked": "Reunião desvinculada",
+      "all_day": "Dia inteiro",
+      "guests": "{count, plural, one {# convidado} many {# convidados} other {# convidados}}",
+      "past": "Anteriores"
+    },
+    "schedule_modal": {
+      "title": "Agendar reunião",
+      "field_title": "Título",
+      "field_date": "Data",
+      "field_start": "Início",
+      "field_end": "Fim",
+      "field_all_day": "Dia inteiro",
+      "field_guests": "Convidados",
+      "guests_placeholder": "Digite um e-mail e pressione Enter",
+      "add_assignees": "Adicionar responsáveis",
+      "field_notes": "Observações",
+      "with_meet": "Adicionar videochamada do Google Meet",
+      "field_calendar": "Agenda",
+      "submit": "Agendar e enviar convites",
+      "cancel": "Cancelar",
+      "invalid_email": "E-mail inválido: {email}",
+      "end_before_start": "O fim precisa ser depois do início.",
+      "not_connected": "Conecte seu Google Calendar para agendar reuniões pelo Pespo Hub.",
+      "connect": "Conectar Google Calendar"
+    },
+    "calendar_view": {
+      "only_mine": "Só meus itens de trabalho",
+      "show_google": "Eventos do Google",
+      "no_title": "(sem título)",
+      "linked_work_item": "Item de trabalho vinculado",
+      "meeting": "Reunião",
+      "create_work_item": "Criar item de trabalho a partir deste evento",
+      "location": "Local",
+      "guests": "Convidados",
+      "rescheduled": "Entrega movida para {date}",
+      "reschedule_error": "Não foi possível mover o item de trabalho.",
+      "drag_hint": "Arraste um item de trabalho para outro dia para mudar as datas.",
+      "no_permission": "Você não pode editar este item de trabalho."
+    },
+    "errors": {
+      "not_connected": "O Google Calendar não está conectado.",
+      "forbidden": "O Google Calendar negou o acesso. Tente reconectar sua conta.",
+      "not_found": "O evento não foi encontrado no Google Calendar.",
+      "generic": "Algo deu errado ao falar com o Google Calendar."
+    }
   }
 }
