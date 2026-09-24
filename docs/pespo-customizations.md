@@ -18,25 +18,46 @@ origin   → https://github.com/giuntonic/plane.git   (nosso fork)
 upstream → https://github.com/makeplane/plane.git    (Plane original)
 ```
 
-A branch de produção é `pespo-branding-v1.4.1`, criada a partir da tag `v1.4.1` do upstream. Cada
-customização vira um commit separado, com mensagem descritiva em português — isso facilita re-aplicar
-ou entender uma mudança específica quando um merge de uma versão nova do Plane gerar conflito nela.
+A branch de produção é **`pespo-preview-integration`** (desde 2026-09-23): o `preview` do nosso fork
+(que acompanha o `main` do upstream, já com React 19) com todas as customizações da Pespo por cima. A
+branch anterior, `pespo-branding-v1.4.1` (criada a partir da tag `v1.4.1`), continua no GitHub como
+histórico, mas não recebe mais nada. Cada customização vira um commit separado, com mensagem descritiva
+em português — isso facilita re-aplicar ou entender uma mudança específica quando um merge de uma versão
+nova do Plane gerar conflito nela.
 
 Pra ver a lista de commits que são _só nossos_ (não vêm do Plane original):
 
 ```bash
-git log --oneline v1.4.1..HEAD
+git log --oneline origin/preview..pespo-preview-integration --first-parent   # desde a integração
+git log --oneline v1.4.1..pespo-branding-v1.4.1                              # fase v1.4.1
 ```
 
-Pra ver o diff completo acumulado contra a versão original que usamos como base:
+### Como produção é buildada e publicada (VPS)
 
-```bash
-git diff v1.4.1..HEAD --stat
-```
+- `/opt/plane` guarda só o **compose de produção** (`docker-compose.yml` com `image: plane-*-pespo:latest`,
+  sem `build:`) e o `.env`. O checkout git dessa pasta **não** é o que roda.
+- O código fica na worktree `/opt/pespo/plane-integration` (branch `pespo-preview-integration`). As
+  imagens são buildadas à mão, sem build-args, a partir dela:
+  ```bash
+  cd /opt/pespo/plane-integration
+  docker build -f apps/api/Dockerfile.api   -t plane-api-pespo:latest   apps/api
+  docker build -f apps/web/Dockerfile.web   -t plane-web-pespo:latest   .
+  docker build -f apps/space/Dockerfile.space -t plane-space-pespo:latest .
+  docker build -f apps/admin/Dockerfile.admin -t plane-admin-pespo:latest .
+  docker build -f apps/live/Dockerfile.live -t plane-live-pespo:latest  .
+  cd /opt/plane && docker compose run --rm migrator && docker compose up -d
+  ```
+- O tráfego público passa pelo **Caddy** de `/opt/pespo/portal-cliente` (rede `portal-cliente_proxy`),
+  não pelo proxy do Plane. Rotas: `/api*`, `/auth*` → api; `/spaces*` → space; `/god-mode*` → admin;
+  `/live*` → live; **`/uploads*` → plane-minio:9000** (sem essa rota todo upload falha: o Plane gera URLs
+  pré-assinadas apontando pra `https://<domínio>/uploads/...`); o resto → web.
+- MinIO: root em `MINIO_ROOT_USER`/`MINIO_ROOT_PASSWORD` no `.env` (antes rodava com `minioadmin`); a api
+  usa um usuário IAM próprio (`AWS_ACCESS_KEY_ID`). O RabbitMQ tem `hostname: plane-mq` fixo (sem isso cada
+  recriação sobe um nó vazio no mesmo volume) e `POSTGRES_*`/`RABBITMQ_*` vêm do `.env`.
 
 ---
 
-## Customizações já commitadas (histórico em `pespo-branding-v1.4.1`)
+## Customizações da fase v1.4.1 (commits em `pespo-branding-v1.4.1`, todas integradas)
 
 Do commit mais recente pro mais antigo:
 
@@ -54,16 +75,10 @@ projeto, dashboard, branding), é aqui que o merge vai reclamar primeiro.
 
 ---
 
-## Trabalho em andamento (ainda não commitado)
+## Detalhes das customizações da fase v1.4.1
 
-Numa sessão longa de tradução + limpeza de produto, acumulamos mudanças em ~324 arquivos que ainda
-não viraram commit. Pra ver a lista exata a qualquer momento:
-
-```bash
-git status --short
-```
-
-O que essas mudanças representam, por categoria:
+Essas mudanças começaram como trabalho não commitado e foram commitadas na `pespo-branding-v1.4.1`
+(commits "Traduz ...", "Define fuso horário ...", "Remove UI de upgrade ..." etc.). Por categoria:
 
 ### 1. Tradução completa para pt-BR
 
@@ -139,6 +154,57 @@ extended-sidebar-item.tsx,helper.tsx,help-section/root.tsx}`,
   transacional (convite, redefinição de senha, notificações etc.) traduzidos pra pt-BR, incluindo as
   linhas de assunto geradas em Python.
 
+
+---
+
+## Atualização para o preview (2026-09-23)
+
+Merge da `pespo-branding-v1.4.1` sobre o `origin/preview` (upstream até #9530 — React 19, React Router 8,
+Headless UI v2, tokens de design do `@makeplane/propel` — mais dashboards configuráveis e Custom Fields).
+Decisões tomadas nos conflitos, pra repetir num próximo merge:
+
+- **Dashboard do projeto:** o embed do Metabase (nosso) continua em `/projects/:id/dashboard` com a aba
+  "Dashboard"; os dashboards nativos do preview foram movidos pra `/projects/:id/dashboards` com aba
+  própria "Dashboards" (rotas em `apps/web/app/routes/core.ts`, itens em `use-navigation-items.ts` e
+  `workspace/sidebar/project-navigation.tsx`).
+- **Migrations:** nossa cadeia `0123_project_metabase…0128_workspaceusertask` (já aplicada em produção) e
+  a do preview `0123…0125_merge` partiam da `0122`. Resolvido com a migration de merge
+  `0129_merge_pespo_preview` — **nunca renumerar migrations já aplicadas**; criar outra de merge.
+- **Cor de marca:** o preview trocou `packages/tailwind-config/variables.css` pelos tokens do
+  `@makeplane/propel`. Nossa paleta agora vive em `packages/tailwind-config/pespo-brand.css`, importado
+  logo depois dos tokens do propel em `index.css`.
+- **Trackers de analytics (`*_TRACKER_ELEMENTS`, posthog):** removidos no preview; mantivemos só as
+  traduções nos componentes que conflitaram.
+
+Correções feitas depois do merge:
+
+- **Patch no Headless UI** (`patches/@headlessui__react@2.2.10.patch`, registrado em
+  `pnpm-workspace.yaml` → `patchedDependencies`): o `Frozen` interno do `Combobox.Options` sobrescrevia a
+  ref do filho com `null` no React 19, então todo dropdown com `usePopper` abria no canto superior
+  esquerdo. **Ao atualizar o `@headlessui/react`, verificar se o bug foi corrigido upstream antes de
+  remover o patch** (2.2.10 era a última versão e ainda tinha o bug).
+- `DashboardWidgetChartEndpoint` aceitava a rota de projeto sem `project_id` (500) — corrigido + teste.
+- Erro de hidratação (React #418) no `HydrateFallback` do `apps/web/app/root.tsx` — já existia antes.
+- Identificador do projeto: `PROJECT_IDENTIFIER_MAX_LENGTH` (10) em `@plane/constants`, usado no
+  `maxLength` do campo, na mensagem de erro (`{max}`) e no tooltip.
+
+### Tradução — varredura completa e convenções
+
+- ~2.000 textos em ~400 arquivos (web, space, admin, ui). Chaves novas em `common.json`:
+  `ui.*` (textos gerais), `auth_errors.*` (erros de login/cadastro), `native_dashboards.*`,
+  `chart_axis.*`. Como as outras chaves da Pespo, existem só em `en` e `pt-BR`.
+- **Admin (god-mode) passou a ter i18n:** depende de `@plane/i18n` e aguarda o `initPromise` no
+  `entry.client.tsx`, como web e space.
+- **Fora de componentes** (helpers, `meta`, stores) usar `i18nInstance.t(...)`. **Em objetos/arrays
+  constantes de módulo** usar getter (`get label() { return i18nInstance.t("…"); }`) — um valor direto
+  seria avaliado no carregamento do módulo, antes das traduções existirem.
+- Não traduzir: frases que o usuário precisa digitar ("delete my project", "delete my workspace" — o código
+  compara o texto), identificadores internos e marcas (ver skill `translate`).
+- Pra achar texto em inglês que sobrou, o método que funcionou foi percorrer os nós `JsxText` com o parser
+  do TypeScript (regex perde palavras soltas e frases partidas em volta de elementos).
+- Corrigidos na mesma leva: 37 usos de chaves inexistentes (apareciam como texto cru), 34 textos em
+  polonês no `pt-BR/template.json` e traduções pt-BR que ainda diziam "Plane".
+
 ---
 
 ## Checklist antes de atualizar pra uma versão nova do Plane
@@ -149,25 +215,26 @@ extended-sidebar-item.tsx,helper.tsx,help-section/root.tsx}`,
 2. **Buscar a versão nova do upstream:**
    ```bash
    git fetch upstream
-   git log v1.4.1..upstream/preview --oneline   # ver o que mudou lá
+   git log origin/preview..upstream/preview --oneline   # ver o que mudou lá
    ```
 3. **Criar uma branch de teste** a partir da branch atual antes de fazer o merge/rebase de verdade —
-   nunca testar upgrade direto em `pespo-branding-v1.4.1`.
-4. **Fazer o merge/rebase** contra a tag nova (ex: `v1.5.0`) e resolver os conflitos usando a seção
-   "Trabalho em andamento" acima como guia de quais decisões tomar em cada área.
+   nunca testar upgrade direto em `pespo-preview-integration`.
+4. **Fazer o merge** (não rebase — preserva as migrations e os commits já em produção) e resolver os
+   conflitos usando as seções acima (fase v1.4.1 e "Atualização para o preview") como guia.
 5. **Rodar a checagem de tradução:**
    ```bash
    pnpm --filter @plane/i18n run sync:check
    ```
 6. **Rodar `pnpm install`** (sem `--frozen-lockfile`) se algum `package.json` de `packages/*` mudou, pra
    regerar o `pnpm-lock.yaml`.
-7. **Rodar as migrations do banco** (`python manage.py migrate db`) num ambiente de teste antes de tocar
-   no banco de produção — conferir se os números das nossas migrations (`0124`-`0126` até agora) não
-   colidiram com migrations novas do upstream.
-8. **Buildar as imagens Docker** (`apps/web`, `apps/api`) e subir num ambiente de teste antes de apontar
-   pro domínio de produção.
-9. **Conferir visualmente** as áreas da seção 3 acima (planos/billing, active cycles, sidebar) — se o
-   upstream reintroduziu alguma dessas telas, decidir se remove de novo ou mantém.
+7. **Conferir o plano de migrations** antes de aplicar: `python manage.py migrate --plan` rodando a
+   imagem nova contra o banco (só leitura). Se houver duas "folhas" no grafo, criar uma migration de merge
+   (como a `0129_merge_pespo_preview`) — nunca renumerar as já aplicadas.
+8. **Rodar `check:types`, `check:lint` e os testes do backend** (`docker-compose-test.yml`), depois
+   **buildar as imagens** (ver "Como produção é buildada") — retaguear as atuais antes
+   (`docker tag plane-X-pespo:latest plane-X-pespo:pre-<data>`) pra ter rollback instantâneo.
+9. **Conferir visualmente** as áreas da seção 3 acima (planos/billing, active cycles, sidebar) e os
+   dropdowns (patch do Headless UI), e procurar texto em inglês novo (varredura de `JsxText`).
 10. Só depois de tudo isso, atualizar o `docker compose` de produção e redeployar.
 
 ---
