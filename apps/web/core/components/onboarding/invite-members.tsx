@@ -389,7 +389,7 @@ export function InviteMembers(props: Props) {
                 className="w-full"
                 disabled={isInvitationDisabled || !isValid || isSubmitting}
               >
-                {isSubmitting ? <Spinner height="20px" width="20px" /> : "Continue"}
+                {isSubmitting ? <Spinner height="20px" width="20px" /> : t("common.continue")}
               </Button>
               <Button variant="ghost" size="xl" className="w-full" onClick={nextStep}>
                 I’ll do it later

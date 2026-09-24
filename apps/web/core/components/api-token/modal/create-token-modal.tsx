@@ -47,7 +47,7 @@ export function CreateApiTokenModal(props: Props) {
     const csvData = {
       Title: data.label,
       Description: data.description,
-      Expiry: data.expired_at ? (renderFormattedDate(data.expired_at)?.replace(",", " ") ?? "") : "Never expires",
+      Expiry: data.expired_at ? (renderFormattedDate(data.expired_at)?.replace(",", " ") ?? "") : t("ui.never_expires"),
       "Secret key": data.token ?? "",
     };
 

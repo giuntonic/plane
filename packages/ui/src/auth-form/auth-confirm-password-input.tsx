@@ -57,7 +57,7 @@ export function AuthConfirmPasswordInput({
 
   const getError = () => {
     if (error) return error;
-    if (showMatchError) return "Passwords don't match";
+    if (showMatchError) return t("ui.passwords_dont_match");
     return "";
   };
 

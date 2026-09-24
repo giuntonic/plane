@@ -195,7 +195,7 @@ export const PublishProjectModal = observer(function PublishProjectModal(props: 
               onClick={() => handleUnPublishProject(watch("id") ?? "")}
               loading={isUnPublishing}
             >
-              {isUnPublishing ? "Unpublishing" : "Unpublish"}
+              {isUnPublishing ? t("ui.unpublishing") : t("ui.unpublish")}
             </Button>
           )}
         </div>
@@ -332,12 +332,12 @@ export const PublishProjectModal = observer(function PublishProjectModal(props: 
               {isProjectPublished ? (
                 isDirty && (
                   <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
-                    {isSubmitting ? "Updating" : "Update settings"}
+                    {isSubmitting ? t("updating") : t("ui.update_settings")}
                   </Button>
                 )
               ) : (
                 <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
-                  {isSubmitting ? "Publishing" : "Publish"}
+                  {isSubmitting ? t("ui.publishing") : t("publish")}
                 </Button>
               )}
             </div>

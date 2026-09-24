@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export const ActivityList = observer(function ActivityList(props: Props) {
+  const { t } = useTranslation();
   const { activity } = props;
   // params
   const { workspaceSlug } = useParams();
@@ -155,7 +157,7 @@ export const ActivityList = observer(function ActivityList(props: Props) {
                               >
                                 <span className="text-gray font-medium">
                                   {currentUser?.id === activityItem.actor_detail.id
-                                    ? "You"
+                                    ? t("you")
                                     : activityItem.actor_detail.display_name}
                                 </span>
                               </Link>

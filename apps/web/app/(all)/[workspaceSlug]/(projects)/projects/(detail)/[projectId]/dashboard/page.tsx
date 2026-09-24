@@ -27,7 +27,7 @@ function ProjectDashboardEmbedPage({ params }: Route.ComponentProps) {
     () => projectMetabaseService.fetchEmbed(workspaceSlug, projectId)
   );
 
-  const pageTitle = currentProjectDetails?.name ? `${currentProjectDetails.name} - Dashboard` : "Dashboard";
+  const pageTitle = currentProjectDetails?.name ? `${currentProjectDetails.name} - Dashboard` : t("ui.dashboard_2");
 
   return (
     <div className="flex h-full flex-col">

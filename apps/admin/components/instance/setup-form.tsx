@@ -212,7 +212,7 @@ export function InstanceSetupForm() {
 
             <div className="w-full space-y-1">
               <label className="text-13 font-medium text-tertiary" htmlFor="email">
-                Email <span className="text-danger-primary">*</span>
+                {t("auth.common.email.label")} <span className="text-danger-primary">*</span>
               </label>
               <Input
                 className="w-full border border-subtle !bg-surface-1 placeholder:text-placeholder"
@@ -368,7 +368,7 @@ export function InstanceSetupForm() {
 
             <div className="py-2">
               <Button type="submit" size="xl" className="w-full" disabled={isButtonDisabled}>
-                {isSubmitting ? <Spinner height="20px" width="20px" /> : "Continue"}
+                {isSubmitting ? <Spinner height="20px" width="20px" /> : t("common.continue")}
               </Button>
             </div>
           </form>

@@ -219,7 +219,7 @@ export function InstanceEmailForm(props: IInstanceEmailForm) {
           loading={isSubmitting}
           disabled={!isValid || !isDirty}
         >
-          {isSubmitting ? "Saving" : "Save changes"}
+          {isSubmitting ? t("saving") : t("save_changes")}
         </Button>
         <Button
           variant="secondary"

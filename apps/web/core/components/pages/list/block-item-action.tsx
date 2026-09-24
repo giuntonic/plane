@@ -50,7 +50,7 @@ export const BlockItemAction = observer(function BlockItemAction(props: Props) {
         </Tooltip>
       </div>
       <div className="cursor-default text-tertiary">
-        <Tooltip tooltipContent={access === 0 ? "Public" : "Private"}>
+        <Tooltip tooltipContent={access === 0 ? t("public") : t("private")}>
           {access === 0 ? <Earth className="h-4 w-4" /> : <LockIcon className="h-4 w-4" />}
         </Tooltip>
       </div>

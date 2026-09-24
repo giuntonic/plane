@@ -204,7 +204,7 @@ export function WorkspaceCreateForm() {
           disabled={!isValid}
           loading={isSubmitting}
         >
-          {isSubmitting ? "Creating workspace" : "Create workspace"}
+          {isSubmitting ? t("ui.creating_workspace") : t("create_workspace")}
         </Button>
         <Link className={getButtonStyling("secondary", "lg")} href="/workspace">
           {t("common.go_back")}

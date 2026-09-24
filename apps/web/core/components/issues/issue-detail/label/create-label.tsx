@@ -90,7 +90,7 @@ export function LabelCreate(props: ILabelCreate) {
         <div className="flex-shrink-0">
           {isCreateToggle ? <CloseIcon className="h-2.5 w-2.5" /> : <PlusIcon className="h-2.5 w-2.5" />}
         </div>
-        <div className="flex-shrink-0">{isCreateToggle ? "Cancel" : "New"}</div>
+        <div className="flex-shrink-0">{isCreateToggle ? t("cancel") : t("ui.new")}</div>
       </div>
 
       {isCreateToggle && (

@@ -4,10 +4,12 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 import type { TQuickAddIssueForm } from "../root";
 
 export const CalendarQuickAddIssueForm = observer(function CalendarQuickAddIssueForm(props: TQuickAddIssueForm) {
+  const { t } = useTranslation();
   const { ref, isOpen, projectDetail, register, onSubmit, isEpic } = props;
 
   return (
@@ -25,7 +27,7 @@ export const CalendarQuickAddIssueForm = observer(function CalendarQuickAddIssue
         <input
           type="text"
           autoComplete="off"
-          placeholder={isEpic ? "Epic Title" : "Work item Title"}
+          placeholder={isEpic ? t("ui.epic_title") : t("ui.work_item_title")}
           {...register("name", {
             required: `${isEpic ? "Epic" : "Work item"} title is required.`,
           })}

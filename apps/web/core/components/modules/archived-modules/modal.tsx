@@ -75,7 +75,7 @@ export function ArchiveModuleModal(props: Props) {
             Cancel
           </Button>
           <Button variant="primary" size="lg" tabIndex={1} onClick={handleArchiveModule} loading={isArchiving}>
-            {isArchiving ? "Archiving" : "Archive"}
+            {isArchiving ? t("common.archiving") : t("archive")}
           </Button>
         </div>
       </div>

@@ -55,7 +55,7 @@ export const AuthEmailForm = observer(function AuthEmailForm(props: TAuthEmailFo
     <form onSubmit={handleFormSubmit} className="mt-5 space-y-4">
       <div className="space-y-1">
         <label className="text-13 font-medium text-tertiary" htmlFor="email">
-          Email
+          {t("auth.common.email.label")}
         </label>
         <div
           className={cn(
@@ -103,7 +103,7 @@ export const AuthEmailForm = observer(function AuthEmailForm(props: TAuthEmailFo
         )}
       </div>
       <Button type="submit" variant="primary" className="w-full" size="xl" disabled={isButtonDisabled}>
-        {isSubmitting ? <Spinner height="20px" width="20px" /> : "Continue"}
+        {isSubmitting ? <Spinner height="20px" width="20px" /> : t("common.continue")}
       </Button>
     </form>
   );

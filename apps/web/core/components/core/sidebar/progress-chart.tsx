@@ -58,7 +58,7 @@ function ProgressChart({ distribution, totalIssues, className = "", plotTitle = 
             },
           },
         ]}
-        xAxis={{ key: "name", label: "Date" }}
+        xAxis={{ key: "name", label: t("date") }}
         yAxis={{ key: "current", label: t("common.completion") }}
         margin={{ bottom: 30 }}
         className="h-[370px] w-full"

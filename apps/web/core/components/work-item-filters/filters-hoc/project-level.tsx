@@ -109,7 +109,7 @@ export const ProjectLevelWorkItemFiltersHOC = observer(function ProjectLevelWork
 
   const getDefaultViewDetailPayload: () => Partial<IProjectView> = useCallback(
     () => ({
-      name: viewDetails ? `${viewDetails?.name} 2` : "Untitled",
+      name: viewDetails ? `${viewDetails?.name} 2` : t("ui.untitled"),
       description: viewDetails ? viewDetails.description : "",
       logo_props: viewDetails ? viewDetails.logo_props : undefined,
       access: viewDetails ? viewDetails.access : EViewAccess.PUBLIC,

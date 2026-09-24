@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React, { useState } from "react";
 import { observer } from "mobx-react";
 import { AlertTriangle } from "lucide-react";
@@ -13,6 +14,7 @@ import { useUser } from "@/hooks/store/user";
 import type { Props } from "./confirm-workspace-member-remove";
 
 export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMemberRemove(props: Props) {
+  const { t } = useTranslation();
   const { isOpen, onClose, onSubmit, userDetails } = props;
   // states
   const [isRemoving, setIsRemoving] = useState(false);
@@ -67,7 +69,7 @@ export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMe
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                       <Dialog.Title as="h3" className="text-16 leading-6 font-medium text-primary">
                         {currentUser?.id === userDetails.id
-                          ? "Leave workspace?"
+                          ? t("ui.leave_workspace")
                           : `Remove ${userDetails?.display_name}?`}
                       </Dialog.Title>
                       <div className="mt-2">
@@ -94,11 +96,11 @@ export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMe
                   <Button variant="error-fill" tabIndex={1} onClick={handleDeletion} loading={isRemoving}>
                     {currentUser?.id === userDetails.id
                       ? isRemoving
-                        ? "Leaving"
-                        : "Leave"
+                        ? t("leaving")
+                        : t("leave")
                       : isRemoving
-                        ? "Removing"
-                        : "Remove"}
+                        ? t("removing")
+                        : t("remove")}
                   </Button>
                 </div>
               </Dialog.Panel>

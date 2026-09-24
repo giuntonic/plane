@@ -98,7 +98,7 @@ export const FiltersRow = observer(function FiltersRow<K extends TFilterProperty
           loading={isUpdating}
           disabled={isUpdating}
         >
-          {isUpdating ? "Confirming" : (filter.updateViewOptions?.label ?? t("ui.update_view"))}
+          {isUpdating ? t("confirming") : (filter.updateViewOptions?.label ?? t("ui.update_view"))}
         </Button>
       </ElementTransition>
     </>

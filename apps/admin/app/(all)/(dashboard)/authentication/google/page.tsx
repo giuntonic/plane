@@ -51,7 +51,7 @@ const InstanceGoogleAuthenticationPage = observer(function InstanceGoogleAuthent
         message: () => `Google authentication is now ${value === "1" ? "active" : "disabled"}.`,
       },
       error: {
-        title: "Error",
+        title: t("error"),
         message: () => "Failed to save configuration",
       },
     });

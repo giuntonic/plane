@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useSearchParams } from "next/navigation";
@@ -30,6 +31,7 @@ import { AuthUniqueCodeForm } from "./unique-code";
 const authService = new SitesAuthService();
 
 export const AuthRoot = observer(function AuthRoot() {
+  const { t } = useTranslation();
   // router params
   const searchParams = useSearchParams();
   const emailParam = searchParams.get("email") || undefined;
@@ -84,7 +86,7 @@ export const AuthRoot = observer(function AuthRoot() {
   const isSMTPConfigured = config?.is_smtp_configured || false;
   const isMagicLoginEnabled = config?.is_magic_login_enabled || false;
   const isEmailPasswordEnabled = config?.is_email_password_enabled || false;
-  const oAuthActionText = authMode === EAuthModes.SIGN_UP ? "Sign up" : "Sign in";
+  const oAuthActionText = authMode === EAuthModes.SIGN_UP ? t("ui.sign_up") : t("ui.sign_in_2");
   const { isOAuthEnabled, oAuthOptions } = useOAuthConfig(oAuthActionText);
 
   // submit handler- email verification

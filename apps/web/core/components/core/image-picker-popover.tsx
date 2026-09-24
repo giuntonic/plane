@@ -330,7 +330,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                         ) : (
                           <div>
                             <span className="mt-2 block text-13 font-medium text-secondary">
-                              {isDragActive ? "Drop image here to upload" : "Drag & drop image here"}
+                              {isDragActive ? t("ui.drop_image_here_to_upload") : t("ui.drag_and_drop_image_here")}
                             </span>
                           </div>
                         )}
@@ -342,7 +342,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                       <p className="text-13 text-danger-primary">
                         {fileRejections[0].errors[0].code === "file-too-large"
                           ? "The image size cannot exceed 5 MB."
-                          : "Please upload a file in a valid format."}
+                          : t("ui.please_upload_a_file_in_a_valid")}
                       </p>
                     )}
 
@@ -365,7 +365,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                         disabled={!image}
                         loading={isImageUploading}
                       >
-                        {isImageUploading ? "Uploading" : "Upload & Save"}
+                        {isImageUploading ? t("ui.uploading_2") : t("ui.upload_and_save")}
                       </Button>
                     </div>
                   </div>

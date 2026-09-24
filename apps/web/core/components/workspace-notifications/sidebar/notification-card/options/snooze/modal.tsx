@@ -221,7 +221,7 @@ export function NotificationSnoozeModal(props: TNotificationSnoozeModal) {
               Cancel
             </Button>
             <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? t("ui.submitting") : t("submit")}
             </Button>
           </div>
         </div>

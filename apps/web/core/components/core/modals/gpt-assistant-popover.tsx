@@ -192,10 +192,10 @@ export function GptAssistantPopover(props: Props) {
   );
 
   const generateResponseButtonText = isSubmitting
-    ? "Generating response..."
+    ? t("ui.generating_response")
     : response === ""
-      ? "Generate response"
-      : "Generate again";
+      ? t("ui.generate_response")
+      : t("ui.generate_again");
 
   return (
     <Popover as="div" className={`relative w-min text-left`}>
@@ -270,7 +270,7 @@ export function GptAssistantPopover(props: Props) {
                 onChange={onChange}
                 ref={ref}
                 placeholder={`${
-                  prompt && prompt !== "" ? "Tell AI what action to perform on this content..." : "Ask AI anything..."
+                  prompt && prompt !== "" ? t("ui.tell_ai_what_action_to_perform_on") : t("ui.ask_ai_anything")
                 }`}
                 className="w-full"
                 autoFocus

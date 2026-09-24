@@ -61,7 +61,7 @@ const WorkspaceManagementPage = observer(function WorkspaceManagementPage(_props
         message: () => "Configuration saved successfully",
       },
       error: {
-        title: "Error",
+        title: t("error"),
         message: () => "Failed to save configuration",
       },
     });

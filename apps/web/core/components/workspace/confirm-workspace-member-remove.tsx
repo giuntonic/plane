@@ -54,7 +54,7 @@ export const ConfirmWorkspaceMemberRemove = observer(function ConfirmWorkspaceMe
           </div>
           <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
             <h3 className="text-h5-medium leading-6 text-primary">
-              {currentUser?.id === userDetails.id ? "Leave workspace?" : `Remove ${userDetails?.display_name}?`}
+              {currentUser?.id === userDetails.id ? t("ui.leave_workspace") : `Remove ${userDetails?.display_name}?`}
             </h3>
             <div className="mt-2">
               {currentUser?.id === userDetails.id ? (

@@ -298,7 +298,7 @@ export function ExportPageModal(props: Props) {
             Cancel
           </Button>
           <Button variant="primary" size="lg" loading={isExporting} onClick={handleExport}>
-            {isExporting ? "Exporting" : "Export"}
+            {isExporting ? t("ui.exporting") : t("export")}
           </Button>
         </div>
       </div>

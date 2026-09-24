@@ -132,7 +132,7 @@ export const useGanttResizable = (
       } catch {
         setToast({
           type: TOAST_TYPE.ERROR,
-          title: "Error",
+          title: t("error"),
           message: t("ui.something_went_wrong_while_updating_block_dates"),
         });
       }

@@ -242,7 +242,7 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
                 }}
                 placeholder={{
                   from: t("start_date"),
-                  to: "End date",
+                  to: t("end_date"),
                 }}
                 disabled={isDisabled}
                 hideIcon={{ from: renderIcon ?? true, to: renderIcon }}

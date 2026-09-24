@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { useEffect } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -42,6 +43,7 @@ import { usePlatformOS } from "@/hooks/use-platform-os";
 // types
 
 export function IssueLink({ activity }: { activity: IIssueActivity }) {
+  const { t } = useTranslation();
   // router params
   const { workspaceSlug } = useParams();
   const { isMobile } = usePlatformOS();
@@ -56,7 +58,7 @@ export function IssueLink({ activity }: { activity: IIssueActivity }) {
 
   return (
     <Tooltip
-      tooltipContent={activity?.issue_detail ? activity.issue_detail.name : "This work item has been deleted"}
+      tooltipContent={activity?.issue_detail ? activity.issue_detail.name : t("ui.this_work_item_has_been_deleted")}
       isMobile={isMobile}
     >
       {activity?.issue_detail ? (

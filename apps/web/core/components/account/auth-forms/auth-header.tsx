@@ -89,8 +89,8 @@ export const AuthHeader = observer(function AuthHeader(props: TAuthHeader) {
         ),
         subHeader:
           mode == EAuthModes.SIGN_UP
-            ? "Create an account to start managing work with your team."
-            : "Log in to start managing work with your team.",
+            ? t("ui.create_an_account_to_start_managing_work")
+            : t("ui.log_in_to_start_managing_work_with"),
       };
     }
 

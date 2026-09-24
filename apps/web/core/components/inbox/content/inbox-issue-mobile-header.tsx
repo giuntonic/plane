@@ -169,7 +169,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
               >
                 <div className="flex items-center gap-2">
                   <Clock size={14} strokeWidth={2} />
-                  {inboxIssue?.snoozed_till && numberOfDaysLeft && numberOfDaysLeft > 0 ? "Un-snooze" : "Snooze"}
+                  {inboxIssue?.snoozed_till && numberOfDaysLeft && numberOfDaysLeft > 0 ? "Un-snooze" : t("ui.snooze")}
                 </div>
               </CustomMenu.MenuItem>
             )}

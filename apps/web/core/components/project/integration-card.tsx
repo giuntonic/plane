@@ -118,7 +118,7 @@ export function IntegrationCard({ integration }: Props) {
               label={
                 syncedGithubRepository && syncedGithubRepository.length > 0
                   ? `${syncedGithubRepository[0].repo_detail.owner}/${syncedGithubRepository[0].repo_detail.name}`
-                  : "Select Repository"
+                  : t("ui.select_repository")
               }
               onChange={handleChange}
             />

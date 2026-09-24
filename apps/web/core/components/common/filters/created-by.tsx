@@ -86,7 +86,7 @@ export const FilterCreatedBy = observer(function FilterCreatedBy(props: Props) {
                           size="md"
                         />
                       }
-                      title={currentUser?.id === member.id ? "You" : member?.display_name}
+                      title={currentUser?.id === member.id ? t("you") : member?.display_name}
                     />
                   );
                 })}

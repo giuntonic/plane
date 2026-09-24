@@ -6,17 +6,29 @@
 
 import { i18nInstance } from "@plane/i18n";
 export const CORE_HEADER_SEGMENT_LABELS: Record<string, string> = {
-  general: "General",
+  get general() {
+    return i18nInstance.t("ui.admin_menu_general");
+  },
   get ai() {
     return i18nInstance.t("ui.artificial_intelligence");
   },
-  email: "Email",
-  authentication: "Authentication",
-  image: "Image",
+  get email() {
+    return i18nInstance.t("ui.admin_menu_email");
+  },
+  get authentication() {
+    return i18nInstance.t("ui.authentication");
+  },
+  get image() {
+    return i18nInstance.t("ui.image");
+  },
   google: "Google",
   github: "GitHub",
   gitlab: "GitLab",
   gitea: "Gitea",
-  workspace: "Workspace",
-  create: "Create",
+  get workspace() {
+    return i18nInstance.t("common.workspace");
+  },
+  get create() {
+    return i18nInstance.t("common.create");
+  },
 };

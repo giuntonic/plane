@@ -125,7 +125,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
       <input type="hidden" value={nextPath} name="next_path" />
       <div className="space-y-1">
         <label className="text-13 font-medium text-tertiary" htmlFor="email">
-          Email
+          {t("auth.common.email.label")}
         </label>
         <div className={`relative flex items-center rounded-md border border-subtle bg-surface-1`}>
           <Input
@@ -149,7 +149,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
 
       <div className="space-y-1">
         <label className="text-13 font-medium text-tertiary" htmlFor="password">
-          {mode === EAuthModes.SIGN_IN ? "Password" : "Set a password"}
+          {mode === EAuthModes.SIGN_IN ? t("password") : t("ui.set_a_password")}
         </label>
         <div className="relative flex items-center rounded-md bg-surface-1">
           <Input
@@ -240,7 +240,7 @@ export const AuthPasswordForm = observer(function AuthPasswordForm(props: Props)
           </>
         ) : (
           <Button type="submit" variant="primary" className="w-full" size="xl" disabled={isButtonDisabled}>
-            {isSubmitting ? <Spinner height="20px" width="20px" /> : "Create account"}
+            {isSubmitting ? <Spinner height="20px" width="20px" /> : t("ui.create_account")}
           </Button>
         )}
       </div>

@@ -107,7 +107,7 @@ export function SwitchAccountModal(props: Props) {
                 </div>
                 <div className="mb-2 flex items-center justify-end gap-3 p-4 sm:px-6">
                   <Button variant="secondary" size="lg" onClick={handleSwitchAccount} disabled={switchingAccount}>
-                    {switchingAccount ? "Switching..." : "Switch account"}
+                    {switchingAccount ? t("ui.switching") : t("ui.switch_account")}
                   </Button>
                 </div>
               </Dialog.Panel>

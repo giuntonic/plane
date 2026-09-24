@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import { Tooltip } from "@plane/propel/tooltip";
 import { generateWorkItemLink } from "@plane/utils";
 // hooks
@@ -15,6 +16,7 @@ type TIssueLink = {
 };
 
 export function IssueLink(props: TIssueLink) {
+  const { t } = useTranslation();
   const { activityId } = props;
   // hooks
   const {
@@ -34,7 +36,7 @@ export function IssueLink(props: TIssueLink) {
   });
   return (
     <Tooltip
-      tooltipContent={activity.issue_detail ? activity.issue_detail.name : "This work item has been deleted"}
+      tooltipContent={activity.issue_detail ? activity.issue_detail.name : t("ui.this_work_item_has_been_deleted")}
       isMobile={isMobile}
     >
       <a

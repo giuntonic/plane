@@ -185,7 +185,7 @@ export function FavoriteFolder(props: Props) {
                       <Tooltip
                         isMobile={isMobile}
                         tooltipContent={
-                          favorite.sort_order === null ? "Join the project to rearrange" : "Drag to rearrange"
+                          favorite.sort_order === null ? t("join_the_project_to_rearrange") : t("drag_to_rearrange")
                         }
                         position="top-end"
                         disabled={isDragging}

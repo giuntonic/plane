@@ -136,7 +136,7 @@ export const SingleIntegrationCard = observer(function SingleIntegrationCard({ i
               ? isInstalled
                 ? integrationDetails[integration.provider].installed
                 : integrationDetails[integration.provider].notInstalled
-              : "Loading..."}
+              : t("ui.loading")}
           </p>
         </div>
       </div>
@@ -146,7 +146,7 @@ export const SingleIntegrationCard = observer(function SingleIntegrationCard({ i
           <Tooltip
             isMobile={isMobile}
             disabled={isUserAdmin}
-            tooltipContent={!isUserAdmin ? "You don't have permission to perform this" : null}
+            tooltipContent={!isUserAdmin ? t("ui.you_dont_have_permission_to_perform_this") : null}
           >
             <Button
               className={`${!isUserAdmin ? "hover:cursor-not-allowed" : ""}`}
@@ -158,14 +158,14 @@ export const SingleIntegrationCard = observer(function SingleIntegrationCard({ i
               disabled={!isUserAdmin}
               loading={deletingIntegration}
             >
-              {deletingIntegration ? "Uninstalling..." : "Uninstall"}
+              {deletingIntegration ? t("ui.uninstalling") : t("ui.uninstall")}
             </Button>
           </Tooltip>
         ) : (
           <Tooltip
             isMobile={isMobile}
             disabled={isUserAdmin}
-            tooltipContent={!isUserAdmin ? "You don't have permission to perform this" : null}
+            tooltipContent={!isUserAdmin ? t("ui.you_dont_have_permission_to_perform_this") : null}
           >
             <Button
               className={`${!isUserAdmin ? "hover:cursor-not-allowed" : ""}`}
@@ -176,7 +176,7 @@ export const SingleIntegrationCard = observer(function SingleIntegrationCard({ i
               }}
               loading={isInstalling}
             >
-              {isInstalling ? "Installing..." : "Install"}
+              {isInstalling ? t("ui.installing") : t("common.install")}
             </Button>
           </Tooltip>
         )

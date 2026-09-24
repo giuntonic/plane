@@ -119,17 +119,17 @@ export function AuthForm({
 
   const getSubmitButtonText = () => {
     if (submitButtonText) return submitButtonText;
-    return mode === "sign-in" ? "Sign In" : "Create Account";
+    return mode === "sign-in" ? t("ui.sign_in") : t("ui.create_account_2");
   };
 
   const getAlternateModeText = () => {
     if (alternateModeText) return alternateModeText;
-    return mode === "sign-in" ? "Don't have an account?" : "Already have an account?";
+    return mode === "sign-in" ? "Don't have an account?" : t("ui.already_have_an_account");
   };
 
   const getAlternateModeButtonText = () => {
     if (alternateModeButtonText) return alternateModeButtonText;
-    return mode === "sign-in" ? "Sign Up" : "Sign In";
+    return mode === "sign-in" ? t("ui.sign_up_2") : t("ui.sign_in");
   };
 
   return (
@@ -153,7 +153,7 @@ export function AuthForm({
       <AuthPasswordInput
         id="password"
         name="password"
-        label={mode === "sign-in" ? "Password" : "Set a password"}
+        label={mode === "sign-in" ? t("password") : t("ui.set_a_password")}
         value={formData.password}
         onChange={handleInputChange("password")}
         onPasswordChange={handlePasswordChange}

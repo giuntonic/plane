@@ -75,7 +75,7 @@ export function ArchiveCycleModal(props: Props) {
             Cancel
           </Button>
           <Button variant="primary" size="lg" tabIndex={1} onClick={handleArchiveCycle} loading={isArchiving}>
-            {isArchiving ? "Archiving" : "Archive"}
+            {isArchiving ? t("common.archiving") : t("archive")}
           </Button>
         </div>
       </div>

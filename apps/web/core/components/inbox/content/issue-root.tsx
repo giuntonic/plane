@@ -181,7 +181,7 @@ export const InboxIssueMainContent = observer(function InboxIssueMainContent(pro
                 createdAt: issue.created_at ? new Date(issue.created_at) : new Date(),
                 createdByDisplayName:
                   inboxIssue.source === EInboxIssueSource.FORMS
-                    ? "Intake Form user"
+                    ? t("ui.intake_form_user")
                     : (getUserDetails(issue.created_by ?? "")?.display_name ?? ""),
                 id: issue.id,
                 isRestoreDisabled: !isEditable,

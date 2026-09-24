@@ -146,7 +146,7 @@ export const GeneralConfigurationForm = observer(function GeneralConfigurationFo
           }}
           loading={isSubmitting}
         >
-          {isSubmitting ? "Saving" : "Save changes"}
+          {isSubmitting ? t("saving") : t("save_changes")}
         </Button>
       </div>
     </div>

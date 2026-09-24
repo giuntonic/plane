@@ -79,7 +79,7 @@ export const FilterCreatedBy = observer(function FilterCreatedBy(props: Props) {
                       isChecked={appliedFilters?.includes(member.id) ? true : false}
                       onClick={() => handleUpdate(member.id)}
                       icon={<Avatar name={member.display_name} src={getFileURL(member.avatar_url)} size="md" />}
-                      title={currentUser?.id === member.id ? "You" : member?.display_name}
+                      title={currentUser?.id === member.id ? t("you") : member?.display_name}
                     />
                   );
                 })}

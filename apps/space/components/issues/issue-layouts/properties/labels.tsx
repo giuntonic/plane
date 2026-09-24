@@ -23,7 +23,7 @@ export const IssueBlockLabels = observer(function IssueBlockLabels({ labelIds, s
 
   const labels = getLabelsByIds(labelIds);
 
-  const labelsString = labels.length > 0 ? labels.map((label) => label.name).join(", ") : "No Labels";
+  const labelsString = labels.length > 0 ? labels.map((label) => label.name).join(", ") : t("ui.no_labels_2");
 
   if (labels.length <= 0)
     return (

@@ -88,7 +88,7 @@ export function CreateUpdateModuleLinkModal(props: Props) {
     <ModalCore isOpen={isOpen} handleClose={onClose}>
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="space-y-5 p-5">
-          <h3 className="text-18 font-medium text-secondary">{data ? "Update" : "Add"} link</h3>
+          <h3 className="text-18 font-medium text-secondary">{data ? t("update") : t("add")} link</h3>
           <div className="mt-2 space-y-3">
             <div>
               <label htmlFor="url" className="mb-2 text-secondary">
@@ -143,7 +143,13 @@ export function CreateUpdateModuleLinkModal(props: Props) {
             Cancel
           </Button>
           <Button variant="primary" size="lg" type="submit" loading={isSubmitting}>
-            {data ? (isSubmitting ? "Updating link" : "Update link") : isSubmitting ? "Adding link" : "Add link"}
+            {data
+              ? isSubmitting
+                ? t("ui.updating_link")
+                : t("common.update_link")
+              : isSubmitting
+                ? t("ui.adding_link")
+                : t("add_link")}
           </Button>
         </div>
       </form>

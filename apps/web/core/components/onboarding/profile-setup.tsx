@@ -147,7 +147,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
     } catch {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error",
+        title: t("error"),
         message: t("ui.profile_setup_failed_please_try_again"),
       });
     }
@@ -172,7 +172,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
     } catch {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error",
+        title: t("error"),
         message: t("ui.user_details_update_failed_please_try_again"),
       });
     }
@@ -200,7 +200,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
     } catch {
       setToast({
         type: TOAST_TYPE.ERROR,
-        title: "Error",
+        title: t("error"),
         message: t("ui.profile_setup_failed_please_try_again"),
       });
     }
@@ -512,7 +512,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
                   name="use_case"
                   rules={{
                     required: t("ui.please_select_at_least_one_option"),
-                    validate: (value) => (value && value.length > 0) || "Please select at least one option",
+                    validate: (value) => (value && value.length > 0) || t("ui.please_select_at_least_one_option"),
                   }}
                   render={({ field: { value, onChange } }) => (
                     <div className="flex flex-wrap gap-2 overflow-auto py-2 break-all">
@@ -545,7 +545,7 @@ export const ProfileSetup = observer(function ProfileSetup(props: Props) {
             </>
           )}
           <Button variant="primary" type="submit" size="xl" className="w-full" disabled={isButtonDisabled}>
-            {isSubmitting ? <Spinner height="20px" width="20px" /> : "Continue"}
+            {isSubmitting ? <Spinner height="20px" width="20px" /> : t("common.continue")}
           </Button>
         </form>
       </div>

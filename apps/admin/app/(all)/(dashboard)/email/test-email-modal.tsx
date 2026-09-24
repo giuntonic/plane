@@ -96,10 +96,10 @@ export function SendTestEmailModal(props: Props) {
               <Dialog.Panel className="relative w-full transform rounded-lg bg-surface-1 p-5 px-4 text-left shadow-raised-200 transition-all sm:max-w-xl">
                 <h3 className="text-16 leading-6 font-medium text-primary">
                   {sendEmailStep === ESendEmailSteps.SEND_EMAIL
-                    ? "Send test email"
+                    ? t("ui.send_test_email")
                     : sendEmailStep === ESendEmailSteps.SUCCESS
-                      ? "Email send"
-                      : "Failed"}{" "}
+                      ? t("ui.email_send")
+                      : t("ui.failed")}{" "}
                 </h3>
                 <div className="pt-6 pb-2">
                   {sendEmailStep === ESendEmailSteps.SEND_EMAIL && (
@@ -125,11 +125,11 @@ export function SendTestEmailModal(props: Props) {
                   {sendEmailStep === ESendEmailSteps.FAILED && <div className="text-13">{error}</div>}
                   <div className="mt-5 flex items-center justify-end gap-2">
                     <Button variant="secondary" size="lg" onClick={handleClose} tabIndex={0}>
-                      {sendEmailStep === ESendEmailSteps.SEND_EMAIL ? "Cancel" : "Close"}
+                      {sendEmailStep === ESendEmailSteps.SEND_EMAIL ? t("cancel") : t("close")}
                     </Button>
                     {sendEmailStep === ESendEmailSteps.SEND_EMAIL && (
                       <Button variant="primary" size="lg" loading={isLoading} onClick={handleSubmit} tabIndex={0}>
-                        {isLoading ? "Sending email" : "Send email"}
+                        {isLoading ? t("ui.sending_email") : t("ui.send_email")}
                       </Button>
                     )}
                   </div>

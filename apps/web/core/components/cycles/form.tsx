@@ -169,7 +169,7 @@ export function CycleForm(props: Props) {
                       }}
                       placeholder={{
                         from: t("start_date"),
-                        to: "End date",
+                        to: t("end_date"),
                       }}
                       hideIcon={{
                         to: true,

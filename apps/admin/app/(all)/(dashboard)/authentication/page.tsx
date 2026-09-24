@@ -82,7 +82,7 @@ const InstanceAuthenticationPage = observer(function InstanceAuthenticationPage(
           message: () => "Configuration saved successfully",
         },
         error: {
-          title: "Error",
+          title: t("error"),
           message: () => "Failed to save configuration",
         },
       });

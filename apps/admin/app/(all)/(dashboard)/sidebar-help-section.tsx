@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { i18nInstance, useTranslation } from "@plane/i18n";
 import { useState, useRef } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
@@ -21,17 +21,23 @@ import { useInstance, useTheme } from "@/hooks/store";
 
 const helpOptions = [
   {
-    name: "Documentation",
+    get name() {
+      return i18nInstance.t("documentation");
+    },
     href: "https://docs.plane.so/",
     Icon: PageIcon,
   },
   {
-    name: "Join our Forum",
+    get name() {
+      return i18nInstance.t("ui.join_our_forum");
+    },
     href: "https://forum.plane.so",
     Icon: MessageSquare,
   },
   {
-    name: "Report a bug",
+    get name() {
+      return i18nInstance.t("ui.report_a_bug");
+    },
     href: "https://github.com/makeplane/plane/issues/new/choose",
     Icon: GithubIcon,
   },

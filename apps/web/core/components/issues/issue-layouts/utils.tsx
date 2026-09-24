@@ -5,6 +5,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import type { CSSProperties } from "react";
 import { extractInstruction } from "@atlaskit/pragmatic-drag-and-drop-hitbox/tree-item";
 import { clone, isNil, pull, uniq, concat } from "lodash-es";
@@ -202,7 +203,7 @@ const getCycleColumns = (): IGroupByColumn[] | undefined => {
       icon: <CycleGroupIcon cycleGroup={cycleStatus} className="h-3.5 w-3.5" />,
       payload: { cycle_id: cycle.id },
       isDropDisabled,
-      dropErrorMessage: isDropDisabled ? "Work item cannot be moved to completed cycles" : undefined,
+      dropErrorMessage: isDropDisabled ? i18nInstance.t("ui.work_item_cannot_be_moved_to_completed") : undefined,
     });
   });
   cycles.push({

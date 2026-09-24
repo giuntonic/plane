@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { useTranslation } from "@plane/i18n";
 import React from "react";
 import { useParams } from "next/navigation";
 import useSWRInfinite from "swr/infinite";
@@ -27,6 +28,7 @@ type Props = {
 const projectService = new ProjectService();
 
 export function SelectRepository(props: Props) {
+  const { t } = useTranslation();
   const { integration, value, label, onChange, characterLimit = 25 } = props;
   // router
   const { workspaceSlug } = useParams();
@@ -80,7 +82,7 @@ export function SelectRepository(props: Props) {
               onClick={() => setSize(size + 1)}
               disabled={isValidating}
             >
-              {isValidating ? "Loading..." : "Click to load more..."}
+              {isValidating ? t("ui.loading") : t("ui.click_to_load_more")}
             </button>
           )}
         </>

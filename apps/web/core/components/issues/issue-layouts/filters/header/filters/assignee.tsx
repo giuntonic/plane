@@ -86,7 +86,7 @@ export const FilterAssignees = observer(function FilterAssignees(props: Props) {
                           size="md"
                         />
                       }
-                      title={currentUser?.id === member.id ? "You" : member?.display_name}
+                      title={currentUser?.id === member.id ? t("you") : member?.display_name}
                     />
                   );
                 })}

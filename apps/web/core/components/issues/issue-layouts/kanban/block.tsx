@@ -253,8 +253,8 @@ export const KanbanIssueBlock = observer(function KanbanIssueBlock(props: IssueB
               type: TOAST_TYPE.WARNING,
               title: t("ui.cannot_move_work_item"),
               message: !canEditIssueProperties
-                ? "You are not allowed to move this work item"
-                : "Drag and drop is disabled for the current grouping",
+                ? t("ui.you_are_not_allowed_to_move_this")
+                : t("ui.drag_and_drop_is_disabled_for_the"),
             });
           }
         }}
