@@ -29,7 +29,7 @@ export const ProjectArchivedIssueDetailsHeader = observer(function ProjectArchiv
   // router
   const { workspaceSlug, projectId, archivedIssueId } = useParams();
   // store hooks
-  const { currentProjectDetails, loader } = useProject();
+  const { loader } = useProject();
   const { t } = useTranslation();
 
   const { data: issueDetails } = useSWR(
@@ -62,17 +62,7 @@ export const ProjectArchivedIssueDetailsHeader = observer(function ProjectArchiv
               />
             }
           />
-          <Breadcrumbs.Item
-            component={
-              <BreadcrumbLink
-                label={
-                  currentProjectDetails && issueDetails
-                    ? `${currentProjectDetails.identifier}-${issueDetails.sequence_id}`
-                    : ""
-                }
-              />
-            }
-          />
+          <Breadcrumbs.Item component={<BreadcrumbLink label={issueDetails?.name ?? ""} />} />
         </Breadcrumbs>
       </Header.LeftItem>
       <Header.RightItem>

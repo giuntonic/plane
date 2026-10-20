@@ -62,10 +62,12 @@ class ProjectSerializer(BaseSerializer):
         if re.match(Project.FORBIDDEN_IDENTIFIER_CHARS_PATTERN, identifier):
             raise serializers.ValidationError(detail="PROJECT_IDENTIFIER_CANNOT_CONTAIN_SPECIAL_CHARACTERS")
 
-        project = Project.objects.filter(identifier=identifier, workspace_id=workspace_id)
+        # Pespo: na criação o identificador é gerado pelo frontend a partir do nome (o campo não aparece
+        # mais), então uma colisão vira sufixo numérico (PROJ, PROJ2, PROJ3…) em vez de erro.
+        if not project_id:
+            return self._unique_identifier(identifier, workspace_id)
 
-        if project_id:
-            project = project.exclude(id=project_id)
+        project = Project.objects.filter(identifier=identifier, workspace_id=workspace_id).exclude(id=project_id)
 
         if project.exists():
             raise serializers.ValidationError(
@@ -73,6 +75,24 @@ class ProjectSerializer(BaseSerializer):
             )
 
         return identifier
+
+    @staticmethod
+    def _unique_identifier(identifier, workspace_id):
+        max_length = Project._meta.get_field("identifier").max_length
+        base = identifier.strip().upper()[:max_length]
+
+        def is_taken(candidate):
+            return (
+                Project.objects.filter(identifier=candidate, workspace_id=workspace_id).exists()
+                or ProjectIdentifier.objects.filter(name=candidate, workspace_id=workspace_id).exists()
+            )
+
+        candidate = base
+        suffix = 2
+        while is_taken(candidate):
+            candidate = f"{base[: max_length - len(str(suffix))]}{suffix}"
+            suffix += 1
+        return candidate
 
     def validate(self, data):
         # Validate description content for security

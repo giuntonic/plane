@@ -6,15 +6,13 @@
 
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Info } from "lucide-react";
-import { NETWORK_CHOICES, PROJECT_IDENTIFIER_MAX_LENGTH } from "@plane/constants";
+import { NETWORK_CHOICES } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 // plane imports
 import { Button } from "@plane/propel/button";
 import { EmojiPicker, EmojiIconPickerTypes, Logo } from "@plane/propel/emoji-icon-picker";
 import { LockIcon } from "@plane/propel/icons";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
-import { Tooltip } from "@plane/propel/tooltip";
 import { EFileAssetType } from "@plane/types";
 import type { IProject, IWorkspace } from "@plane/types";
 import { CustomSelect, Input, TextArea } from "@plane/ui";
@@ -26,7 +24,6 @@ import { TimezoneSelect } from "@/components/global";
 import { handleCoverImageChange } from "@/helpers/cover-image.helper";
 // hooks
 import { useProject } from "@/hooks/store/use-project";
-import { usePlatformOS } from "@/hooks/use-platform-os";
 // services
 import { ProjectService } from "@/services/project";
 // local imports
@@ -48,14 +45,12 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
   const [isLoading, setIsLoading] = useState(false);
   // store hooks
   const { updateProject } = useProject();
-  const { isMobile } = usePlatformOS();
 
   // form info
   const {
     handleSubmit,
     watch,
     control,
-    setValue,
     setError,
     reset,
     formState: { errors },
@@ -81,13 +76,6 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
   }, [project, projectId]);
 
   // handlers
-  const handleIdentifierChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const alphanumericValue = value.replace(/[^a-zA-Z0-9]/g, "");
-    const formattedValue = alphanumericValue.toUpperCase();
-    setValue("identifier", formattedValue);
-  };
-
   const handleUpdateChange = async (payload: Partial<IProject>) => {
     if (!workspaceSlug || !project) return;
     return updateProject(workspaceSlug.toString(), project.id, payload)
@@ -245,7 +233,6 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
             <div className="flex flex-col gap-1 truncate text-on-color">
               <span className="truncate text-16 font-semibold">{watch("name")}</span>
               <span className="flex items-center gap-2 text-13">
-                <span>{watch("identifier")} .</span>
                 <span className="flex items-center gap-1.5">
                   {project.network === 0 && <LockIcon className="h-2.5 w-2.5 text-on-color" />}
                   {currentNetwork && t(currentNetwork?.i18n_label)}
@@ -323,53 +310,7 @@ export function ProjectDetailsForm(props: IProjectDetailsForm) {
           />
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="flex flex-col gap-1">
-            <h4 className="text-13">{t("common.project_id")}</h4>
-            <div className="relative">
-              <Controller
-                control={control}
-                name="identifier"
-                rules={{
-                  required: t("project_id_is_required"),
-                  validate: (value) => /^[ÇŞĞIİÖÜA-Z0-9]+$/.test(value.toUpperCase()) || t("project_id_allowed_char"),
-                  minLength: {
-                    value: 1,
-                    message: t("project_id_min_char"),
-                  },
-                  maxLength: {
-                    value: PROJECT_IDENTIFIER_MAX_LENGTH,
-                    message: t("project_id_max_char", { max: PROJECT_IDENTIFIER_MAX_LENGTH }),
-                  },
-                }}
-                render={({ field: { value, ref } }) => (
-                  <Input
-                    id="identifier"
-                    name="identifier"
-                    type="text"
-                    maxLength={PROJECT_IDENTIFIER_MAX_LENGTH}
-                    value={value}
-                    onChange={handleIdentifierChange}
-                    ref={ref}
-                    hasError={Boolean(errors.identifier)}
-                    placeholder={t("project_settings.general.enter_project_id")}
-                    className="w-full font-medium"
-                    disabled={!isAdmin}
-                  />
-                )}
-              />
-              <Tooltip
-                isMobile={isMobile}
-                tooltipContent={t("project_id_tooltip_content", { max: PROJECT_IDENTIFIER_MAX_LENGTH })}
-                className="text-13"
-                position="right-start"
-              >
-                <Info className="absolute top-2.5 right-2 h-4 w-4 text-placeholder" />
-              </Tooltip>
-            </div>
-            <span className="text-11 text-danger-primary">
-              <>{errors?.identifier?.message}</>
-            </span>
-          </div>
+          {/* Pespo: o identificador do projeto (PROJ) não é mais exibido nem editado aqui. */}
           <div className="flex flex-col gap-1">
             <h4 className="text-13">{t("workspace_projects.network.label")}</h4>
             <Controller

@@ -34,7 +34,7 @@ type InboxIssueListItemProps = {
 
 export const InboxIssueListItem = observer(function InboxIssueListItem(props: InboxIssueListItemProps) {
   const { t } = useTranslation();
-  const { workspaceSlug, projectId, inboxIssueId, projectIdentifier, setIsMobileSidebar } = props;
+  const { workspaceSlug, projectId, inboxIssueId, setIsMobileSidebar } = props;
   // router
   const searchParams = useSearchParams();
   const selectedInboxIssueId = searchParams.get("inboxIssueId");
@@ -70,10 +70,7 @@ export const InboxIssueListItem = observer(function InboxIssueListItem(props: In
           )}
         >
           <div className="space-y-1">
-            <div className="relative flex items-center justify-between gap-2">
-              <div className="flex-shrink-0 text-11 font-medium text-tertiary">
-                {projectIdentifier}-{issue.sequence_id}
-              </div>
+            <div className="relative flex items-center justify-end gap-2">
               <div className="flex items-center gap-2">
                 {inboxIssue.status !== -2 && <InboxIssueStatus inboxIssue={inboxIssue} iconSize={12} />}
               </div>

@@ -11,7 +11,6 @@ import type { TIssue } from "@plane/types";
 // ui
 import { AlertModalCore } from "@plane/ui";
 // hooks
-import { useProject } from "@/hooks/store/use-project";
 
 type Props = {
   data: Partial<TIssue>;
@@ -25,10 +24,7 @@ export function DeclineIssueModal(props: Props) {
   // states
   const [isDeclining, setIsDeclining] = useState(false);
   // store hooks
-  const { getProjectById } = useProject();
   const { t } = useTranslation();
-  // derived values
-  const projectDetails = data.project_id ? getProjectById(data?.project_id) : undefined;
 
   const handleClose = () => {
     setIsDeclining(false);
@@ -51,9 +47,7 @@ export function DeclineIssueModal(props: Props) {
       content={
         <>
           {t("ui.jsx_are_you_sure_you_want_to_decline")}{" "}
-          <span className="font-medium break-words text-primary">
-            {projectDetails?.identifier}-{data?.sequence_id}
-          </span>
+          <span className="font-medium break-words text-primary">{data?.name}</span>
           {""}
           {t("ui.jsx_this_action_cannot_be_undone")}
         </>

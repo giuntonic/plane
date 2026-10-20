@@ -430,7 +430,8 @@ export const usePowerKWorkItemContextBasedCommands = (): TPowerKCommandConfig[] 
       action: copyWorkItemIdToClipboard,
       modifierShortcut: "cmd+.",
       isEnabled: () => true,
-      isVisible: () => true,
+      // Pespo: o ID do item não é exibido na interface, então "Copiar ID" também sai do menu.
+      isVisible: () => false,
       closeOnSelect: true,
     },
     {

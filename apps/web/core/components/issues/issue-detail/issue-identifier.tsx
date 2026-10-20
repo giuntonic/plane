@@ -12,7 +12,16 @@ import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useProject } from "@/hooks/store/use-project";
 import { IdentifierText } from "@/components/issues/issue-detail/identifier-text";
 
+// Pespo: o ID do item (PROJ-123) não é exibido na interface. Ele continua existindo por baixo
+// (URLs /browse/PROJ-123, API, busca), só não aparece mais em cards, detalhe e modais.
+const PESPO_HIDE_WORK_ITEM_IDENTIFIER = true;
+
 export const IssueIdentifier = observer(function IssueIdentifier(props: TIssueIdentifierProps) {
+  if (PESPO_HIDE_WORK_ITEM_IDENTIFIER) return null;
+  return <IssueIdentifierContent {...props} />;
+});
+
+const IssueIdentifierContent = observer(function IssueIdentifierContent(props: TIssueIdentifierProps) {
   const { projectId, variant, size, displayProperties, enableClickToCopyIdentifier = false } = props;
   // store hooks
   const { getProjectIdentifierById } = useProject();

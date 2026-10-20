@@ -132,10 +132,10 @@ export const IssueRelationSelect = observer(function IssueRelationSelect(props: 
                         })}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-caption-sm-medium"
+                        className="block max-w-48 truncate text-caption-sm-medium"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {`${projectDetails?.identifier}-${currentIssue?.sequence_id}`}
+                        {currentIssue.name}
                       </Link>
                     </Tooltip>
                     {!disabled && (

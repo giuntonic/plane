@@ -202,8 +202,8 @@ export const InboxIssueContentProperties = observer(function InboxIssueContentPr
                   target="_self"
                 >
                   <Tooltip tooltipContent={`${duplicateIssueDetails?.name}`}>
-                    <span className="flex cursor-pointer items-center gap-1 rounded-sm bg-layer-1 px-1.5 py-1 pb-0.5 text-11 text-secondary">
-                      {`${currentProjectDetails?.identifier}-${duplicateIssueDetails?.sequence_id}`}
+                    <span className="flex max-w-48 cursor-pointer items-center gap-1 truncate rounded-sm bg-layer-1 px-1.5 py-1 pb-0.5 text-11 text-secondary">
+                      {duplicateIssueDetails?.name}
                     </span>
                   </Tooltip>
                 </ControlLink>

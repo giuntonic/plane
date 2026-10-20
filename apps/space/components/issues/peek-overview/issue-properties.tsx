@@ -5,7 +5,6 @@
  */
 
 import { observer } from "mobx-react";
-import { useParams } from "next/navigation";
 import { LinkIcon } from "lucide-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
@@ -23,7 +22,6 @@ import { renderFormattedDate } from "@/helpers/date-time.helper";
 import { shouldHighlightIssueDueDate } from "@/helpers/issue.helper";
 import { copyTextToClipboard, addSpaceIfCamelCase } from "@/helpers/string.helper";
 // hooks
-import { usePublish } from "@/hooks/store/publish";
 import { useStates } from "@/hooks/store/use-state";
 // types
 import type { IIssue, IPeekMode } from "@/types/issue";
@@ -42,10 +40,6 @@ export const PeekOverviewIssueProperties = observer(function PeekOverviewIssuePr
   const { getStateById } = useStates();
   const state = getStateById(issueDetails?.state_id ?? undefined);
 
-  const { anchor } = useParams();
-
-  const { project_details } = usePublish(anchor?.toString());
-
   const priority = issueDetails.priority ? getIssuePriorityFilters(issueDetails.priority) : null;
 
   const handleCopyLink = () => {
@@ -63,10 +57,7 @@ export const PeekOverviewIssueProperties = observer(function PeekOverviewIssuePr
   return (
     <div className={mode === "full" ? "divide-y divide-subtle-1" : ""}>
       {mode === "full" && (
-        <div className="flex justify-between gap-2 pb-3">
-          <h6 className="flex items-center gap-2 font-medium">
-            {project_details?.identifier}-{issueDetails.sequence_id}
-          </h6>
+        <div className="flex justify-end gap-2 pb-3">
           <div className="flex items-center gap-2">
             <button type="button" onClick={handleCopyLink} className="-rotate-45">
               <LinkIcon className="size-3.5 shrink-0" />

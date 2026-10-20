@@ -7,7 +7,7 @@
 import type { MutableRefObject } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 // plane types
 import { Tooltip } from "@plane/propel/tooltip";
 import type { IIssueDisplayProperties } from "@plane/types";
@@ -15,11 +15,9 @@ import type { IIssueDisplayProperties } from "@plane/types";
 // plane utils
 import { cn } from "@plane/utils";
 // components
-import { WithDisplayPropertiesHOC } from "@/components/issues/issue-layouts/with-display-properties-HOC";
 // helpers
 import { queryParamGenerator } from "@/helpers/query-param-generator";
 // hooks
-import { usePublish } from "@/hooks/store/publish";
 import { useIssueDetails } from "@/hooks/store/use-issue-details";
 //
 import type { IIssue } from "@/types/issue";
@@ -42,20 +40,9 @@ interface IssueDetailsBlockProps {
 
 const KanbanIssueDetailsBlock = observer(function KanbanIssueDetailsBlock(props: IssueDetailsBlockProps) {
   const { issue, displayProperties } = props;
-  const { anchor } = useParams();
-  // hooks
-  const { project_details } = usePublish(anchor.toString());
 
   return (
     <div className="space-y-2 px-3 py-2">
-      <WithDisplayPropertiesHOC displayProperties={displayProperties || {}} displayPropertyKey="key">
-        <div className="relative">
-          <div className="line-clamp-1 text-11 text-tertiary">
-            {project_details?.identifier}-{issue.sequence_id}
-          </div>
-        </div>
-      </WithDisplayPropertiesHOC>
-
       <div className="mb-1.5 line-clamp-1 w-full text-13 text-primary">
         <Tooltip tooltipContent={issue.name}>
           <span>{issue.name}</span>

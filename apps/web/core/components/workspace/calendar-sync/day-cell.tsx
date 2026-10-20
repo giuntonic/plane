@@ -99,9 +99,6 @@ export const CalendarSyncDayCell = observer(function CalendarSyncDayCell(props: 
               style={{ borderLeftColor: PRIORITY_COLORS[issue.priority ?? ""] ?? undefined }}
               title={issue.name}
             >
-              <span className="text-tertiary">
-                {identifier}-{issue.sequence_id}
-              </span>{" "}
               {issue.name}
             </button>
           );

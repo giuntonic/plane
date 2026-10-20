@@ -7,7 +7,7 @@
 import { useRef } from "react";
 import { observer } from "mobx-react";
 import { Link } from "react-router";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 // plane types
 import { Tooltip } from "@plane/propel/tooltip";
 import type { IIssueDisplayProperties } from "@plane/types";
@@ -17,7 +17,6 @@ import { cn } from "@plane/utils";
 // helpers
 import { queryParamGenerator } from "@/helpers/query-param-generator";
 // hooks
-import { usePublish } from "@/hooks/store/publish";
 import { useIssueDetails } from "@/hooks/store/use-issue-details";
 //
 import { IssueProperties } from "../properties/all-properties";
@@ -29,7 +28,6 @@ interface IssueBlockProps {
 }
 
 export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
-  const { anchor } = useParams();
   const { issueId, displayProperties } = props;
   const searchParams = useSearchParams();
   // query params
@@ -37,7 +35,6 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
   // ref
   const issueRef = useRef<HTMLDivElement | null>(null);
   // hooks
-  const { project_details } = usePublish(anchor.toString());
   const { getIsIssuePeeked, setPeekId, getIssueById } = useIssueDetails();
 
   const handleIssuePeekOverview = () => {
@@ -49,8 +46,6 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
   const issue = getIssueById(issueId);
 
   if (!issue) return null;
-
-  const projectIdentifier = project_details?.identifier;
 
   return (
     <div
@@ -65,14 +60,6 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
     >
       <div className="flex w-full truncate">
         <div className="flex grow items-center gap-0.5 truncate">
-          <div className="flex items-center gap-1">
-            {displayProperties && displayProperties?.key && (
-              <div className="shrink-0 px-4 text-11 font-medium text-tertiary">
-                {projectIdentifier}-{issue.sequence_id}
-              </div>
-            )}
-          </div>
-
           <Link
             id={`issue-${issue.id}`}
             to={`?${queryParam}`}

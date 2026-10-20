@@ -251,6 +251,37 @@ Correções feitas depois do merge:
 
 ---
 
+## ID do item escondido + ordem manual por padrão (2026-10-20)
+
+- **ID do item (PROJ-123) não aparece mais na interface.** Ele continua existindo por baixo: URLs
+  `/browse/PROJ-123/`, API, busca e `sequence_id` seguem iguais, então links antigos funcionam.
+  - Ponto central: `IssueIdentifier` (`core/components/issues/issue-detail/issue-identifier.tsx`) retorna
+    `null` (constante `PESPO_HIDE_WORK_ITEM_IDENTIFIER`); isso cobre cards de lista/kanban/planilha,
+    detalhe, peek, modais e Power K.
+  - Onde o ID era montado à mão: se era o único rótulo, virou o nome do item (chip de relação, duplicado
+    na intake, pai no formulário da intake, modais de excluir/recusar, breadcrumb, título da aba); se vinha
+    junto do nome, só saiu (atividade, notificações, recentes da home, calendário, lista da intake). App
+    público (`apps/space`): saiu dos cards e do peek. "Copiar ID" sumiu do Power K (`isVisible: false`).
+  - **Identificador do projeto:** some da criação (`project/create/common-attributes.tsx`, gerado a partir
+    do nome, `PROJ` se o nome não tiver letras/números) e das configurações (`project/form.tsx`). No
+    backend, `ProjectSerializer.validate_identifier` resolve colisão na criação com sufixo numérico
+    (`PROJ`, `PROJ2`…) em vez de devolver `PROJECT_IDENTIFIER_ALREADY_EXIST`; na edição continua igual.
+- **Ordem manual (arrastar) por padrão.** O arrastar na lista e no kanban já existia, mas só reordena
+  quando a ordenação é "Manual" (`sort_order`) — e o padrão era "Mais recentes" (`-created_at`).
+  - Defaults de `display_filters.order_by` → `"sort_order"` em `db/models/{project,issue,view,cycle,module}.py`
+    (são funções, não geram migration de schema).
+  - Migration de dados `0132_default_order_by_manual.py`: preferências salvas com `-created_at` em
+    `ProjectUserProperty`/`CycleUserProperties`/`ModuleUserProperties` viram `sort_order`; quem escolheu
+    outra ordem fica como está. Reverso é no-op.
+  - As views globais do workspace (planilha com vários projetos) continuam sem ordem manual — o
+    `sort_order` só faz sentido dentro de um projeto e o próprio store força `-created_at` ali.
+- **Deploy:** rebuildar `api` (migration + serializer), `web` e `space`.
+- **Risco de upgrade:** baixo-médio. A maior parte é remoção pontual de JSX em arquivos do `core/`; se o
+  upstream reescrever um deles, o ID volta a aparecer naquele ponto (não quebra nada). Pra achar de novo:
+  `grep -rnE '(identifier|Identifier)\}?-\{?\$?\{?[a-zA-Z_.?]*sequence_id' apps/web apps/space`.
+
+---
+
 ## Integração com o Google Calendar — sincronização nos dois sentidos, reuniões e calendário (2026-09-24)
 
 A conexão pessoal com o Google Calendar já existia (agenda "Plane" com as tarefas atribuídas, só de ida,

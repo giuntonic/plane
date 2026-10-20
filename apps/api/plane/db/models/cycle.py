@@ -30,7 +30,7 @@ def get_default_filters():
 def get_default_display_filters():
     return {
         "group_by": None,
-        "order_by": "-created_at",
+        "order_by": "sort_order",  # Pespo: ordem manual (arrastar) por padrão
         "type": None,
         "sub_issue": True,
         "show_empty_groups": True,

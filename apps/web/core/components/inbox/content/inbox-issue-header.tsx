@@ -259,7 +259,7 @@ export const InboxIssueActionsHeader = observer(function InboxIssueActionsHeader
           fetchIssueDetails={false}
           showActionItemsOnUpdate
           modalTitle={t("inbox_issue.actions.move", {
-            value: `${currentProjectDetails?.identifier}-${issue?.sequence_id}`,
+            value: issue?.name ?? "",
           })}
           primaryButtonText={{
             default: t("add_to_project"),
