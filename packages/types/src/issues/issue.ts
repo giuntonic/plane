@@ -162,6 +162,7 @@ export type TWorkItemWidgets =
   | "attachments"
   | "peca-marking"
   | "google-drive"
+  | "checklist"
   | "meetings";
 
 export type TIssueServiceType = EIssueServiceType.ISSUES | EIssueServiceType.EPICS | EIssueServiceType.WORK_ITEMS;

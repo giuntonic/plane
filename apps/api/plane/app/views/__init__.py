@@ -180,6 +180,8 @@ from .issue.google_drive import (
     IssueGoogleDriveImportEndpoint,
 )
 
+from .issue.checklist import IssueChecklistItemEndpoint, IssueChecklistItemDetailEndpoint
+
 from .issue.relation import IssueRelationViewSet
 
 from .issue.reaction import IssueReactionViewSet

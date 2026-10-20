@@ -16,6 +16,8 @@ from plane.app.views import (
     IssueCalendarEventDetailEndpoint,
     IssueGoogleDriveFileDetailEndpoint,
     IssueGoogleDriveImportEndpoint,
+    IssueChecklistItemEndpoint,
+    IssueChecklistItemDetailEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -166,6 +168,17 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/google-drive-files/<uuid:pk>/",
         IssueGoogleDriveFileDetailEndpoint.as_view(),
         name="project-issue-google-drive-file-detail",
+    ),
+    # Pespo: subtarefas leves (checklist em árvore) de um item de trabalho
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklist-items/",
+        IssueChecklistItemEndpoint.as_view(),
+        name="project-issue-checklist-items",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklist-items/<uuid:pk>/",
+        IssueChecklistItemDetailEndpoint.as_view(),
+        name="project-issue-checklist-item-detail",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/",

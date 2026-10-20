@@ -282,6 +282,40 @@ Correções feitas depois do merge:
 
 ---
 
+## Subtarefas leves com sublistas (checklist em árvore) (2026-10-20)
+
+- **O quê:** dentro de um item de trabalho, uma lista de linhas livres com checkbox (estilo Trello/ClickUp,
+  edição estilo Notion), sem criar item de trabalho novo. Qualquer linha pode ganhar uma sublista (Tab),
+  e cada linha pode ter **responsável** e **prazo** (prazo vencido fica em vermelho). Não aparece nas
+  visualizações nem tem estado; os sub-itens de trabalho do Plane continuam existindo à parte.
+- **Uso:** botão "Subtarefa" na fileira de ações do item (cria a primeira linha e põe o cursor nela) e
+  seção "Subtarefas" (contador concluídas/total). Teclado: Enter cria linha abaixo, Tab recua (vira
+  sublista da linha de cima), Shift+Tab tira o recuo, Alt+↑/↓ move, Backspace numa linha vazia apaga,
+  ↑/↓ nas pontas do texto anda entre linhas. Arrastar pela alça reordena e move entre níveis (solta
+  acima/abaixo da linha alvo, no nível dela). Sublistas recolhem pela seta e mostram o próprio contador.
+  Convidados só leem.
+- **Backend:** modelo `IssueChecklistItem` (`db/models/issue_checklist.py`, tabela `issue_checklist_items`:
+  `issue`, `parent` (self, CASCADE), `name`, `is_completed`/`completed_at`, `assignee`, `due_date`,
+  `sort_order`), migration `0133_issue_checklist_item.py`, serializer `app/serializers/issue_checklist.py`,
+  views `app/views/issue/checklist.py`, rotas `…/issues/<id>/checklist-items/` e `…/checklist-items/<id>/`.
+  A API devolve a lista plana (o frontend monta a árvore). Valida que o `parent` é do mesmo item e não é a
+  própria linha nem uma descendente, e que o responsável é membro ativo do projeto. **Exclusão é
+  definitiva** (sem soft delete) e leva as sublistas junto. Não gera atividade no item.
+- **Testes:** `tests/contract/app/test_issue_checklist_app.py`; helpers da árvore em
+  `packages/utils/src/issue-checklist.ts` com `issue-checklist.test.ts` (vitest).
+- **Frontend:** widget em `issue-detail-widgets/checklist/` (`root.tsx` seção, `content.tsx` lista +
+  contexto de foco, `item.tsx` linha recursiva, `helper.ts` SWR + operações otimistas,
+  `quick-action-button.tsx`), serviço `services/issue-checklist.service.ts`, tipos em
+  `packages/types/src/issue-checklist.ts`, widget `"checklist"` em `TWorkItemWidgets` e em `openWidgets`
+  (`store/issue/issue-details/root.store.ts`). i18n `issue_checklist.*` em `work-item.json` (en e pt-BR).
+  O botão do cabeçalho da seção é um `<span role="button">` (fica dentro do `<button>` do `Collapsible`).
+- **Deploy:** rebuildar `api` (migration nova) e `web`.
+- **Risco de upgrade:** baixo-médio. Pontos do `core/` tocados: `action-buttons.tsx` e
+  `issue-detail-widget-collapsibles.tsx` (botão + seção), `openWidgets` e `TWorkItemWidgets` — os mesmos do
+  Google Drive.
+
+---
+
 ## Integração com o Google Calendar — sincronização nos dois sentidos, reuniões e calendário (2026-09-24)
 
 A conexão pessoal com o Google Calendar já existia (agenda "Plane" com as tarefas atribuídas, só de ida,

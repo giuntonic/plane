@@ -146,6 +146,7 @@ export class IssueDetail implements IIssueDetail {
     "peca-marking",
     "google-drive",
     "meetings",
+    "checklist",
   ];
   lastWidgetAction: TWorkItemWidgets | null = null;
   isCreateIssueModalOpen: boolean = false;

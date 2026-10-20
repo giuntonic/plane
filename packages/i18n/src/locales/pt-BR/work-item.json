@@ -435,5 +435,20 @@
     "deleted_successfully": "Itens de trabalho excluídos com sucesso!",
     "select_to_delete": "Selecione os itens de trabalho para excluir",
     "delete_selected": "Excluir itens de trabalho selecionados"
+  },
+  "issue_checklist": {
+    "title": "Subtarefas",
+    "add": "Subtarefa",
+    "add_line": "Adicionar subtarefa",
+    "add_child": "Adicionar item nesta sublista",
+    "placeholder": "Escreva uma subtarefa…",
+    "assignee": "Responsável",
+    "due_date": "Prazo",
+    "delete": "Excluir",
+    "expand": "Expandir",
+    "collapse": "Recolher",
+    "drag": "Arraste para reordenar",
+    "hint": "Enter: nova linha · Tab: recuar · Shift+Tab: tirar o recuo · Alt+↑/↓: mover",
+    "save_error": "Não foi possível salvar a subtarefa"
   }
 }

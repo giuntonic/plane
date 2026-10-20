@@ -173,18 +173,32 @@ class TestProjectAPIPost(TestProjectBase):
 
     @pytest.mark.django_db
     def test_create_project_duplicate_identifier(self, session_client, workspace, create_user):
-        """Test creating project with duplicate identifier"""
+        """Pespo: a duplicate identifier on create gets a numeric suffix instead of an error
+        (the identifier field is no longer shown in the UI)"""
         Project.objects.create(name="First Project", identifier="DUP", workspace=workspace)
+        Project.objects.create(name="Second Project", identifier="DUP2", workspace=workspace)
 
         url = self.get_project_url(workspace.slug)
         project_data = {
-            "name": "Second Project",
+            "name": "Third Project",
             "identifier": "DUP",
         }
 
         response = session_client.post(url, project_data, format="json")
 
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data["identifier"] == "DUP3"
+
+    @pytest.mark.django_db
+    def test_create_project_duplicate_identifier_keeps_max_length(self, session_client, workspace, create_user):
+        Project.objects.create(name="Long One", identifier="ABCDEFGHIJKL", workspace=workspace)
+
+        response = session_client.post(
+            self.get_project_url(workspace.slug), {"name": "Long Two", "identifier": "ABCDEFGHIJKL"}, format="json"
+        )
+
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data["identifier"] == "ABCDEFGHIJK2"
 
     @pytest.mark.django_db
     def test_create_project_missing_required_fields(self, session_client, workspace, create_user):

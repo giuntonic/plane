@@ -435,5 +435,20 @@
     "deleted_successfully": "Work items deleted successfully!",
     "select_to_delete": "Select work items to delete",
     "delete_selected": "Delete selected work items"
+  },
+  "issue_checklist": {
+    "title": "Subtasks",
+    "add": "Subtask",
+    "add_line": "Add subtask",
+    "add_child": "Add item to this sublist",
+    "placeholder": "Write a subtask…",
+    "assignee": "Assignee",
+    "due_date": "Due date",
+    "delete": "Delete",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "drag": "Drag to reorder",
+    "hint": "Enter: new line · Tab: indent · Shift+Tab: outdent · Alt+↑/↓: move",
+    "save_error": "Couldn't save the subtask"
   }
 }
