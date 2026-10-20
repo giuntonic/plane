@@ -217,6 +217,7 @@ const IssueRowDetails = observer(function IssueRowDetails(props: IssueRowDetails
   const customActionButton = (
     <div
       ref={menuActionRef}
+      role="presentation"
       className={`flex h-full w-full cursor-pointer items-center rounded-sm p-1 text-placeholder hover:bg-layer-1 ${
         isMenuActive ? "bg-layer-1 text-primary" : "text-secondary"
       }`}
@@ -284,8 +285,9 @@ const IssueRowDetails = observer(function IssueRowDetails(props: IssueRowDetails
             )}
           >
             {/* Identifier section - conditionally rendered */}
+            {/* Pespo: sem largura mínima — o ID do item não é exibido (ver IssueIdentifier) */}
             {displayProperties?.key && (
-              <div className="flex h-full min-w-24 flex-shrink-0 items-center">
+              <div className="flex h-full flex-shrink-0 items-center">
                 <div className="relative flex cursor-pointer items-center text-11 hover:text-primary">
                   {issueDetail.project_id && (
                     <IssueIdentifier
@@ -365,6 +367,7 @@ const IssueRowDetails = observer(function IssueRowDetails(props: IssueRowDetails
                   </div>
                 </div>
                 <div
+                  role="presentation"
                   className={`opacity-0 transition-opacity group-hover:opacity-100 ${isMenuActive ? "!opacity-100" : ""}`}
                   onClick={(e) => e.stopPropagation()}
                 >

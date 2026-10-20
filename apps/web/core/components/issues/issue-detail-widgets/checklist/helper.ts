@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
@@ -34,6 +34,7 @@ export type TChecklistOperations = ReturnType<typeof useIssueChecklistOperations
 export const useIssueChecklistOperations = (workspaceSlug: string, projectId: string, issueId: string) => {
   const { t } = useTranslation();
   const { data: items = [], mutate } = useIssueChecklistItems(workspaceSlug, projectId, issueId);
+  const { mutate: mutateKey } = useSWRConfig();
 
   const showError = () => setToast({ type: TOAST_TYPE.ERROR, title: t("issue_checklist.save_error") });
 
@@ -52,13 +53,21 @@ export const useIssueChecklistOperations = (workspaceSlug: string, projectId: st
 
   /** Optimistic: the line changes on screen right away and goes back if the request fails. */
   const update = async (id: string, payload: TIssueChecklistItemPayload) => {
-    await mutate(
-      async (current = []) => {
-        const updated = await issueChecklistService.update(workspaceSlug, projectId, issueId, id, payload);
-        return current.map((item) => (item.id === id ? updated : item));
-      },
+    const changedFields = Object.keys(payload) as (keyof TIssueChecklistItemPayload)[];
+    await mutateKey<TIssueChecklistItem[], TIssueChecklistItem>(
+      getIssueChecklistKey(issueId),
+      issueChecklistService.update(workspaceSlug, projectId, issueId, id, payload),
       {
         optimisticData: (current = []) => current.map((item) => (item.id === id ? { ...item, ...payload } : item)),
+        // Only the fields this request changed come from the response. Tab/Enter save the text and then
+        // move the line — two PATCHes in flight. SWR drops the result of the older one, and the newer
+        // response may predate the text save on the server, so taking the whole row would wipe the text.
+        populateCache: (updated, current = []) =>
+          current.map((item) => {
+            if (item.id !== id) return item;
+            const fromServer = Object.fromEntries(changedFields.map((field) => [field, updated[field]]));
+            return { ...item, ...fromServer, completed_at: updated.completed_at, updated_at: updated.updated_at };
+          }),
         rollbackOnError: true,
         revalidate: false,
       }

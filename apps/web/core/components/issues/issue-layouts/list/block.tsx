@@ -30,7 +30,6 @@ import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useProject } from "@/hooks/store/use-project";
 import type { TSelectionHelper } from "@/hooks/use-multiple-select";
 import { usePlatformOS } from "@/hooks/use-platform-os";
-import { calculateIdentifierWidth } from "../utils";
 import type { TRenderQuickActions } from "./list-view-types";
 
 interface IssueBlockProps {
@@ -80,7 +79,7 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
   const projectId = routerProjectId?.toString();
   // hooks
   const { sidebarCollapsed: isSidebarCollapsed } = useAppTheme();
-  const { getProjectIdentifierById, currentProjectNextSequenceId } = useProject();
+  const { getProjectIdentifierById } = useProject();
   const {
     getIsIssuePeeked,
     peekIssue,
@@ -154,12 +153,8 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
     }
   };
 
-  // Calculate width for: projectIdentifier + "-" + dynamic sequence number digits
-  // Use next_work_item_sequence from backend (static value from project endpoint)
-  const maxSequenceId = currentProjectNextSequenceId ?? 1;
-  const keyMinWidth = displayProperties?.key
-    ? calculateIdentifierWidth(projectIdentifier?.length ?? 0, maxSequenceId)
-    : 0;
+  // Pespo: o ID do item não é exibido (ver IssueIdentifier), então não reserva largura pra ele.
+  const keyMinWidth = 0;
 
   const workItemLink = generateWorkItemLink({
     workspaceSlug,
