@@ -154,7 +154,6 @@ extended-sidebar-item.tsx,helper.tsx,help-section/root.tsx}`,
   transacional (convite, redefinição de senha, notificações etc.) traduzidos pra pt-BR, incluindo as
   linhas de assunto geradas em Python.
 
-
 ---
 
 ## Atualização para o preview (2026-09-23)
@@ -186,11 +185,11 @@ Correções feitas depois do merge:
   - **Segunda correção no mesmo patch (2026-09-24): opções dos dropdowns não aceitavam clique.** O
     `Combobox.Options` é "modal" por padrão no Headless UI v2 e marca com `inert` tudo que não seja o
     input, o botão ou a lista (`useInertOthers`). Como o Plane põe o campo de busca (`Combobox.Input`)
-    *dentro* da lista, o laço que sobe a partir do input marcava como `inert` a `<div>` irmã que contém as
+    _dentro_ da lista, o laço que sobe a partir do input marcava como `inert` a `<div>` irmã que contém as
     opções — elas apareciam, mas o clique caía no container (só o teclado funcionava). Sintoma relatado:
     "não consigo alterar o status, nem na criação nem no dropdown"; afetava todos os dropdowns com busca
     (estado, prioridade, responsáveis, etiquetas, ciclo, módulo…). O patch agora também pula nós que
-    estão *dentro* de um elemento permitido (`hooks/use-inert-others.js`, `headlessui.dev.cjs`,
+    estão _dentro_ de um elemento permitido (`hooks/use-inert-others.js`, `headlessui.dev.cjs`,
     `headlessui.prod.cjs`). Verificado no navegador (Playwright): mudar estado/prioridade no item e
     escolher o estado no formulário de criação. **Ao atualizar o Headless UI, testar abrir um dropdown de
     estado e clicar numa opção.** Pra editar o patch: `pnpm patch @headlessui/react@2.2.10`, editar e
@@ -248,6 +247,33 @@ Correções feitas depois do merge:
 9. **Conferir visualmente** as áreas da seção 3 acima (planos/billing, active cycles, sidebar) e os
    dropdowns (patch do Headless UI), e procurar texto em inglês novo (varredura de `JsxText`).
 10. Só depois de tudo isso, atualizar o `docker compose` de produção e redeployar.
+
+---
+
+## Correções de segurança do upstream trazidas por cherry-pick (2026-10-20)
+
+O `upstream/preview` estava 133 commits à frente, e no meio deles veio a reestruturação **#9884** (remove
+`apps/web/core/` — tudo foi pra `apps/web/{components,store,hooks}`) e a **#9719** (achata o pacote do
+editor). Um merge de teste deu **480 conflitos, todos no frontend** (a varredura de tradução + os widgets
+da Pespo × a mudança de pastas), e nenhum no `apps/api`. Por isso o merge completo foi adiado e só as
+correções de segurança do backend vieram, por `git cherry-pick -x` (a mensagem de cada commit cita o hash
+original):
+
+- 38 dos 41 commits `fix(security)` que tocam só `apps/api` e não têm migration (escopo por projeto/URL em
+  histórico, comentários, módulos/ciclos, favoritos, busca, exportação, assets, API v1, OAuth state,
+  cookies `Secure`, campos de sistema só-leitura etc.).
+- `c23728e769` (#9899) — o histórico do item sem `activity_type` dava 500 (ordenava objetos como dict); o
+  teste novo do #10051 expôs o bug, que já existia aqui.
+- **Ficaram de fora** (dependem de commits não-segurança do upstream): `9dc9a013a0` #10048 (campos de
+  sistema só-leitura), `77ec6e72be` #10053 (e-mail em tempo linear), `63c35fd6c6` #10059 (throttle de
+  auth). Também os que mexem em frontend/deps/migrations (#10032, #10057, bumps do Trivy, Caddy 2.11.7 do
+  proxy próprio do Plane — que nós não usamos).
+- Suíte do backend: 1101 passaram; `test_list_relational_order_by_injection_does_not_500` falha só com
+  `-n 4` (passa em série) — instabilidade de teste paralelo, não bug.
+- **Próximo merge completo:** quando fizer, o git vai reconhecer esses commits (mesmo conteúdo); o grosso do
+  trabalho é reaplicar as customizações de frontend nos caminhos novos (`apps/web/components/...`). As
+  migrations `0123`–`0125` do upstream vão precisar de uma migration de merge com a nossa cadeia (que
+  termina em `0133`) — como a `0129_merge_pespo_preview`.
 
 ---
 
@@ -323,7 +349,7 @@ a cada 10 min, e a visão `/calendar` com eventos do Google por cima), mas não 
 Nesta leva ela foi corrigida e ampliada:
 
 - **Bugs corrigidos:**
-  - Desconectar fazia *soft delete* da conexão: os tokens ficavam no banco e **reconectar falhava sempre**
+  - Desconectar fazia _soft delete_ da conexão: os tokens ficavam no banco e **reconectar falhava sempre**
     (`IntegrityError` no OneToOne do usuário). Agora apaga de verdade; a migration `0131` limpa as
     linhas antigas e o callback revive uma conexão que tenha ficado soft-deleted.
   - Eventos que saíam da agenda (tarefa concluída, sem data) também eram soft-deleted e bloqueavam a
