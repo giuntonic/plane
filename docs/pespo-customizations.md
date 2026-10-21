@@ -250,6 +250,29 @@ Correções feitas depois do merge:
 
 ---
 
+## OAuth do Google separado: login × integrações (2026-10-21)
+
+- **Por quê:** login, Google Calendar e Google Drive usavam o mesmo OAuth client ("Plane Calendar Sync"),
+  do tipo **Interno** — só contas `@pespo.com.br` entravam pelo Google; convidados com Gmail levavam
+  `403: org_internal`. O client não pode simplesmente virar Externo: o escopo do Drive é _restrito_ (exige
+  verificação do Google ou limita a 100 usuários de teste).
+- **Como ficou:** o login usa `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` (o que o god-mode edita em
+  Autenticação → Google) e pode ser um app **Externo** só com `openid email profile`. Calendar e Drive usam
+  `GOOGLE_INTEGRATIONS_CLIENT_ID`/`GOOGLE_INTEGRATIONS_CLIENT_SECRET` (o app **Interno** de antes) — pelo
+  `get_google_integration_credentials()` em `utils/google_calendar.py`, que vale pro OAuth
+  (`provider/oauth/google_calendar.py`, herdado pelo do Drive) e pro refresh/revoke dos tokens. Sem as
+  chaves próprias, cai no client do login.
+- **Migração:** `license/migrations/0007_google_integrations_client.py` copia o client que já existia pras
+  chaves novas (o segredo vai criptografado, como está). Os tokens de quem já conectou Calendar/Drive foram
+  emitidos pra esse client e continuam renovando — ninguém precisa reconectar.
+- As chaves novas **não aparecem no god-mode** (são editadas pelo banco/`.env`: `GOOGLE_INTEGRATIONS_*`).
+- Testes: `tests/unit/utils/test_google_calendar.py` (`TestGoogleIntegrationCredentials`) e
+  `tests/unit/test_google_integrations_client_migration.py`.
+- **Risco de upgrade:** baixo. Se o upstream mexer em `provider/oauth/google.py` não afeta; o
+  `provider/oauth/google_calendar.py` é nosso.
+
+---
+
 ## Correções de segurança do upstream trazidas por cherry-pick (2026-10-20)
 
 O `upstream/preview` estava 133 commits à frente, e no meio deles veio a reestruturação **#9884** (remove

@@ -200,7 +200,7 @@ class TestGoogleDrivePersonalConnection:
                 "plane.app.views.user.google_drive.GoogleDriveOAuthProvider.get_auth_url", return_value="https://g/auth"
             ),
             mock.patch(
-                "plane.authentication.provider.oauth.google_calendar.get_configuration_value",
+                "plane.authentication.provider.oauth.google_calendar.get_google_integration_credentials",
                 return_value=("id", "secret"),
             ),
         ):

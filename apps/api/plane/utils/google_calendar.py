@@ -38,14 +38,25 @@ class SyncTokenExpired(Exception):
     and a full listing is needed to get a new one."""
 
 
-def _get_client_credentials():
-    (client_id, client_secret) = get_configuration_value(
+def get_google_integration_credentials():
+    """Pespo: o OAuth client das integrações (Google Calendar e Google Drive). É separado do client do
+    login (GOOGLE_CLIENT_ID), que pode ser um app "Externo" pra aceitar contas fora do Workspace, enquanto
+    este continua "Interno" (o escopo do Drive é restrito). Os tokens já emitidos pertencem a este client,
+    então é ele que faz o refresh/revoke. Sem as chaves próprias configuradas, cai no client do login."""
+    (client_id, client_secret, login_client_id, login_client_secret) = get_configuration_value(
         [
+            {"key": "GOOGLE_INTEGRATIONS_CLIENT_ID", "default": os.environ.get("GOOGLE_INTEGRATIONS_CLIENT_ID")},
+            {
+                "key": "GOOGLE_INTEGRATIONS_CLIENT_SECRET",
+                "default": os.environ.get("GOOGLE_INTEGRATIONS_CLIENT_SECRET"),
+            },
             {"key": "GOOGLE_CLIENT_ID", "default": os.environ.get("GOOGLE_CLIENT_ID")},
             {"key": "GOOGLE_CLIENT_SECRET", "default": os.environ.get("GOOGLE_CLIENT_SECRET")},
         ]
     )
-    return client_id, client_secret
+    if client_id and client_secret:
+        return client_id, client_secret
+    return login_client_id, login_client_secret
 
 
 def get_valid_access_token(connection):
@@ -54,7 +65,7 @@ def get_valid_access_token(connection):
     if connection.token_expires_at and connection.token_expires_at > timezone.now() + timedelta(seconds=60):
         return connection.access_token
 
-    client_id, client_secret = _get_client_credentials()
+    client_id, client_secret = get_google_integration_credentials()
     response = requests.post(
         TOKEN_URL,
         data={

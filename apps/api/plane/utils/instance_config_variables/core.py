@@ -54,6 +54,19 @@ google_config_variables = [
         "category": "GOOGLE",
         "is_encrypted": True,
     },
+    # Pespo: OAuth client das integrações (Calendar/Drive), separado do client do login. Vazio = usa o do login.
+    {
+        "key": "GOOGLE_INTEGRATIONS_CLIENT_ID",
+        "value": os.environ.get("GOOGLE_INTEGRATIONS_CLIENT_ID"),
+        "category": "GOOGLE",
+        "is_encrypted": False,
+    },
+    {
+        "key": "GOOGLE_INTEGRATIONS_CLIENT_SECRET",
+        "value": os.environ.get("GOOGLE_INTEGRATIONS_CLIENT_SECRET"),
+        "category": "GOOGLE",
+        "is_encrypted": True,
+    },
     {
         "key": "ENABLE_GOOGLE_SYNC",
         "value": os.environ.get("ENABLE_GOOGLE_SYNC", "0"),

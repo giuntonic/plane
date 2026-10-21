@@ -3,12 +3,11 @@
 # See the LICENSE file for details.
 
 # Python imports
-import os
 from urllib.parse import urlencode
 
 # Module imports
 from plane.authentication.adapter.oauth import OauthAdapter
-from plane.license.utils.instance_value import get_configuration_value
+from plane.utils.google_calendar import get_google_integration_credentials
 from plane.authentication.adapter.error import (
     AUTHENTICATION_ERROR_CODES,
     AuthenticationException,
@@ -29,12 +28,7 @@ class GoogleCalendarOAuthProvider(OauthAdapter):
     callback_path = "/api/users/me/google-calendar/callback/"
 
     def __init__(self, request, code=None, state=None):
-        (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET) = get_configuration_value(
-            [
-                {"key": "GOOGLE_CLIENT_ID", "default": os.environ.get("GOOGLE_CLIENT_ID")},
-                {"key": "GOOGLE_CLIENT_SECRET", "default": os.environ.get("GOOGLE_CLIENT_SECRET")},
-            ]
-        )
+        (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET) = get_google_integration_credentials()
 
         if not (GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET):
             raise AuthenticationException(

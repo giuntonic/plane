@@ -109,3 +109,52 @@ class TestHttpHelpers:
         with mock.patch.object(gcal.requests, "get", return_value=mock.Mock(status_code=410)):
             with pytest.raises(gcal.SyncTokenExpired):
                 gcal.list_changed_events("tok", "cal", "old")
+
+
+@pytest.mark.unit
+class TestGoogleIntegrationCredentials:
+    """Pespo: Calendar/Drive use their own OAuth client, separate from the login one."""
+
+    def _config(self, values):
+        def fake(keys):
+            return tuple(values.get(item["key"]) for item in keys)
+
+        return mock.patch.object(gcal, "get_configuration_value", side_effect=fake)
+
+    def test_uses_integration_client_when_configured(self):
+        with self._config(
+            {
+                "GOOGLE_INTEGRATIONS_CLIENT_ID": "internal-id",
+                "GOOGLE_INTEGRATIONS_CLIENT_SECRET": "internal-secret",
+                "GOOGLE_CLIENT_ID": "login-id",
+                "GOOGLE_CLIENT_SECRET": "login-secret",
+            }
+        ):
+            assert gcal.get_google_integration_credentials() == ("internal-id", "internal-secret")
+
+    @pytest.mark.parametrize(
+        "integration",
+        [{}, {"GOOGLE_INTEGRATIONS_CLIENT_ID": "internal-id"}, {"GOOGLE_INTEGRATIONS_CLIENT_SECRET": "s"}],
+    )
+    def test_falls_back_to_login_client_when_incomplete(self, integration):
+        with self._config({**integration, "GOOGLE_CLIENT_ID": "login-id", "GOOGLE_CLIENT_SECRET": "login-secret"}):
+            assert gcal.get_google_integration_credentials() == ("login-id", "login-secret")
+
+    def test_token_refresh_uses_integration_client(self):
+        connection = mock.Mock(token_expires_at=None, refresh_token="refresh")
+        response = mock.Mock(status_code=200)
+        response.json.return_value = {"access_token": "new", "expires_in": 3600}
+        with (
+            self._config(
+                {
+                    "GOOGLE_INTEGRATIONS_CLIENT_ID": "internal-id",
+                    "GOOGLE_INTEGRATIONS_CLIENT_SECRET": "internal-secret",
+                    "GOOGLE_CLIENT_ID": "login-id",
+                    "GOOGLE_CLIENT_SECRET": "login-secret",
+                }
+            ),
+            mock.patch.object(gcal.requests, "post", return_value=response) as post,
+        ):
+            gcal.get_valid_access_token(connection)
+        data = post.call_args.kwargs["data"]
+        assert (data["client_id"], data["client_secret"]) == ("internal-id", "internal-secret")
