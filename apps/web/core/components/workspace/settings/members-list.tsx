@@ -61,6 +61,7 @@ export const WorkspaceMembersList = observer(function WorkspaceMembersList(props
   const filteredMemberIds = workspaceSlug ? getFilteredWorkspaceMemberIds(workspaceSlug.toString()) : [];
   const searchedMemberIds = searchQuery ? getSearchedWorkspaceMemberIds(searchQuery) : filteredMemberIds;
   const searchedInvitationsIds = getSearchedWorkspaceInvitationIds(searchQuery);
+  // sort() em vez de toSorted(): o lib do TS do web é anterior ao ES2023, e o map() já devolve um array novo.
   const memberDetails = searchedMemberIds
     ?.map((memberId) => getWorkspaceMemberDetails(memberId))
     .toSorted((a, b) => {
