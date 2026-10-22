@@ -293,6 +293,11 @@ original):
   proxy próprio do Plane — que nós não usamos).
 - Suíte do backend: 1101 passaram; `test_list_relational_order_by_injection_does_not_500` falha só com
   `-n 4` (passa em série) — instabilidade de teste paralelo, não bug.
+- **2026-10-22 (auditoria da VPS, item P1):** mais três que tinham escapado por não terem
+  "(security)" no título ou por mexerem também no frontend: `e30605d419` #9335 (limite de tentativas
+  no login e no cadastro por e-mail/senha), `c2b0ecd424` #9709 (recusa `next_path` do tipo
+  `//outro-site` depois do login; a parte do web só entra no próximo build do web) e `bae037cfb2`
+  #9866 (o project-join só procura o convite do próprio projeto). Suíte do backend: 1129 passaram.
 - **Próximo merge completo:** quando fizer, o git vai reconhecer esses commits (mesmo conteúdo); o grosso do
   trabalho é reaplicar as customizações de frontend nos caminhos novos (`apps/web/components/...`). As
   migrations `0123`–`0125` do upstream vão precisar de uma migration de merge com a nossa cadeia (que
