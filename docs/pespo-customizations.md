@@ -305,6 +305,18 @@ original):
 
 ---
 
+## Selects do widget de dashboard mostram a opção escolhida (2026-10-22)
+
+- **Bug (auditoria P12):** no modal de adicionar/editar widget dos dashboards nativos, "Agrupar itens de
+  trabalho por" e "Dividir por" apareciam vazios. Só abrindo a lista dava para ver o ✓ da opção salva. O
+  `SelectXAxis` (do Analytics) mostra no botão só o que recebe em `label`; a tela de Analytics do
+  upstream passa esse `label`, mas o nosso `widget-config-form-modal.tsx` não passava.
+- **Correção:** `getAxisLabel()` no próprio modal (nome traduzido via `ANALYTICS_X_AXIS_I18N_KEYS`;
+  "Nenhum" em cinza quando "Dividir por" está vazio). O componente do upstream não foi alterado.
+- Vai para produção no próximo build do web (onda 2 da auditoria, junto com P8 e P9).
+
+---
+
 ## ID do item escondido + ordem manual por padrão (2026-10-20)
 
 - **ID do item (PROJ-123) não aparece mais na interface.** Ele continua existindo por baixo: URLs

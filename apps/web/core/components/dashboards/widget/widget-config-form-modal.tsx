@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 // plane package imports
 import { i18nInstance, useTranslation } from "@plane/i18n";
-import { ANALYTICS_X_AXIS_VALUES } from "@plane/constants";
+import { ANALYTICS_X_AXIS_I18N_KEYS, ANALYTICS_X_AXIS_VALUES } from "@plane/constants";
 import { Button } from "@plane/propel/button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { Input, ModalCore } from "@plane/ui";
@@ -66,6 +66,14 @@ export function WidgetConfigFormModal(props: Props) {
   }, [data, isOpen, reset]);
 
   const onClose = () => handleClose();
+
+  // O SelectXAxis só mostra no botão o que recebe em `label`; sem ele o botão fica vazio
+  // e não dá para ver a opção escolhida sem abrir a lista.
+  const getAxisLabel = (value: ChartXAxisProperty | null | undefined) => {
+    if (!value) return <span className="text-secondary">{t("chart_axis.no_value")}</span>;
+    const i18nKey = ANALYTICS_X_AXIS_I18N_KEYS[value];
+    return i18nKey ? t(i18nKey) : (X_AXIS_OPTIONS.find((option) => option.value === value)?.label ?? value);
+  };
 
   const handleFormSubmit = async (formData: TDashboardWidgetCreatePayload) => {
     try {
@@ -141,7 +149,12 @@ export function WidgetConfigFormModal(props: Props) {
                 control={control}
                 name="x_axis"
                 render={({ field: { value, onChange } }) => (
-                  <SelectXAxis value={value ?? undefined} onChange={(val) => onChange(val)} options={X_AXIS_OPTIONS} />
+                  <SelectXAxis
+                    value={value ?? undefined}
+                    onChange={(val) => onChange(val)}
+                    options={X_AXIS_OPTIONS}
+                    label={getAxisLabel(value)}
+                  />
                 )}
               />
             </div>
@@ -158,6 +171,7 @@ export function WidgetConfigFormModal(props: Props) {
                     value={value ?? undefined}
                     onChange={(val) => onChange(val)}
                     options={X_AXIS_OPTIONS}
+                    label={getAxisLabel(value)}
                     allowNoValue
                   />
                 )}
