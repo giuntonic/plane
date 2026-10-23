@@ -2248,5 +2248,6 @@
     "fixes": "Bug fixes",
     "badge_aria": "Pespo Hub version {version}: see what's new",
     "see_all": "See what's new and bug fixes"
-  }
+  },
+  "work_item_copy_name": "{name} (copy)"
 }

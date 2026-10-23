@@ -9,6 +9,7 @@ import { omit } from "lodash-es";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import { ARCHIVABLE_STATE_GROUPS, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import type { TIssue } from "@plane/types";
 import { EIssuesStoreType } from "@plane/types";
@@ -71,7 +72,7 @@ export const ProjectIssueQuickActions = observer(function ProjectIssueQuickActio
   const duplicateIssuePayload = omit(
     {
       ...issue,
-      name: `${issue.name} (copy)`,
+      name: i18nInstance.t("work_item_copy_name", { name: issue.name }),
       sourceIssueId: issue.id,
     },
     ["id"]

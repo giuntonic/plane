@@ -8,6 +8,7 @@ import React, { useRef, useState } from "react";
 import { omit } from "lodash-es";
 import { observer } from "mobx-react";
 import { SquareStackIcon } from "lucide-react";
+import { i18nInstance } from "@plane/i18n";
 import { CopyIcon, EditIcon, TrashIcon } from "@plane/propel/icons";
 // plane utils
 import { Tooltip } from "@plane/propel/tooltip";
@@ -54,7 +55,7 @@ export const DraftIssueBlock = observer(function DraftIssueBlock(props: Props) {
   const duplicateIssuePayload = omit(
     {
       ...issue,
-      name: `${issue.name} (copy)`,
+      name: i18nInstance.t("work_item_copy_name", { name: issue.name }),
       is_draft: true,
     },
     ["id"]
@@ -180,10 +181,12 @@ export const DraftIssueBlock = observer(function DraftIssueBlock(props: Props) {
             <DraftIssueProperties
               className={`relative flex flex-wrap ${isSidebarCollapsed ? "md:flex-shrink-0 md:flex-grow" : "lg:flex-shrink-0 lg:flex-grow"} items-center gap-2 whitespace-nowrap`}
               issue={issue}
-              updateIssue={async (projectId, issueId, data) => {
-                await updateIssue(workspaceSlug, issueId, data);
+              updateIssue={async (_projectId, draftIssueId, data) => {
+                await updateIssue(workspaceSlug, draftIssueId, data);
               }}
             />
+            {/* Only keeps the menu's clicks from opening the draft; the menu button handles the keyboard. */}
+            {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions */}
             <div
               className={cn("hidden", {
                 "md:flex": isSidebarCollapsed,

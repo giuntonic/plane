@@ -181,7 +181,12 @@ from .issue.google_drive import (
     IssueGoogleDriveImportEndpoint,
 )
 
-from .issue.checklist import IssueChecklistItemEndpoint, IssueChecklistItemDetailEndpoint
+from .issue.checklist import (
+    IssueChecklistItemEndpoint,
+    IssueChecklistItemDetailEndpoint,
+    ProjectChecklistProgressEndpoint,
+)
+from .issue.structure import IssueCopyStructureEndpoint, IssueChecklistItemConvertEndpoint
 
 from .issue.relation import IssueRelationViewSet
 

@@ -449,6 +449,16 @@
     "collapse": "Recolher",
     "drag": "Arraste para reordenar",
     "hint": "Enter: nova linha · Tab: recuar · Shift+Tab: tirar o recuo · Alt+↑/↓: mover",
-    "save_error": "Não foi possível salvar a subtarefa"
+    "save_error": "Não foi possível salvar a subtarefa",
+    "convert": "Transformar em item de trabalho",
+    "convert_sub_item": "Sub-item deste item",
+    "convert_standalone": "Item solto no projeto",
+    "converted": "“{name}” virou item de trabalho",
+    "convert_error": "Não foi possível transformar a subtarefa em item de trabalho",
+    "open": "Abrir"
+  },
+  "work_item_structure": {
+    "copy_error_title": "Cópia criada sem as subtarefas",
+    "copy_error": "O item de trabalho foi criado, mas não deu para copiar as subtarefas e os sub-itens."
   }
 }

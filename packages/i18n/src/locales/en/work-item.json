@@ -449,6 +449,16 @@
     "collapse": "Collapse",
     "drag": "Drag to reorder",
     "hint": "Enter: new line · Tab: indent · Shift+Tab: outdent · Alt+↑/↓: move",
-    "save_error": "Couldn't save the subtask"
+    "save_error": "Couldn't save the subtask",
+    "convert": "Turn into work item",
+    "convert_sub_item": "Sub-work item of this one",
+    "convert_standalone": "Standalone work item",
+    "converted": "“{name}” is now a work item",
+    "convert_error": "Could not turn the sub-task into a work item",
+    "open": "Open"
+  },
+  "work_item_structure": {
+    "copy_error_title": "Copy created without its sub-tasks",
+    "copy_error": "The work item was created, but its sub-tasks and sub-work items could not be copied."
   }
 }

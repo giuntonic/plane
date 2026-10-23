@@ -18,6 +18,9 @@ from plane.app.views import (
     IssueGoogleDriveImportEndpoint,
     IssueChecklistItemEndpoint,
     IssueChecklistItemDetailEndpoint,
+    IssueChecklistItemConvertEndpoint,
+    IssueCopyStructureEndpoint,
+    ProjectChecklistProgressEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -179,6 +182,22 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklist-items/<uuid:pk>/",
         IssueChecklistItemDetailEndpoint.as_view(),
         name="project-issue-checklist-item-detail",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklist-items/<uuid:pk>/convert/",
+        IssueChecklistItemConvertEndpoint.as_view(),
+        name="project-issue-checklist-item-convert",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/checklist-progress/",
+        ProjectChecklistProgressEndpoint.as_view(),
+        name="project-checklist-progress",
+    ),
+    # Pespo: cópia do item com subtarefas, links e sub-itens
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/copy-structure/",
+        IssueCopyStructureEndpoint.as_view(),
+        name="project-issue-copy-structure",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/",

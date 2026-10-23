@@ -4,18 +4,19 @@
  * See the LICENSE file for details.
  */
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { observer } from "mobx-react";
+import { useSWRConfig } from "swr";
 // plane imports
 import { useTranslation } from "@plane/i18n";
-import type { TIssueServiceType } from "@plane/types";
+import type { TIssueChecklistProgress, TIssueServiceType } from "@plane/types";
 import { Collapsible, CollapsibleButton } from "@plane/ui";
 import { countCompletedChecklistItems } from "@plane/utils";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // local imports
 import { IssueChecklistCollapsibleContent } from "./content";
-import { useIssueChecklistItems } from "./helper";
+import { getChecklistProgressKey, patchChecklistProgress, useIssueChecklistItems } from "./helper";
 import { IssueChecklistActionButton } from "./quick-action-button";
 
 type Props = {
@@ -32,9 +33,21 @@ export const ChecklistCollapsible = observer(function ChecklistCollapsible(props
   const { workspaceSlug, projectId, issueId, disabled = false, issueServiceType } = props;
   const { t } = useTranslation();
   const { openWidgets, toggleOpenWidget } = useIssueDetail(issueServiceType);
-  const { data: items = [] } = useIssueChecklistItems(workspaceSlug, projectId, issueId);
+  const { data } = useIssueChecklistItems(workspaceSlug, projectId, issueId);
+  const items = useMemo(() => data ?? [], [data]);
   const isCollapsibleOpen = openWidgets.includes("checklist");
   const completed = countCompletedChecklistItems(items);
+  const { mutate } = useSWRConfig();
+
+  // Pespo: o "3/5" do card acompanha o checklist enquanto ele é editado aqui.
+  useEffect(() => {
+    if (!data) return;
+    void mutate(
+      getChecklistProgressKey(projectId),
+      (current?: TIssueChecklistProgress) => patchChecklistProgress(current, issueId, completed, data.length),
+      { revalidate: false }
+    );
+  }, [data, completed, issueId, projectId, mutate]);
 
   const indicatorElement = useMemo(
     () => (

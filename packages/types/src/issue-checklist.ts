@@ -27,3 +27,15 @@ export type TIssueChecklistItem = {
 export type TIssueChecklistItemPayload = Partial<
   Pick<TIssueChecklistItem, "parent" | "name" | "is_completed" | "assignee" | "due_date" | "sort_order">
 >;
+
+/** …/checklist-items/<id>/convert/: the work item the line became. */
+export type TIssueChecklistConvertResponse = {
+  id: string;
+  project_id: string;
+  sequence_id: number;
+  name: string;
+  parent_id: string | null;
+};
+
+/** …/projects/<id>/checklist-progress/: only work items with at least one line. */
+export type TIssueChecklistProgress = Record<string, { done: number; total: number }>;

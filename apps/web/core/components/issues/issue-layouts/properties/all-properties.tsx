@@ -10,7 +10,7 @@ import { xor } from "lodash-es";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // icons
-import { Paperclip } from "lucide-react";
+import { ListChecks, Paperclip } from "lucide-react";
 // i18n
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, StartDatePropertyIcon, ViewsIcon, DueDatePropertyIcon } from "@plane/propel/icons";
@@ -42,6 +42,7 @@ import { useProjectState } from "@/hooks/store/use-project-state";
 import { useAppRouter } from "@/hooks/use-app-router";
 import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
 import { usePlatformOS } from "@/hooks/use-platform-os";
+import { useChecklistProgress } from "@/components/issues/issue-detail-widgets/checklist/helper";
 // local components
 import { IssuePropertyLabels } from "./labels";
 import { WithDisplayPropertiesHOC } from "./with-display-properties-HOC";
@@ -82,6 +83,9 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
   // derived values
   const stateDetails = getStateById(issue.state_id);
   const subIssueCount = issue?.sub_issues_count ?? 0;
+  // Pespo: progresso das subtarefas (checklist), aparece junto com a contagem de sub-itens.
+  const { data: checklistProgress } = useChecklistProgress(workspaceSlug?.toString(), issue.project_id ?? undefined);
+  const checklist = checklistProgress?.[issue.id];
 
   const issueOperations = useMemo(
     () => ({
@@ -433,6 +437,34 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
             >
               <ViewsIcon className="h-3 w-3 flex-shrink-0" strokeWidth={2} />
               <div className="text-caption-sm-regular">{subIssueCount}</div>
+            </div>
+          </Tooltip>
+        </WithDisplayPropertiesHOC>
+      )}
+
+      {/* Pespo: subtarefas (checklist) */}
+      {!isEpic && checklist && (
+        <WithDisplayPropertiesHOC
+          displayProperties={displayProperties}
+          displayPropertyKey="sub_issue_count"
+          shouldRenderProperty={(properties) => !!properties.sub_issue_count}
+        >
+          <Tooltip
+            tooltipHeading={t("issue_checklist.title")}
+            tooltipContent={`${checklist.done}/${checklist.total}`}
+            isMobile={isMobile}
+            renderByDefault={false}
+          >
+            <div
+              className={cn(
+                "flex h-5 flex-shrink-0 items-center justify-center gap-1.5 overflow-hidden rounded-sm border-[0.5px] border-strong px-2 py-1",
+                { "border-success-strong text-success-primary": checklist.done === checklist.total }
+              )}
+            >
+              <ListChecks className="h-3 w-3 flex-shrink-0" strokeWidth={2} />
+              <div className="text-caption-sm-regular">
+                {checklist.done}/{checklist.total}
+              </div>
             </div>
           </Tooltip>
         </WithDisplayPropertiesHOC>

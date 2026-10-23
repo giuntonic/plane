@@ -7,7 +7,7 @@
 import useSWR from "swr";
 // plane imports
 import { useTranslation } from "@plane/i18n";
-import type { TIssueChecklistItem, TIssueChecklistItemPayload } from "@plane/types";
+import type { TIssueChecklistItem, TIssueChecklistItemPayload, TIssueChecklistProgress } from "@plane/types";
 // components
 import type { TChecklistTreeOperations } from "@/components/checklist-tree";
 import { useChecklistTreeOperations } from "@/components/checklist-tree";
@@ -15,6 +15,29 @@ import { useChecklistTreeOperations } from "@/components/checklist-tree";
 import { issueChecklistService } from "@/services/issue-checklist.service";
 
 export const getIssueChecklistKey = (issueId: string) => `ISSUE_CHECKLIST_ITEMS_${issueId}`;
+export const getChecklistProgressKey = (projectId: string) => `PROJECT_CHECKLIST_PROGRESS_${projectId}`;
+
+/** Pespo: "3/5" dos cards da lista e do quadro. Uma requisição por projeto, compartilhada por todos os cards. */
+export const useChecklistProgress = (workspaceSlug: string | undefined, projectId: string | undefined) =>
+  useSWR(
+    workspaceSlug && projectId ? getChecklistProgressKey(projectId) : null,
+    () => issueChecklistService.progress(workspaceSlug as string, projectId as string),
+    { revalidateOnFocus: false, dedupingInterval: 60_000 }
+  );
+
+/** Leva a contagem do checklist aberto para o card do item, sem esperar a próxima busca. */
+export const patchChecklistProgress = (
+  current: TIssueChecklistProgress | undefined,
+  issueId: string,
+  done: number,
+  total: number
+): TIssueChecklistProgress | undefined => {
+  if (!current) return current;
+  const next = { ...current };
+  if (total === 0) delete next[issueId];
+  else next[issueId] = { done, total };
+  return next;
+};
 
 // ---------- data + operations ----------
 
