@@ -12,50 +12,39 @@ import { attachClosestEdge, extractClosestEdge } from "@atlaskit/pragmatic-drag-
 import { observer } from "mobx-react";
 import { Check, ChevronRight, GripVertical, Plus, Trash2 } from "lucide-react";
 // plane imports
-import { useTranslation } from "@plane/i18n";
 import { Tooltip } from "@plane/propel/tooltip";
-import type { TIssueChecklistItem } from "@plane/types";
 import { DropIndicator } from "@plane/ui";
-import {
-  cn,
-  countCompletedChecklistItems,
-  getChecklistChildren,
-  getChecklistSubtreeIds,
-  getDate,
-  renderFormattedPayloadDate,
-} from "@plane/utils";
-// components
-import { DateDropdown } from "@/components/dropdowns/date";
-import { MemberDropdown } from "@/components/dropdowns/member/dropdown";
+import { cn, countCompletedChecklistItems, getChecklistChildren, getChecklistSubtreeIds } from "@plane/utils";
 // local imports
-import { useChecklistContext } from "./context";
+import { useChecklistTreeContext } from "./context";
+import type { TChecklistTreeNode } from "./types";
 
 const SAVE_DEBOUNCE_MS = 700;
 const DRAG_TYPE = "pespo-checklist-item";
 
-type TDragData = { type: typeof DRAG_TYPE; id: string; issueId: string };
+type TDragData = { type: typeof DRAG_TYPE; id: string; scopeId: string };
 
 const isDragData = (data: Record<string | symbol, unknown>): data is TDragData => data.type === DRAG_TYPE;
 
 type Props = {
-  item: TIssueChecklistItem;
+  item: TChecklistTreeNode;
 };
 
-export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(props: Props) {
+export const ChecklistTreeItem = observer(function ChecklistTreeItem(props: Props) {
   const { item } = props;
-  const { t } = useTranslation();
   const {
-    issueId,
-    projectId,
+    scopeId,
     disabled,
     operations,
+    labels,
+    renderItemExtras,
     visibleOrder,
     collapsedIds,
     toggleCollapsed,
     registerInput,
     focusItem,
     consumePendingFocus,
-  } = useChecklistContext();
+  } = useChecklistTreeContext();
   // refs
   const rowRef = useRef<HTMLDivElement | null>(null);
   const handleRef = useRef<HTMLButtonElement | null>(null);
@@ -70,8 +59,6 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
   const children = getChecklistChildren(operations.items, item.id);
   const hasChildren = children.length > 0;
   const isCollapsed = collapsedIds.has(item.id);
-  const dueDate = getDate(item.due_date);
-  const isOverdue = !!dueDate && !item.is_completed && dueDate < new Date(new Date().toDateString());
 
   // keep the text in sync with the server while the line isn't being edited
   useEffect(() => {
@@ -114,12 +101,12 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
     []
   );
 
-  // drag and drop (handle on the left, drop above/below any line of the same work item)
+  // drag and drop (handle on the left, drop above/below any line of the same list)
   useEffect(() => {
     const element = rowRef.current;
     const dragHandle = handleRef.current;
     if (!element || !dragHandle || disabled) return;
-    const data: TDragData = { type: DRAG_TYPE, id: item.id, issueId };
+    const data: TDragData = { type: DRAG_TYPE, id: item.id, scopeId };
     return combine(
       draggable({
         element,
@@ -132,7 +119,7 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
         element,
         canDrop: ({ source }) =>
           isDragData(source.data) &&
-          source.data.issueId === issueId &&
+          source.data.scopeId === scopeId &&
           !getChecklistSubtreeIds(operations.items, source.data.id).has(item.id),
         getData: ({ input, element: target }) =>
           attachClosestEdge(data, { input, element: target, allowedEdges: ["top", "bottom"] }),
@@ -146,7 +133,7 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
         },
       })
     );
-  }, [disabled, issueId, item.id, operations]);
+  }, [disabled, scopeId, item.id, operations]);
 
   const focusNeighbour = (offset: -1 | 1, caret: "start" | "end") => {
     const index = visibleOrder.indexOf(item.id);
@@ -211,7 +198,7 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
         )}
       >
         {/* drag handle */}
-        <Tooltip tooltipContent={t("issue_checklist.drag")} disabled={disabled}>
+        <Tooltip tooltipContent={labels.drag} disabled={disabled}>
           <button
             ref={handleRef}
             type="button"
@@ -220,7 +207,7 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
               "mt-0.5 grid size-5 flex-shrink-0 cursor-grab place-items-center rounded-sm text-placeholder opacity-0 group-hover/checklist-row:opacity-100",
               { hidden: disabled }
             )}
-            aria-label={t("issue_checklist.drag")}
+            aria-label={labels.drag}
           >
             <GripVertical className="size-3.5" />
           </button>
@@ -233,34 +220,32 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
             invisible: !hasChildren,
           })}
           onClick={() => toggleCollapsed(item.id)}
-          aria-label={isCollapsed ? t("issue_checklist.expand") : t("issue_checklist.collapse")}
+          aria-label={isCollapsed ? labels.expand : labels.collapse}
         >
           <ChevronRight className={cn("size-3.5 transition-transform", { "rotate-90": !isCollapsed })} />
         </button>
         {/* checkbox */}
-        <button
-          type="button"
-          role="checkbox"
-          aria-checked={item.is_completed}
-          disabled={disabled}
-          onClick={() => void operations.update(item.id, { is_completed: !item.is_completed })}
-          className={cn(
-            "mt-1 grid size-4 flex-shrink-0 place-items-center rounded-sm border border-strong transition-colors",
-            {
-              "border-accent-strong bg-accent-primary text-on-color": item.is_completed,
-              "hover:border-accent-strong": !item.is_completed && !disabled,
-            }
-          )}
-        >
-          {item.is_completed && <Check className="size-3" strokeWidth={3} />}
-        </button>
+        <span className="relative mt-1 grid size-4 flex-shrink-0 place-items-center">
+          <input
+            type="checkbox"
+            checked={item.is_completed}
+            disabled={disabled}
+            aria-label={draft || labels.placeholder}
+            onChange={() => void operations.update(item.id, { is_completed: !item.is_completed })}
+            className={cn(
+              "size-4 cursor-pointer appearance-none rounded-sm border border-strong transition-colors checked:border-accent-strong checked:bg-accent-primary disabled:cursor-default",
+              { "hover:border-accent-strong": !item.is_completed && !disabled }
+            )}
+          />
+          {item.is_completed && <Check className="pointer-events-none absolute size-3 text-on-color" strokeWidth={3} />}
+        </span>
         {/* text */}
         <textarea
           ref={inputRef}
           rows={1}
           value={draft}
           readOnly={disabled}
-          placeholder={t("issue_checklist.placeholder")}
+          placeholder={labels.placeholder}
           onChange={(event) => {
             const { value } = event.target;
             setDraft(value);
@@ -284,45 +269,11 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
             {countCompletedChecklistItems(children)}/{children.length}
           </span>
         )}
-        {/* assignee and due date: always visible when set, on hover otherwise */}
-        <div
-          className={cn("flex flex-shrink-0 items-center", {
-            "opacity-0 group-hover/checklist-row:opacity-100 focus-within:opacity-100": !item.assignee,
-            hidden: disabled && !item.assignee,
-          })}
-        >
-          <MemberDropdown
-            projectId={projectId}
-            value={item.assignee}
-            onChange={(assignee) => void operations.update(item.id, { assignee })}
-            multiple={false}
-            disabled={disabled}
-            buttonVariant="transparent-without-text"
-            placeholder={t("issue_checklist.assignee")}
-            showTooltip
-          />
-        </div>
-        <div
-          className={cn("flex flex-shrink-0 items-center", {
-            "opacity-0 group-hover/checklist-row:opacity-100 focus-within:opacity-100": !item.due_date,
-            hidden: disabled && !item.due_date,
-          })}
-        >
-          <DateDropdown
-            value={item.due_date}
-            onChange={(date) => void operations.update(item.id, { due_date: renderFormattedPayloadDate(date) ?? null })}
-            disabled={disabled}
-            buttonVariant={item.due_date ? "transparent-with-text" : "transparent-without-text"}
-            buttonClassName={cn({ "text-danger-primary": isOverdue })}
-            placeholder={t("issue_checklist.due_date")}
-            isClearable
-            showTooltip
-          />
-        </div>
+        {renderItemExtras?.(item)}
         {/* add to sublist / delete */}
         {!disabled && (
           <div className="flex flex-shrink-0 items-center opacity-0 group-hover/checklist-row:opacity-100 focus-within:opacity-100">
-            <Tooltip tooltipContent={t("issue_checklist.add_child")}>
+            <Tooltip tooltipContent={labels.addChild}>
               <button
                 type="button"
                 tabIndex={-1}
@@ -335,7 +286,7 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
                 <Plus className="size-3.5" />
               </button>
             </Tooltip>
-            <Tooltip tooltipContent={t("issue_checklist.delete")}>
+            <Tooltip tooltipContent={labels.delete}>
               <button
                 type="button"
                 tabIndex={-1}
@@ -353,7 +304,7 @@ export const IssueChecklistItemRow = observer(function IssueChecklistItemRow(pro
       {hasChildren && !isCollapsed && (
         <ul className="ml-[2.375rem] border-l border-subtle pl-1">
           {children.map((child) => (
-            <IssueChecklistItemRow key={child.id} item={child} />
+            <ChecklistTreeItem key={child.id} item={child} />
           ))}
         </ul>
       )}

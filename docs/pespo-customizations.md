@@ -250,6 +250,77 @@ Correções feitas depois do merge:
 
 ---
 
+## Home: grade redimensionável, subtarefas nas Tarefas, links de item e Agenda (2026-10-23)
+
+- **Grade:** a home passou de 2 colunas em 800 px para **4 colunas em até 1200 px**. Cada widget guarda
+  a largura (1 a 4 colunas) e a altura (px, ou automática) no `config` da `WorkspaceHomePreference`,
+  que já existia; o serializer passou a expor e validar o campo (objeto, até 2.000 caracteres), sem
+  migration. No cartão:
+  - **Alça no canto inferior direito:** arrastar muda o tamanho; a largura encaixa em colunas e a altura
+    anda de 20 em 20 px; duplo clique volta para a altura automática.
+  - **Menu "⋯" no topo:** largura, altura automática e "Tirar da página inicial".
+  - **Bloco "Adicionar widget"** no fim da grade devolve os widgets tirados (o modal "Gerenciar widgets"
+    continua igual).
+  - A conta de tamanho é pura, em `packages/utils/src/home-widgets.ts` (com testes). Arquivos:
+    `home-dashboard-widgets.tsx` (`HOME_WIDGETS_LIST` ganhou `defaultWidth` e `hideForGuests`;
+    `useAvailableHomeWidgetKeys`), `widgets/dashboard-block.tsx`, `widgets/add-widget-menu.tsx` e
+    `updateWidgetConfig` na store da home.
+  - Um widget novo entra no **fim** da home de quem já tem a home montada (antes entrava com 999 e
+    podia cair no topo).
+- **Tarefas com subtarefas:** `WorkspaceUserTask` ganhou `parent` e `sort_order` (migration `0134`); o
+  título pode ficar vazio enquanto a linha é digitada; apagar é definitivo e leva as subtarefas junto.
+  - A árvore do checklist dos itens virou um componente compartilhado, `components/checklist-tree/`
+    (lista, linha, contexto e `useChecklistTreeOperations`). O checklist do item usa ele, e o
+    responsável e o prazo entram por `renderItemExtras` (`checklist/extras.tsx`). O widget Tarefas usa
+    o mesmo componente, com o mesmo teclado (Enter, Tab, Shift+Tab, Alt+↑/↓) e o arrastar.
+  - A store MobX das tarefas (`store/workspace/task.store.ts`) saiu. O checkbox da linha virou
+    `<input type="checkbox">`.
+- **Bug corrigido nas duas listas (texto da linha sumindo ao recuar):** o Tab grava o texto e o recuo em
+  dois PATCHes seguidos.
+  - **Servidor:** o segundo PATCH carregava a linha antes do primeiro terminar e regravava a linha
+    inteira, apagando o texto. O `SaveOnlySentFieldsMixin` (`app/serializers/partial_update.py`) faz o
+    update gravar só os campos enviados; está nos serializers do checklist e das tarefas.
+  - **Navegador:** o `optimisticData` do SWR calcula a segunda mudança a partir do estado anterior à
+    primeira e descarta o resultado mais antigo, então o texto sumia da tela. As escritas no cache
+    viraram funções síncronas sobre o que está na tela, e as requisições de uma mesma linha saem em
+    fila.
+  - O 805782a tinha tentado corrigir o mesmo sintoma copiando só os campos alterados da resposta; a
+    corrida continuava. Testes: `test_two_patches_at_once_keep_both_fields` (tarefas e checklist).
+- **Links rápidos com item de trabalho:** `WorkspaceUserLink.issue` (FK, migration `0134`).
+  - **Formulário:** escolhe entre "Site" e "Item de trabalho". O item é buscado em todos os projetos pela
+    busca do workspace, com as mesmas regras de convidado.
+  - **Servidor:** valida o item (mesmo workspace e visível para a pessoa), monta a URL e devolve o
+    `issue_detail` com nome e estado atuais. É `null` se o item foi apagado ou a pessoa perdeu acesso,
+    e o link aparece como "Item indisponível".
+  - **Clique:** abre o item no painel lateral. O `LinkItemBlock` (`packages/ui`) ganhou `icon`,
+    `subtitle` e `muted`, e a área clicável virou um `<button>`, que agora funciona pelo teclado.
+    `updateLink` da store passou a guardar a resposta do servidor.
+- **Widget Agenda (Google Calendar):** chave `google_calendar`.
+  - **Convidados:** pra eles o widget começa desligado e não aparece na lista.
+  - **Conexão:** usa a conexão pessoal com o Google Calendar que já existia. O
+    `users/me/google-calendar/events/` ganhou `calendar_ids` (até 10); sem o parâmetro, vale o de antes.
+  - **O que mostra:** hoje, 3, 7 ou 14 dias. As agendas são escolhidas no próprio widget (padrão: a
+    principal, como `primary`). Tem botão "Entrar" (Meet ou outra videochamada do evento) e destaque
+    "Agora". Eventos que já passaram ficam apagados; recusados e cancelados não aparecem. O item de
+    trabalho vinculado abre no painel. Sem conexão, mostra "Conectar Google Calendar".
+  - A lógica de dias e eventos é pura, em `packages/utils/src/home-agenda.ts`, com testes que rodam em
+    UTC, São Paulo e Tóquio.
+- **i18n:** chaves novas em `home.json` (`home.widget.*`, `home.agenda.*`, `home.quick_links.*` e
+  `home.tasks.*`), só `en` e `pt-BR`, como as outras chaves da Pespo.
+- **Junto, fora do escopo:** em `workspace/settings/members-list.tsx`, o 4af627c só tinha trocado o
+  comentário. O `oxlint --fix` do pre-commit (regra `unicorn/no-array-sort`) troca qualquer `sort()` de
+  volta para `toSorted()`. Virou `sortBy` do lodash, e o `check:types` do web voltou a passar.
+- **Verificado no navegador** (Playwright, com API e web locais): redimensionar, menu do cartão, tirar e
+  devolver widget, Tab/Enter nas Tarefas, link para item de trabalho e Agenda (com os dados do Google
+  simulados).
+- **Deploy:** rebuildar `api` (migration `0134`) e `web`. Nada muda no worker nem no beat.
+- **Risco de upgrade:** médio. A home (`home-dashboard-widgets.tsx`, `dashboard-block.tsx`, `root.tsx`),
+  o checklist (`issue-detail-widgets/checklist/`), `packages/ui/src/link/block.tsx` e `link.store.ts`
+  são pontos que o upstream mexe. A reestruturação #9884 tira tudo de `apps/web/core/`: reaplicar nos
+  caminhos novos.
+
+---
+
 ## OAuth do Google separado: login × integrações (2026-10-21)
 
 - **Por quê:** login, Google Calendar e Google Drive usavam o mesmo OAuth client ("Plane Calendar Sync"),
@@ -478,14 +549,14 @@ Nesta leva ela foi corrigida e ampliada:
      (live) e fica só-leitura nas páginas publicadas.
   3. **Configurações → Perfil → Google Drive** — conectar/desconectar.
 - **Correções depois do primeiro uso em produção (2026-09-24):**
-  - *Anexar pelo painel lateral da tarefa fechava a tarefa sem anexar.* O painel (peek) fecha em
+  - _Anexar pelo painel lateral da tarefa fechava a tarefa sem anexar._ O painel (peek) fecha em
     qualquer `mousedown` fora dele, exceto em modais registrados na store ou em elementos com
     `data-prevent-outside-click`. O seletor do Drive (e os modais do Calendar) não eram nenhum dos
     dois, então clicar no arquivo fechava a tarefa e o seletor sumia junto. `ModalCore`
     (`packages/ui`) ganhou a prop opcional `preventOutsideClick`, que marca o modal inteiro (fundo
     incluso); usada no seletor, no visualizador e no "Agendar reunião". **Qualquer modal novo aberto
     de dentro da tarefa precisa dessa prop.** Verificado no navegador (Playwright).
-  - *"Ative os cookies" no embed.* O preview/editor do Google em iframe precisa de cookies de
+  - _"Ative os cookies" no embed._ O preview/editor do Google em iframe precisa de cookies de
     terceiros, que muitos navegadores bloqueiam. "Visualizar" agora usa uma prévia do próprio Pespo
     Hub: `GET /api/users/me/google-drive/files/<id>/preview/` busca o arquivo com a conexão Drive de
     **quem está vendo** (as permissões do Drive continuam valendo) e devolve Docs/Sheets/Slides em PDF,
@@ -586,6 +657,8 @@ Nesta leva ela foi corrigida e ampliada:
   (feature de monetização já foi removida daqui antes, ver seção 3 acima). Se o merge reescrever
   `home-dashboard-widgets.tsx`, a grade de 2 colunas e o `DashboardWidgetBlock` provavelmente
   precisam ser reaplicados manualmente.
+- **Atualizado em 2026-10-23:** a grade virou 4 colunas redimensionáveis e as Tarefas ganharam
+  subtarefas — ver "Home: grade redimensionável, subtarefas nas Tarefas, links de item e Agenda".
 
 ## Player de vídeo embutido (Clapshot) (2026-08-31)
 

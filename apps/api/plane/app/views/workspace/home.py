@@ -6,7 +6,7 @@
 from ..base import BaseAPIView
 from plane.db.models.workspace import WorkspaceHomePreference
 from plane.app.permissions import allow_permission, ROLE
-from plane.db.models import Workspace
+from plane.db.models import Workspace, WorkspaceMember
 from plane.app.serializers.workspace import WorkspaceHomePreferenceSerializer
 
 # Third party imports
@@ -24,38 +24,42 @@ class WorkspaceHomePreferenceViewSet(BaseAPIView):
     def get(self, request, slug):
         workspace = Workspace.objects.get(slug=slug)
 
-        get_preference = WorkspaceHomePreference.objects.filter(user=request.user, workspace_id=workspace.id)
-
-        create_preference_keys = []
+        existing = WorkspaceHomePreference.objects.filter(user=request.user, workspace_id=workspace.id)
+        existing_keys = set(existing.values_list("key", flat=True))
 
         keys = [
             key
             for key, _ in WorkspaceHomePreference.HomeWidgetKeys.choices
             if key not in ["quick_tutorial", "new_at_plane"]
         ]
+        missing_keys = [key for key in keys if key not in existing_keys]
 
-        sort_order_counter = 1
-
-        for preference in keys:
-            if preference not in get_preference.values_list("key", flat=True):
-                create_preference_keys.append(preference)
-
-                sort_order = 1000 - sort_order_counter
-
-                preference = WorkspaceHomePreference.objects.bulk_create(
-                    [
-                        WorkspaceHomePreference(
-                            key=key,
-                            user=request.user,
-                            workspace=workspace,
-                            sort_order=sort_order,
-                        )
-                        for key in create_preference_keys
-                    ],
-                    batch_size=10,
-                    ignore_conflicts=True,
-                )
-                sort_order_counter += 1
+        if missing_keys:
+            # Pespo: a ordem é decrescente. Na primeira visita os widgets começam em 999,
+            # 998…; um widget novo pra quem já tem a home montada entra no fim da grade.
+            lowest = min(existing.values_list("sort_order", flat=True), default=None)
+            first_sort_order = 1000 if lowest is None else lowest
+            # O widget de agenda depende da conexão com o Google Calendar, que convidados
+            # (clientes) não têm: pra eles começa desligado.
+            is_guest = (
+                WorkspaceMember.objects.filter(
+                    workspace=workspace, member=request.user, is_active=True, role=ROLE.GUEST.value
+                ).exists()
+            )
+            WorkspaceHomePreference.objects.bulk_create(
+                [
+                    WorkspaceHomePreference(
+                        key=key,
+                        user=request.user,
+                        workspace=workspace,
+                        sort_order=first_sort_order - index - 1,
+                        is_enabled=not (is_guest and key == WorkspaceHomePreference.HomeWidgetKeys.GOOGLE_CALENDAR),
+                    )
+                    for index, key in enumerate(missing_keys)
+                ],
+                batch_size=10,
+                ignore_conflicts=True,
+            )
 
         preference = WorkspaceHomePreference.objects.filter(user=request.user, workspace_id=workspace.id)
 

@@ -4,10 +4,11 @@
 
 # Module imports
 from .base import BaseSerializer
+from .partial_update import SaveOnlySentFieldsMixin
 from plane.db.models import IssueChecklistItem
 
 
-class IssueChecklistItemSerializer(BaseSerializer):
+class IssueChecklistItemSerializer(SaveOnlySentFieldsMixin, BaseSerializer):
     class Meta:
         model = IssueChecklistItem
         fields = [

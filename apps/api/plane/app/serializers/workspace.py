@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 # Module imports
 from .base import BaseSerializer, DynamicBaseSerializer
+from .partial_update import SaveOnlySentFieldsMixin
 from .user import UserLiteSerializer, UserAdminLiteSerializer
 
 
@@ -38,6 +39,7 @@ from plane.utils.content_validator import (
 # Django imports
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+import json
 import re
 
 
@@ -186,11 +188,64 @@ class WorkspaceUserPropertiesSerializer(BaseSerializer):
         read_only_fields = ["workspace", "user"]
 
 
+GUEST_ROLE = 5
+
+
+def work_item_link_detail(issue, user_id, project_role):
+    """Pespo: o que a home mostra de um link rápido pra item de trabalho — sempre o
+    nome e o estado atuais do item. None quando o item foi apagado ou quando a pessoa
+    não tem (ou deixou de ter) acesso a ele; ``project_role`` é o papel dela no projeto
+    do item (None = não é membro ativo)."""
+    if issue is None or issue.deleted_at is not None or issue.project.deleted_at is not None:
+        return None
+    if project_role is None:
+        return None
+    if (
+        project_role <= GUEST_ROLE
+        and not issue.project.guest_view_all_features
+        and issue.created_by_id != user_id
+    ):
+        return None
+    return {
+        "id": str(issue.id),
+        "name": issue.name,
+        "sequence_id": issue.sequence_id,
+        "project_id": str(issue.project_id),
+        "project_identifier": issue.project.identifier,
+        "state_group": issue.state.group if issue.state else None,
+        "state_color": issue.state.color if issue.state else None,
+    }
+
+
 class WorkspaceUserLinkSerializer(BaseSerializer):
+    issue_detail = serializers.SerializerMethodField()
+
     class Meta:
         model = WorkspaceUserLink
         fields = "__all__"
-        read_only_fields = ["workspace", "owner"]
+        # O item de um link vem validado pela view (precisa ser do workspace e visível pra pessoa).
+        read_only_fields = ["workspace", "owner", "issue"]
+        extra_kwargs = {"url": {"required": False}}
+
+    def get_issue_detail(self, obj):
+        if not obj.issue_id:
+            return None
+        project_roles = self.context.get("project_roles")
+        if project_roles is not None:
+            project_role = project_roles.get(obj.issue.project_id)
+        else:
+            project_role = (
+                ProjectMember.objects.filter(project_id=obj.issue.project_id, member_id=obj.owner_id, is_active=True)
+                .values_list("role", flat=True)
+                .first()
+            )
+        return work_item_link_detail(obj.issue, obj.owner_id, project_role)
+
+    def validate(self, attrs):
+        # Link pra site externo precisa de URL; o de item de trabalho ganha a URL do item na view.
+        if self.instance is None and not attrs.get("url") and not self.context.get("issue"):
+            raise serializers.ValidationError({"url": ["This field is required."]})
+        return attrs
 
     def to_internal_value(self, data):
         url = data.get("url", "")
@@ -239,11 +294,12 @@ class WorkspaceUserLinkSerializer(BaseSerializer):
         return super().update(instance, validated_data)
 
 
-class WorkspaceUserTaskSerializer(BaseSerializer):
+class WorkspaceUserTaskSerializer(SaveOnlySentFieldsMixin, BaseSerializer):
     class Meta:
         model = WorkspaceUserTask
         fields = "__all__"
-        read_only_fields = ["workspace", "owner"]
+        # O ``parent`` vem validado pela view (tarefa da mesma pessoa, sem ciclo).
+        read_only_fields = ["workspace", "owner", "parent"]
 
 
 class IssueRecentVisitSerializer(serializers.ModelSerializer):
@@ -344,11 +400,23 @@ class WorkspaceRecentVisitSerializer(BaseSerializer):
         return None
 
 
+HOME_WIDGET_CONFIG_MAX_LENGTH = 2000
+
+
 class WorkspaceHomePreferenceSerializer(BaseSerializer):
     class Meta:
         model = WorkspaceHomePreference
-        fields = ["key", "is_enabled", "sort_order"]
+        fields = ["key", "is_enabled", "config", "sort_order"]
         read_only_fields = ["workspace", "created_by", "updated_by"]
+
+    def validate_config(self, value):
+        # Pespo: preferências do widget na home (tamanho na grade, agendas do widget de
+        # agenda…). O frontend manda o objeto inteiro; aqui só garantimos forma e tamanho.
+        if not isinstance(value, dict):
+            raise serializers.ValidationError("config must be an object")
+        if len(json.dumps(value)) > HOME_WIDGET_CONFIG_MAX_LENGTH:
+            raise serializers.ValidationError("config is too large")
+        return value
 
 
 class StickySerializer(BaseSerializer):

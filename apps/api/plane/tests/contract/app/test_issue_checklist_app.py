@@ -10,6 +10,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from plane.app.serializers.issue_checklist import IssueChecklistItemSerializer
 from plane.db.models import Issue, IssueChecklistItem, Project, ProjectMember, State, User, WorkspaceMember
 
 
@@ -113,6 +114,20 @@ class TestIssueChecklistItems:
 
         response = session_client.patch(_detail_url(workspace, project, issue, b["id"]), {"parent": None}, format="json")
         assert response.data["parent"] is None
+
+    def test_two_patches_at_once_keep_both_fields(self, session_client, workspace, project, issue):
+        """Tab manda o texto e o recuo quase juntos; o PATCH do recuo, carregado antes do outro
+        terminar, regravava a linha inteira e apagava o texto."""
+        a = self._create(session_client, workspace, project, issue, name="A")
+        b = self._create(session_client, workspace, project, issue, name="")
+        stale = IssueChecklistItem.objects.get(pk=b["id"])
+        session_client.patch(_detail_url(workspace, project, issue, b["id"]), {"name": "Roteiro"}, format="json")
+        serializer = IssueChecklistItemSerializer(stale, data={"sort_order": 5}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(parent=IssueChecklistItem.objects.get(pk=a["id"]))
+        item = IssueChecklistItem.objects.get(pk=b["id"])
+        assert item.name == "Roteiro"
+        assert str(item.parent_id) == str(a["id"])
 
     def test_cannot_move_into_own_descendant(self, session_client, workspace, project, issue):
         a = self._create(session_client, workspace, project, issue, name="A")

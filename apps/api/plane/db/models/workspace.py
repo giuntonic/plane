@@ -361,6 +361,15 @@ class WorkspaceUserLink(WorkspaceBaseModel):
         on_delete=models.CASCADE,
         related_name="owner_workspace_user_link",
     )
+    # Pespo: link rápido que aponta pra um item de trabalho (em vez de um site externo).
+    # O nome e o estado mostrados na home vêm do item, não de uma cópia guardada aqui.
+    issue = models.ForeignKey(
+        "db.Issue",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="workspace_user_links",
+    )
 
     class Meta:
         verbose_name = "Workspace User Link"
@@ -373,19 +382,26 @@ class WorkspaceUserLink(WorkspaceBaseModel):
 
 
 class WorkspaceUserTask(WorkspaceBaseModel):
-    title = models.CharField(max_length=255)
+    """Pespo: tarefa do widget "Tarefas" da home, privada de cada usuário. As tarefas
+    formam uma árvore (``parent``), como as subtarefas leves dos itens de trabalho; a
+    ordem entre irmãs vem de ``sort_order``. Tarefas apagadas saem de verdade e o
+    ``CASCADE`` do ``parent`` leva as subtarefas junto."""
+
+    title = models.TextField(blank=True, default="")
     is_completed = models.BooleanField(default=False)
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="owner_workspace_user_task",
     )
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, related_name="children")
+    sort_order = models.FloatField(default=65535)
 
     class Meta:
         verbose_name = "Workspace User Task"
         verbose_name_plural = "Workspace User Tasks"
         db_table = "workspace_user_tasks"
-        ordering = ("created_at",)
+        ordering = ("sort_order", "created_at")
 
     def __str__(self):
         return f"{self.workspace.id} {self.title}"
@@ -399,6 +415,7 @@ class WorkspaceHomePreference(BaseModel):
         RECENTS = "recents", "Recents"
         MY_STICKIES = "my_stickies", "My Stickies"
         TASK_LIST = "task_list", "Task List"
+        GOOGLE_CALENDAR = "google_calendar", "Google Calendar"
         NEW_AT_PLANE = "new_at_plane", "New at Plane"
         QUICK_TUTORIAL = "quick_tutorial", "Quick Tutorial"
 

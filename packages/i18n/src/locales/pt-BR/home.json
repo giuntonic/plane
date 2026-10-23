@@ -35,7 +35,17 @@
       "empty": "Salve links para os itens de trabalho que você gostaria de ter à mão.",
       "add": "Adicionar link rápido",
       "title": "Link rápido",
-      "title_plural": "Links rápidos"
+      "title_plural": "Links rápidos",
+      "kind_site": "Site",
+      "kind_work_item": "Item de trabalho",
+      "work_item": "Item de trabalho",
+      "search_work_item": "Busque itens de trabalho em todos os projetos…",
+      "work_item_required": "Escolha um item de trabalho.",
+      "change_work_item": "Escolher outro item",
+      "searching": "Buscando…",
+      "no_work_items": "Nenhum item de trabalho encontrado.",
+      "title_placeholder": "Deixe vazio para usar o nome do item",
+      "work_item_unavailable": "Item indisponível"
     },
     "tasks": {
       "title": "Tarefas",
@@ -46,7 +56,9 @@
         "not_created": "Não foi possível criar a tarefa.",
         "not_updated": "Não foi possível atualizar a tarefa.",
         "not_removed": "Não foi possível remover a tarefa."
-      }
+      },
+      "placeholder": "Escreva uma tarefa…",
+      "add_child": "Adicionar subtarefa"
     },
     "recents": {
       "title": "Recentes",
@@ -71,7 +83,21 @@
     },
     "widget": {
       "reordered_successfully": "Widget reordenado com sucesso.",
-      "reordering_failed": "Ocorreu um erro ao reordenar o widget."
+      "reordering_failed": "Ocorreu um erro ao reordenar o widget.",
+      "width": "Largura",
+      "width_quarter": "1/4",
+      "width_half": "1/2",
+      "width_three_quarters": "3/4",
+      "width_full": "Inteira",
+      "auto_height": "Altura automática",
+      "remove": "Tirar da página inicial",
+      "remove_failed": "Não foi possível tirar o widget.",
+      "resize": "Redimensionar",
+      "resize_hint": "Arraste para redimensionar · clique duas vezes para ajustar a altura",
+      "resize_failed": "Não foi possível salvar o tamanho do widget.",
+      "add": "Adicionar widget",
+      "add_failed": "Não foi possível adicionar o widget.",
+      "options": "Opções do widget"
     },
     "manage_widgets": "Gerenciar widgets",
     "title": "Página inicial",
@@ -83,6 +109,25 @@
       "trial_ends_in_days": "O teste termina em {days, plural, one {# dia} other {# dias}}",
       "start_subscription": "Iniciar assinatura",
       "explore_business_features": "Explorar recursos Business"
+    },
+    "agenda": {
+      "title": "Agenda",
+      "today": "Hoje",
+      "tomorrow": "Amanhã",
+      "days": "{count, plural, one {# dia} many {# dias} other {# dias}}",
+      "now": "Agora",
+      "join": "Entrar",
+      "untitled": "(Sem título)",
+      "not_connected": "Conecte seu Google Calendar para ver aqui suas reuniões e compromissos.",
+      "connect": "Conectar Google Calendar",
+      "load_failed": "Não foi possível carregar a agenda.",
+      "retry": "Tentar de novo",
+      "empty_today": "Nada na agenda hoje.",
+      "empty": "{count, plural, one {Nada na agenda no próximo dia.} many {Nada na agenda nos próximos # dias.} other {Nada na agenda nos próximos # dias.}}",
+      "free_today": "Mais nada hoje",
+      "calendars": "Agendas",
+      "refresh": "Atualizar",
+      "save_failed": "Não foi possível salvar as opções da agenda."
     }
   }
 }

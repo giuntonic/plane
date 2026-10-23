@@ -15,6 +15,7 @@ import type {
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
+import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import type { THomeWidgetKeys, THomeWidgetProps } from "@plane/types";
 // assets
 import darkWidgetsAsset from "@/app/assets/empty-state/dashboard/widgets-dark.webp?url";
@@ -24,9 +25,12 @@ import { SimpleEmptyState } from "@/components/empty-state/simple-empty-state-ro
 // hooks
 import { useHome } from "@/hooks/store/use-home";
 import { useProject } from "@/hooks/store/use-project";
+import { useUserPermissions } from "@/hooks/store/user";
 // local imports
 import { StickiesWidget } from "../stickies/widget";
 import { HomeLoader, NoProjectsEmptyState, RecentActivityWidget } from "./widgets";
+import { AddWidgetMenu } from "./widgets/add-widget-menu";
+import { DashboardAgenda } from "./widgets/agenda";
 import { DashboardWidgetBlock } from "./widgets/dashboard-block";
 import { DashboardQuickLinks } from "./widgets/links";
 import { ManageWidgetsModal } from "./widgets/manage";
@@ -36,40 +40,60 @@ import { DashboardTaskList } from "./widgets/tasks";
 export const HOME_WIDGETS_LIST: {
   [key in THomeWidgetKeys]: {
     component: React.FC<THomeWidgetProps> | null;
-    fullWidth: boolean;
+    /** Pespo: starting width on the 4-column grid (each person can resize it). */
+    defaultWidth: number;
+    /** Pespo: not offered to workspace guests (clients). */
+    hideForGuests?: boolean;
     title: string;
   };
 } = {
   quick_links: {
     component: DashboardQuickLinks,
-    fullWidth: false,
+    defaultWidth: 2,
     title: "home.quick_links.title_plural",
   },
   recents: {
     component: RecentActivityWidget,
-    fullWidth: false,
+    defaultWidth: 2,
     title: "home.recents.title",
   },
   my_stickies: {
     component: StickiesWidget,
-    fullWidth: false,
+    defaultWidth: 2,
     title: "stickies.title",
   },
   task_list: {
     component: DashboardTaskList,
-    fullWidth: false,
+    defaultWidth: 2,
     title: "home.tasks.title",
+  },
+  google_calendar: {
+    component: DashboardAgenda,
+    defaultWidth: 2,
+    hideForGuests: true,
+    title: "home.agenda.title",
   },
   new_at_plane: {
     component: null,
-    fullWidth: false,
+    defaultWidth: 2,
     title: "home.new_at_plane.title",
   },
   quick_tutorial: {
     component: null,
-    fullWidth: false,
+    defaultWidth: 2,
     title: "home.quick_tutorial.title",
   },
+};
+
+/** Pespo: widgets this person can have on the home (with a component, and not guest-only hidden). */
+export const useAvailableHomeWidgetKeys = () => {
+  const { orderedWidgets } = useHome();
+  const { allowPermissions } = useUserPermissions();
+  const isGuest = !allowPermissions([EUserPermissions.ADMIN, EUserPermissions.MEMBER], EUserPermissionsLevel.WORKSPACE);
+  return orderedWidgets.filter((key) => {
+    const widget = HOME_WIDGETS_LIST[key];
+    return !!widget?.component && !(isGuest && widget.hideForGuests);
+  });
 };
 
 export const DashboardWidgets = observer(function DashboardWidgets() {
@@ -80,23 +104,14 @@ export const DashboardWidgets = observer(function DashboardWidgets() {
   // theme hook
   const { resolvedTheme } = useTheme();
   // store hooks
-  const {
-    toggleWidgetSettings,
-    widgetsMap,
-    showWidgetSettings,
-    orderedWidgets,
-    isAnyWidgetEnabled,
-    loading,
-    reorderWidget,
-  } = useHome();
+  const { toggleWidgetSettings, widgetsMap, showWidgetSettings, loading, reorderWidget } = useHome();
   const { loader } = useProject();
   // plane hooks
   const { t } = useTranslation();
   // derived values
   const noWidgetsResolvedPath = resolvedTheme === "light" ? lightWidgetsAsset : darkWidgetsAsset;
-  const enabledWidgets = orderedWidgets.filter(
-    (key) => HOME_WIDGETS_LIST[key]?.component && widgetsMap[key]?.is_enabled
-  );
+  const availableWidgets = useAvailableHomeWidgetKeys();
+  const enabledWidgets = availableWidgets.filter((key) => widgetsMap[key]?.is_enabled);
 
   const handleDrop = (self: DropTargetRecord, source: ElementDragPayload, location: DragLocationHistory) => {
     const dropTargets = location?.current?.dropTargets ?? [];
@@ -135,16 +150,18 @@ export const DashboardWidgets = observer(function DashboardWidgets() {
       />
       {!isWikiApp && <NoProjectsEmptyState />}
 
-      {isAnyWidgetEnabled ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {enabledWidgets.length > 0 ? (
+        <div data-home-grid className="grid grid-cols-1 gap-4 md:grid-flow-row-dense md:grid-cols-4">
           {enabledWidgets.map((key, index) => {
             const WidgetComponent = HOME_WIDGETS_LIST[key]?.component;
             if (!WidgetComponent) return null;
             return (
               <DashboardWidgetBlock
                 key={key}
+                workspaceSlug={workspaceSlug.toString()}
                 widgetKey={key}
-                fullWidth={HOME_WIDGETS_LIST[key]?.fullWidth ?? false}
+                title={t(HOME_WIDGETS_LIST[key].title)}
+                defaultWidth={HOME_WIDGETS_LIST[key].defaultWidth}
                 isLastChild={index === enabledWidgets.length - 1}
                 handleDrop={handleDrop}
               >
@@ -152,14 +169,18 @@ export const DashboardWidgets = observer(function DashboardWidgets() {
               </DashboardWidgetBlock>
             );
           })}
+          <AddWidgetMenu workspaceSlug={workspaceSlug.toString()} availableWidgets={availableWidgets} />
         </div>
       ) : (
-        <div className="grid h-full w-full place-items-center">
+        <div className="grid h-full w-full place-items-center gap-4">
           <SimpleEmptyState
             title={t("home.empty.widgets.title")}
             description={t("home.empty.widgets.description")}
             assetPath={noWidgetsResolvedPath}
           />
+          <div className="w-full max-w-xs">
+            <AddWidgetMenu workspaceSlug={workspaceSlug.toString()} availableWidgets={availableWidgets} />
+          </div>
         </div>
       )}
     </div>

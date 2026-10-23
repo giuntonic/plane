@@ -41,6 +41,7 @@ export const DashboardQuickLinks = observer(function DashboardQuickLinks(props: 
   return (
     <>
       <LinkCreateUpdateModal
+        workspaceSlug={workspaceSlug}
         isModalOpen={isLinkModalOpen}
         handleOnClose={() => toggleLinkModal(false)}
         linkOperations={linkOperations}

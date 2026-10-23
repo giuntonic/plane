@@ -44,7 +44,12 @@ export const ProjectLinkList = observer(function ProjectLinkList(props: TProject
       >
         <div className="mb-2 flex flex-1 flex-wrap gap-2">
           {links.map((linkId) => (
-            <ProjectLinkDetail key={linkId} linkId={linkId} linkOperations={linkOperations} />
+            <ProjectLinkDetail
+              key={linkId}
+              workspaceSlug={workspaceSlug}
+              linkId={linkId}
+              linkOperations={linkOperations}
+            />
           ))}
         </div>
       </ContentOverflowWrapper>

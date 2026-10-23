@@ -35,7 +35,17 @@
       "empty": "Save links to work things that you'd like handy.",
       "add": "Add quick Link",
       "title": "Quicklink",
-      "title_plural": "Quicklinks"
+      "title_plural": "Quicklinks",
+      "kind_site": "Website",
+      "kind_work_item": "Work item",
+      "work_item": "Work item",
+      "search_work_item": "Search work items in every project…",
+      "work_item_required": "Choose a work item.",
+      "change_work_item": "Choose another work item",
+      "searching": "Searching…",
+      "no_work_items": "No work items found.",
+      "title_placeholder": "Leave empty to use the work item name",
+      "work_item_unavailable": "Work item unavailable"
     },
     "tasks": {
       "title": "Tasks",
@@ -46,7 +56,9 @@
         "not_created": "Task could not be created.",
         "not_updated": "Task could not be updated.",
         "not_removed": "Task could not be removed."
-      }
+      },
+      "placeholder": "Write a task…",
+      "add_child": "Add a sub-task"
     },
     "recents": {
       "title": "Recents",
@@ -71,7 +83,21 @@
     },
     "widget": {
       "reordered_successfully": "Widget reordered successfully.",
-      "reordering_failed": "Error occurred while reordering widget."
+      "reordering_failed": "Error occurred while reordering widget.",
+      "width": "Width",
+      "width_quarter": "1/4",
+      "width_half": "1/2",
+      "width_three_quarters": "3/4",
+      "width_full": "Full width",
+      "auto_height": "Fit height to content",
+      "remove": "Remove from home",
+      "remove_failed": "Couldn't remove the widget.",
+      "resize": "Resize",
+      "resize_hint": "Drag to resize · double-click to fit the height",
+      "resize_failed": "Couldn't save the widget size.",
+      "add": "Add widget",
+      "add_failed": "Couldn't add the widget.",
+      "options": "Widget options"
     },
     "manage_widgets": "Manage widgets",
     "title": "Home",
@@ -83,6 +109,25 @@
       "trial_ends_in_days": "Trial ends in {days, plural, one {# day} other {# days}}",
       "start_subscription": "Start subscription",
       "explore_business_features": "Explore Business features"
+    },
+    "agenda": {
+      "title": "Agenda",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "days": "{count, plural, one {# day} other {# days}}",
+      "now": "Now",
+      "join": "Join",
+      "untitled": "(No title)",
+      "not_connected": "Connect your Google Calendar to see your meetings and appointments here.",
+      "connect": "Connect Google Calendar",
+      "load_failed": "Couldn't load your agenda.",
+      "retry": "Try again",
+      "empty_today": "Nothing on your calendar today.",
+      "empty": "{count, plural, one {Nothing on your calendar in the next day.} other {Nothing on your calendar in the next # days.}}",
+      "free_today": "Nothing else today",
+      "calendars": "Calendars",
+      "refresh": "Refresh",
+      "save_failed": "Couldn't save the agenda settings."
     }
   }
 }

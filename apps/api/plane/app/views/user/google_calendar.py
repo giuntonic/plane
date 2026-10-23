@@ -311,10 +311,21 @@ def _attach_plane_issues(user, events):
     return events
 
 
+MAX_EVENT_CALENDARS = 10
+
+
 class GoogleCalendarEventsEndpoint(BaseAPIView):
     def get(self, request):
         connection = _get_connection(request.user)
-        if not connection or not connection.overlay_calendar_ids:
+        # Pespo: o widget de agenda da home escolhe as próprias agendas (``calendar_ids``,
+        # separadas por vírgula; "primary" = agenda principal). Sem o parâmetro valem as
+        # agendas sobrepostas na visão /calendar, como antes.
+        requested = request.GET.get("calendar_ids")
+        if requested is not None:
+            calendar_ids = [value.strip() for value in requested.split(",") if value.strip()][:MAX_EVENT_CALENDARS]
+        else:
+            calendar_ids = connection.overlay_calendar_ids if connection else []
+        if not connection or not calendar_ids:
             return Response([], status=status.HTTP_200_OK)
 
         time_min = request.GET.get("after")
@@ -329,7 +340,7 @@ class GoogleCalendarEventsEndpoint(BaseAPIView):
             return Response({"error": "Failed to refresh Google token"}, status=status.HTTP_502_BAD_GATEWAY)
 
         events = []
-        for calendar_id in connection.overlay_calendar_ids:
+        for calendar_id in calendar_ids:
             try:
                 for event in gcal.list_events(access_token, calendar_id, time_min, time_max):
                     event["calendar_id"] = calendar_id

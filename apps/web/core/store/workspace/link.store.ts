@@ -116,6 +116,10 @@ export class WorkspaceLinkStore implements IWorkspaceLinkStore {
     });
 
     const response = await this.workspaceService.updateWorkspaceLink(workspaceSlug, linkId, data);
+    // Pespo: the server rebuilds the URL and the work item details when a link changes target
+    runInAction(() => {
+      set(this.linkMap, linkId, response);
+    });
     return response;
   };
 

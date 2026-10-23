@@ -20,6 +20,8 @@ export * from "./file";
 export * from "./filter";
 export * from "./get-icon-for-link";
 export * from "./google-drive";
+export * from "./home-agenda";
+export * from "./home-widgets";
 export * from "./issue-checklist";
 export * from "./intake";
 export * from "./loader";
