@@ -122,6 +122,11 @@ export const coreRoutes: RouteConfigEntry[] = [
           ),
         ]),
 
+        // Release notes - Pespo
+        layout("./(all)/[workspaceSlug]/(projects)/whats-new/layout.tsx", [
+          route(":workspaceSlug/whats-new", "./(all)/[workspaceSlug]/(projects)/whats-new/page.tsx"),
+        ]),
+
         // Stickies
         layout("./(all)/[workspaceSlug]/(projects)/stickies/layout.tsx", [
           route(":workspaceSlug/stickies", "./(all)/[workspaceSlug]/(projects)/stickies/page.tsx"),

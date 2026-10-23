@@ -2238,5 +2238,15 @@
     "something_went_wrong_please_try_again": "Something went wrong. Please try again.",
     "user_account_deactivated_please_contact_contact": "User account deactivated. Please contact {contact}.",
     "administrator": "administrator"
+  },
+  "release_notes": {
+    "title": "What's new",
+    "description": "New features and bug fixes in every Pespo Hub version.",
+    "version": "v{version}",
+    "current": "Current version",
+    "features": "New",
+    "fixes": "Bug fixes",
+    "badge_aria": "Pespo Hub version {version}: see what's new",
+    "see_all": "See what's new and bug fixes"
   }
 }
