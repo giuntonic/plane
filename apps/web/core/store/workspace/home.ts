@@ -7,14 +7,12 @@
 import { orderBy, clone, set } from "lodash-es";
 import { action, computed, makeObservable, observable, runInAction } from "mobx";
 // plane imports
-import type { THomeWidgetKeys, TWidgetEntityData } from "@plane/types";
+import type { THomeWidgetConfig, THomeWidgetKeys, TWidgetEntityData } from "@plane/types";
 // plane web services
 import { WorkspaceService } from "@/services/workspace.service";
 // store
 import type { IWorkspaceLinkStore } from "./link.store";
 import { WorkspaceLinkStore } from "./link.store";
-import type { IWorkspaceTaskStore } from "./task.store";
-import { WorkspaceTaskStore } from "./task.store";
 
 export interface IHomeStore {
   // observables
@@ -27,7 +25,6 @@ export interface IHomeStore {
   orderedWidgets: THomeWidgetKeys[];
   //stores
   quickLinks: IWorkspaceLinkStore;
-  tasks: IWorkspaceTaskStore;
   // actions
   toggleWidgetSettings: (value?: boolean) => void;
   fetchWidgets: (workspaceSlug: string) => Promise<void>;
@@ -37,7 +34,9 @@ export interface IHomeStore {
     destinationId: string,
     edge: string | undefined
   ) => Promise<void>;
-  toggleWidget: (workspaceSlug: string, widgetKey: string, is_enabled: boolean) => void;
+  toggleWidget: (workspaceSlug: string, widgetKey: string, is_enabled: boolean) => Promise<void>;
+  /** Pespo: replaces the widget's config (size on the grid, widget options). Optimistic. */
+  updateWidgetConfig: (workspaceSlug: string, widgetKey: string, config: THomeWidgetConfig) => Promise<void>;
 }
 
 export class HomeStore implements IHomeStore {
@@ -48,7 +47,6 @@ export class HomeStore implements IHomeStore {
   widgets: THomeWidgetKeys[] = [];
   // stores
   quickLinks: IWorkspaceLinkStore;
-  tasks: IWorkspaceTaskStore;
   // services
   workspaceService: WorkspaceService;
 
@@ -67,13 +65,13 @@ export class HomeStore implements IHomeStore {
       fetchWidgets: action,
       reorderWidget: action,
       toggleWidget: action,
+      updateWidgetConfig: action,
     });
     // services
     this.workspaceService = new WorkspaceService();
 
     // stores
     this.quickLinks = new WorkspaceLinkStore();
-    this.tasks = new WorkspaceTaskStore();
   }
 
   get isAnyWidgetEnabled() {
@@ -116,6 +114,22 @@ export class HomeStore implements IHomeStore {
       });
     } catch (error) {
       console.error("Failed to toggle widget");
+      throw error;
+    }
+  };
+
+  updateWidgetConfig = async (workspaceSlug: string, widgetKey: string, config: THomeWidgetConfig) => {
+    const configBeforeUpdate = clone(this.widgetsMap[widgetKey]?.config);
+    runInAction(() => {
+      set(this.widgetsMap, [widgetKey, "config"], config);
+    });
+    try {
+      await this.workspaceService.updateWorkspaceWidget(workspaceSlug, widgetKey, { config });
+    } catch (error) {
+      console.error("Failed to update widget config");
+      runInAction(() => {
+        set(this.widgetsMap, [widgetKey, "config"], configBeforeUpdate);
+      });
       throw error;
     }
   };

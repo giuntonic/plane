@@ -327,8 +327,10 @@ export class UserService extends APIService {
       });
   }
 
-  async googleCalendarEvents(after: string, before: string): Promise<TGoogleCalendarEvent[]> {
-    return this.get("/api/users/me/google-calendar/events/", { params: { after, before } })
+  /** Pespo: `calendarIds` picks the calendars (the home agenda widget); without it, the /calendar overlay ones. */
+  async googleCalendarEvents(after: string, before: string, calendarIds?: string[]): Promise<TGoogleCalendarEvent[]> {
+    const params = calendarIds ? { after, before, calendar_ids: calendarIds.join(",") } : { after, before };
+    return this.get("/api/users/me/google-calendar/events/", { params })
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;

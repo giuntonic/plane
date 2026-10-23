@@ -5,16 +5,20 @@
  */
 
 import { createContext, useContext } from "react";
+import type { ReactNode } from "react";
 // local imports
-import type { TChecklistOperations } from "./helper";
+import type { TChecklistTreeLabels, TChecklistTreeNode, TChecklistTreeOperations } from "./types";
 
 export type TCaretPosition = "start" | "end";
 
-export type TChecklistContext = {
-  issueId: string;
-  projectId: string;
+export type TChecklistTreeContext = {
+  /** Drag and drop only moves lines inside the same list (a work item, the home "Tarefas" widget…). */
+  scopeId: string;
   disabled: boolean;
-  operations: TChecklistOperations;
+  operations: TChecklistTreeOperations;
+  labels: TChecklistTreeLabels;
+  /** Extra controls shown on each line, before the "add to sublist / delete" buttons (assignee, due date…). */
+  renderItemExtras?: (item: TChecklistTreeNode) => ReactNode;
   /** Lines in reading order, without the children of collapsed lines (for ↑/↓ and Backspace). */
   visibleOrder: string[];
   collapsedIds: Set<string>;
@@ -26,7 +30,7 @@ export type TChecklistContext = {
   consumePendingFocus: (id: string) => TCaretPosition | undefined;
 };
 
-/** A line created from outside the list (the "Subtarefa" action button) takes focus as soon as it mounts. */
+/** A line created from outside the list (an action button) takes focus as soon as it mounts. */
 let externalPendingFocusId: string | null = null;
 export const queueChecklistFocus = (id: string) => {
   externalPendingFocusId = id;
@@ -37,10 +41,10 @@ export const consumeExternalChecklistFocus = (id: string) => {
   return true;
 };
 
-export const ChecklistContext = createContext<TChecklistContext | null>(null);
+export const ChecklistTreeContext = createContext<TChecklistTreeContext | null>(null);
 
-export const useChecklistContext = () => {
-  const context = useContext(ChecklistContext);
-  if (!context) throw new Error("useChecklistContext must be used inside ChecklistContext");
+export const useChecklistTreeContext = () => {
+  const context = useContext(ChecklistTreeContext);
+  if (!context) throw new Error("useChecklistTreeContext must be used inside ChecklistTreeContext");
   return context;
 };

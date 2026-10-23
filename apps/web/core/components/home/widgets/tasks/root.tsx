@@ -4,82 +4,85 @@
  * See the LICENSE file for details.
  */
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { observer } from "mobx-react";
-import useSWR from "swr";
 // plane imports
 import { useTranslation } from "@plane/i18n";
-import type { THomeWidgetProps } from "@plane/types";
-// hooks
-import { useHome } from "@/hooks/store/use-home";
-// local imports
-import { TaskItem } from "./task-item";
-import { useTasks } from "./use-tasks";
+import type { THomeWidgetProps, TTask } from "@plane/types";
+import { countCompletedChecklistItems } from "@plane/utils";
+// components
+import type { TChecklistTreeLabels, TChecklistTreeNode, TChecklistTreeNodePayload } from "@/components/checklist-tree";
+import { ChecklistTreeList, useChecklistTreeOperations } from "@/components/checklist-tree";
+// services
+import { WorkspaceService } from "@/services/workspace.service";
 
+const workspaceService = new WorkspaceService();
+
+/** The task list is drawn by the same tree as the work item checklist; only the text field has another name. */
+const toNode = (task: TTask): TChecklistTreeNode => ({
+  id: task.id,
+  parent: task.parent,
+  name: task.title,
+  is_completed: task.is_completed,
+  sort_order: task.sort_order,
+  created_at: task.created_at,
+});
+
+const toPayload = ({ name, ...rest }: TChecklistTreeNodePayload): Partial<TTask> =>
+  name === undefined ? rest : { ...rest, title: name };
+
+export const getHomeTasksKey = (workspaceSlug: string) => `HOME_TASKS_${workspaceSlug}`;
+
+// Pespo: widget "Tarefas" da home — lista privada de cada pessoa, com subtarefas (Tab recua, Enter cria a próxima).
 export const DashboardTaskList = observer(function DashboardTaskList(props: THomeWidgetProps) {
   const { workspaceSlug } = props;
-  const [title, setTitle] = useState("");
-  const { taskOperations, fetchTasks } = useTasks(workspaceSlug);
-  const {
-    tasks: { getTasksByWorkspaceId, getTaskById },
-  } = useHome();
   const { t } = useTranslation();
 
-  useSWR(
-    workspaceSlug ? `HOME_TASKS_${workspaceSlug}` : null,
-    workspaceSlug ? () => fetchTasks(workspaceSlug.toString()) : null,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
+  const operations = useChecklistTreeOperations<TChecklistTreeNode, TChecklistTreeNodePayload>({
+    key: workspaceSlug ? getHomeTasksKey(workspaceSlug) : null,
+    list: async () => (await workspaceService.fetchWorkspaceTasks(workspaceSlug)).map(toNode),
+    create: async (payload) => toNode(await workspaceService.createWorkspaceTask(workspaceSlug, toPayload(payload))),
+    update: async (id, payload) =>
+      toNode(await workspaceService.updateWorkspaceTask(workspaceSlug, id, toPayload(payload))),
+    remove: (id) => workspaceService.deleteWorkspaceTask(workspaceSlug, id),
+    errorMessage: t("home.tasks.toasts.not_updated"),
+  });
+
+  const labels: TChecklistTreeLabels = useMemo(
+    () => ({
+      placeholder: t("home.tasks.placeholder"),
+      addLine: t("home.tasks.add"),
+      addChild: t("home.tasks.add_child"),
+      delete: t("home.tasks.remove"),
+      expand: t("issue_checklist.expand"),
+      collapse: t("issue_checklist.collapse"),
+      drag: t("issue_checklist.drag"),
+      hint: t("issue_checklist.hint"),
+    }),
+    [t]
   );
 
-  const taskIds = getTasksByWorkspaceId(workspaceSlug) ?? [];
-  const orderedTaskIds = useMemo(
-    () =>
-      [...taskIds].sort((a, b) => {
-        const taskA = getTaskById(a);
-        const taskB = getTaskById(b);
-        if (!taskA || !taskB) return 0;
-        if (taskA.is_completed !== taskB.is_completed) return taskA.is_completed ? 1 : -1;
-        return new Date(taskA.created_at).getTime() - new Date(taskB.created_at).getTime();
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [taskIds]
-  );
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmedTitle = title.trim();
-    if (!trimmedTitle) return;
-    setTitle("");
-    await taskOperations.create({ title: trimmedTitle, is_completed: false });
-  };
+  const total = operations.items.length;
 
   return (
     <div>
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-3 flex items-center justify-between">
         <div className="text-14 font-semibold text-tertiary">{t("home.tasks.title")}</div>
+        {total > 0 && (
+          <span className="text-caption-sm-regular text-tertiary">
+            {countCompletedChecklistItems(operations.items)}/{total}
+          </span>
+        )}
       </div>
-      <form onSubmit={handleSubmit} className="mb-2">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder={t("home.tasks.add")}
-          className="w-full rounded-md border border-subtle bg-surface-2 px-2.5 py-1.5 text-13 text-primary placeholder:text-placeholder focus:border-accent-strong focus:ring-1 focus:ring-accent-strong focus:outline-none"
-        />
-      </form>
-      {orderedTaskIds.length > 0 ? (
-        <div className="flex flex-col">
-          {orderedTaskIds.map((taskId) => (
-            <TaskItem key={taskId} taskId={taskId} taskOperations={taskOperations} />
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-lg bg-layer-1 py-6 text-center text-13 text-placeholder">{t("home.tasks.empty")}</div>
-      )}
+      <ChecklistTreeList
+        scopeId={`home-tasks-${workspaceSlug}`}
+        disabled={false}
+        operations={operations}
+        labels={labels}
+        emptyState={
+          <div className="rounded-lg bg-layer-1 py-6 text-center text-13 text-placeholder">{t("home.tasks.empty")}</div>
+        }
+      />
     </div>
   );
 });

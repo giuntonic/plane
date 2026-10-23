@@ -13,12 +13,14 @@ import { observer } from "mobx-react";
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { useHome } from "@/hooks/store/use-home";
+import { useAvailableHomeWidgetKeys } from "../../home-dashboard-widgets";
 import { WidgetItem } from "./widget-item";
 import type { TargetData } from "./widget.helpers";
 import { getInstructionFromPayload } from "./widget.helpers";
 
 export const WidgetList = observer(function WidgetList({ workspaceSlug }: { workspaceSlug: string }) {
-  const { orderedWidgets, reorderWidget, toggleWidget } = useHome();
+  const { reorderWidget, toggleWidget } = useHome();
+  const orderedWidgets = useAvailableHomeWidgetKeys();
   const { t } = useTranslation();
 
   const handleDrop = (self: DropTargetRecord, source: ElementDragPayload, location: DragLocationHistory) => {
@@ -37,13 +39,13 @@ export const WidgetList = observer(function WidgetList({ workspaceSlug }: { work
     if (!sourceData.id) return;
     if (droppedId) {
       reorderWidget(workspaceSlug, sourceData.id, droppedId, instruction)
-        .then(() => {
+        .then(() =>
           setToast({
             type: TOAST_TYPE.SUCCESS,
             title: t("toast.success"),
             message: t("home.widget.reordered_successfully"),
-          });
-        })
+          })
+        )
         .catch(() => {
           setToast({
             type: TOAST_TYPE.ERROR,

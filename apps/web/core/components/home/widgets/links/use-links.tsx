@@ -7,12 +7,12 @@
 import { useMemo } from "react";
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
-import type { TProjectLink } from "@plane/types";
+import type { TLink } from "@plane/types";
 import { useHome } from "@/hooks/store/use-home";
 
 export type TLinkOperations = {
-  create: (data: Partial<TProjectLink>) => Promise<void>;
-  update: (linkId: string, data: Partial<TProjectLink>) => Promise<void>;
+  create: (data: Partial<TLink>) => Promise<void>;
+  update: (linkId: string, data: Partial<TLink>) => Promise<void>;
   remove: (linkId: string) => Promise<void>;
 };
 export type TProjectLinkRoot = {
@@ -37,7 +37,7 @@ export const useLinks = (workspaceSlug: string) => {
 
   const linkOperations: TLinkOperations = useMemo(
     () => ({
-      create: async (data: Partial<TProjectLink>) => {
+      create: async (data: Partial<TLink>) => {
         try {
           if (!workspaceSlug) throw new Error("Missing required fields");
           await createLink(workspaceSlug, data);
@@ -57,7 +57,7 @@ export const useLinks = (workspaceSlug: string) => {
           throw error;
         }
       },
-      update: async (linkId: string, data: Partial<TProjectLink>) => {
+      update: async (linkId: string, data: Partial<TLink>) => {
         try {
           if (!workspaceSlug) throw new Error("Missing required fields");
           await updateLink(workspaceSlug, linkId, data);
@@ -94,7 +94,7 @@ export const useLinks = (workspaceSlug: string) => {
         }
       },
     }),
-    [workspaceSlug]
+    [workspaceSlug, createLink, updateLink, removeLink, toggleLinkModal, t]
   );
 
   const handleOnClose = () => {
