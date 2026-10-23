@@ -105,6 +105,11 @@ from .workspace.module import WorkspaceModulesEndpoint
 from .workspace.cycle import WorkspaceCyclesEndpoint
 from .workspace.quick_link import QuickLinkViewSet
 from .workspace.task import WorkspaceUserTaskViewSet
+from .workspace.template import (
+    EntityTemplateEndpoint,
+    EntityTemplateDetailEndpoint,
+    EntityTemplateApplyEndpoint,
+)
 from .workspace.sticky import WorkspaceStickyViewSet
 
 from .state.base import StateViewSet, IntakeStateEndpoint

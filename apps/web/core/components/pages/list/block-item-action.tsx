@@ -82,6 +82,7 @@ export const BlockItemAction = observer(function BlockItemAction(props: Props) {
           "open-in-new-tab",
           "copy-link",
           "make-a-copy",
+          "save-as-template",
           "toggle-lock",
           "toggle-access",
           "archive-restore",

@@ -14,7 +14,7 @@ import { observer } from "mobx-react";
 import { useParams, useRouter } from "next/navigation";
 import { createRoot } from "react-dom/client";
 import scrollIntoView from "smooth-scroll-into-view-if-needed";
-import { Settings, Share2, LogOut } from "lucide-react";
+import { Settings, Share2, LogOut, LayoutTemplate } from "lucide-react";
 import { Disclosure, Transition } from "@headlessui/react";
 // plane imports
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
@@ -27,6 +27,7 @@ import { Tooltip } from "@plane/propel/tooltip";
 import { CustomMenu, DropIndicator, DragHandle, ControlLink } from "@plane/ui";
 import { cn } from "@plane/utils";
 // components
+import { openSaveTemplateModal } from "@/components/entity-templates/save-modal-store";
 import { DEFAULT_TAB_KEY, getTabUrl } from "@/components/navigation/tab-navigation-utils";
 import { useTabPreferences } from "@/components/navigation/use-tab-preferences";
 import { LeaveProjectModal } from "@/components/project/leave-project-modal";
@@ -400,6 +401,19 @@ export const SidebarProjectsListItem = observer(function SidebarProjectsListItem
                         <span>{t("copy_link")}</span>
                       </span>
                     </CustomMenu.MenuItem>
+                    {/* Pespo: o projeto (estados, etiquetas, módulos e itens) vira modelo */}
+                    {isAuthorized && (
+                      <CustomMenu.MenuItem
+                        onClick={() =>
+                          openSaveTemplateModal({ kind: "project", sourceId: project.id, sourceName: project.name })
+                        }
+                      >
+                        <div className="flex cursor-pointer items-center justify-start gap-2">
+                          <LayoutTemplate className="h-3.5 w-3.5 stroke-[1.5]" />
+                          <span>{t("entity_templates.save_as_template")}</span>
+                        </div>
+                      </CustomMenu.MenuItem>
+                    )}
                     {isAuthorized && (
                       <CustomMenu.MenuItem
                         onClick={() => {

@@ -23,6 +23,8 @@ import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
 import { useProject } from "@/hooks/store/use-project";
 // plane web imports
 import { CommonProjectBreadcrumbs } from "@/components/breadcrumbs/common";
+import { EntityTemplateSelect } from "@/components/entity-templates/template-select";
+import { entityTemplateService } from "@/services/entity-template.service";
 import { EPageStoreType, usePageStore } from "@/hooks/store";
 
 export const PagesListHeader = observer(function PagesListHeader() {
@@ -61,6 +63,22 @@ export const PagesListHeader = observer(function PagesListHeader() {
       .finally(() => setIsCreatingPage(false));
   };
 
+  // Pespo: página nova a partir de um modelo (o servidor cria com o conteúdo do modelo).
+  const handleCreateFromTemplate = async (templateId: string | null) => {
+    if (!templateId || !workspaceSlug || !projectId) return;
+    setIsCreatingPage(true);
+    try {
+      const res = await entityTemplateService.apply(workspaceSlug.toString(), templateId, {
+        project_id: projectId.toString(),
+      });
+      router.push(`/${workspaceSlug}/projects/${projectId}/pages/${res.page_id}`);
+    } catch {
+      setToast({ type: TOAST_TYPE.ERROR, title: t("toast.error"), message: t("entity_templates.apply_error.page") });
+    } finally {
+      setIsCreatingPage(false);
+    }
+  };
+
   return (
     <Header>
       <Header.LeftItem>
@@ -81,6 +99,15 @@ export const PagesListHeader = observer(function PagesListHeader() {
       </Header.LeftItem>
       {canCurrentUserCreatePage && (
         <Header.RightItem>
+          <EntityTemplateSelect
+            workspaceSlug={workspaceSlug?.toString()}
+            kind="page"
+            projectId={projectId?.toString()}
+            value={null}
+            onChange={(id) => void handleCreateFromTemplate(id)}
+            disabled={isCreatingPage}
+            className="h-8"
+          />
           <Button variant="primary" size="lg" onClick={handleCreatePage} loading={isCreatingPage}>
             {isCreatingPage ? t("common.adding") : t("add_page")}
           </Button>

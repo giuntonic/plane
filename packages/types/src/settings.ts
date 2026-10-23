@@ -17,7 +17,8 @@ export type TProfileSettingsTabs =
   | "google-calendar"
   | "google-drive";
 
-export type TWorkspaceSettingsTabs = "general" | "members" | "export" | "webhooks";
+// Pespo: "templates" = modelos de item, módulo, ciclo, página e projeto.
+export type TWorkspaceSettingsTabs = "general" | "members" | "export" | "webhooks" | "templates";
 export type TWorkspaceSettingsItem = {
   key: TWorkspaceSettingsTabs;
   i18n_label: string;

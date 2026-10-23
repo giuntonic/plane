@@ -329,5 +329,59 @@
         "project": "Nenhum modelo encontrado."
       }
     }
+  },
+  "entity_templates": {
+    "save_as_template": "Salvar como modelo",
+    "save": "Salvar modelo",
+    "saved": "Modelo “{name}” salvo",
+    "save_error": "Não foi possível salvar o modelo",
+    "too_large": "Itens e subtarefas demais para um modelo (o limite é 300).",
+    "save_title": {
+      "work_item": "Salvar item de trabalho como modelo",
+      "module": "Salvar módulo como modelo",
+      "cycle": "Salvar ciclo como modelo",
+      "page": "Salvar página como modelo",
+      "project": "Salvar projeto como modelo"
+    },
+    "save_hint": {
+      "work_item": "Itens criados a partir dele vêm com os mesmos campos, subtarefas, links e sub-itens.",
+      "module": "Módulos criados a partir dele vêm com os mesmos itens, com subtarefas e sub-itens. As datas andam junto com o início do módulo.",
+      "cycle": "Ciclos criados a partir dele vêm com os mesmos itens, com subtarefas e sub-itens. As datas andam junto com o início do ciclo.",
+      "page": "Páginas criadas a partir dele começam com o mesmo conteúdo.",
+      "project": "Projetos criados a partir dele vêm com os mesmos recursos, estados, etiquetas, módulos e itens."
+    },
+    "name_placeholder": "Nome do modelo",
+    "description_placeholder": "Quando usar este modelo (opcional)",
+    "workspace_wide": "Disponível em todos os projetos do workspace (senão, só neste projeto)",
+    "include_work_items": "Incluir os itens de trabalho (sem isso, só recursos, estados, etiquetas e módulos)",
+    "use_template": "Modelo",
+    "no_template": "Sem modelo",
+    "load_error": "Não foi possível carregar o modelo",
+    "apply_error_title": "Criado sem o modelo",
+    "apply_error": {
+      "work_item": "O item de trabalho foi criado, mas não deu para incluir as subtarefas e os sub-itens do modelo.",
+      "module": "O módulo foi criado, mas não deu para incluir os itens do modelo.",
+      "cycle": "O ciclo foi criado, mas não deu para incluir os itens do modelo.",
+      "page": "Não foi possível criar a página a partir do modelo.",
+      "project": "O projeto foi criado, mas não deu para aplicar o modelo."
+    },
+    "edit": "Editar modelo",
+    "make_workspace_wide": "Disponibilizar em todos os projetos",
+    "scope_project": "Um projeto",
+    "scope_workspace": "Todos os projetos",
+    "summary_items": "{count, plural, one {# item} many {# itens} other {# itens}}",
+    "delete_title": "Excluir modelo",
+    "delete_confirmation": "Excluir o modelo “{name}”? O que já foi criado a partir dele continua.",
+    "delete_error": "Não foi possível excluir o modelo",
+    "settings_description": "Modelos de itens de trabalho, módulos, ciclos, páginas e projetos.",
+    "settings_hint": "Para criar, abra o menu ⋯ de um item de trabalho, módulo, ciclo, página ou projeto e escolha “Salvar como modelo”. Ao criar algo novo, escolha o modelo em “Modelo”.",
+    "empty": "Nenhum modelo ainda.",
+    "kind_plural": {
+      "work_item": "Itens de trabalho",
+      "module": "Módulos",
+      "cycle": "Ciclos",
+      "page": "Páginas",
+      "project": "Projetos"
+    }
   }
 }

@@ -38,6 +38,7 @@ import {
 } from "@/components/issues/issue-modal/components";
 // helpers
 // hooks
+import { EntityTemplateSelect } from "@/components/entity-templates/template-select";
 import { useIssueModal } from "@/hooks/context/use-issue-modal";
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useProject } from "@/hooks/store/use-project";
@@ -203,6 +204,7 @@ export const IssueFormRoot = observer(function IssueFormRoot(props: IssueFormPro
         workspaceSlug: workspaceSlug?.toString(),
         reset,
         editorRef,
+        projectId,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,6 +252,7 @@ export const IssueFormRoot = observer(function IssueFormRoot(props: IssueFormPro
             workspaceSlug: workspaceSlug?.toString(),
             reset,
             editorRef,
+            projectId,
           });
         } else {
           reset({
@@ -369,6 +372,17 @@ export const IssueFormRoot = observer(function IssueFormRoot(props: IssueFormPro
                     handleFormChange={handleFormChange}
                   />
                 </div>
+                {/* Pespo: criar a partir de um modelo (não vale para editar nem para cópia). */}
+                {!data?.id && !data?.sourceIssueId && !isDraft && projectId && (
+                  <EntityTemplateSelect
+                    workspaceSlug={workspaceSlug?.toString()}
+                    kind="work_item"
+                    projectId={projectId}
+                    value={workItemTemplateId}
+                    onChange={setWorkItemTemplateId}
+                    disabled={isDisabled}
+                  />
+                )}
               </div>
               {watch("parent_id") && selectedParentIssue && (
                 <div className="pb-4">

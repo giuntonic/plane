@@ -5,13 +5,14 @@
  */
 
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { Controller, useForm } from "react-hook-form";
 // plane imports
 import { ETabIndices } from "@plane/constants";
 // types
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
-import type { ICycle } from "@plane/types";
+import type { ICycle, TModuleCycleTemplatePrefill } from "@plane/types";
 // ui
 import { Input, TextArea } from "@plane/ui";
 import { getDate, renderFormattedPayloadDate, getTabIndex } from "@plane/utils";
@@ -29,6 +30,17 @@ type Props = {
   setActiveProject: (projectId: string) => void;
   data?: ICycle | null;
   isMobile?: boolean;
+  /** Pespo: seletor de modelo ao lado do projeto (só na criação). */
+  templateSlot?: ReactNode;
+  /** Pespo: campos do modelo escolhido; `duration_days` sugere o fim a partir do início já escolhido. */
+  templatePrefill?: Partial<TModuleCycleTemplatePrefill> | null;
+};
+
+const plusDays = (value: string | null | undefined, days: number) => {
+  const date = getDate(value);
+  if (!date) return null;
+  date.setDate(date.getDate() + days);
+  return renderFormattedPayloadDate(date) ?? null;
 };
 
 const defaultValues: Partial<ICycle> = {
@@ -39,7 +51,17 @@ const defaultValues: Partial<ICycle> = {
 };
 
 export function CycleForm(props: Props) {
-  const { handleFormSubmit, handleClose, status, projectId, setActiveProject, data, isMobile = false } = props;
+  const {
+    handleFormSubmit,
+    handleClose,
+    status,
+    projectId,
+    setActiveProject,
+    data,
+    isMobile = false,
+    templateSlot,
+    templatePrefill,
+  } = props;
   // plane hooks
   const { t } = useTranslation();
   // store hooks
@@ -69,6 +91,18 @@ export function CycleForm(props: Props) {
     });
   }, [data, reset]);
 
+  useEffect(() => {
+    if (!templatePrefill) return;
+    reset((current) => ({
+      ...current,
+      name: templatePrefill.name || current.name,
+      description: templatePrefill.description ?? current.description,
+      ...(current.start_date && templatePrefill.duration_days != null
+        ? { end_date: plusDays(current.start_date, templatePrefill.duration_days) }
+        : {}),
+    }));
+  }, [templatePrefill, reset]);
+
   return (
     <form onSubmit={handleSubmit((formData) => handleFormSubmit(formData))}>
       <div className="space-y-5 p-5">
@@ -89,13 +123,14 @@ export function CycleForm(props: Props) {
                     }}
                     multiple={false}
                     buttonVariant="border-with-text"
-                    renderCondition={(projectId) => !!projectsWithCreatePermissions?.[projectId]}
+                    renderCondition={(id) => !!projectsWithCreatePermissions?.[id]}
                     tabIndex={getIndex("cover_image")}
                   />
                 </div>
               )}
             />
           )}
+          {!status && templateSlot}
           <h3 className="text-18 font-medium text-secondary">
             {status ? t("project_cycles.update_cycle") : t("project_cycles.create_cycle")}
           </h3>
@@ -123,6 +158,7 @@ export function CycleForm(props: Props) {
                   onChange={onChange}
                   hasError={Boolean(errors?.name)}
                   tabIndex={getIndex("description")}
+                  // oxlint-disable-next-line jsx_a11y/no-autofocus -- o nome é o primeiro campo do modal
                   autoFocus
                 />
               )}

@@ -322,6 +322,11 @@ export const coreRoutes: RouteConfigEntry[] = [
             ":workspaceSlug/settings/exports",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/exports/page.tsx"
           ),
+          // Pespo: modelos
+          route(
+            ":workspaceSlug/settings/templates",
+            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/templates/page.tsx"
+          ),
           route(
             ":workspaceSlug/settings/webhooks",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/webhooks/page.tsx"

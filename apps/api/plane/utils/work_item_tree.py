@@ -36,6 +36,7 @@ from django.db.models import Max
 from django.utils import timezone
 
 # Module imports
+from plane.bgtasks.copy_s3_object import copy_s3_objects_of_description_and_assets
 from plane.bgtasks.issue_activities_task import issue_activity
 from plane.db.models import (
     CycleIssue,
@@ -61,9 +62,9 @@ class WorkItemTreeTooLarge(Exception):
 
 
 class _Counter:
-    def __init__(self, limit=MAX_TREE_NODES):
+    def __init__(self, limit=None):
         self.count = 0
-        self.limit = limit
+        self.limit = limit if limit is not None else MAX_TREE_NODES
 
     def add(self, amount=1):
         self.count += amount
@@ -257,6 +258,14 @@ def _dispatch_created(issue, ctx, assignee_ids, origin):
     project_id = str(ctx.project.id)
     actor_id = str(ctx.actor.id)
     requested_data = json.dumps({"assignee_ids": assignee_ids}, cls=DjangoJSONEncoder)
+    if "image-component" in (issue.description_html or ""):
+        # Imagens da descrição apontam para os arquivos do item original: o item novo ganha cópias.
+        slug = ctx.project.workspace.slug
+        transaction.on_commit(
+            lambda: copy_s3_objects_of_description_and_assets.delay(
+                entity_name="ISSUE", entity_identifier=issue_id, project_id=project_id, slug=slug, user_id=actor_id
+            )
+        )
     transaction.on_commit(
         lambda: issue_activity.delay(
             type="issue.activity.created",
