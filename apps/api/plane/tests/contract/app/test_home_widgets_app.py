@@ -15,6 +15,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from plane.app.serializers import WorkspaceUserTaskSerializer
 from plane.db.models import (
     GoogleCalendarConnection,
     Issue,
@@ -161,6 +162,21 @@ class TestHomeTaskTree:
         assert response.data["sort_order"] == 100
         response = session_client.patch(_tasks_url(workspace, b["id"]), {"parent": None}, format="json")
         assert response.data["parent"] is None
+
+    def test_two_patches_at_once_keep_both_fields(self, session_client, workspace):
+        """Tab manda o texto e o recuo quase juntos; o PATCH do recuo, carregado antes do outro
+        terminar, regravava a linha inteira e apagava o texto."""
+        a = self._create(session_client, workspace, title="A")
+        b = self._create(session_client, workspace, title="")
+        stale = WorkspaceUserTask.objects.get(pk=b["id"])
+        session_client.patch(_tasks_url(workspace, b["id"]), {"title": "B"}, format="json")
+        serializer = WorkspaceUserTaskSerializer(stale, data={"sort_order": 5}, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(parent=WorkspaceUserTask.objects.get(pk=a["id"]))
+        task = WorkspaceUserTask.objects.get(pk=b["id"])
+        assert task.title == "B"
+        assert str(task.parent_id) == str(a["id"])
+        assert task.sort_order == 5
 
     def test_cannot_move_under_own_subtask(self, session_client, workspace):
         a = self._create(session_client, workspace, title="A")

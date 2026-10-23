@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 # Module imports
 from .base import BaseSerializer, DynamicBaseSerializer
+from .partial_update import SaveOnlySentFieldsMixin
 from .user import UserLiteSerializer, UserAdminLiteSerializer
 
 
@@ -293,7 +294,7 @@ class WorkspaceUserLinkSerializer(BaseSerializer):
         return super().update(instance, validated_data)
 
 
-class WorkspaceUserTaskSerializer(BaseSerializer):
+class WorkspaceUserTaskSerializer(SaveOnlySentFieldsMixin, BaseSerializer):
     class Meta:
         model = WorkspaceUserTask
         fields = "__all__"
