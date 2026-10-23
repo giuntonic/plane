@@ -5,6 +5,7 @@
  */
 
 import { useState } from "react";
+import { sortBy } from "lodash-es";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
@@ -61,14 +62,14 @@ export const WorkspaceMembersList = observer(function WorkspaceMembersList(props
   const filteredMemberIds = workspaceSlug ? getFilteredWorkspaceMemberIds(workspaceSlug.toString()) : [];
   const searchedMemberIds = searchQuery ? getSearchedWorkspaceMemberIds(searchQuery) : filteredMemberIds;
   const searchedInvitationsIds = getSearchedWorkspaceInvitationIds(searchQuery);
-  // sort() em vez de toSorted(): o lib do TS do web é anterior ao ES2023, e o map() já devolve um array novo.
+  // Ativos primeiro, sem mudar a ordem dentro de cada grupo. sortBy (lodash) em vez de toSorted(): o lib do TS
+  // do web é anterior ao ES2023, e o lint troca sozinho qualquer sort() por toSorted().
   const memberDetails = searchedMemberIds
-    ?.map((memberId) => getWorkspaceMemberDetails(memberId))
-    .toSorted((a, b) => {
-      if (a?.is_active && !b?.is_active) return -1;
-      if (!a?.is_active && b?.is_active) return 1;
-      return 0;
-    });
+    ? sortBy(
+        searchedMemberIds.map((memberId) => getWorkspaceMemberDetails(memberId)),
+        (member) => (member?.is_active ? 0 : 1)
+      )
+    : undefined;
 
   return (
     <>
