@@ -250,7 +250,7 @@ Correções feitas depois do merge:
 
 ---
 
-## Versão 1.5: modelos, cópia com estrutura, calendário novo e painel de peças (2026-10-24)
+## Versão 1.5: modelos, cópia com estrutura, recorrência, checklists, capas, calendário e painel de peças (2026-10-24)
 
 A partir desta versão o Pespo Hub tem número de versão próprio. Ele fica em `PESPO_HUB_VERSION`, em
 `apps/web/core/components/release-notes/releases.ts`. Ao publicar uma versão nova, acrescentar uma
@@ -286,11 +286,63 @@ entrada no topo de `PESPO_RELEASES`, com a data do deploy, o resumo, as novidade
   - **O que o item novo recebe:** o nome, o responsável, o prazo e as sublinhas, que viram as
     subtarefas dele. Uma linha marcada como feita cria o item já no primeiro estado "Concluído".
   - A linha sai do checklist (é apagada de vez, não vai para a lixeira).
-- **Progresso das subtarefas nos cards:** a lista e o quadro mostram "3/5" ao lado
-  da contagem de sub-itens.
-  - Os números vêm de `GET projects/<id>/checklist-progress/`, uma consulta só por projeto.
-  - Usa a mesma propriedade de exibição da contagem de sub-itens.
-  - O cache do SWR é atualizado quando o checklist muda no item aberto.
+- **Item vira subtarefa (o inverso):** `POST …/issues/<id>/convert-to-checklist/` com
+  `target_issue_id` (`IssueConvertToChecklistEndpoint` em `app/views/issue/structure.py`).
+  - **O que vai:** o nome, o primeiro responsável (se ainda é membro do projeto do destino), o prazo e
+    o "concluído" viram uma linha nova no fim da lista padrão do destino. O checklist do item, com as
+    checklists com nome, vira as sublinhas dela, com os mesmos ids e marcações.
+  - **O item sai como numa exclusão** (soft delete e activity de exclusão), com descrição, comentários,
+    anexos e links. Por isso pede a mesma permissão de excluir: admin do projeto ou quem criou.
+  - Item com sub-itens não converte (`HAS_SUB_WORK_ITEMS`). O destino tem que estar num projeto em que
+    a pessoa é membro.
+  - **Front:** um modal único no workspace (`components/issues/convert-to-checklist/`, montado em
+    `modals/workspace-level.tsx`). Abre pelo menu da lista de sub-itens (destino = o pai) e pelos menus
+    do item (lista, quadro, detalhe, ciclo e módulo), com o pai como destino padrão e "Trocar". Depois
+    tira o item das listas abertas, atualiza o destino e, se o item estava aberto, abre o destino.
+- **Várias checklists com nome (estilo Trello):** além da lista padrão ("Subtarefas"), o item pode ter
+  checklists como "Aprovação" e "Entrega".
+  - **Banco:** modelo `IssueChecklist` (tabela `issue_checklists`, migration `0137`) e FK opcional
+    `checklist` em `IssueChecklistItem`; vazio = lista padrão. As sublinhas ficam sempre na checklist da
+    linha de cima, e mudar uma linha de lista leva as sublinhas. A ordem conta por lista.
+  - **API:** `…/issues/<id>/checklists/` (listar, criar) e `…/checklists/<id>/` (renomear, excluir com
+    as linhas). As linhas aceitam `checklist` no POST e no PATCH, validado contra o próprio item.
+  - **Cópia e modelos** levam as checklists com nome (campo `checklists` da fotografia). Subtarefa que
+    vira item leva as sublinhas para a lista padrão do item novo.
+  - **Front:** botão "Checklist" na fileira de ações e "Nova checklist" no fim da seção
+    (`checklist/named-checklist.tsx`, `named-action-button.tsx`). O hook compartilhado da árvore
+    (`checklist-tree/use-checklist-tree-operations.ts`) ganhou `scope` (filtro + payload), para várias
+    listas usarem a mesma chave do SWR sem misturar irmãs, Tab e Alt+↑/↓.
+- **Capa no card do quadro (estilo Trello):**
+  - A capa é um anexo de imagem do item com `attributes["pespo_cover"]` (`plane/utils/issue_cover.py`).
+    Não tem tabela nova, e apagar o anexo tira a capa junto.
+  - A primeira imagem de um item sem capa vira a capa quando o upload termina. É uma linha no `patch` de
+    `IssueAttachmentV2Endpoint`, upstream.
+  - `POST …/issues/<id>/cover/` com `attachment_id`, ou `null` para tirar; só imagem do próprio item.
+  - **Front:** a capa no topo do card do quadro (`kanban/card-cover.tsx`). Nos anexos, "Usar como capa"
+    / "Remover capa" e o selo "Capa" (`attachment/attachment-list-item.tsx`; a lista passa os ids do item
+    e do projeto, que o anexo embutido no item não traz).
+- **Itens recorrentes (estilo ClickUp):**
+  - **Banco:** modelo `IssueRecurrence` (tabela `issue_recurrences`, migration `0138`), ligado ao item
+    "original". Guarda a frequência (diária, semanal com dias da semana, mensal ou anual), o intervalo
+    "a cada N", a data final opcional, a âncora (o prazo do original) e a próxima data.
+  - **Datas:** contas puras em `plane/utils/recurrence.py`, com testes. Dia 31 vira o último dia do mês
+    e 29/02 vira 28/02.
+  - **Criação das cópias:** task `issue_recurrence_task.create_recurring_issues`, no beat de hora em
+    hora (`pespo-create-recurring-issues`, minuto 7, data de Brasília; `plane/utils/issue_recurrence.py`).
+    - A cópia tem a estrutura da cópia comum: subtarefas desmarcadas, checklists, links e sub-itens.
+    - O prazo é a data da ocorrência e o início anda junto. Entra nos mesmos módulos; ciclo não.
+    - Quem cria é quem salvou a regra; se a pessoa saiu do projeto, a série para.
+    - Com o worker parado, cria no máximo 10 atrasadas e pula para a próxima.
+  - **API:** GET/PUT/DELETE `…/issues/<id>/recurrence/`. A primeira data é a ocorrência seguinte ao
+    prazo do original, ou hoje se o prazo já passou.
+  - **Front:** "Repetir" nas propriedades do item, na página e no painel lateral
+    (`components/issues/recurrence/`), com a próxima cópia e "Parar de repetir".
+- **Extras dos cards:** a lista e o quadro mostram o "3/5" das subtarefas (soma de todas as listas), a
+  capa e o ícone de repetição.
+  - Tudo vem de `GET projects/<id>/card-extras/`, uma consulta só por projeto (`app/views/issue/card.py`).
+  - No front, a chave, o hook e os patches do cache ficam em `components/issues/card-extras.ts`.
+  - O "3/5" usa a mesma propriedade de exibição da contagem de sub-itens. O cache é atualizado na hora
+    quando o checklist, a capa ou a regra mudam no item aberto.
 - **Modelos (templates):** modelo de item de trabalho, módulo, ciclo, página e projeto.
   - **Banco:** tabela nova `entity_templates`, modelo `EntityTemplate` em `db/models/template.py`
     (migration `0135`). Guarda o tipo, o nome, a descrição, o projeto (vazio = vale no workspace todo)
@@ -373,8 +425,18 @@ entrada no topo de `PESPO_RELEASES`, com a data do deploy, o resumo, as novidade
     `Project.metabase_dashboard_id` e `Project.metabase_cliente_id` (migration `0136`, que **apaga as
     duas colunas**), a tela de configuração do dashboard nas settings do projeto, o serviço
     `project-metabase.service.ts` e as chaves de i18n.
-  - **Não veio do portal:** os sinais de briefing da Laya. O fluxo do n8n "Peça Aprovada" continua
-    ouvindo o comentário de aprovação, que não mudou.
+  - **Sinais do briefing (Laya), como no portal:** depois de "Solicitar peças", a task
+    `piece_briefing_signals_task` manda o briefing para o Laya (`LAYA_URL`) e comenta nos itens criados
+    quando o sinal é forte. Os limiares são os de `portal-cliente/portal-app/lib/sinaisBriefing.js`:
+    urgência ≥ 0,8 sem nenhum item marcado Urgente, ou insatisfação ≥ 0,7. Não mexe em etiqueta nem
+    prioridade.
+    - O comentário é do usuário-bot "Laya" (`is_bot`, sem login), marcado com
+      `external_source="pespo_laya"`.
+    - Não gera issue_activity: não notifica ninguém e não dispara o webhook que o n8n ouve.
+    - Convidados (o cliente) não veem esses comentários no histórico, na lista de comentários do app
+      nem na API v1 (`plane/utils/team_only_comments.py`).
+    - Sem `LAYA_URL`, ou com briefing curto, nada é enviado. Laya fora do ar é ignorado.
+  - O fluxo do n8n "Peça Aprovada" continua ouvindo o comentário de aprovação, que não mudou.
 - **Notas adesivas no bloco estreito da home:** abaixo de 420 px de largura a grade usa uma coluna só
   (`stickies/layout/stickies-list.tsx`), e o cabeçalho do widget encolhe com container queries.
 - **Correção junto (bug da varredura de tradução, já em produção):** o `useTranslation()` tinha sido
@@ -382,27 +444,48 @@ entrada no topo de `PESPO_RELEASES`, com a data do deploy, o resumo, as novidade
   `hooks/use-realtime-page-events.tsx`. Quando o memo não recalculava, a ordem dos hooks mudava e a lista
   de páginas abria na tela de erro ("Rendered fewer hooks than expected"). O hook voltou para o topo do
   componente. Na varredura não sobrou outro caso.
+- **Correção junto (upstream):** a lista de sub-itens alterna a visibilidade, então duas buscas ao mesmo
+  tempo a desligavam de novo. Acontecia sempre com o StrictMode do dev e podia acontecer ao trocar de item
+  rápido. Agora só liga se estiver desligada (`sub-issues/content.tsx`).
 - **i18n:** chaves novas só em `en` e `pt-BR`:
-  - `work-item.json`: `work_item_structure.*` e `issue_checklist.convert*`.
+  - `work-item.json`: `work_item_structure.*` (com `to_checklist`), `issue_checklist.convert*` e
+    `issue_checklist.named.*`, `issue_cover.*` e `issue_recurrence.*`.
   - `template.json`: `entity_templates.*`.
   - `integration.json`: `google_calendar_integration.calendar_view.*`.
   - `project.json`: `pieces_panel.*`.
   - `navigation.json`: `sidebar.pieces`.
   - `common.json`: `release_notes.*`.
-- **Testes do backend:** `test_work_item_structure_app.py` (9), `test_entity_templates_app.py` (13),
-  `test_project_pieces_app.py` (11) e `TestCalendarPageAttendees` em `test_google_calendar_app.py`.
+- **Testes do backend:**
+  - `test_work_item_structure_app.py`, com cópia, conversões e card-extras/capa;
+  - `test_issue_checklist_app.py` (`TestNamedChecklists`);
+  - `test_entity_templates_app.py`;
+  - `test_project_pieces_app.py`, com os sinais do Laya;
+  - `test_issue_recurrence_app.py` e o unitário `tests/unit/utils/test_recurrence.py`;
+  - `TestCalendarPageAttendees` em `test_google_calendar_app.py`.
+
   No front, testes de `calendar-view.ts` em `packages/utils`.
+
 - **Verificado no navegador** (Playwright, com API e web locais e um banco de portal local):
   - notas adesivas no bloco estreito, popover da versão e página de Novidades;
   - cópia com subtarefas e sub-itens, converter subtarefa e o "1/3" nos cards;
   - modelos de item, módulo e página, e Configurações → Modelos;
   - calendário com o Google simulado: cores, seletor, "mais N", semana com sobreposição, detalhes e
     convite;
-  - painel de peças com contrato, aviso de vencimento, saldo, solicitação e refação.
+  - painel de peças com contrato, aviso de vencimento, saldo, solicitação e refação;
+  - item vira subtarefa (pelo menu do sub-item e pela lista, escolhendo o destino);
+  - checklists com nome (criar, renomear, linhas e sublinhas, excluir) e o "x/y" somado no card;
+  - capa (anexo simulado): "Usar como capa", selo e capa no card do quadro;
+  - recorrência semanal pelo "Repetir", ícone no card e a cópia criada na data (rodando a função da
+    task no banco local).
 - **Deploy:**
-  - Rebuildar `api` e `web` e rodar o `migrator`: migrations `0135`, que cria a tabela, e `0136`, que
-    **apaga** `metabase_dashboard_id` e `metabase_cliente_id` de `projects`. Retaguear as imagens antes,
-    como no checklist.
+  - Rebuildar `api`, `web`, `worker` e `beat` e rodar o `migrator`. Retaguear as imagens antes, como no
+    checklist. As migrations:
+    - `0135` cria `entity_templates`;
+    - `0136` **apaga** `metabase_dashboard_id` e `metabase_cliente_id` de `projects`;
+    - `0137` cria `issue_checklists` e a coluna `checklist` nas linhas;
+    - `0138` cria `issue_recurrences`.
+  - Worker e beat entram porque há tasks novas (sinais do Laya e cópias recorrentes) e uma entrada nova
+    no beat.
   - Para o painel de peças ler o contrato:
     1. Criar no `portal-db` um usuário só leitura (ex.: `plane_portal_ro`) com `SELECT` em `clientes`,
        `contratos` e `contrato_categorias`.
@@ -410,15 +493,23 @@ entrada no topo de `PESPO_RELEASES`, com a data do deploy, o resumo, as novidade
     3. Pôr `PORTAL_DATABASE_URL=postgresql://plane_portal_ro:<senha>@<host do portal-db>:5432/<banco>`
        no `.env` do Plane.
   - Sem esses três passos, o painel funciona sem a parte do contrato.
-  - Nada muda no worker, no beat nem no live.
+  - Para os sinais do Laya: ligar o container do **worker** do Plane à rede `portal-cliente_backend`
+    (onde está o `laya`) e pôr `LAYA_URL=http://laya:8000` no `.env` do Plane. Sem isso, a solicitação de
+    peças funciona igual, só sem os comentários de sinal.
+  - Nada muda no live.
 - **Risco de upgrade:** médio a alto.
-  - **Pontos que o upstream mexe:** o modal de item (`issue-modal/provider.tsx`, `form.tsx`, `base.tsx`),
-    os formulários de módulo e ciclo, os menus de ações rápidas, `pages/dropdowns/actions.tsx`, a
-    criação de projeto e `project-navigation.tsx`.
+  - **Pontos que o upstream mexe:**
+    - o modal de item (`issue-modal/provider.tsx`, `form.tsx`, `base.tsx`);
+    - os formulários de módulo e ciclo, os menus de ações rápidas e `pages/dropdowns/actions.tsx`;
+    - a criação de projeto e `project-navigation.tsx`;
+    - o card do quadro (`kanban/block.tsx`), os anexos (`attachment-list-item.tsx`, `patch` do
+      `IssueAttachmentV2Endpoint`), as propriedades do item (`issue-detail/sidebar.tsx`,
+      `peek-overview/properties.tsx`) e a lista de sub-itens (`list-item.tsx`, `content.tsx`);
+    - as listas de comentários (`app/views/issue/comment.py`, `activity.py` e `api/views/issue.py`).
   - **Modelos do upstream:** o upstream tem modelos só no plano pago, então os nossos são código nosso.
     Se um dia o upstream abrir os modelos na Community, decidir qual fica. O
     `handleTemplateChange`/`workItemTemplateId` do provider é o ponto onde os dois se encontram.
-  - **Migrations:** `0135` e `0136` são nossas. Num merge com o upstream, criar uma migration de merge
+  - **Migrations:** `0135` a `0138` são nossas. Num merge com o upstream, criar uma migration de merge
     se houver duas folhas.
 
 ---
