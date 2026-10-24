@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-"""Contract tests (Pespo): copying a work item brings its checklist, links and sub-work-items, and a
-checklist line can become a work item."""
+"""Contract tests (Pespo): copying a work item brings its checklist, links and sub-work-items, a
+checklist line can become a work item, and a work item can become a checklist line of another one."""
 
 from datetime import date
 
@@ -211,6 +211,86 @@ class TestConvertChecklistItem:
         response = session_client.post(_convert_url(workspace, project, issue, line), {}, format="json")
         assert response.status_code == status.HTTP_404_NOT_FOUND
         assert IssueChecklistItem.objects.filter(pk=line.id).exists()
+
+
+def _to_checklist_url(workspace, project, issue):
+    return reverse(
+        "project-issue-convert-to-checklist",
+        kwargs={"slug": workspace.slug, "project_id": project.id, "issue_id": issue.id},
+    )
+
+
+@pytest.mark.contract
+class TestConvertToChecklist:
+    def test_sub_item_becomes_a_line_of_its_parent(self, session_client, workspace, project, states, create_user):
+        parent = _issue(project, states["todo"], "Campanha")
+        first = _line(parent, "Briefing", sort_order=1000)
+        child = _issue(project, states["done"], "Arte do post", parent=parent, target_date=date(2026, 12, 5))
+        IssueAssignee.objects.create(issue=child, assignee=create_user, project=project, workspace=workspace)
+        sub = _line(child, "Rascunho", is_completed=True)
+        grandchild = _line(child, "Revisar texto", parent=sub)
+
+        response = session_client.post(
+            _to_checklist_url(workspace, project, child), {"target_issue_id": str(parent.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+
+        line = IssueChecklistItem.objects.get(pk=response.data["checklist_item_id"])
+        assert line.issue_id == parent.id and line.parent_id is None
+        assert line.name == "Arte do post" and line.due_date == date(2026, 12, 5)
+        assert line.assignee_id == create_user.id and line.is_completed is True and line.completed_at
+        assert line.sort_order > first.sort_order  # entra no fim da lista
+        sub.refresh_from_db()
+        grandchild.refresh_from_db()
+        assert sub.issue_id == parent.id and sub.parent_id == line.id and sub.is_completed is True
+        assert grandchild.issue_id == parent.id and grandchild.parent_id == sub.id
+        # O item sai como numa exclusão normal (soft delete).
+        assert not Issue.issue_objects.filter(pk=child.id).exists()
+        assert Issue.all_objects.get(pk=child.id).deleted_at is not None
+
+    def test_work_item_with_sub_items_is_refused(self, session_client, workspace, project, states):
+        target = _issue(project, states["todo"], "Destino")
+        issue = _issue(project, states["todo"], "Com filhos")
+        _issue(project, states["todo"], "Filho", parent=issue)
+        response = session_client.post(
+            _to_checklist_url(workspace, project, issue), {"target_issue_id": str(target.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.data["code"] == "HAS_SUB_WORK_ITEMS"
+        assert Issue.issue_objects.filter(pk=issue.id).exists()
+
+    def test_only_admin_or_creator(self, api_client, workspace, project, states, create_user):
+        member = User.objects.create(email="member-conv@plane.so", username="member_conv")
+        WorkspaceMember.objects.create(workspace=workspace, member=member, role=15)
+        ProjectMember.objects.create(project=project, member=member, role=15, is_active=True)
+        api_client.force_authenticate(user=member)
+        target = _issue(project, states["todo"], "Destino")
+        others = _issue(project, states["todo"], "Criado por outra pessoa")
+        mine = _issue(project, states["todo"], "Criado por mim")
+        # O save do BaseModel preenche created_by pelo usuário da requisição; aqui vai direto no banco.
+        Issue.objects.filter(pk=others.pk).update(created_by=create_user)
+        Issue.objects.filter(pk=mine.pk).update(created_by=member)
+
+        refused = api_client.post(
+            _to_checklist_url(workspace, project, others), {"target_issue_id": str(target.id)}, format="json"
+        )
+        allowed = api_client.post(
+            _to_checklist_url(workspace, project, mine), {"target_issue_id": str(target.id)}, format="json"
+        )
+        assert refused.status_code == status.HTTP_403_FORBIDDEN
+        assert allowed.status_code == status.HTTP_201_CREATED, allowed.data
+
+    def test_target_must_be_in_a_project_of_the_user(self, session_client, workspace, project, states, create_user):
+        hidden = Project.objects.create(name="Fechado", identifier="FEC", workspace=workspace, created_by=create_user)
+        hidden_state = State.objects.create(name="Todo", group="unstarted", project=hidden, workspace=workspace)
+        foreign = _issue(hidden, hidden_state, "De outro projeto")
+        issue = _issue(project, states["todo"], "Item")
+        for target in (foreign, issue):
+            response = session_client.post(
+                _to_checklist_url(workspace, project, issue), {"target_issue_id": str(target.id)}, format="json"
+            )
+            assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert Issue.issue_objects.filter(pk=issue.id).exists()
 
 
 @pytest.mark.contract

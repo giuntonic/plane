@@ -11,6 +11,7 @@ import type {
   TIssueChecklistItem,
   TIssueChecklistItemPayload,
   TIssueChecklistProgress,
+  TIssueConvertToChecklistResponse,
 } from "@plane/types";
 // services
 import { APIService } from "@/services/api.service";
@@ -89,6 +90,22 @@ export class IssueChecklistService extends APIService {
       source_issue_id: sourceIssueId,
     })
       .then((response) => response?.data as { sub_work_items: number; checklist_items: number })
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  /** O inverso: o item vira linha do checklist de `targetIssueId` e sai (como numa exclusão). */
+  async convertToChecklist(
+    workspaceSlug: string,
+    projectId: string,
+    issueId: string,
+    targetIssueId: string
+  ): Promise<TIssueConvertToChecklistResponse> {
+    return this.post(`/api/workspaces/${workspaceSlug}/projects/${projectId}/issues/${issueId}/convert-to-checklist/`, {
+      target_issue_id: targetIssueId,
+    })
+      .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;
       });

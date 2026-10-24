@@ -37,5 +37,12 @@ export type TIssueChecklistConvertResponse = {
   parent_id: string | null;
 };
 
+/** …/issues/<id>/convert-to-checklist/: the work item became a line of `target_issue_id`. */
+export type TIssueConvertToChecklistResponse = {
+  checklist_item_id: string;
+  target_issue_id: string;
+  project_id: string;
+};
+
 /** …/projects/<id>/checklist-progress/: only work items with at least one line. */
 export type TIssueChecklistProgress = Record<string, { done: number; total: number }>;

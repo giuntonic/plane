@@ -459,6 +459,21 @@
   },
   "work_item_structure": {
     "copy_error_title": "Cópia criada sem as subtarefas",
-    "copy_error": "O item de trabalho foi criado, mas não deu para copiar as subtarefas e os sub-itens."
+    "copy_error": "O item de trabalho foi criado, mas não deu para copiar as subtarefas e os sub-itens.",
+    "to_checklist": {
+      "menu": "Transformar em subtarefa",
+      "title": "Transformar em subtarefa",
+      "description": "“{name}” vira uma subtarefa (linha do checklist) do item que você escolher.",
+      "target": "Item de destino",
+      "choose_target": "Escolher item",
+      "change_target": "Trocar",
+      "keeps": "Vão junto: o nome, o primeiro responsável, o prazo, se está concluído e as subtarefas dele.",
+      "loses": "O item sai como numa exclusão: descrição, comentários, anexos e links não vão junto.",
+      "has_sub_items": "Este item tem sub-itens. Mova ou converta os sub-itens antes.",
+      "submit": "Transformar em subtarefa",
+      "success": "Agora é uma subtarefa de “{target}”",
+      "error": "Não foi possível transformar em subtarefa",
+      "forbidden": "Só admins do projeto ou quem criou o item podem fazer isso."
+    }
   }
 }

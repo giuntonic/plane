@@ -20,6 +20,7 @@ from plane.app.views import (
     IssueChecklistItemDetailEndpoint,
     IssueChecklistItemConvertEndpoint,
     IssueCopyStructureEndpoint,
+    IssueConvertToChecklistEndpoint,
     ProjectChecklistProgressEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
@@ -198,6 +199,11 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/copy-structure/",
         IssueCopyStructureEndpoint.as_view(),
         name="project-issue-copy-structure",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/convert-to-checklist/",
+        IssueConvertToChecklistEndpoint.as_view(),
+        name="project-issue-convert-to-checklist",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/",

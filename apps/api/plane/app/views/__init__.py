@@ -196,7 +196,11 @@ from .issue.checklist import (
     IssueChecklistItemDetailEndpoint,
     ProjectChecklistProgressEndpoint,
 )
-from .issue.structure import IssueCopyStructureEndpoint, IssueChecklistItemConvertEndpoint
+from .issue.structure import (
+    IssueCopyStructureEndpoint,
+    IssueChecklistItemConvertEndpoint,
+    IssueConvertToChecklistEndpoint,
+)
 
 from .issue.relation import IssueRelationViewSet
 

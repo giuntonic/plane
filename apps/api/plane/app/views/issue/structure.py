@@ -2,11 +2,16 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # See the LICENSE file for details.
 
-"""Pespo: estrutura do item de trabalho (cópia com subtarefas e sub-itens, e subtarefa que vira item).
-As regras da recriação estão em ``plane.utils.work_item_tree``."""
+"""Pespo: estrutura do item de trabalho (cópia com subtarefas e sub-itens, subtarefa que vira item e item
+que vira subtarefa). As regras da recriação estão em ``plane.utils.work_item_tree``."""
+
+# Python imports
+import json
 
 # Django imports
 from django.db import transaction
+from django.db.models import Max
+from django.utils import timezone
 
 # Third Party imports
 from rest_framework import status
@@ -15,7 +20,8 @@ from rest_framework.response import Response
 # Module imports
 from .. import BaseAPIView
 from plane.app.permissions import allow_permission, ROLE
-from plane.db.models import Issue, IssueChecklistItem, Project, ProjectMember, State
+from plane.bgtasks.issue_activities_task import issue_activity
+from plane.db.models import Issue, IssueAssignee, IssueChecklistItem, Project, ProjectMember, State, UserRecentVisit
 from plane.utils.host import base_host
 from plane.utils.work_item_tree import (
     WorkItemTreeTooLarge,
@@ -136,4 +142,117 @@ class IssueChecklistItemConvertEndpoint(BaseAPIView):
         )
 
 
-__all__ = ["IssueCopyStructureEndpoint", "IssueChecklistItemConvertEndpoint"]
+class IssueConvertToChecklistEndpoint(BaseAPIView):
+    """O inverso: um item de trabalho vira subtarefa (linha do checklist) de outro item, o
+    ``target_issue_id`` (o pai, no caso comum). O nome, o primeiro responsável, o prazo e o "concluído"
+    vão para a linha, e o checklist do item vira as sublinhas dela. O item sai como numa exclusão normal
+    (vai para a lixeira do banco), com descrição, comentários e anexos; por isso pede a mesma permissão
+    de excluir (admin do projeto ou quem criou o item). Item com sub-itens não converte: os sub-itens
+    ficariam sem lugar."""
+
+    @allow_permission([ROLE.ADMIN, ROLE.MEMBER])
+    def post(self, request, slug, project_id, issue_id):
+        issue = (
+            Issue.issue_objects.filter(workspace__slug=slug, project_id=project_id, pk=issue_id)
+            .select_related("state")
+            .first()
+        )
+        if not issue:
+            return Response({"error": "Work item not found"}, status=status.HTTP_404_NOT_FOUND)
+        is_admin = ProjectMember.objects.filter(
+            project_id=project_id, member=request.user, role=ROLE.ADMIN.value, is_active=True
+        ).exists()
+        if not is_admin and issue.created_by_id != request.user.id:
+            return Response(
+                {"error": "Only project admins or the creator can convert this work item", "code": "FORBIDDEN"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        target = Issue.issue_objects.filter(workspace__slug=slug, pk=request.data.get("target_issue_id")).first()
+        # O destino tem que estar num projeto em que a pessoa trabalha (membro ou admin, não convidado).
+        if (
+            not target
+            or target.id == issue.id
+            or not ProjectMember.objects.filter(
+                project_id=target.project_id,
+                member=request.user,
+                role__gte=ROLE.MEMBER.value,
+                is_active=True,
+            ).exists()
+        ):
+            return Response({"error": "Target work item not found"}, status=status.HTTP_404_NOT_FOUND)
+        if Issue.issue_objects.filter(parent=issue).exists():
+            return Response(
+                {"error": "Work item has sub-work items", "code": "HAS_SUB_WORK_ITEMS"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Responsável só se ainda trabalha no projeto do destino (a linha mostra o avatar de membro).
+        assignee_id = (
+            IssueAssignee.objects.filter(
+                issue=issue,
+                assignee__member_project__project_id=target.project_id,
+                assignee__member_project__is_active=True,
+            )
+            .order_by("created_at")
+            .values_list("assignee_id", flat=True)
+            .first()
+        )
+        is_completed = bool(issue.state and issue.state.group == "completed")
+        last_sort = IssueChecklistItem.objects.filter(issue=target, parent__isnull=True).aggregate(
+            value=Max("sort_order")
+        )["value"]
+        now = timezone.now()
+        with transaction.atomic():
+            line = IssueChecklistItem.objects.create(
+                issue=target,
+                project_id=target.project_id,
+                workspace_id=target.workspace_id,
+                name=issue.name,
+                assignee_id=assignee_id,
+                due_date=issue.target_date,
+                is_completed=is_completed,
+                completed_at=(issue.completed_at or now) if is_completed else None,
+                sort_order=(last_sort or 0) + 65535,
+            )
+            # O checklist do item muda de dono mantendo ids, marcações e a ordem: as linhas de primeiro
+            # nível ficam penduradas na linha nova.
+            roots = list(
+                IssueChecklistItem.objects.filter(issue=issue, parent__isnull=True).values_list("id", flat=True)
+            )
+            IssueChecklistItem.objects.filter(issue=issue).update(
+                issue=target, project_id=target.project_id, workspace_id=target.workspace_id
+            )
+            IssueChecklistItem.objects.filter(pk__in=roots).update(parent=line)
+            issue.delete()
+            UserRecentVisit.objects.filter(
+                project_id=project_id, workspace__slug=slug, entity_identifier=issue.id, entity_name="issue"
+            ).delete(soft=False)
+            issue_id_str, project_id_str, actor_id = str(issue.id), str(project_id), str(request.user.id)
+            origin = base_host(request=request, is_app=True)
+            transaction.on_commit(
+                lambda: issue_activity.delay(
+                    type="issue.activity.deleted",
+                    requested_data=json.dumps({"issue_id": issue_id_str}),
+                    actor_id=actor_id,
+                    issue_id=issue_id_str,
+                    project_id=project_id_str,
+                    current_instance={},
+                    epoch=int(now.timestamp()),
+                    notification=True,
+                    origin=origin,
+                    subscriber=False,
+                )
+            )
+
+        return Response(
+            {
+                "checklist_item_id": str(line.id),
+                "target_issue_id": str(target.id),
+                "project_id": str(target.project_id),
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+__all__ = ["IssueCopyStructureEndpoint", "IssueChecklistItemConvertEndpoint", "IssueConvertToChecklistEndpoint"]
