@@ -65,8 +65,9 @@ export const CommentCardDisplay = observer(function CommentCardDisplay(props: TC
   const { getUserDetails } = useMember();
   // derived values
   const userDetails = getUserDetails(comment?.actor);
+  // Pespo: "Laya (bot)" em vez de "LayaBot".
   const displayName = comment?.actor_detail?.is_bot
-    ? comment?.actor_detail?.first_name + `Bot`
+    ? `${comment?.actor_detail?.first_name} (bot)`
     : (userDetails?.display_name ?? comment?.actor_detail?.display_name);
   const avatarUrl = userDetails?.avatar_url ?? comment?.actor_detail?.avatar_url;
 

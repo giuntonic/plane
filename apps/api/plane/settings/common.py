@@ -342,6 +342,8 @@ CELERY_IMPORTS = (
     # issue version tasks
     "plane.bgtasks.issue_version_sync",
     "plane.bgtasks.issue_description_version_sync",
+    # Pespo
+    "plane.bgtasks.piece_briefing_signals_task",
 )
 
 FILE_SIZE_LIMIT = int(os.environ.get("FILE_SIZE_LIMIT", 5242880))
@@ -568,3 +570,6 @@ if ENABLE_DRF_SPECTACULAR:
 # Ex.: postgresql://plane_portal_ro:<senha>@portal-db:5432/portal. Sem ele o painel mostra as peças
 # sem o saldo do contrato. (O embed do Metabase que ficava aqui saiu junto com o Metabase.)
 PORTAL_DATABASE_URL = os.environ.get("PORTAL_DATABASE_URL")
+# Pespo: Laya, o classificador da VPS (rede interna), lê urgência e humor no briefing das peças
+# solicitadas. Ex.: http://laya:8000. Sem ele a solicitação funciona igual, só sem os sinais.
+LAYA_URL = os.environ.get("LAYA_URL")

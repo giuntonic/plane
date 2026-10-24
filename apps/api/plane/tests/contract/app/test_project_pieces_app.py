@@ -268,3 +268,115 @@ class TestReworkRequests:
         project.save()
         response = client.post(_rework_url(workspace, project, piece), {"reason": "x"}, format="json")
         assert response.status_code == status.HTTP_200_OK
+
+
+SIGNALS_TASK = "plane.utils.pieces.piece_briefing_signals.delay"
+LAYA_POST = "plane.bgtasks.piece_briefing_signals_task.requests.post"
+
+
+def _laya_answers(urgente=0.1, insatisfeito=0.1):
+    response = mock.Mock()
+    response.raise_for_status.return_value = None
+    response.json.return_value = {
+        "answers": {
+            "urgencia": {"choice": "urgente", "probabilities": {"urgente": urgente, "normal": 1 - urgente}},
+            "humor": {"choice": "neutro", "probabilities": {"insatisfeito": insatisfeito, "neutro": 1 - insatisfeito}},
+        }
+    }
+    return response
+
+
+@pytest.mark.contract
+class TestBriefingSignals:
+    BRIEFING = "Preciso disso pra ontem, vocês atrasaram de novo"
+
+    def test_request_dispatches_signals_after_commit(
+        self, session_client, workspace, project, states, labels, settings, django_capture_on_commit_callbacks
+    ):
+        settings.LAYA_URL = "http://laya:8000"
+        payload = {"items": [{"category": "Post", "quantity": 2}], "briefing": self.BRIEFING}
+        with mock.patch(CONTRACT_PATH, return_value=_contract()), mock.patch(SIGNALS_TASK) as delay:
+            with django_capture_on_commit_callbacks(execute=True):
+                response = session_client.post(_request_url(workspace, project), payload, format="json")
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        delay.assert_called_once_with(str(project.id), response.data["created"], self.BRIEFING, False)
+
+    def test_no_dispatch_without_laya_or_with_short_briefing(
+        self, session_client, workspace, project, states, labels, settings, django_capture_on_commit_callbacks
+    ):
+        with mock.patch(CONTRACT_PATH, return_value=_contract()), mock.patch(SIGNALS_TASK) as delay:
+            settings.LAYA_URL = None
+            with django_capture_on_commit_callbacks(execute=True):
+                session_client.post(
+                    _request_url(workspace, project),
+                    {"items": [{"category": "Post", "quantity": 1}], "briefing": self.BRIEFING},
+                    format="json",
+                )
+            settings.LAYA_URL = "http://laya:8000"
+            with django_capture_on_commit_callbacks(execute=True):
+                session_client.post(
+                    _request_url(workspace, project),
+                    {"items": [{"category": "Post", "quantity": 1}], "briefing": "Post de Natal"},
+                    format="json",
+                )
+        delay.assert_not_called()
+
+    def test_strong_signals_become_team_only_comment(self, session_client, workspace, project, states, settings):
+        from plane.bgtasks.piece_briefing_signals_task import piece_briefing_signals
+
+        settings.LAYA_URL = "http://laya:8000"
+        issue = _piece(project, states["queue"])
+        with mock.patch(LAYA_POST, return_value=_laya_answers(urgente=0.92, insatisfeito=0.81)) as post:
+            piece_briefing_signals(str(project.id), [str(issue.id)], self.BRIEFING, False)
+            piece_briefing_signals(str(project.id), [str(issue.id)], self.BRIEFING, False)
+        assert post.call_args.args[0] == "http://laya:8000/v1/systemone"
+        assert post.call_args.kwargs["json"]["state"] == {"briefing": self.BRIEFING}
+        comments = IssueComment.objects.filter(issue=issue)
+        assert comments.count() == 2
+        comment = comments.first()
+        assert comment.actor.is_bot and comment.actor.display_name == "Laya"
+        assert User.objects.filter(username="pespo_laya_bot").count() == 1  # o bot é reaproveitado
+        assert "insatisfeito</strong> (81%)" in comment.comment_html
+        assert "urgência</strong> (92%)" in comment.comment_html
+        assert not IssueActivity.objects.filter(issue=issue, field="comment").exists()  # sem notificação
+
+        # A equipe vê; o cliente (convidado) não, nem no histórico nem na lista de comentários.
+        project.guest_view_all_features = True
+        project.save()
+        guest = User.objects.create(email="cliente@empresa.com", username="cliente_guest")
+        WorkspaceMember.objects.create(workspace=workspace, member=guest, role=5)
+        ProjectMember.objects.create(project=project, member=guest, role=5, is_active=True)
+        guest_client = APIClient()
+        guest_client.force_authenticate(user=guest)
+        kwargs = {"slug": workspace.slug, "project_id": project.id, "issue_id": issue.id}
+        team_history = session_client.get(reverse("project-issue-history", kwargs=kwargs))
+        guest_history = guest_client.get(reverse("project-issue-history", kwargs=kwargs))
+        guest_comments = guest_client.get(reverse("project-issue-comment", kwargs=kwargs))
+        assert guest_history.status_code == status.HTTP_200_OK, guest_history.data
+        assert sum(1 for row in team_history.data if row.get("comment_html")) == 2
+        assert not any(row.get("comment_html") for row in guest_history.data)
+        assert guest_comments.status_code == status.HTTP_200_OK
+        rows = guest_comments.data["results"] if isinstance(guest_comments.data, dict) else guest_comments.data
+        assert len(rows) == 0
+
+    def test_weak_signal_or_marked_urgent_does_not_comment(self, project, states, settings):
+        from plane.bgtasks.piece_briefing_signals_task import piece_briefing_signals
+
+        settings.LAYA_URL = "http://laya:8000"
+        issue = _piece(project, states["queue"])
+        with mock.patch(LAYA_POST, return_value=_laya_answers(urgente=0.6, insatisfeito=0.5)):
+            piece_briefing_signals(str(project.id), [str(issue.id)], self.BRIEFING, False)
+        with mock.patch(LAYA_POST, return_value=_laya_answers(urgente=0.95, insatisfeito=0.2)):
+            piece_briefing_signals(str(project.id), [str(issue.id)], self.BRIEFING, True)
+        assert not IssueComment.objects.filter(issue=issue).exists()
+
+    def test_laya_down_is_ignored(self, project, states, settings):
+        import requests
+
+        from plane.bgtasks.piece_briefing_signals_task import piece_briefing_signals
+
+        settings.LAYA_URL = "http://laya:8000"
+        issue = _piece(project, states["queue"])
+        with mock.patch(LAYA_POST, side_effect=requests.ConnectionError("down")):
+            piece_briefing_signals(str(project.id), [str(issue.id)], self.BRIEFING, False)
+        assert not IssueComment.objects.filter(issue=issue).exists()

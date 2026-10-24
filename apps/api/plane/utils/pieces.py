@@ -14,7 +14,8 @@ As regras de saldo são as mesmas do portal do cliente (portal-cliente/portal-ap
 - Urgentes: FEP conta o contrato inteiro; FEE só o mês corrente. Além do limite do contrato, no máximo
   3 urgentes abertas ao mesmo tempo por projeto; vale o menor dos dois.
 - Pedido novo entra no estado "Fila de Criacao", com a etiqueta da categoria (+ Urgente, + Precisa
-  Impressao), um pedido por vez por projeto (trava no Postgres), no máximo 30 peças.
+  Impressao), um pedido por vez por projeto (trava no Postgres), no máximo 30 peças. Depois, o Laya lê o
+  briefing e comenta quando há sinal forte de urgência ou insatisfação (``piece_briefing_signals_task``).
 
 Refação = o item entrou num estado de retrabalho ("Reprovado Interno - Retrabalho", "Reprovado Cliente -
 Retrabalho"), contado pelo histórico de estados do item.
@@ -34,6 +35,7 @@ from django.utils import timezone
 
 # Module imports
 from plane.bgtasks.issue_activities_task import issue_activity
+from plane.bgtasks.piece_briefing_signals_task import piece_briefing_signals, should_classify
 from plane.db.models import Issue, IssueActivity, IssueComment, IssueLabel, Label, State
 from plane.utils.uuid import convert_uuid_to_integer
 from plane.utils.work_item_tree import apply_extras, date_shifter, project_context
@@ -299,6 +301,11 @@ def request_pieces(project, user, contract, items, briefing, is_guest, origin=No
                     origin=origin,
                 )
                 created.append(str(issue.id))
+        # Sinais do briefing (Laya) viram comentário só da equipe, depois do commit e fora da requisição.
+        if created and should_classify(briefing):
+            marked_urgent = any(item["urgent"] for item in items)
+            project_id = str(project.id)
+            transaction.on_commit(lambda: piece_briefing_signals.delay(project_id, created, briefing, marked_urgent))
         return created
 
 
