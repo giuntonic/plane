@@ -10,7 +10,6 @@ import { ListChecks, Users, Zap } from "lucide-react";
 import type { ISvgIcons } from "@plane/propel/icons";
 import {
   CycleIcon,
-  DashboardIcon,
   EstimatePropertyIcon,
   IntakeIcon,
   LabelPropertyIcon,
@@ -36,5 +35,4 @@ export const PROJECT_SETTINGS_ICONS: Record<TProjectSettingsTabs, LucideIcon | R
   estimates: EstimatePropertyIcon,
   custom_fields: ListChecks,
   automations: Zap,
-  dashboard: DashboardIcon,
 };

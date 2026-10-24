@@ -433,5 +433,89 @@
       "join": "Join Project",
       "joining": "Joining..."
     }
+  },
+  "pieces_panel": {
+    "title": "Pieces",
+    "contract_line": "{type} contract · {start} to {end}",
+    "expiring": "{count, plural, =0 {The contract ends today} one {The contract ends in # day} other {The contract ends in # days}}",
+    "expired": "The contract ended on {date}",
+    "status": {
+      "no_client": "This project isn't linked to a client in the client portal, so there is no contract balance here.",
+      "unavailable": "Couldn't read the contract from the client portal right now. The pieces show up; the balance doesn't.",
+      "no_contract": "This client has no active contract."
+    },
+    "stats": {
+      "total": "Pieces",
+      "in_production": "In production",
+      "delivered_month": "Delivered in {month}",
+      "reworks": "Reworks",
+      "reworks_split": "{internal} internal · {client} by the client"
+    },
+    "balance": {
+      "title": "Contract balance",
+      "empty": "No active contract.",
+      "used_of": "{used} of {contracted}",
+      "tooltip": "{used} used of {contracted} contracted",
+      "available": "{count, plural, one {# available} other {# available}}",
+      "over": "{count, plural, one {# over the contract} other {# over the contract}}",
+      "urgent": "Urgent available now: {count} (contract limit {limit}; at most {max} open at a time, {open} open now)"
+    },
+    "by_state": {
+      "title": "Pieces by status",
+      "backlog": "Backlog",
+      "unstarted": "To do",
+      "started": "In production",
+      "completed": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "reworks": {
+      "title": "Reworks",
+      "now": "{count, plural, =0 {No piece in rework now} one {# piece in rework now} other {# pieces in rework now}}",
+      "most": "Most reworked",
+      "times": "{count, plural, one {# time} other {# times}}"
+    },
+    "delivered": {
+      "title": "Delivered in {month}",
+      "empty": "Nothing delivered this month yet."
+    },
+    "request": {
+      "open": "Request pieces",
+      "title": "Request pieces",
+      "description": "New pieces go to the creation queue. The balance is checked again when you send.",
+      "category": "Category",
+      "quantity": "Quantity",
+      "available_short": "{count} available",
+      "urgent": "Urgent",
+      "needs_print": "Needs printing",
+      "desired_date": "Desired date",
+      "add_line": "Add line",
+      "remove_line": "Remove line",
+      "briefing_placeholder": "Briefing: what the pieces are for, references, texts (optional)",
+      "summary": "{count, plural, one {# piece} other {# pieces}}, {urgent} urgent",
+      "empty": "Choose at least one piece.",
+      "submit": "Send request",
+      "success": "{count, plural, one {# piece requested} other {# pieces requested}}",
+      "error": "Request not sent"
+    },
+    "rework": {
+      "button": "Request rework",
+      "placeholder": "What needs to change?",
+      "submit": "Send",
+      "success": "Rework requested: the piece went back to the creation team",
+      "error": "Could not request the rework"
+    },
+    "errors": {
+      "generic": "Something went wrong. Try again.",
+      "INVALID_ITEMS": "Invalid request.",
+      "EMPTY_REQUEST": "Choose at least one piece (up to 50 per line).",
+      "TOO_MANY_PIECES": "Request at most {max} pieces at a time.",
+      "NO_ACTIVE_CONTRACT": "This client has no active contract.",
+      "NOT_ENOUGH": "Not enough “{category}”: {requested} requested, {available} available.",
+      "NOT_ENOUGH_URGENT": "Not enough urgent pieces now: {requested} marked, {available} available.",
+      "PROJECT_NOT_READY": "The project isn't ready for requests yet (missing the “Fila de Criacao” state or the category labels).",
+      "PORTAL_UNAVAILABLE": "Couldn't check the contract right now. Try again in a moment.",
+      "REWORK_STATE_MISSING": "The project has no rework state.",
+      "REASON_REQUIRED": "Say what needs to change."
+    }
   }
 }

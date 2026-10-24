@@ -244,7 +244,7 @@ export const coreRoutes: RouteConfigEntry[] = [
             ),
           ]),
 
-          // Dashboard (Metabase embed) - Pespo
+          // Painel de peças (antes, embed do Metabase) - Pespo
           layout("./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/layout.tsx", [
             route(
               ":workspaceSlug/projects/:projectId/dashboard",
@@ -401,13 +401,6 @@ export const coreRoutes: RouteConfigEntry[] = [
               route(
                 ":workspaceSlug/settings/projects/:projectId/automations",
                 "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/automations/page.tsx"
-              ),
-            ]),
-            // Project Dashboard (Metabase embed) - Pespo
-            layout("./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/dashboard/layout.tsx", [
-              route(
-                ":workspaceSlug/settings/projects/:projectId/dashboard",
-                "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/dashboard/page.tsx"
               ),
             ]),
           ]),

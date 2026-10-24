@@ -4,10 +4,10 @@
  * See the LICENSE file for details.
  */
 
-import { useTranslation } from "@plane/i18n";
+import { Shapes } from "lucide-react";
 import { observer } from "mobx-react";
+import { useTranslation } from "@plane/i18n";
 import { useParams } from "next/navigation";
-import { DashboardIcon } from "@plane/propel/icons";
 import { Breadcrumbs, Header } from "@plane/ui";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
@@ -16,7 +16,8 @@ import { CommonProjectBreadcrumbs } from "@/components/breadcrumbs/common";
 // hooks
 import { useProject } from "@/hooks/store/use-project";
 
-export const ProjectDashboardEmbedHeader = observer(function ProjectDashboardEmbedHeader() {
+// Pespo: cabeçalho do painel de peças (antes, do embed do Metabase).
+export const ProjectPiecesPanelHeader = observer(function ProjectPiecesPanelHeader() {
   const { t } = useTranslation();
   const { workspaceSlug, projectId } = useParams();
   const { loader: currentProjectDetailsLoader } = useProject();
@@ -30,9 +31,9 @@ export const ProjectDashboardEmbedHeader = observer(function ProjectDashboardEmb
             <Breadcrumbs.Item
               component={
                 <BreadcrumbLink
-                  label={t("ui.dashboard")}
+                  label={t("pieces_panel.title")}
                   href={`/${workspaceSlug}/projects/${projectId}/dashboard/`}
-                  icon={<DashboardIcon className="h-4 w-4 text-tertiary" />}
+                  icon={<Shapes className="h-4 w-4 text-tertiary" />}
                   isLast
                 />
               }

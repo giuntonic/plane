@@ -433,5 +433,89 @@
       "join": "Entrar no projeto",
       "joining": "Entrando..."
     }
+  },
+  "pieces_panel": {
+    "title": "Peças",
+    "contract_line": "Contrato {type} · {start} a {end}",
+    "expiring": "{count, plural, =0 {O contrato vence hoje} one {O contrato vence em # dia} many {O contrato vence em # dias} other {O contrato vence em # dias}}",
+    "expired": "O contrato venceu em {date}",
+    "status": {
+      "no_client": "Este projeto não está ligado a um cliente no portal do cliente, então não há saldo de contrato aqui.",
+      "unavailable": "Não deu para ler o contrato no portal do cliente agora. As peças aparecem; o saldo, não.",
+      "no_contract": "Este cliente não tem contrato ativo."
+    },
+    "stats": {
+      "total": "Peças",
+      "in_production": "Em produção",
+      "delivered_month": "Entregues em {month}",
+      "reworks": "Refações",
+      "reworks_split": "{internal} internas · {client} pelo cliente"
+    },
+    "balance": {
+      "title": "Saldo do contrato",
+      "empty": "Sem contrato ativo.",
+      "used_of": "{used} de {contracted}",
+      "tooltip": "{used} usadas de {contracted} contratadas",
+      "available": "{count, plural, one {# disponível} many {# disponíveis} other {# disponíveis}}",
+      "over": "{count, plural, one {# acima do contratado} many {# acima do contratado} other {# acima do contratado}}",
+      "urgent": "Urgentes disponíveis agora: {count} (limite do contrato {limit}; no máximo {max} abertas ao mesmo tempo, {open} abertas agora)"
+    },
+    "by_state": {
+      "title": "Peças por situação",
+      "backlog": "Na fila",
+      "unstarted": "A fazer",
+      "started": "Em produção",
+      "completed": "Entregues",
+      "cancelled": "Canceladas"
+    },
+    "reworks": {
+      "title": "Refações",
+      "now": "{count, plural, =0 {Nenhuma peça em refação agora} one {# peça em refação agora} many {# peças em refação agora} other {# peças em refação agora}}",
+      "most": "Mais refeitas",
+      "times": "{count, plural, one {# vez} many {# vezes} other {# vezes}}"
+    },
+    "delivered": {
+      "title": "Entregues em {month}",
+      "empty": "Nada entregue neste mês ainda."
+    },
+    "request": {
+      "open": "Solicitar peças",
+      "title": "Solicitar peças",
+      "description": "As peças novas entram na fila de criação. O saldo é conferido de novo no envio.",
+      "category": "Categoria",
+      "quantity": "Quantidade",
+      "available_short": "{count} disponíveis",
+      "urgent": "Urgente",
+      "needs_print": "Precisa de impressão",
+      "desired_date": "Data desejada",
+      "add_line": "Adicionar linha",
+      "remove_line": "Remover linha",
+      "briefing_placeholder": "Briefing: para que são as peças, referências, textos (opcional)",
+      "summary": "{count, plural, one {# peça} many {# peças} other {# peças}}, {urgent} urgente(s)",
+      "empty": "Escolha ao menos uma peça.",
+      "submit": "Enviar solicitação",
+      "success": "{count, plural, one {# peça solicitada} many {# peças solicitadas} other {# peças solicitadas}}",
+      "error": "Solicitação não enviada"
+    },
+    "rework": {
+      "button": "Pedir refação",
+      "placeholder": "O que precisa mudar?",
+      "submit": "Enviar",
+      "success": "Refação pedida: a peça voltou para a criação",
+      "error": "Não foi possível pedir a refação"
+    },
+    "errors": {
+      "generic": "Algo deu errado. Tente de novo.",
+      "INVALID_ITEMS": "Pedido inválido.",
+      "EMPTY_REQUEST": "Escolha ao menos uma peça (até 50 por linha).",
+      "TOO_MANY_PIECES": "Peça no máximo {max} peças por solicitação.",
+      "NO_ACTIVE_CONTRACT": "Este cliente não tem contrato ativo.",
+      "NOT_ENOUGH": "Não há “{category}” suficiente: {requested} pedidas, {available} disponíveis.",
+      "NOT_ENOUGH_URGENT": "Não há peças urgentes suficientes agora: {requested} marcadas, {available} disponíveis.",
+      "PROJECT_NOT_READY": "O projeto ainda não está pronto para pedidos (falta o estado “Fila de Criacao” ou as etiquetas de categoria).",
+      "PORTAL_UNAVAILABLE": "Não deu para conferir o contrato agora. Tente de novo em instantes.",
+      "REWORK_STATE_MISSING": "O projeto não tem um estado de retrabalho.",
+      "REASON_REQUIRED": "Diga o que precisa mudar."
+    }
   }
 }

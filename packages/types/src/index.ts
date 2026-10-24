@@ -46,6 +46,7 @@ export * from "./google-calendar";
 export * from "./google-drive";
 export * from "./issue-checklist";
 export * from "./entity-template";
+export * from "./project-pieces";
 export * from "./reaction";
 export * from "./intake";
 export * from "./rich-filters";

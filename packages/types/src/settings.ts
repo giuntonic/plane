@@ -39,8 +39,7 @@ export type TProjectSettingsTabs =
   | "labels"
   | "estimates"
   | "custom_fields"
-  | "automations"
-  | "dashboard";
+  | "automations";
 export type TProjectSettingsItem = {
   key: TProjectSettingsTabs;
   i18n_label: string;

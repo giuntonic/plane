@@ -8,12 +8,13 @@ import { Outlet } from "react-router";
 // components
 import { AppHeader } from "@/components/core/app-header";
 import { ContentWrapper } from "@/components/core/content-wrapper";
-import { ProjectDashboardEmbedHeader } from "@/components/projects/dashboard-embed/header";
+import { ProjectPiecesPanelHeader } from "@/components/projects/pieces-panel/header";
 
-export default function ProjectDashboardEmbedLayout() {
+// Pespo: painel de peças do projeto (a rota /dashboard era do embed do Metabase).
+export default function ProjectPiecesPanelLayout() {
   return (
     <>
-      <AppHeader header={<ProjectDashboardEmbedHeader />} />
+      <AppHeader header={<ProjectPiecesPanelHeader />} />
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>

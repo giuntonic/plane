@@ -18,7 +18,9 @@ from plane.app.views import (
     UserProjectRolesEndpoint,
     ProjectArchiveUnarchiveEndpoint,
     ProjectMemberPreferenceEndpoint,
-    ProjectMetabaseEmbedEndpoint,
+    ProjectPiecesPanelEndpoint,
+    ProjectPiecesRequestEndpoint,
+    IssueReworkRequestEndpoint,
 )
 
 
@@ -130,9 +132,20 @@ urlpatterns = [
         ProjectMemberPreferenceEndpoint.as_view(),
         name="project-member-preference",
     ),
+    # Pespo: painel de peças (substitui o embed do Metabase), pedido de peças e pedido de refação
     path(
-        "workspaces/<str:slug>/projects/<uuid:project_id>/metabase-embed/",
-        ProjectMetabaseEmbedEndpoint.as_view(),
-        name="project-metabase-embed",
+        "workspaces/<str:slug>/projects/<uuid:project_id>/pieces/",
+        ProjectPiecesPanelEndpoint.as_view(),
+        name="project-pieces-panel",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/pieces/request/",
+        ProjectPiecesRequestEndpoint.as_view(),
+        name="project-pieces-request",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/request-rework/",
+        IssueReworkRequestEndpoint.as_view(),
+        name="project-issue-request-rework",
     ),
 ]

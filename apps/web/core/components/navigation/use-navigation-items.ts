@@ -6,6 +6,7 @@
 
 import { useMemo, useCallback } from "react";
 // plane imports
+import { Shapes } from "lucide-react";
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import {
   CycleIcon,
@@ -102,11 +103,12 @@ export const useNavigationItems = ({
         sortOrder: 6,
       },
       {
-        i18n_key: "sidebar.dashboard",
+        // Pespo: painel de peças do cliente (antes, o embed do Metabase)
+        i18n_key: "sidebar.pieces",
         key: "dashboard",
-        name: "Dashboard",
+        name: "Peças",
         href: `/${workspaceSlug}/projects/${projectId}/dashboard`,
-        icon: DashboardIcon,
+        icon: Shapes,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
         shouldRender: true,
         sortOrder: 7,
