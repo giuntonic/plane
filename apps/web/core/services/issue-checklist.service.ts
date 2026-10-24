@@ -12,7 +12,6 @@ import type {
   TIssueChecklistItem,
   TIssueChecklistItemPayload,
   TIssueChecklistPayload,
-  TIssueChecklistProgress,
   TIssueConvertToChecklistResponse,
 } from "@plane/types";
 // services
@@ -57,14 +56,6 @@ export class IssueChecklistService extends APIService {
     data: TIssueChecklistItemPayload
   ): Promise<TIssueChecklistItem> {
     return this.patch(`${this.baseUrl(workspaceSlug, projectId, issueId)}${id}/`, data)
-      .then((response) => response?.data)
-      .catch((error) => {
-        throw error?.response?.data;
-      });
-  }
-
-  async progress(workspaceSlug: string, projectId: string): Promise<TIssueChecklistProgress> {
-    return this.get(`/api/workspaces/${workspaceSlug}/projects/${projectId}/checklist-progress/`)
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;

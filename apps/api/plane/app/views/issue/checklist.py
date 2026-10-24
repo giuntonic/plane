@@ -3,7 +3,7 @@
 # See the LICENSE file for details.
 
 # Django imports
-from django.db.models import Count, Max, Q
+from django.db.models import Max
 from django.utils import timezone
 
 # Third Party imports
@@ -220,25 +220,3 @@ class IssueChecklistDetailEndpoint(BaseAPIView):
         IssueChecklistItem.objects.filter(checklist=checklist).delete(soft=False)
         checklist.delete(soft=False)
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class ProjectChecklistProgressEndpoint(BaseAPIView):
-    """Pespo: progresso das subtarefas de cada item do projeto, para o "3/5" dos cards da lista e do
-    quadro. Só itens com alguma linha aparecem: ``{issue_id: {"done": n, "total": m}}``."""
-
-    @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])
-    def get(self, request, slug, project_id):
-        rows = (
-            IssueChecklistItem.objects.filter(
-                workspace__slug=slug,
-                project_id=project_id,
-                issue__deleted_at__isnull=True,
-                issue__archived_at__isnull=True,
-            )
-            .values("issue_id")
-            .annotate(total=Count("id"), done=Count("id", filter=Q(is_completed=True)))
-        )
-        return Response(
-            {str(row["issue_id"]): {"done": row["done"], "total": row["total"]} for row in rows},
-            status=status.HTTP_200_OK,
-        )

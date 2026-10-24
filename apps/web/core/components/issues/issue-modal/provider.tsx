@@ -15,7 +15,7 @@ import { EIssuesStoreType } from "@plane/types";
 // components
 import type { TCreateSubWorkItemProps, THandleTemplateChangeProps } from "@/components/issues/issue-modal/context";
 import { IssueModalContext } from "@/components/issues/issue-modal/context";
-import { getChecklistProgressKey } from "@/components/issues/issue-detail-widgets/checklist/helper";
+import { getCardExtrasKey } from "@/components/issues/card-extras";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useIssues } from "@/hooks/store/use-issues";
@@ -98,7 +98,7 @@ export const IssueModalProvider = observer(function IssueModalProvider(props: TI
       fetchIssue(workspaceSlug, projectId, parentId),
       fetchSubIssues(workspaceSlug, projectId, parentId),
       projectIssues.fetchIssuesWithExistingPagination(workspaceSlug, projectId, "mutation"),
-      mutate(getChecklistProgressKey(projectId)),
+      mutate(getCardExtrasKey(projectId)),
     ]);
   };
 

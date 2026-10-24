@@ -42,7 +42,7 @@ import { useProjectState } from "@/hooks/store/use-project-state";
 import { useAppRouter } from "@/hooks/use-app-router";
 import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
 import { usePlatformOS } from "@/hooks/use-platform-os";
-import { useChecklistProgress } from "@/components/issues/issue-detail-widgets/checklist/helper";
+import { useCardExtras } from "@/components/issues/card-extras";
 // local components
 import { IssuePropertyLabels } from "./labels";
 import { WithDisplayPropertiesHOC } from "./with-display-properties-HOC";
@@ -84,8 +84,8 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
   const stateDetails = getStateById(issue.state_id);
   const subIssueCount = issue?.sub_issues_count ?? 0;
   // Pespo: progresso das subtarefas (checklist), aparece junto com a contagem de sub-itens.
-  const { data: checklistProgress } = useChecklistProgress(workspaceSlug?.toString(), issue.project_id ?? undefined);
-  const checklist = checklistProgress?.[issue.id];
+  const { data: cardExtras } = useCardExtras(workspaceSlug?.toString(), issue.project_id ?? undefined);
+  const checklist = cardExtras?.[issue.id]?.checklist;
 
   const issueOperations = useMemo(
     () => ({

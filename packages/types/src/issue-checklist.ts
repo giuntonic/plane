@@ -60,5 +60,16 @@ export type TIssueConvertToChecklistResponse = {
   project_id: string;
 };
 
-/** …/projects/<id>/checklist-progress/: only work items with at least one line. */
-export type TIssueChecklistProgress = Record<string, { done: number; total: number }>;
+/**
+ * …/projects/<id>/card-extras/: what the list and board cards show besides the work item fields. Only work
+ * items with something to show are present.
+ */
+export type TIssueCardExtras = Record<
+  string,
+  {
+    /** Checklist lines done / total, across every list of the work item. */
+    checklist?: { done: number; total: number };
+    /** Cover image (an image attachment of the work item), as an API path. */
+    cover?: string;
+  }
+>;

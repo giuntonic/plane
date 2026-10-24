@@ -25,7 +25,8 @@ import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { issueChecklistService } from "@/services/issue-checklist.service";
 // local imports
 import type { TChecklistOperations } from "./helper";
-import { getChecklistProgressKey, getIssueChecklistKey } from "./helper";
+import { getCardExtrasKey } from "@/components/issues/card-extras";
+import { getIssueChecklistKey } from "./helper";
 
 type Props = {
   item: TIssueChecklistItem;
@@ -54,7 +55,7 @@ const ConvertToWorkItemMenu = observer(function ConvertToWorkItemMenu(props: {
       const created = await issueChecklistService.convertToWorkItem(slug, projectId, item.issue, item.id, asSubItem);
       await Promise.allSettled([
         mutate(getIssueChecklistKey(item.issue)),
-        mutate(getChecklistProgressKey(projectId)),
+        mutate(getCardExtrasKey(projectId)),
         fetchIssue(slug, projectId, item.issue),
         asSubItem ? fetchSubIssues(slug, projectId, item.issue) : Promise.resolve(),
       ]);

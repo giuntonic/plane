@@ -487,5 +487,12 @@
       "error": "Could not turn it into a sub-task",
       "forbidden": "Only project admins or whoever created the work item can do this."
     }
+  },
+  "issue_cover": {
+    "set": "Use as cover",
+    "remove": "Remove cover",
+    "badge": "Cover",
+    "set_done": "Cover updated",
+    "error": "Could not change the cover"
   }
 }

@@ -23,7 +23,8 @@ from plane.app.views import (
     IssueChecklistItemConvertEndpoint,
     IssueCopyStructureEndpoint,
     IssueConvertToChecklistEndpoint,
-    ProjectChecklistProgressEndpoint,
+    ProjectCardExtrasEndpoint,
+    IssueCoverEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -201,10 +202,16 @@ urlpatterns = [
         IssueChecklistDetailEndpoint.as_view(),
         name="project-issue-checklist-detail",
     ),
+    # Pespo: extras dos cards (progresso das subtarefas, capa) e a capa do item
     path(
-        "workspaces/<str:slug>/projects/<uuid:project_id>/checklist-progress/",
-        ProjectChecklistProgressEndpoint.as_view(),
-        name="project-checklist-progress",
+        "workspaces/<str:slug>/projects/<uuid:project_id>/card-extras/",
+        ProjectCardExtrasEndpoint.as_view(),
+        name="project-card-extras",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/cover/",
+        IssueCoverEndpoint.as_view(),
+        name="project-issue-cover",
     ),
     # Pespo: cópia do item com subtarefas, links e sub-itens
     path(

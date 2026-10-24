@@ -11,9 +11,15 @@ export type TIssueAttachment = {
   attributes: {
     name: string;
     size: number;
+    type?: string;
+    /** Pespo: this image is the cover of the work item card. */
+    pespo_cover?: boolean;
   };
   asset_url: string;
   issue_id: string;
+  /** The list endpoint serializes the foreign keys as `issue` / `project`. */
+  issue?: string;
+  project?: string;
   // required
   updated_at: string;
   updated_by: string;

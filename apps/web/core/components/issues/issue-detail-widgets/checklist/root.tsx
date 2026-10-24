@@ -9,19 +9,16 @@ import { observer } from "mobx-react";
 import { useSWRConfig } from "swr";
 // plane imports
 import { useTranslation } from "@plane/i18n";
-import type { TIssueChecklistProgress, TIssueServiceType } from "@plane/types";
+import type { TIssueCardExtras, TIssueServiceType } from "@plane/types";
 import { Collapsible, CollapsibleButton } from "@plane/ui";
 import { countCompletedChecklistItems } from "@plane/utils";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // local imports
 import { IssueChecklistCollapsibleContent } from "./content";
-import {
-  getChecklistProgressKey,
-  patchChecklistProgress,
-  useIssueChecklistItems,
-  useIssueNamedChecklists,
-} from "./helper";
+import { getCardExtrasKey, patchChecklistProgress } from "@/components/issues/card-extras";
+// local imports
+import { useIssueChecklistItems, useIssueNamedChecklists } from "./helper";
 import { IssueChecklistActionButton } from "./quick-action-button";
 
 type Props = {
@@ -50,8 +47,8 @@ export const ChecklistCollapsible = observer(function ChecklistCollapsible(props
   useEffect(() => {
     if (!data) return;
     void mutate(
-      getChecklistProgressKey(projectId),
-      (current?: TIssueChecklistProgress) => patchChecklistProgress(current, issueId, completed, data.length),
+      getCardExtrasKey(projectId),
+      (current?: TIssueCardExtras) => patchChecklistProgress(current, issueId, completed, data.length),
       { revalidate: false }
     );
   }, [data, completed, issueId, projectId, mutate]);

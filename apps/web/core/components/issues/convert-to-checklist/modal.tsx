@@ -18,10 +18,8 @@ import { EIssuesStoreType } from "@plane/types";
 import { ModalCore } from "@plane/ui";
 import { generateWorkItemLink } from "@plane/utils";
 // components
-import {
-  getChecklistProgressKey,
-  getIssueChecklistKey,
-} from "@/components/issues/issue-detail-widgets/checklist/helper";
+import { getCardExtrasKey } from "@/components/issues/card-extras";
+import { getIssueChecklistKey } from "@/components/issues/issue-detail-widgets/checklist/helper";
 import { ParentIssuesListModal } from "@/components/issues/parent-issues-list-modal";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
@@ -114,8 +112,8 @@ export const ConvertToChecklistModal = observer(function ConvertToChecklistModal
       issue.parent_id ? fetchSubIssues(workspaceSlug, projectId, issue.parent_id) : Promise.resolve(),
       fetchIssue(workspaceSlug, target.projectId, target.id),
       mutate(getIssueChecklistKey(target.id)),
-      mutate(getChecklistProgressKey(target.projectId)),
-      mutate(getChecklistProgressKey(projectId)),
+      mutate(getCardExtrasKey(target.projectId)),
+      mutate(getCardExtrasKey(projectId)),
     ]);
     // Se o item estava aberto (painel ou página), abre o destino, onde a subtarefa nova está.
     if (peekIssue?.issueId === issue.id)

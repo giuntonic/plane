@@ -6,9 +6,12 @@
 
 import { useTranslation } from "@plane/i18n";
 import { useMemo } from "react";
+import { useSWRConfig } from "swr";
 import { setPromiseToast, TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { TIssueServiceType } from "@plane/types";
 import { EIssueServiceType } from "@plane/types";
+// components
+import { getCardExtrasKey } from "@/components/issues/card-extras";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // types
@@ -36,8 +39,9 @@ export const useAttachmentOperations = (
 ): TAttachmentHelpers => {
   const { t } = useTranslation();
   const {
-    attachment: { createAttachment, removeAttachment, getAttachmentsUploadStatusByIssueId },
+    attachment: { createAttachment, removeAttachment, fetchAttachments, getAttachmentsUploadStatusByIssueId },
   } = useIssueDetail(issueServiceType);
+  const { mutate } = useSWRConfig();
 
   const attachmentOperations: TAttachmentOperations = useMemo(
     () => ({
@@ -57,11 +61,15 @@ export const useAttachmentOperations = (
         });
 
         await attachmentUploadPromise;
+        // Pespo: a primeira imagem vira a capa do card no servidor; traz a marca e atualiza o quadro.
+        void fetchAttachments(workspaceSlug, projectId, issueId);
+        void mutate(getCardExtrasKey(projectId));
       },
       remove: async (attachmentId) => {
         try {
           if (!workspaceSlug || !projectId || !issueId) throw new Error("Missing required fields");
           await removeAttachment(workspaceSlug, projectId, issueId, attachmentId);
+          void mutate(getCardExtrasKey(projectId)); // Pespo: a capa pode ter saído junto
           setToast({
             message: t("ui.the_attachment_has_been_successfully_removed"),
             type: TOAST_TYPE.SUCCESS,
@@ -76,7 +84,7 @@ export const useAttachmentOperations = (
         }
       },
     }),
-    [workspaceSlug, projectId, issueId, createAttachment, removeAttachment]
+    [workspaceSlug, projectId, issueId, createAttachment, removeAttachment, fetchAttachments, mutate, t]
   );
   const attachmentsUploadStatus = getAttachmentsUploadStatusByIssueId(issueId);
 

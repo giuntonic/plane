@@ -487,5 +487,12 @@
       "error": "Não foi possível transformar em subtarefa",
       "forbidden": "Só admins do projeto ou quem criou o item podem fazer isso."
     }
+  },
+  "issue_cover": {
+    "set": "Usar como capa",
+    "remove": "Remover capa",
+    "badge": "Capa",
+    "set_done": "Capa atualizada",
+    "error": "Não foi possível mudar a capa"
   }
 }

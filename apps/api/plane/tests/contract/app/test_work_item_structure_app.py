@@ -12,6 +12,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from plane.db.models import (
+    FileAsset,
     Issue,
     IssueAssignee,
     IssueChecklist,
@@ -331,9 +332,32 @@ class TestConvertToChecklist:
         assert Issue.issue_objects.filter(pk=issue.id).exists()
 
 
+def _attachment(issue, name="arte.png", mime="image/png", uploaded=True):
+    return FileAsset.objects.create(
+        asset=f"{issue.workspace_id}/{name}",
+        attributes={"name": name, "type": mime, "size": 10},
+        issue=issue,
+        project=issue.project,
+        workspace=issue.workspace,
+        entity_type=FileAsset.EntityTypeContext.ISSUE_ATTACHMENT,
+        entity_identifier=str(issue.id),
+        is_uploaded=uploaded,
+    )
+
+
+def _extras_url(workspace, project):
+    return reverse("project-card-extras", kwargs={"slug": workspace.slug, "project_id": project.id})
+
+
+def _cover_url(workspace, project, issue):
+    return reverse(
+        "project-issue-cover", kwargs={"slug": workspace.slug, "project_id": project.id, "issue_id": issue.id}
+    )
+
+
 @pytest.mark.contract
-class TestChecklistProgress:
-    def test_counts_per_work_item(self, session_client, workspace, project, states):
+class TestCardExtras:
+    def test_checklist_progress_per_work_item(self, session_client, workspace, project, states):
         first = _issue(project, states["todo"], "Com subtarefas")
         _line(first, "a", is_completed=True)
         parent = _line(first, "b")
@@ -342,8 +366,60 @@ class TestChecklistProgress:
         archived = _issue(project, states["done"], "Arquivado", archived_at=date(2026, 10, 1))
         _line(archived, "x")
 
-        response = session_client.get(
-            reverse("project-checklist-progress", kwargs={"slug": workspace.slug, "project_id": project.id})
-        )
+        response = session_client.get(_extras_url(workspace, project))
         assert response.status_code == status.HTTP_200_OK
-        assert response.data == {str(first.id): {"done": 2, "total": 3}}
+        assert response.data == {str(first.id): {"checklist": {"done": 2, "total": 3}}}
+
+    def test_cover_set_change_and_remove(self, session_client, workspace, project, states):
+        issue = _issue(project, states["todo"], "Peça")
+        first = _attachment(issue, "a.png")
+        second = _attachment(issue, "b.jpg", mime="image/jpeg")
+        pdf = _attachment(issue, "briefing.pdf", mime="application/pdf")
+
+        assert (
+            session_client.post(_cover_url(workspace, project, issue), {"attachment_id": str(first.id)}).status_code
+            == 200
+        )
+        response = session_client.post(
+            _cover_url(workspace, project, issue), {"attachment_id": str(second.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_200_OK, response.data
+        first.refresh_from_db()
+        second.refresh_from_db()
+        assert "pespo_cover" not in first.attributes and second.attributes["pespo_cover"] is True
+        assert second.attributes["name"] == "b.jpg"  # os outros atributos continuam
+        extras = session_client.get(_extras_url(workspace, project)).data
+        assert extras[str(issue.id)]["cover"].endswith(f"/issues/{issue.id}/attachments/{second.id}/")
+
+        refused = session_client.post(
+            _cover_url(workspace, project, issue), {"attachment_id": str(pdf.id)}, format="json"
+        )
+        assert refused.status_code == status.HTTP_400_BAD_REQUEST and refused.data["code"] == "INVALID_COVER"
+
+        removed = session_client.post(_cover_url(workspace, project, issue), {"attachment_id": None}, format="json")
+        assert removed.data["cover"] is None
+        assert str(issue.id) not in session_client.get(_extras_url(workspace, project)).data
+
+    def test_attachment_of_another_work_item_is_refused(self, session_client, workspace, project, states):
+        issue = _issue(project, states["todo"], "A")
+        other = _issue(project, states["todo"], "B")
+        image = _attachment(other)
+        response = session_client.post(
+            _cover_url(workspace, project, issue), {"attachment_id": str(image.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_first_image_becomes_the_cover(self, project, states):
+        from plane.utils.issue_cover import cover_on_first_image
+
+        issue = _issue(project, states["todo"], "Peça")
+        pdf = _attachment(issue, "briefing.pdf", mime="application/pdf")
+        cover_on_first_image(pdf)
+        first = _attachment(issue, "a.png")
+        cover_on_first_image(first)
+        second = _attachment(issue, "b.png")
+        cover_on_first_image(second)
+        for asset in (pdf, first, second):
+            asset.refresh_from_db()
+        assert first.attributes.get("pespo_cover") is True
+        assert "pespo_cover" not in pdf.attributes and "pespo_cover" not in second.attributes
