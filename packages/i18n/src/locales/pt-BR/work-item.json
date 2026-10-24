@@ -494,5 +494,49 @@
     "badge": "Capa",
     "set_done": "Capa atualizada",
     "error": "Não foi possível mudar a capa"
+  },
+  "issue_recurrence": {
+    "label": "Repetir",
+    "none": "Não repete",
+    "frequency": {
+      "none": "Não repete",
+      "daily": "Diariamente",
+      "weekly": "Semanalmente",
+      "monthly": "Mensalmente",
+      "yearly": "Anualmente"
+    },
+    "every": "A cada",
+    "unit": {
+      "daily": "{count, plural, one {dia} many {dias} other {dias}}",
+      "weekly": "{count, plural, one {semana} many {semanas} other {semanas}}",
+      "monthly": "{count, plural, one {mês} many {meses} other {meses}}",
+      "yearly": "{count, plural, one {ano} many {anos} other {anos}}"
+    },
+    "summary": {
+      "daily": "{count, plural, one {Todo dia} many {A cada # dias} other {A cada # dias}}",
+      "weekly": "{count, plural, one {Toda semana} many {A cada # semanas} other {A cada # semanas}}",
+      "monthly": "{count, plural, one {Todo mês} many {A cada # meses} other {A cada # meses}}",
+      "yearly": "{count, plural, one {Todo ano} many {A cada # anos} other {A cada # anos}}"
+    },
+    "weekday": {
+      "0": "seg",
+      "1": "ter",
+      "2": "qua",
+      "3": "qui",
+      "4": "sex",
+      "5": "sáb",
+      "6": "dom"
+    },
+    "on_days": "Nos dias",
+    "end_date": "Até (opcional)",
+    "next": "Próxima cópia: {date}",
+    "ended": "A série acabou",
+    "help": "Em cada data, uma cópia deste item (com subtarefas, checklists e sub-itens) é criada com prazo naquele dia.",
+    "save": "Salvar",
+    "stop": "Parar de repetir",
+    "saved": "Repetição salva",
+    "stopped": "O item não se repete mais",
+    "error": "Não foi possível salvar a repetição",
+    "card_tooltip": "Item recorrente"
   }
 }

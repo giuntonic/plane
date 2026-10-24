@@ -10,7 +10,7 @@ import { xor } from "lodash-es";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // icons
-import { ListChecks, Paperclip } from "lucide-react";
+import { ListChecks, Paperclip, Repeat } from "lucide-react";
 // i18n
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, StartDatePropertyIcon, ViewsIcon, DueDatePropertyIcon } from "@plane/propel/icons";
@@ -86,6 +86,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
   // Pespo: progresso das subtarefas (checklist), aparece junto com a contagem de sub-itens.
   const { data: cardExtras } = useCardExtras(workspaceSlug?.toString(), issue.project_id ?? undefined);
   const checklist = cardExtras?.[issue.id]?.checklist;
+  const isRecurring = !!cardExtras?.[issue.id]?.recurring;
 
   const issueOperations = useMemo(
     () => ({
@@ -468,6 +469,15 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
             </div>
           </Tooltip>
         </WithDisplayPropertiesHOC>
+      )}
+
+      {/* Pespo: item recorrente */}
+      {isRecurring && (
+        <Tooltip tooltipContent={t("issue_recurrence.card_tooltip")} isMobile={isMobile} renderByDefault={false}>
+          <div className="flex h-5 flex-shrink-0 items-center justify-center rounded-sm border-[0.5px] border-strong px-1.5">
+            <Repeat className="h-3 w-3 flex-shrink-0" strokeWidth={2} />
+          </div>
+        </Tooltip>
       )}
 
       {/* attachments */}

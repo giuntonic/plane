@@ -25,6 +25,7 @@ from plane.app.views import (
     IssueConvertToChecklistEndpoint,
     ProjectCardExtrasEndpoint,
     IssueCoverEndpoint,
+    IssueRecurrenceEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -212,6 +213,12 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/cover/",
         IssueCoverEndpoint.as_view(),
         name="project-issue-cover",
+    ),
+    # Pespo: item recorrente (regra de repetição)
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/recurrence/",
+        IssueRecurrenceEndpoint.as_view(),
+        name="project-issue-recurrence",
     ),
     # Pespo: cópia do item com subtarefas, links e sub-itens
     path(

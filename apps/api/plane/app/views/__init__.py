@@ -198,6 +198,7 @@ from .issue.checklist import (
     IssueChecklistDetailEndpoint,
 )
 from .issue.card import ProjectCardExtrasEndpoint, IssueCoverEndpoint
+from .issue.recurrence import IssueRecurrenceEndpoint
 from .issue.structure import (
     IssueCopyStructureEndpoint,
     IssueChecklistItemConvertEndpoint,

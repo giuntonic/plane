@@ -344,6 +344,7 @@ CELERY_IMPORTS = (
     "plane.bgtasks.issue_description_version_sync",
     # Pespo
     "plane.bgtasks.piece_briefing_signals_task",
+    "plane.bgtasks.issue_recurrence_task",
 )
 
 FILE_SIZE_LIMIT = int(os.environ.get("FILE_SIZE_LIMIT", 5242880))

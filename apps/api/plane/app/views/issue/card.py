@@ -3,7 +3,7 @@
 # See the LICENSE file for details.
 
 """Pespo: o que os cards da lista e do quadro mostram além dos campos do item (progresso das
-subtarefas, capa), numa requisição por projeto; e a capa do item."""
+subtarefas, capa, repetição), numa requisição por projeto; e a capa do item."""
 
 # Django imports
 from django.db.models import Count, Q
@@ -15,12 +15,12 @@ from rest_framework.response import Response
 # Module imports
 from .. import BaseAPIView
 from plane.app.permissions import allow_permission, ROLE
-from plane.db.models import FileAsset, Issue, IssueChecklistItem
+from plane.db.models import FileAsset, Issue, IssueChecklistItem, IssueRecurrence
 from plane.utils.issue_cover import COVER_FLAG, cover_url, is_image_attachment, set_issue_cover
 
 
 class ProjectCardExtrasEndpoint(BaseAPIView):
-    """``{issue_id: {"checklist": {"done", "total"}, "cover": url}}``, só com os itens que têm alguma
+    """``{issue_id: {"checklist": {"done", "total"}, "cover": url, "recurring": true}}``, só com os itens que têm alguma
     coisa. Itens apagados e arquivados ficam de fora."""
 
     @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])
@@ -44,6 +44,11 @@ class ProjectCardExtrasEndpoint(BaseAPIView):
         ).values_list("issue_id", "id")
         for issue_id, asset_id in covers:
             extras.setdefault(str(issue_id), {})["cover"] = cover_url(slug, project_id, issue_id, asset_id)
+        recurring = IssueRecurrence.objects.filter(
+            workspace__slug=slug, project_id=project_id, next_date__isnull=False, **live
+        ).values_list("issue_id", flat=True)
+        for issue_id in recurring:
+            extras.setdefault(str(issue_id), {})["recurring"] = True
         return Response(extras, status=status.HTTP_200_OK)
 
 

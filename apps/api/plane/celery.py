@@ -61,6 +61,11 @@ app.conf.beat_schedule = {
         "task": "plane.bgtasks.google_calendar_sync_task.pull_google_calendars",
         "schedule": schedule(run_every=timedelta(minutes=2)),
     },
+    # Pespo: cópias dos itens recorrentes que vencem hoje (horário de Brasília).
+    "pespo-create-recurring-issues": {
+        "task": "plane.bgtasks.issue_recurrence_task.create_recurring_issues",
+        "schedule": crontab(minute=7),
+    },
     # Occurs once every day
     "check-every-day-to-delete-hard-delete": {
         "task": "plane.bgtasks.deletion_task.hard_delete",

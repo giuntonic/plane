@@ -71,5 +71,32 @@ export type TIssueCardExtras = Record<
     checklist?: { done: number; total: number };
     /** Cover image (an image attachment of the work item), as an API path. */
     cover?: string;
+    /** The work item has an active repeat rule. */
+    recurring?: boolean;
   }
 >;
+
+export type TIssueRecurrenceFrequency = "daily" | "weekly" | "monthly" | "yearly";
+
+/** …/issues/<id>/recurrence/: the repeat rule of a work item (copies are created on each date). */
+export type TIssueRecurrence = {
+  id: string;
+  issue: string;
+  frequency: TIssueRecurrenceFrequency;
+  interval: number;
+  /** 0 = Monday … 6 = Sunday (weekly only). */
+  weekdays: number[];
+  anchor_date: string;
+  end_date: string | null;
+  /** Next copy to create; null = the series ended. */
+  next_date: string | null;
+  created_count: number;
+  last_created_issue: string | null;
+};
+
+export type TIssueRecurrencePayload = {
+  frequency: TIssueRecurrenceFrequency;
+  interval: number;
+  weekdays: number[];
+  end_date: string | null;
+};
