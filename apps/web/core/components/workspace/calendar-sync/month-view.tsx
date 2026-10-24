@@ -94,12 +94,13 @@ const MonthDayCell = observer(function MonthDayCell(
           }
         )}
       >
-        {calendarDate.day}
+        {calendarDate.date.getDate()}
       </span>
       {entry && <DayEntries {...props} entry={entry} limit={hidden > 0 ? MAX_VISIBLE - 1 : MAX_VISIBLE} />}
       {entry && hidden > 0 && (
         <Popover
           popperPosition="bottom-start"
+          popoverClassName="h-auto justify-start"
           buttonClassName="w-full rounded-sm px-1 py-0.5 text-left text-caption-sm-medium text-tertiary hover:bg-layer-1"
           button={<span>{t("google_calendar_integration.calendar_view.more", { count: hidden + 1 })}</span>}
           panelClassName="w-64 rounded-md border-[0.5px] border-subtle-1 bg-surface-1 p-2 shadow-raised-200"

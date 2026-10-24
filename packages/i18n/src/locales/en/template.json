@@ -369,7 +369,7 @@
     "make_workspace_wide": "Make available in every project",
     "scope_project": "One project",
     "scope_workspace": "Every project",
-    "summary_items": "{count, plural, one {# item} other {# items}}",
+    "summary_items": "{count, plural, one {# item or sub-task} other {# items and sub-tasks}}",
     "delete_title": "Delete template",
     "delete_confirmation": "Delete the template “{name}”? What was already created from it stays.",
     "delete_error": "Could not delete the template",

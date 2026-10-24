@@ -5,13 +5,14 @@
  */
 
 import { useState } from "react";
+import { sortBy } from "lodash-es";
 import { AlertTriangle, CalendarClock, Info, Plus, RotateCcw } from "lucide-react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
-import type { TProjectPiecesPanel } from "@plane/types";
+import type { TPieceCategory, TProjectPiecesPanel } from "@plane/types";
 import { Loader } from "@plane/ui";
 import { cn } from "@plane/utils";
 // hooks
@@ -19,7 +20,7 @@ import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // services
 import { projectPiecesService } from "@/services/project-pieces.service";
 // local imports
-import { formatDay, getPiecesPanelKey } from "./helpers";
+import { PIECE_CATEGORIES, formatDay, getPiecesPanelKey } from "./helpers";
 import { PiecesRequestModal } from "./request-modal";
 
 type Props = { workspaceSlug: string; projectId: string };
@@ -115,6 +116,14 @@ export const ProjectPiecesPanel = observer(function ProjectPiecesPanel(props: Pr
     );
 
   const groups = Object.fromEntries(data.by_state_group.map((row) => [row.group, row.count]));
+  // Ordem das categorias como no portal (Post, Reels, Artigo, Anuncio); categoria sem contrato e sem uso não aparece.
+  const balanceRows = sortBy(
+    data.availability.categories.filter((row) => row.contracted > 0 || row.used > 0),
+    (row) => {
+      const index = PIECE_CATEGORIES.indexOf(row.category as TPieceCategory);
+      return index === -1 ? PIECE_CATEGORIES.length : index;
+    }
+  );
   const maxGroup = Math.max(1, ...data.by_state_group.map((row) => row.count));
   const canRequest = data.contract_status === "ok" && !!data.contract;
   const monthName = new Date().toLocaleDateString(currentLocale, { month: "long" });
@@ -179,11 +188,11 @@ export const ProjectPiecesPanel = observer(function ProjectPiecesPanel(props: Pr
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Section title={t("pieces_panel.balance.title")}>
-          {data.availability.categories.length === 0 ? (
+          {balanceRows.length === 0 ? (
             <p className="text-body-xs-regular text-tertiary">{t("pieces_panel.balance.empty")}</p>
           ) : (
             <div className="flex flex-col gap-4">
-              {data.availability.categories.map((row) => (
+              {balanceRows.map((row) => (
                 <BalanceRow key={row.category} {...row} />
               ))}
               <p className="border-t border-subtle pt-3 text-body-xs-regular text-secondary">
@@ -262,7 +271,7 @@ export const ProjectPiecesPanel = observer(function ProjectPiecesPanel(props: Pr
                   workspaceSlug={workspaceSlug}
                   projectId={projectId}
                   id={piece.id}
-                  name={`${piece.category} · ${piece.name}`}
+                  name={piece.name.startsWith(piece.category) ? piece.name : `${piece.category} · ${piece.name}`}
                   extra={new Date(piece.completed_at).toLocaleDateString(currentLocale, {
                     day: "2-digit",
                     month: "2-digit",

@@ -40,6 +40,8 @@ export const PESPO_RELEASES: TPespoRelease[] = [
     fixes: [
       'Calendário: itens de trabalho apareciam de novo como evento da agenda "Plane" do Google, mesmo filtrados.',
       "Notas adesivas ficavam estreitas demais no menor tamanho do bloco da página inicial.",
+      "Calendário: os dias do mês anterior apareciam com números negativos na visão de mês.",
+      "Páginas: a lista de páginas e o editor podiam abrir numa tela de erro por causa do menu de ações da página.",
     ],
   },
   {

@@ -59,6 +59,8 @@ export const PageActions = observer(function PageActions(props: Props) {
   const [_movePageModal, setMovePageModal] = useState(false);
   // params
   const { workspaceSlug } = useParams();
+  // Pespo: useTranslation fica no topo; dentro do useMemo ele muda a ordem dos hooks quando o memo não recalcula.
+  const { t } = useTranslation();
   // page flag
   const { isMovePageEnabled } = usePageFlag({
     workspaceSlug: workspaceSlug?.toString() ?? "",
@@ -82,7 +84,6 @@ export const PageActions = observer(function PageActions(props: Props) {
   // menu items
   const MENU_ITEMS = useMemo(
     function MENU_ITEMS() {
-      const { t } = useTranslation();
       const menuItems: (TContextMenuItem & { key: TPageActions })[] = [
         {
           key: "toggle-lock",
@@ -181,6 +182,7 @@ export const PageActions = observer(function PageActions(props: Props) {
       pageOperations,
       page.id,
       page.name,
+      t,
     ]
   );
   // arrange options

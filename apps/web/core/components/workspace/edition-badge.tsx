@@ -36,6 +36,7 @@ export const WorkspaceEditionBadge = observer(function WorkspaceEditionBadge() {
   return (
     <Popover delay={150} openOnHover>
       <Popover.Button
+        nativeButton={false}
         render={
           <Link
             href={href}
@@ -52,7 +53,8 @@ export const WorkspaceEditionBadge = observer(function WorkspaceEditionBadge() {
         side="top"
         align="start"
         sideOffset={6}
-        className="z-30 w-72 rounded-lg border border-subtle bg-surface-1 p-3 shadow-raised-200"
+        positionerClassName="z-50"
+        className="w-72 rounded-lg border border-subtle bg-surface-1 p-3 shadow-raised-200"
       >
         <div className="flex flex-col gap-1">
           <span className="text-body-sm-medium text-primary">

@@ -456,7 +456,7 @@
       "empty": "No active contract.",
       "used_of": "{used} of {contracted}",
       "tooltip": "{used} used of {contracted} contracted",
-      "available": "{count, plural, one {# available} other {# available}}",
+      "available": "{count, plural, =0 {None available} one {# available} other {# available}}",
       "over": "{count, plural, one {# over the contract} other {# over the contract}}",
       "urgent": "Urgent available now: {count} (contract limit {limit}; at most {max} open at a time, {open} open now)"
     },
@@ -484,7 +484,7 @@
       "description": "New pieces go to the creation queue. The balance is checked again when you send.",
       "category": "Category",
       "quantity": "Quantity",
-      "available_short": "{count} available",
+      "available_short": "{count, plural, =0 {none available} one {# available} other {# available}}",
       "urgent": "Urgent",
       "needs_print": "Needs printing",
       "desired_date": "Desired date",

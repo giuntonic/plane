@@ -36,9 +36,11 @@ type Props = {
 export const PiecesRequestModal = observer(function PiecesRequestModal(props: Props) {
   const { isOpen, onClose, onRequested, workspaceSlug, projectId, panel } = props;
   const { t } = useTranslation();
+  // Primeira categoria (na ordem do portal) que ainda tem saldo.
   const firstCategory =
-    (panel.availability.categories.find((row) => row.contracted > 0)?.category as TPieceCategory | undefined) ??
-    PIECE_CATEGORIES[0];
+    PIECE_CATEGORIES.find((category) =>
+      panel.availability.categories.some((row) => row.category === category && row.available > 0)
+    ) ?? PIECE_CATEGORIES[0];
   const [lines, setLines] = useState<TLine[]>([{ key: 0, category: firstCategory, quantity: 1 }]);
   const [briefing, setBriefing] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

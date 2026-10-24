@@ -369,7 +369,7 @@
     "make_workspace_wide": "Disponibilizar em todos os projetos",
     "scope_project": "Um projeto",
     "scope_workspace": "Todos os projetos",
-    "summary_items": "{count, plural, one {# item} many {# itens} other {# itens}}",
+    "summary_items": "{count, plural, one {# item ou subtarefa} many {# itens e subtarefas} other {# itens e subtarefas}}",
     "delete_title": "Excluir modelo",
     "delete_confirmation": "Excluir o modelo “{name}”? O que já foi criado a partir dele continua.",
     "delete_error": "Não foi possível excluir o modelo",

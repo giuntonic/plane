@@ -449,16 +449,16 @@
       "in_production": "Em produção",
       "delivered_month": "Entregues em {month}",
       "reworks": "Refações",
-      "reworks_split": "{internal} internas · {client} pelo cliente"
+      "reworks_split": "{internal, plural, one {# interna} many {# internas} other {# internas}} · {client} pelo cliente"
     },
     "balance": {
       "title": "Saldo do contrato",
       "empty": "Sem contrato ativo.",
       "used_of": "{used} de {contracted}",
       "tooltip": "{used} usadas de {contracted} contratadas",
-      "available": "{count, plural, one {# disponível} many {# disponíveis} other {# disponíveis}}",
+      "available": "{count, plural, =0 {Nenhuma disponível} one {# disponível} many {# disponíveis} other {# disponíveis}}",
       "over": "{count, plural, one {# acima do contratado} many {# acima do contratado} other {# acima do contratado}}",
-      "urgent": "Urgentes disponíveis agora: {count} (limite do contrato {limit}; no máximo {max} abertas ao mesmo tempo, {open} abertas agora)"
+      "urgent": "Urgentes disponíveis agora: {count} (limite do contrato {limit}; no máximo {max} abertas ao mesmo tempo, {open, plural, =0 {nenhuma aberta agora} one {# aberta agora} many {# abertas agora} other {# abertas agora}})"
     },
     "by_state": {
       "title": "Peças por situação",
@@ -484,7 +484,7 @@
       "description": "As peças novas entram na fila de criação. O saldo é conferido de novo no envio.",
       "category": "Categoria",
       "quantity": "Quantidade",
-      "available_short": "{count} disponíveis",
+      "available_short": "{count, plural, =0 {sem saldo} one {# disponível} many {# disponíveis} other {# disponíveis}}",
       "urgent": "Urgente",
       "needs_print": "Precisa de impressão",
       "desired_date": "Data desejada",
