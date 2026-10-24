@@ -327,6 +327,23 @@ export class UserService extends APIService {
       });
   }
 
+  /** Pespo: adiciona pessoas a um evento (o Google manda o convite). Devolve o evento atualizado. */
+  async googleCalendarAddAttendees(
+    calendarId: string,
+    eventId: string,
+    emails: string[]
+  ): Promise<TGoogleCalendarEvent> {
+    return this.post("/api/users/me/google-calendar/events/attendees/", {
+      calendar_id: calendarId,
+      event_id: eventId,
+      emails,
+    })
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
   /** Pespo: `calendarIds` picks the calendars (the home agenda widget); without it, the /calendar overlay ones. */
   async googleCalendarEvents(after: string, before: string, calendarIds?: string[]): Promise<TGoogleCalendarEvent[]> {
     const params = calendarIds ? { after, before, calendar_ids: calendarIds.join(",") } : { after, before };

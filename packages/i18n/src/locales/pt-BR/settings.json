@@ -144,7 +144,8 @@
       "last_synced": "Última sincronização: {time}",
       "disconnect": "Desconectar",
       "overlay_title": "Mostrar estas agendas no Pespo Hub",
-      "not_configured": "O Google Calendar não está configurado nesta instância."
+      "not_configured": "O Google Calendar não está configurado nesta instância.",
+      "overlay_moved": "Escolha quais agendas aparecem na própria página Calendário (barra à esquerda)."
     }
   },
   "themes": {

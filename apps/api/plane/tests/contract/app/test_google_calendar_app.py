@@ -668,3 +668,74 @@ class TestInstantMeet:
     def test_meet_now_requires_connection(self, session_client, workspace, project, issue):
         response = session_client.post(self._url(workspace, project, issue), {}, format="json")
         assert response.data["code"] == "GOOGLE_CALENDAR_NOT_CONNECTED"
+
+
+@pytest.mark.contract
+class TestCalendarPageAttendees:
+    """Pespo: calendar list metadata for the calendar page and adding people from the event details."""
+
+    def test_status_marks_plane_calendars_and_keeps_google_colors(self, session_client, connection):
+        connection.project_calendar_ids = {"p1": "plane-proj-cal"}
+        connection.save()
+        calendars = [
+            {
+                "id": "me@gmail.com",
+                "summary": "Eu",
+                "primary": True,
+                "backgroundColor": "#9fe1e7",
+                "foregroundColor": "#000000",
+                "accessRole": "owner",
+                "timeZone": "America/Sao_Paulo",
+            },
+            {"id": "plane-cal", "summary": "Plane", "backgroundColor": "#7986cb", "accessRole": "owner"},
+            {"id": "plane-proj-cal", "summary": "Plane · Cliente", "accessRole": "owner"},
+        ]
+        with mock.patch(f"{GCAL}.list_calendars", return_value=calendars):
+            response = session_client.get(reverse("google-calendar-status"))
+        by_id = {c["id"]: c for c in response.data["calendars"]}
+        assert by_id["me@gmail.com"]["foreground_color"] == "#000000"
+        assert by_id["me@gmail.com"]["time_zone"] == "America/Sao_Paulo"
+        assert by_id["me@gmail.com"]["is_plane"] is False
+        assert by_id["plane-cal"]["is_plane"] is True
+        assert by_id["plane-proj-cal"]["is_plane"] is True
+
+    def test_adds_new_attendees_and_sends_invites(self, session_client, connection):
+        event = {"id": "ev1", "summary": "Reunião", "attendees": [{"email": "ana@pespo.com.br"}]}
+        updated = {**event, "attendees": [{"email": "ana@pespo.com.br"}, {"email": "bia@cliente.com"}]}
+        with (
+            mock.patch(f"{GCAL}.get_event", return_value=event),
+            mock.patch(f"{GCAL}.patch_event", return_value=updated) as patch_event,
+        ):
+            response = session_client.post(
+                reverse("google-calendar-event-attendees"),
+                {"calendar_id": "primary", "event_id": "ev1", "emails": ["ANA@pespo.com.br", "bia@cliente.com"]},
+                format="json",
+            )
+        assert response.status_code == status.HTTP_200_OK, response.data
+        args, kwargs = patch_event.call_args
+        assert args[1:3] == ("primary", "ev1")
+        assert args[3] == {"attendees": [{"email": "ana@pespo.com.br"}, {"email": "bia@cliente.com"}]}
+        assert kwargs["send_updates"] == "all"
+        assert response.data["calendar_id"] == "primary"
+
+    def test_google_refusal_becomes_forbidden(self, session_client, connection):
+        error = gcal.requests.HTTPError(response=mock.Mock(status_code=403))
+        with (
+            mock.patch(f"{GCAL}.get_event", return_value={"id": "ev1"}),
+            mock.patch(f"{GCAL}.patch_event", side_effect=error),
+        ):
+            response = session_client.post(
+                reverse("google-calendar-event-attendees"),
+                {"calendar_id": "primary", "event_id": "ev1", "emails": ["bia@cliente.com"]},
+                format="json",
+            )
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.data["code"] == "GOOGLE_CALENDAR_FORBIDDEN"
+
+    def test_rejects_invalid_email(self, session_client, connection):
+        response = session_client.post(
+            reverse("google-calendar-event-attendees"),
+            {"calendar_id": "primary", "event_id": "ev1", "emails": ["não é e-mail"]},
+            format="json",
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST

@@ -41,6 +41,7 @@ from .user.google_calendar import (
     GoogleCalendarDisconnectEndpoint,
     GoogleCalendarSyncNowEndpoint,
     GoogleCalendarEventsEndpoint,
+    GoogleCalendarEventAttendeesEndpoint,
     GoogleCalendarNotificationEndpoint,
 )
 

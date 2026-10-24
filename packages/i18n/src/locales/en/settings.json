@@ -144,7 +144,8 @@
       "last_synced": "Last synced {time}",
       "disconnect": "Disconnect",
       "overlay_title": "Show these calendars in Pespo Hub",
-      "not_configured": "Google Calendar is not configured on this instance."
+      "not_configured": "Google Calendar is not configured on this instance.",
+      "overlay_moved": "Choose which calendars appear on the Calendar page itself (left side bar)."
     }
   },
   "themes": {

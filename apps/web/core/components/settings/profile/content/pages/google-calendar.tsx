@@ -88,14 +88,6 @@ export const GoogleCalendarProfileSettings = observer(function GoogleCalendarPro
     }
   };
 
-  const handleToggleOverlay = (calendarId: string, checked: boolean) => {
-    if (!status?.connected) return;
-    const next = checked
-      ? [...status.overlay_calendar_ids, calendarId]
-      : status.overlay_calendar_ids.filter((id) => id !== calendarId);
-    void updatePreferences({ overlay_calendar_ids: next });
-  };
-
   const handleToggleProject = (projectId: string, checked: boolean) => {
     if (!status?.connected) return;
     const next = checked
@@ -259,24 +251,11 @@ export const GoogleCalendarProfileSettings = observer(function GoogleCalendarPro
               )}
             </section>
 
-            {status.calendars.length > 0 && (
-              <section className="flex flex-col gap-2">
-                <h4 className="text-body-md-medium text-primary">{t("profile.google_calendar.overlay_title")}</h4>
-                {status.calendars.map((calendar) => (
-                  <label key={calendar.id} className="text-body-sm flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={status.overlay_calendar_ids.includes(calendar.id)}
-                      onChange={(e) => handleToggleOverlay(calendar.id, e.target.checked)}
-                    />
-                    {calendar.background_color && (
-                      <span className="size-2.5 rounded-full" style={{ backgroundColor: calendar.background_color }} />
-                    )}
-                    {calendar.summary}
-                  </label>
-                ))}
-              </section>
-            )}
+            {/* Pespo: as agendas mostradas no calendário são escolhidas na própria página do calendário. */}
+            <section className="flex flex-col gap-1">
+              <h4 className="text-body-md-medium text-primary">{t("profile.google_calendar.overlay_title")}</h4>
+              <p className="text-body-sm text-tertiary">{t("profile.google_calendar.overlay_moved")}</p>
+            </section>
 
             <div className="flex flex-col gap-3">
               {status.last_synced_at && (
