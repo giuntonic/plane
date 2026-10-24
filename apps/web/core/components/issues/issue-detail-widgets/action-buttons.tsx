@@ -5,14 +5,14 @@
  */
 
 import React from "react";
-import { CalendarPlus, HardDrive, ListChecks, Paperclip, Video } from "lucide-react";
+import { CalendarPlus, HardDrive, ListChecks, Paperclip, Video, ListTodo } from "lucide-react";
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, ViewsIcon, RelationPropertyIcon } from "@plane/propel/icons";
 // plane imports
 import type { TIssueServiceType, TWorkItemWidgets } from "@plane/types";
 // local imports
 import { IssueAttachmentActionButton } from "./attachments";
-import { IssueChecklistActionButton } from "./checklist";
+import { IssueChecklistActionButton, IssueNamedChecklistActionButton } from "./checklist";
 import { IssueGoogleDriveActionButton } from "./google-drive";
 import { IssueLinksActionButton } from "./links";
 import { IssueMeetingActionButton, IssueMeetNowButton } from "./meetings";
@@ -45,6 +45,22 @@ export function IssueDetailWidgetActionButtons(props: Props) {
             <IssueDetailWidgetButton
               title={t("issue_checklist.add")}
               icon={<ListChecks className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
+              disabled={disabled}
+            />
+          }
+          disabled={disabled}
+          issueServiceType={issueServiceType}
+        />
+      )}
+      {!hideWidgets?.includes("checklist") && (
+        <IssueNamedChecklistActionButton
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          customButton={
+            <IssueDetailWidgetButton
+              title={t("issue_checklist.named.action")}
+              icon={<ListTodo className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
               disabled={disabled}
             />
           }

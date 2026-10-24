@@ -14,6 +14,7 @@ from rest_framework import status
 from plane.db.models import (
     Issue,
     IssueAssignee,
+    IssueChecklist,
     IssueChecklistItem,
     IssueLabel,
     IssueLink,
@@ -120,6 +121,25 @@ class TestCopyStructure:
         # O original não muda.
         assert IssueChecklistItem.objects.filter(issue=source).count() == 3
         assert Issue.issue_objects.filter(parent=source).count() == 1
+
+    def test_copy_brings_named_checklists(self, session_client, workspace, project, states, source):
+        approval = IssueChecklist.objects.create(issue=source, project=project, workspace=workspace, name="Aprovação")
+        line = _line(source, "Cliente aprova", checklist=approval, is_completed=True)
+        _line(source, "Por e-mail", parent=line, checklist=approval)
+        copy = _issue(project, states["todo"], "Cópia")
+
+        response = session_client.post(
+            _copy_url(workspace, project, copy), {"source_issue_id": str(source.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        copied = IssueChecklist.objects.get(issue=copy)
+        assert copied.name == "Aprovação"
+        lines = {row.name: row for row in IssueChecklistItem.objects.filter(issue=copy, checklist=copied)}
+        assert set(lines) == {"Cliente aprova", "Por e-mail"}
+        assert lines["Por e-mail"].parent_id == lines["Cliente aprova"].id
+        assert lines["Cliente aprova"].is_completed is False  # subtarefas copiadas voltam desmarcadas
+        # a lista padrão continua sem checklist
+        assert not IssueChecklistItem.objects.filter(issue=copy, checklist__isnull=True, name="Cliente aprova").exists()
 
     def test_copy_without_dates_keeps_the_original_dates(self, session_client, workspace, project, states, source):
         copy = _issue(project, states["todo"], "Sem datas")
@@ -247,6 +267,24 @@ class TestConvertToChecklist:
         # O item sai como numa exclusão normal (soft delete).
         assert not Issue.issue_objects.filter(pk=child.id).exists()
         assert Issue.all_objects.get(pk=child.id).deleted_at is not None
+
+    def test_named_checklists_become_sublines_too(self, session_client, workspace, project, states):
+        target = _issue(project, states["todo"], "Destino")
+        issue = _issue(project, states["todo"], "Com listas")
+        approval = IssueChecklist.objects.create(issue=issue, project=project, workspace=workspace, name="Aprovação")
+        named_line = _line(issue, "Cliente aprova", checklist=approval)
+        default_line = _line(issue, "Rascunho")
+
+        response = session_client.post(
+            _to_checklist_url(workspace, project, issue), {"target_issue_id": str(target.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        line_id = response.data["checklist_item_id"]
+        for moved in (named_line, default_line):
+            moved.refresh_from_db()
+            assert moved.issue_id == target.id and moved.parent_id is not None and moved.checklist_id is None
+            assert str(moved.parent_id) == line_id
+        assert not IssueChecklist.objects.filter(pk=approval.id).exists()
 
     def test_work_item_with_sub_items_is_refused(self, session_client, workspace, project, states):
         target = _issue(project, states["todo"], "Destino")

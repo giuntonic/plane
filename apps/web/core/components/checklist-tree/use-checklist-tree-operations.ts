@@ -26,6 +26,12 @@ export type TChecklistTreeSource<T extends TChecklistTreeNode, P extends TCheckl
   /** Fields the server always recomputes on update (completed_at, updated_at…), copied from the response. */
   serverFields?: (keyof T)[];
   errorMessage: string;
+  /**
+   * Pespo: one list among several sharing the same SWR key (the named checklists of a work item). The
+   * operations only see the lines that pass `filter`, so siblings, Tab and Alt+↑/↓ stay inside the list,
+   * and new lines get `payload` (e.g. `{ checklist: id }`). Lines move between lists only through `update`.
+   */
+  scope?: { filter: (item: T) => boolean; payload: Partial<P> };
 };
 
 /**
@@ -52,8 +58,9 @@ export const useChecklistTreeItems = <T extends TChecklistTreeNode, P extends TC
 export const useChecklistTreeOperations = <T extends TChecklistTreeNode, P extends TChecklistTreeNodePayload>(
   source: TChecklistTreeSource<T, P>
 ): TChecklistTreeOperations<T, P> => {
-  const { key, serverFields = [], errorMessage } = source;
-  const { data: items = [], mutate } = useChecklistTreeItems<T, P>(source);
+  const { key, serverFields = [], errorMessage, scope } = source;
+  const { data: allItems = [], mutate } = useChecklistTreeItems<T, P>(source);
+  const items = scope ? allItems.filter(scope.filter) : allItems;
   const { mutate: mutateKey } = useSWRConfig();
 
   const showError = () => setToast({ type: TOAST_TYPE.ERROR, title: errorMessage });
@@ -61,7 +68,7 @@ export const useChecklistTreeOperations = <T extends TChecklistTreeNode, P exten
   /** Creates a line; the new line takes the cursor as soon as it shows up. */
   const create = async (payload: P): Promise<T | undefined> => {
     try {
-      const created = await source.create(payload);
+      const created = await source.create(scope ? ({ ...scope.payload, ...payload } as P) : payload);
       queueChecklistFocus(created.id);
       await mutate((current = []) => [...current, created], { revalidate: false });
       return created;

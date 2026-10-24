@@ -13,6 +13,8 @@ export type TIssueChecklistItem = {
   project: string;
   workspace: string;
   parent: string | null;
+  /** Named checklist the line belongs to; null = the default list ("Subtarefas"). */
+  checklist: string | null;
   name: string;
   is_completed: boolean;
   completed_at: string | null;
@@ -25,8 +27,22 @@ export type TIssueChecklistItem = {
 };
 
 export type TIssueChecklistItemPayload = Partial<
-  Pick<TIssueChecklistItem, "parent" | "name" | "is_completed" | "assignee" | "due_date" | "sort_order">
+  Pick<TIssueChecklistItem, "parent" | "checklist" | "name" | "is_completed" | "assignee" | "due_date" | "sort_order">
 >;
+
+/** A named checklist of a work item (…/issues/<id>/checklists/). Its lines come from the lines endpoint. */
+export type TIssueChecklist = {
+  id: string;
+  issue: string;
+  project: string;
+  workspace: string;
+  name: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TIssueChecklistPayload = Partial<Pick<TIssueChecklist, "name" | "sort_order">>;
 
 /** …/checklist-items/<id>/convert/: the work item the line became. */
 export type TIssueChecklistConvertResponse = {

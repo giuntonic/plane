@@ -21,7 +21,16 @@ from rest_framework.response import Response
 from .. import BaseAPIView
 from plane.app.permissions import allow_permission, ROLE
 from plane.bgtasks.issue_activities_task import issue_activity
-from plane.db.models import Issue, IssueAssignee, IssueChecklistItem, Project, ProjectMember, State, UserRecentVisit
+from plane.db.models import (
+    Issue,
+    IssueAssignee,
+    IssueChecklist,
+    IssueChecklistItem,
+    Project,
+    ProjectMember,
+    State,
+    UserRecentVisit,
+)
 from plane.utils.host import base_host
 from plane.utils.work_item_tree import (
     WorkItemTreeTooLarge,
@@ -126,7 +135,8 @@ class IssueChecklistItemConvertEndpoint(BaseAPIView):
             while frontier:
                 descendants.extend(frontier)
                 frontier = list(IssueChecklistItem.objects.filter(parent_id__in=frontier).values_list("id", flat=True))
-            IssueChecklistItem.objects.filter(pk__in=descendants).update(issue=new_issue)
+            # Vão para a lista padrão ("Subtarefas") do item novo.
+            IssueChecklistItem.objects.filter(pk__in=descendants).update(issue=new_issue, checklist=None)
             children.update(parent=None)
             line.delete(soft=False)
 
@@ -199,9 +209,9 @@ class IssueConvertToChecklistEndpoint(BaseAPIView):
             .first()
         )
         is_completed = bool(issue.state and issue.state.group == "completed")
-        last_sort = IssueChecklistItem.objects.filter(issue=target, parent__isnull=True).aggregate(
-            value=Max("sort_order")
-        )["value"]
+        last_sort = IssueChecklistItem.objects.filter(
+            issue=target, parent__isnull=True, checklist__isnull=True
+        ).aggregate(value=Max("sort_order"))["value"]
         now = timezone.now()
         with transaction.atomic():
             line = IssueChecklistItem.objects.create(
@@ -220,10 +230,12 @@ class IssueConvertToChecklistEndpoint(BaseAPIView):
             roots = list(
                 IssueChecklistItem.objects.filter(issue=issue, parent__isnull=True).values_list("id", flat=True)
             )
+            # As checklists com nome do item viram sublinhas também (a linha nova fica na lista padrão).
             IssueChecklistItem.objects.filter(issue=issue).update(
-                issue=target, project_id=target.project_id, workspace_id=target.workspace_id
+                issue=target, project_id=target.project_id, workspace_id=target.workspace_id, checklist=None
             )
             IssueChecklistItem.objects.filter(pk__in=roots).update(parent=line)
+            IssueChecklist.objects.filter(issue=issue).delete(soft=False)
             issue.delete()
             UserRecentVisit.objects.filter(
                 project_id=project_id, workspace__slug=slug, entity_identifier=issue.id, entity_name="issue"

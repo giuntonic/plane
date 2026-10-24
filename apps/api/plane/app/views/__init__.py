@@ -194,6 +194,8 @@ from .issue.google_drive import (
 from .issue.checklist import (
     IssueChecklistItemEndpoint,
     IssueChecklistItemDetailEndpoint,
+    IssueChecklistEndpoint,
+    IssueChecklistDetailEndpoint,
     ProjectChecklistProgressEndpoint,
 )
 from .issue.structure import (

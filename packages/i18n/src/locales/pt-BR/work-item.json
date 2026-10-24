@@ -455,7 +455,19 @@
     "convert_standalone": "Item solto no projeto",
     "converted": "“{name}” virou item de trabalho",
     "convert_error": "Não foi possível transformar a subtarefa em item de trabalho",
-    "open": "Abrir"
+    "open": "Abrir",
+    "named": {
+      "action": "Checklist",
+      "new": "Nova checklist",
+      "default_name": "Checklist",
+      "name_placeholder": "Nome da checklist",
+      "rename": "Renomear checklist",
+      "delete": "Excluir checklist",
+      "delete_title": "Excluir checklist",
+      "delete_content": "Excluir a checklist “{name}”? {count, plural, =0 {Ela está vazia.} one {A # linha dela sai junto.} many {As # linhas dela saem junto.} other {As # linhas dela saem junto.}}",
+      "add_line": "Adicionar item",
+      "placeholder": "Escreva um item…"
+    }
   },
   "work_item_structure": {
     "copy_error_title": "Cópia criada sem as subtarefas",

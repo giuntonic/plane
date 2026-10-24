@@ -18,6 +18,8 @@ from plane.app.views import (
     IssueGoogleDriveImportEndpoint,
     IssueChecklistItemEndpoint,
     IssueChecklistItemDetailEndpoint,
+    IssueChecklistEndpoint,
+    IssueChecklistDetailEndpoint,
     IssueChecklistItemConvertEndpoint,
     IssueCopyStructureEndpoint,
     IssueConvertToChecklistEndpoint,
@@ -188,6 +190,16 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklist-items/<uuid:pk>/convert/",
         IssueChecklistItemConvertEndpoint.as_view(),
         name="project-issue-checklist-item-convert",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklists/",
+        IssueChecklistEndpoint.as_view(),
+        name="project-issue-checklists",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklists/<uuid:pk>/",
+        IssueChecklistDetailEndpoint.as_view(),
+        name="project-issue-checklist-detail",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/checklist-progress/",

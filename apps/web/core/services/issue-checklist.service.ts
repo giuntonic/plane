@@ -7,9 +7,11 @@
 // plane imports
 import { API_BASE_URL } from "@plane/constants";
 import type {
+  TIssueChecklist,
   TIssueChecklistConvertResponse,
   TIssueChecklistItem,
   TIssueChecklistItemPayload,
+  TIssueChecklistPayload,
   TIssueChecklistProgress,
   TIssueConvertToChecklistResponse,
 } from "@plane/types";
@@ -105,6 +107,55 @@ export class IssueChecklistService extends APIService {
     return this.post(`/api/workspaces/${workspaceSlug}/projects/${projectId}/issues/${issueId}/convert-to-checklist/`, {
       target_issue_id: targetIssueId,
     })
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  private checklistsUrl(workspaceSlug: string, projectId: string, issueId: string) {
+    return `/api/workspaces/${workspaceSlug}/projects/${projectId}/issues/${issueId}/checklists/`;
+  }
+
+  /** Checklists com nome do item (as linhas de cada uma vêm em `list`, pelo campo `checklist`). */
+  async listChecklists(workspaceSlug: string, projectId: string, issueId: string): Promise<TIssueChecklist[]> {
+    return this.get(this.checklistsUrl(workspaceSlug, projectId, issueId))
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async createChecklist(
+    workspaceSlug: string,
+    projectId: string,
+    issueId: string,
+    data: TIssueChecklistPayload
+  ): Promise<TIssueChecklist> {
+    return this.post(this.checklistsUrl(workspaceSlug, projectId, issueId), data)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async updateChecklist(
+    workspaceSlug: string,
+    projectId: string,
+    issueId: string,
+    id: string,
+    data: TIssueChecklistPayload
+  ): Promise<TIssueChecklist> {
+    return this.patch(`${this.checklistsUrl(workspaceSlug, projectId, issueId)}${id}/`, data)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  /** Apaga a checklist e as linhas dela. */
+  async removeChecklist(workspaceSlug: string, projectId: string, issueId: string, id: string): Promise<void> {
+    return this.delete(`${this.checklistsUrl(workspaceSlug, projectId, issueId)}${id}/`)
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;

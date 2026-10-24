@@ -76,7 +76,13 @@ class TestIssueChecklistItems:
 
     def test_assignee_and_due_date(self, session_client, workspace, project, issue, create_user):
         item = self._create(
-            session_client, workspace, project, issue, name="Gravar", assignee=str(create_user.id), due_date="2026-11-05"
+            session_client,
+            workspace,
+            project,
+            issue,
+            name="Gravar",
+            assignee=str(create_user.id),
+            due_date="2026-11-05",
         )
         assert item["assignee"] == create_user.id
         assert item["due_date"] == "2026-11-05"
@@ -112,7 +118,9 @@ class TestIssueChecklistItems:
         assert response.data["parent"] == a["id"]
         assert response.data["sort_order"] == 100
 
-        response = session_client.patch(_detail_url(workspace, project, issue, b["id"]), {"parent": None}, format="json")
+        response = session_client.patch(
+            _detail_url(workspace, project, issue, b["id"]), {"parent": None}, format="json"
+        )
         assert response.data["parent"] is None
 
     def test_two_patches_at_once_keep_both_fields(self, session_client, workspace, project, issue):
@@ -132,9 +140,13 @@ class TestIssueChecklistItems:
     def test_cannot_move_into_own_descendant(self, session_client, workspace, project, issue):
         a = self._create(session_client, workspace, project, issue, name="A")
         b = self._create(session_client, workspace, project, issue, name="B", parent=a["id"])
-        response = session_client.patch(_detail_url(workspace, project, issue, a["id"]), {"parent": b["id"]}, format="json")
+        response = session_client.patch(
+            _detail_url(workspace, project, issue, a["id"]), {"parent": b["id"]}, format="json"
+        )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        response = session_client.patch(_detail_url(workspace, project, issue, a["id"]), {"parent": a["id"]}, format="json")
+        response = session_client.patch(
+            _detail_url(workspace, project, issue, a["id"]), {"parent": a["id"]}, format="json"
+        )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_parent_must_belong_to_same_issue(self, session_client, workspace, project, issue):
@@ -161,4 +173,102 @@ class TestIssueChecklistItems:
         response = guest_client.patch(
             _detail_url(workspace, project, issue, item["id"]), {"is_completed": True}, format="json"
         )
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def _checklists_url(workspace, project, issue):
+    return reverse(
+        "project-issue-checklists",
+        kwargs={"slug": workspace.slug, "project_id": project.id, "issue_id": issue.id},
+    )
+
+
+def _checklist_detail_url(workspace, project, issue, checklist_id):
+    return reverse(
+        "project-issue-checklist-detail",
+        kwargs={"slug": workspace.slug, "project_id": project.id, "issue_id": issue.id, "pk": checklist_id},
+    )
+
+
+@pytest.mark.contract
+class TestNamedChecklists:
+    """Checklists com nome ("Aprovação", "Entrega"…); linhas sem checklist são a lista padrão."""
+
+    def _post(self, client, url, **data):
+        response = client.post(url, data, format="json")
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        return response.data
+
+    def test_lines_belong_to_their_checklist(self, session_client, workspace, project, issue):
+        approval = self._post(session_client, _checklists_url(workspace, project, issue), name="Aprovação")
+        delivery = self._post(session_client, _checklists_url(workspace, project, issue), name="Entrega")
+        assert delivery["sort_order"] > approval["sort_order"]
+
+        items_url = _list_url(workspace, project, issue)
+        default = self._post(session_client, items_url, name="Briefing")
+        first = self._post(session_client, items_url, name="Cliente aprova", checklist=approval["id"])
+        child = self._post(session_client, items_url, name="Por e-mail", parent=first["id"])
+        # a sublinha herda a checklist da linha de cima, mesmo pedindo outra
+        child2 = self._post(session_client, items_url, name="Por Whats", parent=first["id"], checklist=delivery["id"])
+
+        assert default["checklist"] is None
+        assert first["checklist"] == approval["id"]
+        assert child["checklist"] == approval["id"] and child2["checklist"] == approval["id"]
+        # a primeira linha de cada lista começa no mesmo lugar (ordem por lista)
+        assert first["sort_order"] == default["sort_order"] == 65535
+
+        listing = session_client.get(_checklists_url(workspace, project, issue))
+        assert [row["name"] for row in listing.data] == ["Aprovação", "Entrega"]
+
+    def test_moving_a_line_carries_its_sublines(self, session_client, workspace, project, issue):
+        approval = self._post(session_client, _checklists_url(workspace, project, issue), name="Aprovação")
+        items_url = _list_url(workspace, project, issue)
+        root = self._post(session_client, items_url, name="Arte")
+        child = self._post(session_client, items_url, name="Exportar", parent=root["id"])
+
+        moved = session_client.patch(
+            _detail_url(workspace, project, issue, child["id"]), {"checklist": approval["id"]}, format="json"
+        )
+        assert moved.status_code == status.HTTP_200_OK, moved.data
+        assert moved.data["checklist"] == approval["id"] and moved.data["parent"] is None
+
+        other = self._post(session_client, items_url, name="Outra", checklist=approval["id"])
+        grandchild = self._post(session_client, items_url, name="PDF", parent=root["id"])
+        session_client.patch(_detail_url(workspace, project, issue, root["id"]), {"parent": other["id"]}, format="json")
+        assert IssueChecklistItem.objects.get(pk=root["id"]).checklist_id == approval["id"]
+        assert IssueChecklistItem.objects.get(pk=grandchild["id"]).checklist_id == approval["id"]
+
+        back = session_client.patch(
+            _detail_url(workspace, project, issue, root["id"]), {"checklist": None}, format="json"
+        )
+        assert back.data["checklist"] is None and back.data["parent"] is None
+        assert IssueChecklistItem.objects.get(pk=grandchild["id"]).checklist_id is None
+
+    def test_checklist_of_another_work_item_is_refused(self, session_client, workspace, project, issue):
+        other_issue = Issue.objects.create(name="Outro", project=project, workspace=project.workspace)
+        foreign = self._post(session_client, _checklists_url(workspace, project, other_issue), name="Alheia")
+        response = session_client.post(
+            _list_url(workspace, project, issue), {"name": "x", "checklist": foreign["id"]}, format="json"
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_rename_and_delete_with_its_lines(self, session_client, workspace, project, issue):
+        approval = self._post(session_client, _checklists_url(workspace, project, issue), name="Aprovação")
+        items_url = _list_url(workspace, project, issue)
+        keep = self._post(session_client, items_url, name="Fica")
+        line = self._post(session_client, items_url, name="Sai", checklist=approval["id"])
+        self._post(session_client, items_url, name="Sai junto", parent=line["id"])
+
+        renamed = session_client.patch(
+            _checklist_detail_url(workspace, project, issue, approval["id"]), {"name": "Aprovação final"}, format="json"
+        )
+        assert renamed.data["name"] == "Aprovação final"
+        deleted = session_client.delete(_checklist_detail_url(workspace, project, issue, approval["id"]))
+        assert deleted.status_code == status.HTTP_204_NO_CONTENT
+        assert list(IssueChecklistItem.objects.filter(issue=issue).values_list("id", flat=True)) == [keep["id"]]
+
+    def test_guest_can_read_but_not_create(self, session_client, guest_client, workspace, project, issue):
+        self._post(session_client, _checklists_url(workspace, project, issue), name="Aprovação")
+        assert guest_client.get(_checklists_url(workspace, project, issue)).status_code == status.HTTP_200_OK
+        response = guest_client.post(_checklists_url(workspace, project, issue), {"name": "Minha"}, format="json")
         assert response.status_code == status.HTTP_403_FORBIDDEN

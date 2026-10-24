@@ -16,7 +16,12 @@ import { countCompletedChecklistItems } from "@plane/utils";
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 // local imports
 import { IssueChecklistCollapsibleContent } from "./content";
-import { getChecklistProgressKey, patchChecklistProgress, useIssueChecklistItems } from "./helper";
+import {
+  getChecklistProgressKey,
+  patchChecklistProgress,
+  useIssueChecklistItems,
+  useIssueNamedChecklists,
+} from "./helper";
 import { IssueChecklistActionButton } from "./quick-action-button";
 
 type Props = {
@@ -27,13 +32,15 @@ type Props = {
   issueServiceType: TIssueServiceType;
 };
 
-// Pespo: subtarefas leves do item de trabalho (checklist em árvore, com responsável e prazo por linha).
-// Só aparece quando há pelo menos uma linha (o botão "Subtarefa" fica sempre na fileira de ações acima).
+// Pespo: subtarefas leves do item de trabalho (checklist em árvore, com responsável e prazo por linha), na
+// lista padrão e nas checklists com nome. Só aparece quando há uma linha ou uma checklist (os botões
+// "Subtarefa" e "Checklist" ficam sempre na fileira de ações acima). O contador soma todas as listas.
 export const ChecklistCollapsible = observer(function ChecklistCollapsible(props: Props) {
   const { workspaceSlug, projectId, issueId, disabled = false, issueServiceType } = props;
   const { t } = useTranslation();
   const { openWidgets, toggleOpenWidget } = useIssueDetail(issueServiceType);
   const { data } = useIssueChecklistItems(workspaceSlug, projectId, issueId);
+  const { data: namedChecklists } = useIssueNamedChecklists(workspaceSlug, projectId, issueId);
   const items = useMemo(() => data ?? [], [data]);
   const isCollapsibleOpen = openWidgets.includes("checklist");
   const completed = countCompletedChecklistItems(items);
@@ -60,7 +67,7 @@ export const ChecklistCollapsible = observer(function ChecklistCollapsible(props
     [completed, items.length]
   );
 
-  if (items.length === 0) return null;
+  if (items.length === 0 && !namedChecklists?.length) return null;
 
   return (
     <Collapsible

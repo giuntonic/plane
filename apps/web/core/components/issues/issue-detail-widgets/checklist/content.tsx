@@ -5,6 +5,7 @@
  */
 
 import { useMemo } from "react";
+import { ListPlus } from "lucide-react";
 import { observer } from "mobx-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
@@ -14,7 +15,8 @@ import type { TChecklistTreeLabels, TChecklistTreeNode } from "@/components/chec
 import { ChecklistTreeList } from "@/components/checklist-tree";
 // local imports
 import { IssueChecklistItemExtras } from "./extras";
-import { useIssueChecklistOperations } from "./helper";
+import { useIssueChecklistOperations, useIssueNamedChecklistOperations, useIssueNamedChecklists } from "./helper";
+import { IssueNamedChecklist } from "./named-checklist";
 
 type Props = {
   workspaceSlug: string;
@@ -27,6 +29,9 @@ export const IssueChecklistCollapsibleContent = observer(function IssueChecklist
   const { workspaceSlug, projectId, issueId, disabled } = props;
   const { t } = useTranslation();
   const operations = useIssueChecklistOperations(workspaceSlug, projectId, issueId);
+  // Pespo: checklists com nome, embaixo da lista padrão ("Subtarefas").
+  const { data: namedChecklists = [] } = useIssueNamedChecklists(workspaceSlug, projectId, issueId);
+  const namedOperations = useIssueNamedChecklistOperations(workspaceSlug, projectId, issueId);
 
   const labels: TChecklistTreeLabels = useMemo(
     () => ({
@@ -52,13 +57,40 @@ export const IssueChecklistCollapsibleContent = observer(function IssueChecklist
   );
 
   return (
-    <ChecklistTreeList
-      scopeId={issueId}
-      disabled={disabled}
-      operations={operations}
-      labels={labels}
-      renderItemExtras={renderItemExtras}
-      className="px-1.5 pb-2"
-    />
+    <div className="flex flex-col">
+      <ChecklistTreeList
+        scopeId={issueId}
+        disabled={disabled}
+        operations={operations}
+        labels={labels}
+        renderItemExtras={renderItemExtras}
+        className="px-1.5 pb-2"
+      />
+      {namedChecklists.map((checklist) => (
+        <IssueNamedChecklist
+          key={checklist.id}
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          checklist={checklist}
+          disabled={disabled}
+          labels={labels}
+          onRename={(name) => namedOperations.rename(checklist.id, name)}
+          onDelete={() => namedOperations.remove(checklist.id)}
+        />
+      ))}
+      {!disabled && (
+        <div className="border-t border-subtle px-2.5 py-1.5">
+          <button
+            type="button"
+            onClick={() => void namedOperations.create(t("issue_checklist.named.default_name"))}
+            className="flex items-center gap-1.5 rounded-sm px-1 py-1 text-body-sm-regular text-tertiary hover:bg-layer-transparent-hover hover:text-primary"
+          >
+            <ListPlus className="size-3.5" />
+            {t("issue_checklist.named.new")}
+          </button>
+        </div>
+      )}
+    </div>
   );
 });

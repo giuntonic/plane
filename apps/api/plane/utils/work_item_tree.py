@@ -6,8 +6,8 @@
 Pespo: fotografia e recriação da estrutura de um item de trabalho.
 
 Uma *fotografia* (``snapshot_work_item``) é um dict serializável com os campos do item, as
-subtarefas do checklist (em árvore), os links e os sub-itens (recursivamente, cada um com a mesma
-forma). Ela serve para duas coisas:
+subtarefas do checklist (em árvore; ``checklist`` é a lista padrão e ``checklists`` as listas com nome),
+os links e os sub-itens (recursivamente, cada um com a mesma forma). Ela serve para duas coisas:
 
 - **Copiar um item:** o modal de cópia cria o item novo com os campos que a pessoa editou e depois
   ``apply_structure`` recria embaixo dele as subtarefas, os links e os sub-itens do original.
@@ -43,6 +43,7 @@ from plane.db.models import (
     EstimatePoint,
     Issue,
     IssueAssignee,
+    IssueChecklist,
     IssueChecklistItem,
     IssueLabel,
     IssueLink,
@@ -94,9 +95,12 @@ def _parse_date(value):
 # --- Fotografia -----------------------------------------------------------------
 
 
-def snapshot_checklist(issue, counter=None):
+def _snapshot_checklist_trees(issue, counter=None):
+    """Árvores das linhas do item: (lista padrão, {id da checklist com nome: árvore})."""
     rows = list(
-        IssueChecklistItem.objects.filter(issue=issue).values("id", "parent_id", "name", "assignee_id", "due_date")
+        IssueChecklistItem.objects.filter(issue=issue).values(
+            "id", "parent_id", "checklist_id", "name", "assignee_id", "due_date"
+        )
     )
     if counter:
         counter.add(len(rows))
@@ -104,19 +108,35 @@ def snapshot_checklist(issue, counter=None):
     for row in rows:
         children_of.setdefault(row["parent_id"], []).append(row)
 
-    def build(parent_id):
+    def build(parent_rows):
         return [
             {
                 "name": row["name"],
                 "assignee_id": str(row["assignee_id"]) if row["assignee_id"] else None,
                 "due_date": _iso(row["due_date"]),
-                "children": build(row["id"]),
+                "children": build(children_of.get(row["id"], [])),
             }
-            for row in children_of.get(parent_id, [])
+            for row in parent_rows
         ]
 
     # A consulta já vem na ordem do modelo (sort_order, created_at), então os irmãos ficam em ordem.
-    return build(None)
+    roots = children_of.get(None, [])
+    named = {}
+    for row in roots:
+        if row["checklist_id"]:
+            named.setdefault(row["checklist_id"], []).append(row)
+    default = build([row for row in roots if not row["checklist_id"]])
+    return default, {checklist_id: build(group) for checklist_id, group in named.items()}
+
+
+def snapshot_checklist(issue, counter=None):
+    """Lista padrão ("Subtarefas") e checklists com nome: (árvore, [{name, items}])."""
+    default, named = _snapshot_checklist_trees(issue, counter)
+    checklists = [
+        {"name": checklist.name, "items": named.get(checklist.id, [])}
+        for checklist in IssueChecklist.objects.filter(issue=issue)
+    ]
+    return default, checklists
 
 
 def snapshot_links(issue):
@@ -144,10 +164,12 @@ def snapshot_work_item(issue, depth=0, counter=None):
                 "assignee_id", flat=True
             )
         ],
-        "checklist": snapshot_checklist(issue, counter),
+        "checklist": [],
+        "checklists": [],
         "links": snapshot_links(issue),
         "children": [],
     }
+    node["checklist"], node["checklists"] = snapshot_checklist(issue, counter)
     if depth < MAX_TREE_DEPTH:
         for child in Issue.issue_objects.filter(parent=issue).order_by("sort_order", "created_at"):
             node["children"].append(snapshot_work_item(child, depth + 1, counter))
@@ -160,7 +182,13 @@ def count_nodes(node):
     def checklist_size(rows):
         return sum(1 + checklist_size(row.get("children") or []) for row in rows)
 
-    return 1 + checklist_size(node.get("checklist") or []) + sum(count_nodes(c) for c in node.get("children") or [])
+    named = sum(checklist_size(checklist.get("items") or []) for checklist in node.get("checklists") or [])
+    return (
+        1
+        + checklist_size(node.get("checklist") or [])
+        + named
+        + sum(count_nodes(c) for c in node.get("children") or [])
+    )
 
 
 # --- Recriação ------------------------------------------------------------------
@@ -216,7 +244,7 @@ def date_shifter(source_anchor, target_anchor, keep_unanchored_dates):
     return lambda value: None
 
 
-def _create_checklist(issue, rows, ctx, shift):
+def _create_checklist(issue, rows, ctx, shift, checklist=None):
     if not rows:
         return
     items = []
@@ -227,6 +255,7 @@ def _create_checklist(issue, rows, ctx, shift):
             item = IssueChecklistItem(
                 issue=issue,
                 parent=parent,
+                checklist=checklist,
                 project=ctx.project,
                 workspace_id=workspace_id,
                 name=row.get("name") or "",
@@ -356,6 +385,17 @@ def apply_structure(issue, node, ctx, shift, cycle_id=None, module_ids=None, ori
     """Subtarefas, links e sub-itens da fotografia, embaixo de ``issue`` (que já existe). Sub-itens
     entram nos mesmos ciclo/módulos passados (modelos de ciclo e de módulo)."""
     _create_checklist(issue, node.get("checklist") or [], ctx, shift)
+    for index, named in enumerate(node.get("checklists") or []):
+        checklist = IssueChecklist.objects.create(
+            issue=issue,
+            project=ctx.project,
+            workspace_id=ctx.project.workspace_id,
+            name=(named.get("name") or "Checklist")[:255],
+            sort_order=65535 + index * CHECKLIST_SORT_STEP,
+            created_by=ctx.actor,
+            updated_by=ctx.actor,
+        )
+        _create_checklist(issue, named.get("items") or [], ctx, shift, checklist=checklist)
     _create_links(issue, node.get("links") or [], ctx)
     if depth >= MAX_TREE_DEPTH:
         return
@@ -370,9 +410,9 @@ def project_context(project, actor):
 
 
 def next_checklist_sort_order(issue):
-    largest = IssueChecklistItem.objects.filter(issue=issue, parent=None).aggregate(largest=Max("sort_order"))[
-        "largest"
-    ]
+    largest = IssueChecklistItem.objects.filter(issue=issue, parent=None, checklist=None).aggregate(
+        largest=Max("sort_order")
+    )["largest"]
     return (largest + CHECKLIST_SORT_STEP) if largest is not None else 65535
 
 

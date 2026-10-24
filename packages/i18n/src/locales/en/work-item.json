@@ -455,7 +455,19 @@
     "convert_standalone": "Standalone work item",
     "converted": "“{name}” is now a work item",
     "convert_error": "Could not turn the sub-task into a work item",
-    "open": "Open"
+    "open": "Open",
+    "named": {
+      "action": "Checklist",
+      "new": "New checklist",
+      "default_name": "Checklist",
+      "name_placeholder": "Checklist name",
+      "rename": "Rename checklist",
+      "delete": "Delete checklist",
+      "delete_title": "Delete checklist",
+      "delete_content": "Delete the checklist “{name}”? {count, plural, =0 {It is empty.} one {Its # line goes too.} other {Its # lines go too.}}",
+      "add_line": "Add item",
+      "placeholder": "Write an item…"
+    }
   },
   "work_item_structure": {
     "copy_error_title": "Copy created without its sub-tasks",
