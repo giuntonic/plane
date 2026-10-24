@@ -4,27 +4,76 @@
  * See the LICENSE file for details.
  */
 
+import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { observer } from "mobx-react";
-// ui
+import Link from "next/link";
+import { useParams } from "next/navigation";
+// plane imports
 import { useTranslation } from "@plane/i18n";
-import { Tooltip } from "@plane/propel/tooltip";
-// hooks
-import { usePlatformOS } from "@/hooks/use-platform-os";
-import packageJson from "package.json";
-// local components
-import { Button } from "@plane/propel/button";
+import { Popover } from "@plane/propel/popover";
+// components
+import {
+  PESPO_RELEASES,
+  formatReleaseDate,
+  hasSeenCurrentRelease,
+  markCurrentReleaseSeen,
+} from "@/components/release-notes";
 
+// Pespo: no lugar do selo "Community", o número da versão do Pespo Hub. Clicar abre as novidades;
+// passar o mouse mostra a versão atual e o link para as notas de todas as versões.
 export const WorkspaceEditionBadge = observer(function WorkspaceEditionBadge() {
-  // translation
-  const { t } = useTranslation();
-  // platform
-  const { isMobile } = usePlatformOS();
+  const { workspaceSlug } = useParams();
+  const { t, currentLocale } = useTranslation();
+  const [seen, setSeen] = useState(hasSeenCurrentRelease);
+  const current = PESPO_RELEASES[0];
+  const href = `/${workspaceSlug?.toString()}/whats-new`;
+  const handleOpen = () => {
+    markCurrentReleaseSeen();
+    setSeen(true);
+  };
 
   return (
-    <Tooltip tooltipContent={`${t("version")}: v${packageJson.version}`} isMobile={isMobile}>
-      <Button variant="tertiary" size="lg" aria-label={t("aria_labels.projects_sidebar.edition_badge")}>
-        {t("community_edition")}
-      </Button>
-    </Tooltip>
+    <Popover delay={150} openOnHover>
+      <Popover.Button
+        nativeButton={false}
+        render={
+          <Link
+            href={href}
+            onClick={handleOpen}
+            aria-label={t("release_notes.badge_aria", { version: current.version })}
+            className="relative flex h-8 items-center rounded-md px-2.5 text-body-xs-medium text-secondary hover:bg-layer-1-hover hover:text-primary"
+          >
+            {t("release_notes.version", { version: current.version })}
+            {!seen && <span className="absolute top-1 right-0.5 size-1.5 rounded-full bg-accent-primary" aria-hidden />}
+          </Link>
+        }
+      />
+      <Popover.Panel
+        side="top"
+        align="start"
+        sideOffset={6}
+        positionerClassName="z-50"
+        className="w-72 rounded-lg border border-subtle bg-surface-1 p-3 shadow-raised-200"
+      >
+        <div className="flex flex-col gap-1">
+          <span className="text-body-sm-medium text-primary">
+            Pespo Hub {t("release_notes.version", { version: current.version })}
+          </span>
+          <span className="text-caption-sm-regular text-tertiary">
+            {formatReleaseDate(current.date, currentLocale)}
+          </span>
+          <p className="mt-1 text-caption-md-regular text-secondary">{current.summary}</p>
+          <Link
+            href={href}
+            onClick={handleOpen}
+            className="mt-2 flex items-center gap-1 text-caption-md-medium text-accent-primary hover:underline"
+          >
+            {t("release_notes.see_all")}
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </div>
+      </Popover.Panel>
+    </Popover>
   );
 });

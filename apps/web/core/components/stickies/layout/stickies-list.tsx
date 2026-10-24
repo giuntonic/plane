@@ -173,6 +173,18 @@ export const StickiesList = observer(function StickiesList(props: TProps) {
   );
 });
 
+const getColumnCount = (width: number | null): number => {
+  if (width === null) return 4;
+
+  // Pespo: no bloco mais estreito da home (1/4 da grade) duas colunas deixavam cada nota com ~120 px.
+  if (width < 420) return 1;
+  if (width < 640) return 2; // sm
+  if (width < 850) return 3; // md
+  if (width < 1024) return 4; // lg
+  if (width < 1280) return 5; // xl
+  return 6; // 2xl and above
+};
+
 export function StickiesLayout(props: TStickiesLayout) {
   // states
   const [containerWidth, setContainerWidth] = useState<number | null>(null);
@@ -194,15 +206,6 @@ export function StickiesLayout(props: TStickiesLayout) {
     return () => resizeObserver.disconnect();
   }, []);
 
-  const getColumnCount = (width: number | null): number => {
-    if (width === null) return 4;
-
-    if (width < 640) return 2; // sm
-    if (width < 850) return 3; // md
-    if (width < 1024) return 4; // lg
-    if (width < 1280) return 5; // xl
-    return 6; // 2xl and above
-  };
   const columnCount = getColumnCount(containerWidth);
 
   return (

@@ -122,6 +122,11 @@ export const coreRoutes: RouteConfigEntry[] = [
           ),
         ]),
 
+        // Release notes - Pespo
+        layout("./(all)/[workspaceSlug]/(projects)/whats-new/layout.tsx", [
+          route(":workspaceSlug/whats-new", "./(all)/[workspaceSlug]/(projects)/whats-new/page.tsx"),
+        ]),
+
         // Stickies
         layout("./(all)/[workspaceSlug]/(projects)/stickies/layout.tsx", [
           route(":workspaceSlug/stickies", "./(all)/[workspaceSlug]/(projects)/stickies/page.tsx"),
@@ -239,7 +244,7 @@ export const coreRoutes: RouteConfigEntry[] = [
             ),
           ]),
 
-          // Dashboard (Metabase embed) - Pespo
+          // Painel de peças (antes, embed do Metabase) - Pespo
           layout("./(all)/[workspaceSlug]/(projects)/projects/(detail)/[projectId]/dashboard/layout.tsx", [
             route(
               ":workspaceSlug/projects/:projectId/dashboard",
@@ -317,6 +322,11 @@ export const coreRoutes: RouteConfigEntry[] = [
             ":workspaceSlug/settings/exports",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/exports/page.tsx"
           ),
+          // Pespo: modelos
+          route(
+            ":workspaceSlug/settings/templates",
+            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/templates/page.tsx"
+          ),
           route(
             ":workspaceSlug/settings/webhooks",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/webhooks/page.tsx"
@@ -391,13 +401,6 @@ export const coreRoutes: RouteConfigEntry[] = [
               route(
                 ":workspaceSlug/settings/projects/:projectId/automations",
                 "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/automations/page.tsx"
-              ),
-            ]),
-            // Project Dashboard (Metabase embed) - Pespo
-            layout("./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/dashboard/layout.tsx", [
-              route(
-                ":workspaceSlug/settings/projects/:projectId/dashboard",
-                "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/dashboard/page.tsx"
               ),
             ]),
           ]),

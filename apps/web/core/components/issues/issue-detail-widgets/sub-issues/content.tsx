@@ -89,7 +89,10 @@ export const SubIssuesCollapsibleContent = observer(function SubIssuesCollapsibl
       try {
         setSubIssueHelpers(`${parentIssueId}_root`, "preview_loader", parentIssueId);
         await subIssueOperations.fetchSubIssues(workspaceSlug, projectId, parentIssueId);
-        setSubIssueHelpers(`${parentIssueId}_root`, "issue_visibility", parentIssueId);
+        // Pespo: setSubIssueHelpers alterna (liga/desliga). Duas buscas ao mesmo tempo (StrictMode no dev,
+        // ou trocar de item rápido) desligavam a lista de novo; só liga se ainda estiver desligada.
+        if (!subIssueHelpersByIssueId(`${parentIssueId}_root`).issue_visibility.includes(parentIssueId))
+          setSubIssueHelpers(`${parentIssueId}_root`, "issue_visibility", parentIssueId);
       } catch (error) {
         console.error("Error fetching sub-work items:", error);
       } finally {

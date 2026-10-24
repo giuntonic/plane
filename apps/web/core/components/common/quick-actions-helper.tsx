@@ -10,8 +10,10 @@ import type { JSX } from "react";
 // types
 import type { ICycle, IModule, IProjectView, IWorkspaceView } from "@plane/types";
 import type { TContextMenuItem } from "@plane/ui";
+import { LayoutTemplate } from "lucide-react";
 // hooks
 import { useQuickActionsFactory } from "@/components/common/quick-actions-factory";
+import { openSaveTemplateModal } from "@/components/entity-templates/save-modal-store";
 
 // Types
 interface UseCycleMenuItemsProps {
@@ -80,6 +82,15 @@ export const useCycleMenuItems = (props: UseCycleMenuItemsProps): MenuResult => 
     factory.createEditMenuItem(handlers.handleEdit, isEditingAllowed && !isCompleted && !isArchived),
     factory.createOpenInNewTabMenuItem(handlers.handleOpenInNewTab),
     factory.createCopyLinkMenuItem(handlers.handleCopyLink),
+    // Pespo: o ciclo e os itens dele viram modelo.
+    {
+      key: "save-as-template",
+      title: t("entity_templates.save_as_template"),
+      icon: LayoutTemplate,
+      action: () =>
+        openSaveTemplateModal({ kind: "cycle", sourceId: props.cycleId, sourceName: cycleDetails?.name ?? "" }),
+      shouldRender: isEditingAllowed && !!cycleDetails,
+    },
     factory.createArchiveMenuItem(handlers.handleArchive, {
       shouldRender: isEditingAllowed && !isArchived,
       disabled: !isCompleted,
@@ -106,6 +117,15 @@ export const useModuleMenuItems = (props: UseModuleMenuItemsProps): MenuResult =
     factory.createEditMenuItem(handlers.handleEdit, isEditingAllowed && !isArchived),
     factory.createOpenInNewTabMenuItem(handlers.handleOpenInNewTab),
     factory.createCopyLinkMenuItem(handlers.handleCopyLink),
+    // Pespo: o módulo e os itens dele viram modelo.
+    {
+      key: "save-as-template",
+      title: t("entity_templates.save_as_template"),
+      icon: LayoutTemplate,
+      action: () =>
+        openSaveTemplateModal({ kind: "module", sourceId: props.moduleId, sourceName: moduleDetails?.name ?? "" }),
+      shouldRender: isEditingAllowed && !!moduleDetails,
+    },
     factory.createArchiveMenuItem(handlers.handleArchive, {
       shouldRender: isEditingAllowed && !isArchived,
       disabled: !isInArchivableGroup,

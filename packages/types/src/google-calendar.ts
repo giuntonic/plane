@@ -9,7 +9,13 @@ export type TGoogleCalendarListEntry = {
   summary: string;
   primary: boolean;
   background_color?: string | null;
+  /** Pespo: cor do texto sobre `background_color`, como o Google usa. */
+  foreground_color?: string | null;
+  description?: string;
+  time_zone?: string | null;
   access_role?: "owner" | "writer" | "reader" | "freeBusyReader" | null;
+  /** Pespo: agenda mantida pelo Plane (espelho dos itens de trabalho). */
+  is_plane?: boolean;
 };
 
 export type TGoogleCalendarProject = {
@@ -81,6 +87,8 @@ export type TGoogleCalendarEvent = {
   end?: TGoogleCalendarEventTime;
   attendees?: TGoogleCalendarAttendee[];
   organizer?: { email?: string; displayName?: string; self?: boolean };
+  /** Padrão do Google: true. */
+  guestsCanInviteOthers?: boolean;
   conferenceData?: { entryPoints?: { entryPointType: string; uri: string; label?: string }[] };
   /** Calendar the event was read from (added by the Plane API). */
   calendar_id?: string;

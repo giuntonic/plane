@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from "react";
-import { XCircle, ArchiveRestoreIcon } from "lucide-react";
+import { XCircle, ArchiveRestoreIcon, LayoutTemplate, ListChecks } from "lucide-react";
 // plane imports
 import { i18nInstance, useTranslation } from "@plane/i18n";
 import { LinkIcon, CopyIcon, NewTabIcon, EditIcon, ArchiveIcon, TrashIcon } from "@plane/propel/icons";
@@ -13,6 +13,8 @@ import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { EIssuesStoreType, TIssue } from "@plane/types";
 import type { TContextMenuItem } from "@plane/ui";
 import { copyUrlToClipboard, generateWorkItemLink } from "@plane/utils";
+import { openSaveTemplateModal } from "@/components/entity-templates/save-modal-store";
+import { openConvertToChecklistModal } from "@/components/issues/convert-to-checklist/store";
 import { createCopyMenuWithDuplication } from "./copy-menu-helper";
 
 // Generic helper function to handle optional function calls gracefully
@@ -192,6 +194,25 @@ export const useMenuItemFactory = (props: MenuItemFactoryProps) => {
     });
   };
 
+  // Pespo: o item (com subtarefas e sub-itens) vira modelo para criar outros.
+  const createSaveAsTemplateMenuItem = (): TContextMenuItem => ({
+    key: "save-as-template",
+    title: t("entity_templates.save_as_template"),
+    icon: LayoutTemplate,
+    action: () => openSaveTemplateModal({ kind: "work_item", sourceId: issue.id, sourceName: issue.name }),
+    shouldRender: isEditingAllowed && !issue.is_draft,
+  });
+
+  // Pespo: o item vira subtarefa (linha do checklist) de outro item. Sai como numa exclusão, então pede a
+  // mesma permissão de excluir.
+  const createConvertToChecklistMenuItem = (): TContextMenuItem => ({
+    key: "convert-to-checklist",
+    title: t("work_item_structure.to_checklist.menu"),
+    icon: ListChecks,
+    action: () => openConvertToChecklistModal({ issueId: issue.id }),
+    shouldRender: isDeletingAllowed && !issue.is_draft && !issue.is_epic && !issue.archived_at,
+  });
+
   const createOpenInNewTabMenuItem = (): TContextMenuItem => ({
     key: "open-in-new-tab",
     title: t("common.actions.open_in_new_tab"),
@@ -256,6 +277,8 @@ export const useMenuItemFactory = (props: MenuItemFactoryProps) => {
     ...actionHandlers,
     createEditMenuItem,
     createCopyMenuItem,
+    createSaveAsTemplateMenuItem,
+    createConvertToChecklistMenuItem,
     createOpenInNewTabMenuItem,
     createCopyLinkMenuItem,
     createRemoveFromCycleMenuItem,
@@ -274,6 +297,8 @@ export const useProjectIssueMenuItems = (props: MenuItemFactoryProps): TContextM
     () => [
       factory.createEditMenuItem(),
       factory.createCopyMenuItem(),
+      factory.createSaveAsTemplateMenuItem(),
+      factory.createConvertToChecklistMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createCopyLinkMenuItem(),
       factory.createArchiveMenuItem(),
@@ -289,6 +314,8 @@ export const useWorkItemDetailMenuItems = (props: MenuItemFactoryProps): TContex
   return useMemo(
     () => [
       factory.createCopyMenuItem(props.workspaceSlug),
+      factory.createSaveAsTemplateMenuItem(),
+      factory.createConvertToChecklistMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createArchiveMenuItem(),
       factory.createRestoreMenuItem(),
@@ -306,6 +333,8 @@ export const useAllIssueMenuItems = (props: MenuItemFactoryProps): TContextMenuI
     () => [
       factory.createEditMenuItem(),
       factory.createCopyMenuItem(),
+      factory.createSaveAsTemplateMenuItem(),
+      factory.createConvertToChecklistMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createCopyLinkMenuItem(),
       factory.createArchiveMenuItem(),
@@ -330,6 +359,8 @@ export const useCycleIssueMenuItems = (props: MenuItemFactoryProps): TContextMen
     () => [
       factory.createEditMenuItem(customEditAction),
       factory.createCopyMenuItem(),
+      factory.createSaveAsTemplateMenuItem(),
+      factory.createConvertToChecklistMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createCopyLinkMenuItem(),
       factory.createRemoveFromCycleMenuItem(),
@@ -356,6 +387,8 @@ export const useModuleIssueMenuItems = (props: MenuItemFactoryProps): TContextMe
     () => [
       factory.createEditMenuItem(customEditAction),
       factory.createCopyMenuItem(),
+      factory.createSaveAsTemplateMenuItem(),
+      factory.createConvertToChecklistMenuItem(),
       factory.createOpenInNewTabMenuItem(),
       factory.createCopyLinkMenuItem(),
       factory.createRemoveFromModuleMenuItem(),

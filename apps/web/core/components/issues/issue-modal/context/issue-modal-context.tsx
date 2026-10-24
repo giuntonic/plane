@@ -41,6 +41,8 @@ export type THandleTemplateChangeProps = {
   workspaceSlug: string;
   reset: UseFormReset<TIssue>;
   editorRef: React.MutableRefObject<EditorRefApi | null>;
+  /** Pespo: projeto escolhido no formulário (etiquetas e responsáveis do modelo são resolvidos nele). */
+  projectId?: string | null;
 };
 
 export type THandleProjectEntitiesFetchProps = {

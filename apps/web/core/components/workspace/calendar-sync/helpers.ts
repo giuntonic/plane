@@ -69,3 +69,28 @@ export const eventDescriptionText = (description?: string) =>
     .trim();
 
 export const DRAG_MIME = "application/x-plane-issue";
+
+/** Domingo da semana de `date` (a página usa semanas de domingo a sábado, como o resto do Plane). */
+export const startOfWeek = (date: Date) => {
+  const start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  start.setDate(start.getDate() - start.getDay());
+  return start;
+};
+
+/** Os 7 dias ("YYYY-MM-DD", hora local) da semana de `date`. */
+export const weekDateKeys = (date: Date) => {
+  const start = startOfWeek(date);
+  return Array.from({ length: 7 }, (_, index) => {
+    const day = new Date(start);
+    day.setDate(start.getDate() + index);
+    return `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`;
+  });
+};
+
+export const dateFromKey = (dateKey: string) => {
+  const [year, month, day] = dateKey.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+export const formatTime = (iso: string) =>
+  new Date(iso).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });

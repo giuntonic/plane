@@ -8,6 +8,8 @@ import React, { useCallback, useMemo } from "react";
 import { observer } from "mobx-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import { sortBy } from "lodash-es";
+import { Shapes } from "lucide-react";
 import { EUserPermissionsLevel, EUserPermissions } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import {
@@ -77,12 +79,12 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
   };
 
   const baseNavigation = useCallback(
-    (workspaceSlug: string, projectId: string): TNavigationItem[] => [
+    (slug: string, id: string): TNavigationItem[] => [
       {
         i18n_key: "sidebar.work_items",
         key: "work_items",
         name: "Work items",
-        href: `/${workspaceSlug}/projects/${projectId}/issues`,
+        href: `/${slug}/projects/${id}/issues`,
         icon: WorkItemsIcon,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
         shouldRender: true,
@@ -92,7 +94,7 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
         i18n_key: "sidebar.cycles",
         key: "cycles",
         name: "Cycles",
-        href: `/${workspaceSlug}/projects/${projectId}/cycles`,
+        href: `/${slug}/projects/${id}/cycles`,
         icon: CycleIcon,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
         shouldRender: project?.cycle_view ?? false,
@@ -102,7 +104,7 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
         i18n_key: "sidebar.modules",
         key: "modules",
         name: "Modules",
-        href: `/${workspaceSlug}/projects/${projectId}/modules`,
+        href: `/${slug}/projects/${id}/modules`,
         icon: ModuleIcon,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
         shouldRender: project?.module_view ?? false,
@@ -112,7 +114,7 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
         i18n_key: "sidebar.views",
         key: "views",
         name: "Views",
-        href: `/${workspaceSlug}/projects/${projectId}/views`,
+        href: `/${slug}/projects/${id}/views`,
         icon: ViewsIcon,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
         shouldRender: project?.issue_views_view ?? false,
@@ -122,7 +124,7 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
         i18n_key: "sidebar.pages",
         key: "pages",
         name: "Pages",
-        href: `/${workspaceSlug}/projects/${projectId}/pages`,
+        href: `/${slug}/projects/${id}/pages`,
         icon: PageIcon,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
         shouldRender: project?.page_view ?? false,
@@ -132,18 +134,19 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
         i18n_key: "sidebar.intake",
         key: "intake",
         name: "Intake",
-        href: `/${workspaceSlug}/projects/${projectId}/intake`,
+        href: `/${slug}/projects/${id}/intake`,
         icon: IntakeIcon,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
         shouldRender: project?.inbox_view ?? false,
         sortOrder: 6,
       },
       {
-        i18n_key: "sidebar.dashboard",
+        // Pespo: painel de peças do cliente (antes, o embed do Metabase)
+        i18n_key: "sidebar.pieces",
         key: "dashboard",
-        name: "Dashboard",
-        href: `/${workspaceSlug}/projects/${projectId}/dashboard`,
-        icon: DashboardIcon,
+        name: "Peças",
+        href: `/${slug}/projects/${id}/dashboard`,
+        icon: Shapes,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
         shouldRender: true,
         sortOrder: 7,
@@ -152,7 +155,7 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
         i18n_key: "sidebar.dashboards",
         key: "dashboards",
         name: "Dashboards",
-        href: `/${workspaceSlug}/projects/${projectId}/dashboards`,
+        href: `/${slug}/projects/${id}/dashboards`,
         icon: DashboardIcon,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
         shouldRender: true,
@@ -164,20 +167,18 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
 
   // memoized navigation items and adding additional navigation items
   const navigationItemsMemo = useMemo(() => {
-    const navigationItems = (workspaceSlug: string, projectId: string): TNavigationItem[] => {
-      const navItems = baseNavigation(workspaceSlug, projectId);
+    const navigationItems = (slug: string, id: string): TNavigationItem[] => {
+      const navItems = baseNavigation(slug, id);
 
       if (additionalNavigationItems) {
-        navItems.push(...additionalNavigationItems(workspaceSlug, projectId));
+        navItems.push(...additionalNavigationItems(slug, id));
       }
 
       return navItems;
     };
 
     // sort navigation items by sortOrder
-    const sortedNavigationItems = navigationItems(workspaceSlug, projectId).sort(
-      (a, b) => (a.sortOrder || 0) - (b.sortOrder || 0)
-    );
+    const sortedNavigationItems = sortBy(navigationItems(workspaceSlug, projectId), (item) => item.sortOrder || 0);
 
     return sortedNavigationItems;
   }, [workspaceSlug, projectId, baseNavigation, additionalNavigationItems]);

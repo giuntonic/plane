@@ -4,6 +4,7 @@
 
 # Python imports
 import hmac
+import re
 import uuid
 from datetime import timedelta
 
@@ -15,6 +16,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 # Third party imports
+import requests
 from rest_framework import status
 from rest_framework.response import Response
 
@@ -39,6 +41,7 @@ BOOLEAN_PREFERENCES = ("sync_enabled", "two_way_sync", "calendar_per_project", "
 # look triggers an immediate full sync.
 RESYNC_PREFERENCES = {"sync_enabled", "calendar_per_project", "color_by_priority", "sync_project_ids"}
 RESYNC_PREFERENCES |= {"reminder_days_before", "two_way_sync"}
+EMAIL_RE = re.compile(r"^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]+$")
 
 
 def _frontend_redirect(request, query=""):
@@ -163,6 +166,9 @@ class GoogleCalendarStatusEndpoint(BaseAPIView):
         except Exception as e:
             log_exception(e)
             calendars = []
+        # Agendas que o próprio Plane mantém (espelho dos itens de trabalho): a tela do calendário já
+        # mostra os itens, então elas ficam fora do seletor de agendas.
+        plane_calendar_ids = {connection.plane_calendar_id, *(connection.project_calendar_ids or {}).values()}
 
         return Response(
             {
@@ -179,7 +185,12 @@ class GoogleCalendarStatusEndpoint(BaseAPIView):
                         "summary": c.get("summaryOverride") or c.get("summary"),
                         "primary": c.get("primary", False),
                         "background_color": c.get("backgroundColor"),
+                        # Pespo: o calendário do Plane herda cor, nome e características de cada agenda.
+                        "foreground_color": c.get("foregroundColor"),
+                        "description": c.get("description") or "",
+                        "time_zone": c.get("timeZone"),
                         "access_role": c.get("accessRole"),
+                        "is_plane": c.get("id") in plane_calendar_ids,
                     }
                     for c in calendars
                 ],
@@ -350,6 +361,67 @@ class GoogleCalendarEventsEndpoint(BaseAPIView):
                 continue
 
         return Response(_attach_plane_issues(request.user, events), status=status.HTTP_200_OK)
+
+
+MAX_NEW_ATTENDEES = 50
+
+
+class GoogleCalendarEventAttendeesEndpoint(BaseAPIView):
+    """Pespo: adiciona pessoas a um evento do Google direto pelos detalhes do evento no calendário.
+    O Google manda o convite (``sendUpdates=all``). Quem pode adicionar é decidido pelo Google
+    (organizador, ou convidado quando o evento permite convidar outros)."""
+
+    def post(self, request):
+        connection = _get_connection(request.user)
+        if not connection:
+            return Response(
+                {"error": "Not connected", "code": "GOOGLE_CALENDAR_NOT_CONNECTED"}, status=status.HTTP_404_NOT_FOUND
+            )
+        calendar_id = (request.data.get("calendar_id") or "").strip()
+        event_id = (request.data.get("event_id") or "").strip()
+        emails = request.data.get("emails")
+        if not calendar_id or not event_id or not isinstance(emails, list):
+            return Response(
+                {"error": "calendar_id, event_id and emails are required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        new_emails = []
+        for email in emails:
+            email = str(email).strip().lower()
+            if not EMAIL_RE.match(email):
+                return Response({"error": f"Invalid e-mail: {email}"}, status=status.HTTP_400_BAD_REQUEST)
+            if email not in new_emails:
+                new_emails.append(email)
+        if not new_emails or len(new_emails) > MAX_NEW_ATTENDEES:
+            return Response({"error": "Between 1 and 50 e-mails"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            access_token = gcal.get_valid_access_token(connection)
+            event = gcal.get_event(access_token, calendar_id, event_id)
+            attendees = list(event.get("attendees") or [])
+            existing = {(attendee.get("email") or "").lower() for attendee in attendees}
+            attendees += [{"email": email} for email in new_emails if email not in existing]
+            updated = gcal.patch_event(
+                access_token, calendar_id, event_id, {"attendees": attendees}, send_updates="all"
+            )
+        except requests.HTTPError as e:
+            code = e.response.status_code if e.response is not None else None
+            if code in (401, 403):
+                return Response(
+                    {"error": "Google Calendar denied the change", "code": "GOOGLE_CALENDAR_FORBIDDEN"},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+            if code in (404, 410):
+                return Response(
+                    {"error": "Event not found", "code": "GOOGLE_CALENDAR_NOT_FOUND"}, status=status.HTTP_404_NOT_FOUND
+                )
+            log_exception(e)
+            return Response({"error": "Google Calendar error", "code": "GOOGLE_CALENDAR_ERROR"}, status=502)
+        except Exception as e:
+            log_exception(e)
+            return Response({"error": "Google Calendar error", "code": "GOOGLE_CALENDAR_ERROR"}, status=502)
+
+        updated["calendar_id"] = calendar_id
+        return Response(_attach_plane_issues(request.user, [updated])[0], status=status.HTTP_200_OK)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

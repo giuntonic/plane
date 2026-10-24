@@ -35,6 +35,7 @@ import { usePlatformOS } from "@/hooks/use-platform-os";
 // local components
 import type { TRenderQuickActions } from "../list/list-view-types";
 import { IssueProperties } from "../properties/all-properties";
+import { KanbanCardCover } from "./card-cover";
 
 interface IssueBlockProps {
   issueId: string;
@@ -95,6 +96,8 @@ const KanbanIssueDetailsBlock = observer(function KanbanIssueDetailsBlock(props:
 
   return (
     <>
+      {/* Pespo: capa do card (anexo de imagem do item) */}
+      <KanbanCardCover issueId={issue.id} projectId={issue.project_id} />
       <div className="relative">
         {issue.project_id && (
           <IssueIdentifier

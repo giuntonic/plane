@@ -329,5 +329,59 @@
         "project": "No templates found."
       }
     }
+  },
+  "entity_templates": {
+    "save_as_template": "Save as template",
+    "save": "Save template",
+    "saved": "Template “{name}” saved",
+    "save_error": "Could not save the template",
+    "too_large": "Too many work items and sub-tasks for a template (the limit is 300).",
+    "save_title": {
+      "work_item": "Save work item as template",
+      "module": "Save module as template",
+      "cycle": "Save cycle as template",
+      "page": "Save page as template",
+      "project": "Save project as template"
+    },
+    "save_hint": {
+      "work_item": "New work items made from it get the same fields, sub-tasks, links and sub-work items.",
+      "module": "New modules made from it get the same work items, with sub-tasks and sub-work items. Dates move with the module's start date.",
+      "cycle": "New cycles made from it get the same work items, with sub-tasks and sub-work items. Dates move with the cycle's start date.",
+      "page": "New pages made from it start with the same content.",
+      "project": "New projects made from it get the same features, states, labels, modules and work items."
+    },
+    "name_placeholder": "Template name",
+    "description_placeholder": "When to use this template (optional)",
+    "workspace_wide": "Available in every project of the workspace (otherwise only in this project)",
+    "include_work_items": "Include the work items (without it, only features, states, labels and modules)",
+    "use_template": "Template",
+    "no_template": "No template",
+    "load_error": "Could not load the template",
+    "apply_error_title": "Created without the template",
+    "apply_error": {
+      "work_item": "The work item was created, but the template's sub-tasks and sub-work items could not be added.",
+      "module": "The module was created, but the template's work items could not be added.",
+      "cycle": "The cycle was created, but the template's work items could not be added.",
+      "page": "Could not create the page from the template.",
+      "project": "The project was created, but the template could not be applied."
+    },
+    "edit": "Edit template",
+    "make_workspace_wide": "Make available in every project",
+    "scope_project": "One project",
+    "scope_workspace": "Every project",
+    "summary_items": "{count, plural, one {# item or sub-task} other {# items and sub-tasks}}",
+    "delete_title": "Delete template",
+    "delete_confirmation": "Delete the template “{name}”? What was already created from it stays.",
+    "delete_error": "Could not delete the template",
+    "settings_description": "Templates for work items, modules, cycles, pages and projects.",
+    "settings_hint": "To create one, open the ⋯ menu of a work item, module, cycle, page or project and choose “Save as template”. When creating something new, pick it under “Template”.",
+    "empty": "No templates yet.",
+    "kind_plural": {
+      "work_item": "Work items",
+      "module": "Modules",
+      "cycle": "Cycles",
+      "page": "Pages",
+      "project": "Projects"
+    }
   }
 }

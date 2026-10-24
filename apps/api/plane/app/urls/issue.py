@@ -18,6 +18,14 @@ from plane.app.views import (
     IssueGoogleDriveImportEndpoint,
     IssueChecklistItemEndpoint,
     IssueChecklistItemDetailEndpoint,
+    IssueChecklistEndpoint,
+    IssueChecklistDetailEndpoint,
+    IssueChecklistItemConvertEndpoint,
+    IssueCopyStructureEndpoint,
+    IssueConvertToChecklistEndpoint,
+    ProjectCardExtrasEndpoint,
+    IssueCoverEndpoint,
+    IssueRecurrenceEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -179,6 +187,49 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklist-items/<uuid:pk>/",
         IssueChecklistItemDetailEndpoint.as_view(),
         name="project-issue-checklist-item-detail",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklist-items/<uuid:pk>/convert/",
+        IssueChecklistItemConvertEndpoint.as_view(),
+        name="project-issue-checklist-item-convert",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklists/",
+        IssueChecklistEndpoint.as_view(),
+        name="project-issue-checklists",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklists/<uuid:pk>/",
+        IssueChecklistDetailEndpoint.as_view(),
+        name="project-issue-checklist-detail",
+    ),
+    # Pespo: extras dos cards (progresso das subtarefas, capa) e a capa do item
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/card-extras/",
+        ProjectCardExtrasEndpoint.as_view(),
+        name="project-card-extras",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/cover/",
+        IssueCoverEndpoint.as_view(),
+        name="project-issue-cover",
+    ),
+    # Pespo: item recorrente (regra de repetição)
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/recurrence/",
+        IssueRecurrenceEndpoint.as_view(),
+        name="project-issue-recurrence",
+    ),
+    # Pespo: cópia do item com subtarefas, links e sub-itens
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/copy-structure/",
+        IssueCopyStructureEndpoint.as_view(),
+        name="project-issue-copy-structure",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/convert-to-checklist/",
+        IssueConvertToChecklistEndpoint.as_view(),
+        name="project-issue-convert-to-checklist",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/issue-attachments/",

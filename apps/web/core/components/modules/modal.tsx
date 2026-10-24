@@ -11,10 +11,14 @@ import { useForm } from "react-hook-form";
 // Plane imports
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { IModule } from "@plane/types";
+import { EIssuesStoreType } from "@plane/types";
 import { EModalPosition, EModalWidth, ModalCore } from "@plane/ui";
 // components
+import { EntityTemplateSelect } from "@/components/entity-templates/template-select";
+import { useEntityTemplateForCreate } from "@/components/entity-templates/use-template-for-create";
 import { ModuleForm } from "@/components/modules";
 // hooks
+import { useIssues } from "@/hooks/store/use-issues";
 import { useModule } from "@/hooks/store/use-module";
 import { useProject } from "@/hooks/store/use-project";
 import useKeypress from "@/hooks/use-keypress";
@@ -43,11 +47,15 @@ export const CreateUpdateModuleModal = observer(function CreateUpdateModuleModal
   const [activeProject, setActiveProject] = useState<string | null>(null);
   // store hooks
   const { workspaceProjectIds } = useProject();
-  const { createModule, updateModuleDetails } = useModule();
+  const { createModule, updateModuleDetails, fetchModuleDetails } = useModule();
+  const { issues: projectIssues } = useIssues(EIssuesStoreType.PROJECT);
   const { isMobile } = usePlatformOS();
+  // Pespo: criar o módulo a partir de um modelo (os itens do modelo entram depois de criar).
+  const template = useEntityTemplateForCreate(workspaceSlug, "module");
 
   const handleClose = () => {
     reset(defaultValues);
+    template.clear();
     onClose();
   };
 
@@ -60,7 +68,13 @@ export const CreateUpdateModuleModal = observer(function CreateUpdateModuleModal
 
     const selectedProjectId = payload.project_id ?? projectId.toString();
     await createModule(workspaceSlug.toString(), selectedProjectId, payload)
-      .then((_res) => {
+      // oxlint-disable-next-line promise/always-return
+      .then(async (res) => {
+        if (template.templateId && res?.id) {
+          await template.apply({ project_id: selectedProjectId, module_id: res.id });
+          void fetchModuleDetails(workspaceSlug.toString(), selectedProjectId, res.id);
+          void projectIssues.fetchIssuesWithExistingPagination(workspaceSlug.toString(), selectedProjectId, "mutation");
+        }
         handleClose();
         setToast({
           type: TOAST_TYPE.SUCCESS,
@@ -82,6 +96,7 @@ export const CreateUpdateModuleModal = observer(function CreateUpdateModuleModal
 
     const selectedProjectId = payload.project_id ?? projectId.toString();
     await updateModuleDetails(workspaceSlug.toString(), selectedProjectId, data.id, payload)
+      // oxlint-disable-next-line promise/always-return
       .then((_res) => {
         handleClose();
 
@@ -140,11 +155,23 @@ export const CreateUpdateModuleModal = observer(function CreateUpdateModuleModal
       <ModuleForm
         handleFormSubmit={handleFormSubmit}
         handleClose={handleClose}
-        status={data ? true : false}
+        status={!!data}
         projectId={activeProject ?? ""}
         setActiveProject={setActiveProject}
         data={data}
         isMobile={isMobile}
+        templatePrefill={template.prefill}
+        templateSlot={
+          activeProject && (
+            <EntityTemplateSelect
+              workspaceSlug={workspaceSlug}
+              kind="module"
+              projectId={activeProject}
+              value={template.templateId}
+              onChange={(id) => void template.choose(id, activeProject)}
+            />
+          )
+        }
       />
     </ModalCore>
   );

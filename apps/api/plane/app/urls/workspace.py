@@ -33,6 +33,9 @@ from plane.app.views import (
     WorkspaceDraftIssueViewSet,
     QuickLinkViewSet,
     WorkspaceUserTaskViewSet,
+    EntityTemplateEndpoint,
+    EntityTemplateDetailEndpoint,
+    EntityTemplateApplyEndpoint,
     UserRecentVisitViewSet,
     WorkspaceHomePreferenceViewSet,
     WorkspaceStickyViewSet,
@@ -236,6 +239,18 @@ urlpatterns = [
         "workspaces/<str:slug>/tasks/<uuid:pk>/",
         WorkspaceUserTaskViewSet.as_view({"get": "retrieve", "patch": "partial_update", "delete": "destroy"}),
         name="workspace-tasks",
+    ),
+    # Pespo: modelos (item de trabalho, módulo, ciclo, página, projeto)
+    path("workspaces/<str:slug>/templates/", EntityTemplateEndpoint.as_view(), name="workspace-templates"),
+    path(
+        "workspaces/<str:slug>/templates/<uuid:pk>/",
+        EntityTemplateDetailEndpoint.as_view(),
+        name="workspace-template-detail",
+    ),
+    path(
+        "workspaces/<str:slug>/templates/<uuid:pk>/apply/",
+        EntityTemplateApplyEndpoint.as_view(),
+        name="workspace-template-apply",
     ),
     # Widgets
     path(

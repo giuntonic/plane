@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { Repeat } from "lucide-react";
 import { observer } from "mobx-react";
 // i18n
 import { useTranslation } from "@plane/i18n";
@@ -37,6 +38,7 @@ import { useProject } from "@/hooks/store/use-project";
 import { useProjectState } from "@/hooks/store/use-project-state";
 // plane web components
 import { IssueParentSelectRoot } from "@/components/issues/parent-select-root";
+import { IssueRecurrenceSelect } from "@/components/issues/recurrence";
 import type { TIssueOperations } from "../issue-detail";
 import { IssueCycleSelect } from "../issue-detail/cycle-select";
 import { IssueLabel } from "../issue-detail/label";
@@ -237,6 +239,16 @@ export const PeekOverviewProperties = observer(function PeekOverviewProperties(p
             issueOperations={issueOperations}
             projectId={projectId}
             workspaceSlug={workspaceSlug}
+          />
+        </SidebarPropertyListItem>
+
+        {/* Pespo: item recorrente */}
+        <SidebarPropertyListItem icon={Repeat} label={t("issue_recurrence.label")}>
+          <IssueRecurrenceSelect
+            workspaceSlug={workspaceSlug}
+            projectId={projectId}
+            issueId={issueId}
+            disabled={disabled}
           />
         </SidebarPropertyListItem>
 

@@ -27,6 +27,7 @@ from plane.settings.storage import S3Storage
 from plane.utils.path_validator import sanitize_filename
 from plane.bgtasks.storage_metadata_task import get_asset_object_metadata
 from plane.utils.host import base_host
+from plane.utils.issue_cover import cover_on_first_image
 
 
 class IssueAttachmentEndpoint(BaseAPIView):
@@ -236,4 +237,6 @@ class IssueAttachmentV2Endpoint(BaseAPIView):
         if not issue_attachment.storage_metadata:
             get_asset_object_metadata.delay(str(issue_attachment.id))
         issue_attachment.save()
+        # Pespo: a primeira imagem de um item sem capa vira a capa do card.
+        cover_on_first_image(issue_attachment)
         return Response(status=status.HTTP_204_NO_CONTENT)

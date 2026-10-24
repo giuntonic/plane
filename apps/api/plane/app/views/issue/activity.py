@@ -20,6 +20,7 @@ from .relation import issue_in_project
 from plane.app.serializers import IssueActivitySerializer, IssueCommentSerializer
 from plane.app.permissions import ProjectEntityPermission, allow_permission, ROLE
 from plane.db.models import IssueActivity, IssueComment, CommentReaction, IntakeIssue
+from plane.utils.team_only_comments import hide_team_only_comments
 
 
 class IssueActivityEndpoint(BaseAPIView):
@@ -68,6 +69,8 @@ class IssueActivityEndpoint(BaseAPIView):
                 )
             )
         )
+        # Pespo: sinais automáticos (Laya) falam do cliente; convidados não veem.
+        issue_comments = hide_team_only_comments(issue_comments, request.user, project_id)
 
         if request.GET.get("activity_type", None) == "issue-property":
             issue_activities = issue_activities.prefetch_related(

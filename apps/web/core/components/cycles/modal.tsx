@@ -10,11 +10,15 @@ import { mutate } from "swr";
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { CycleDateCheckData, ICycle, TCycleTabOptions } from "@plane/types";
+import { EIssuesStoreType } from "@plane/types";
 // ui
 import { EModalPosition, EModalWidth, ModalCore } from "@plane/ui";
 // hooks
 import { renderFormattedPayloadDate } from "@plane/utils";
+import { EntityTemplateSelect } from "@/components/entity-templates/template-select";
+import { useEntityTemplateForCreate } from "@/components/entity-templates/use-template-for-create";
 import { useCycle } from "@/hooks/store/use-cycle";
+import { useIssues } from "@/hooks/store/use-issues";
 import { useProject } from "@/hooks/store/use-project";
 import useKeypress from "@/hooks/use-keypress";
 import useLocalStorage from "@/hooks/use-local-storage";
@@ -41,9 +45,12 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
   const [activeProject, setActiveProject] = useState<string | null>(null);
   // store hooks
   const { workspaceProjectIds } = useProject();
-  const { createCycle, updateCycleDetails } = useCycle();
+  const { createCycle, updateCycleDetails, fetchCycleDetails } = useCycle();
+  const { issues: projectIssues } = useIssues(EIssuesStoreType.PROJECT);
   const { isMobile } = usePlatformOS();
   const { t } = useTranslation();
+  // Pespo: criar o ciclo a partir de um modelo (os itens do modelo entram depois de criar).
+  const template = useEntityTemplateForCreate(workspaceSlug, "cycle");
 
   const { setValue: setCycleTab } = useLocalStorage<TCycleTabOptions>("cycle_tab", "active");
 
@@ -52,7 +59,13 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
 
     const selectedProjectId = payload.project_id ?? projectId.toString();
     await createCycle(workspaceSlug, selectedProjectId, payload)
-      .then((_res) => {
+      // oxlint-disable-next-line promise/always-return
+      .then(async (res) => {
+        if (template.templateId && res?.id) {
+          await template.apply({ project_id: selectedProjectId, cycle_id: res.id });
+          void fetchCycleDetails(workspaceSlug, selectedProjectId, res.id);
+          void projectIssues.fetchIssuesWithExistingPagination(workspaceSlug, selectedProjectId, "mutation");
+        }
         // mutate when the current cycle creation is active
         if (payload.start_date && payload.end_date) {
           const currentDate = new Date();
@@ -83,6 +96,7 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
 
     const selectedProjectId = payload.project_id ?? projectId.toString();
     await updateCycleDetails(workspaceSlug, selectedProjectId, cycleId, payload)
+      // oxlint-disable-next-line promise/always-return
       .then((_res) => {
         setToast({
           type: TOAST_TYPE.SUCCESS,
@@ -99,10 +113,11 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
       });
   };
 
-  const dateChecker = async (projectId: string, payload: CycleDateCheckData) => {
+  const dateChecker = async (targetProjectId: string, payload: CycleDateCheckData) => {
     let status = false;
 
-    await cycleService.cycleDateCheck(workspaceSlug, projectId, payload).then((res) => {
+    // oxlint-disable-next-line promise/always-return
+    await cycleService.cycleDateCheck(workspaceSlug, targetProjectId, payload).then((res) => {
       status = res.status;
     });
 
@@ -146,10 +161,12 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
     if (isDateValid) {
       if (data?.id) await handleUpdateCycle(data.id, payload);
       else {
+        // oxlint-disable-next-line promise/always-return
         await handleCreateCycle(payload).then(() => {
           setCycleTab("all");
         });
       }
+      template.clear();
       handleClose();
     } else
       setToast({
@@ -194,6 +211,18 @@ export function CycleCreateUpdateModal(props: CycleModalProps) {
         setActiveProject={setActiveProject}
         data={data}
         isMobile={isMobile}
+        templatePrefill={template.prefill}
+        templateSlot={
+          activeProject && (
+            <EntityTemplateSelect
+              workspaceSlug={workspaceSlug}
+              kind="cycle"
+              projectId={activeProject}
+              value={template.templateId}
+              onChange={(id) => void template.choose(id, activeProject)}
+            />
+          )
+        }
       />
     </ModalCore>
   );

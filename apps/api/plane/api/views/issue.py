@@ -90,6 +90,7 @@ from plane.utils.order_queryset import (
 from plane.bgtasks.storage_metadata_task import get_asset_object_metadata
 from .base import BaseAPIView
 from plane.utils.host import base_host
+from plane.utils.team_only_comments import hide_team_only_comments
 from plane.utils.issue_relation_mapper import get_actual_relation
 from plane.bgtasks.webhook_task import model_activity
 from plane.app.permissions import ROLE
@@ -1376,6 +1377,10 @@ class IssueCommentListCreateAPIEndpoint(BaseAPIView):
     use_read_replica = True
 
     def get_queryset(self):
+        # Pespo: sinais automáticos (Laya) falam do cliente; convidados não veem.
+        return hide_team_only_comments(self._comment_queryset(), self.request.user, self.kwargs.get("project_id"))
+
+    def _comment_queryset(self):
         return (
             IssueComment.objects.filter(workspace__slug=self.kwargs.get("slug"))
             .filter(project_id=self.kwargs.get("project_id"))
@@ -1532,6 +1537,10 @@ class IssueCommentDetailAPIEndpoint(BaseAPIView):
     use_read_replica = True
 
     def get_queryset(self):
+        # Pespo: sinais automáticos (Laya) falam do cliente; convidados não veem.
+        return hide_team_only_comments(self._comment_queryset(), self.request.user, self.kwargs.get("project_id"))
+
+    def _comment_queryset(self):
         return (
             IssueComment.objects.filter(workspace__slug=self.kwargs.get("slug"))
             .filter(project_id=self.kwargs.get("project_id"))

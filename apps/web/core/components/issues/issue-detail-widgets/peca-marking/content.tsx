@@ -6,18 +6,26 @@
  * pelo portal-cliente, que fala com o Plane via API pública — os dois
  * lêem/escrevem o mesmo texto, então uma marcação feita aqui aparece lá
  * e vice-versa). A aprovação também é escutada por um webhook do Plane
- * -> n8n, que replica o evento pro Postgres do portal-cliente pra
- * aparecer no dashboard do Metabase.
+ * -> n8n ("Peça Aprovada"), que registra em peca_aprovacoes no Postgres do
+ * portal-cliente. "Pedir refação" (Pespo, 1.5) leva a peça para o estado de
+ * retrabalho do cliente e deixa o motivo num comentário (endpoint próprio).
  */
 
 import React, { useMemo, useRef, useState } from "react";
+import { sortBy } from "lodash-es";
 import { observer } from "mobx-react";
+import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
+import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { TIssueAttachment, TIssueServiceType } from "@plane/types";
 import { EIssueServiceType } from "@plane/types";
-import { Button, Input } from "@plane/ui";
+import { Button, Input, TextArea } from "@plane/ui";
+import { pieceErrorMessage } from "@/components/projects/pieces-panel/helpers";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
-import { useUser } from "@/hooks/store/user";
+import { useUser, useUserPermissions } from "@/hooks/store/user";
+// services
+import { projectPiecesService } from "@/services/project-pieces.service";
 // local imports
 import type { TPecaMediaKind } from "./helper";
 
@@ -45,7 +53,7 @@ const PIN_IMAGE_REGEX = /^📍 Marca[cç][aã]o de (.+?) em \(([\d.]+)%, ([\d.]+
 const PIN_VIDEO_REGEX = /^🎬 Marca[cç][aã]o de (.+?) em (\d+:\d{2}(?::\d{2})?): (.*)$/;
 // Aprovação — mesmo truque das marcações: vira um comentário no formato
 // fixo abaixo. O n8n escuta o webhook de comentário do Plane e usa esse
-// mesmo regex pra refletir a aprovação no dashboard do Metabase.
+// mesmo regex pra registrar a aprovação no banco do portal.
 const APPROVAL_REGEX = /^✅ Pe[cç]a aprovada por (.+?) em (\d{2}\/\d{2}\/\d{4})$/;
 
 function formatDateBR(d: Date): string {
@@ -91,10 +99,27 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
     attachment: latestAttachment,
     kind,
   } = props;
+  const { t } = useTranslation();
   const { data: currentUser } = useUser();
+  const { allowPermissions } = useUserPermissions();
   const {
     comment: { getCommentsByIssueId, getCommentById, createComment },
+    fetchIssue,
+    fetchComments,
+    fetchActivities,
   } = useIssueDetail(issueServiceType);
+  // Pespo: o cliente (convidado do projeto) também revisa a peça — aprovar ou pedir refação.
+  const canReview =
+    !disabled ||
+    allowPermissions(
+      [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
+      EUserPermissionsLevel.PROJECT,
+      workspaceSlug,
+      projectId
+    );
+  const [isReworkOpen, setIsReworkOpen] = useState(false);
+  const [reworkReason, setReworkReason] = useState("");
+  const [requestingRework, setRequestingRework] = useState(false);
 
   const [newImagePins, setNewImagePins] = useState<NewImagePin[]>([]);
   const [newVideoPins, setNewVideoPins] = useState<NewVideoPin[]>([]);
@@ -127,7 +152,7 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
       const tempo = parts.length === 3 ? parts[0] * 3600 + parts[1] * 60 + parts[2] : parts[0] * 60 + parts[1];
       pins.push({ id: c!.id, autor: m[1], tempo, tempoFormatado: m[2], texto: m[3] });
     }
-    return pins.sort((a, b) => a.tempo - b.tempo);
+    return sortBy(pins, (pin) => pin.tempo);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [comments.length]);
 
@@ -156,6 +181,26 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
     }
   };
 
+  const handleRequestRework = async () => {
+    if (!reworkReason.trim()) return;
+    setRequestingRework(true);
+    try {
+      await projectPiecesService.requestRework(workspaceSlug, projectId, issueId, reworkReason.trim());
+      setToast({ type: TOAST_TYPE.SUCCESS, title: t("pieces_panel.rework.success") });
+      setIsReworkOpen(false);
+      setReworkReason("");
+      await Promise.allSettled([
+        fetchIssue(workspaceSlug, projectId, issueId),
+        fetchComments(workspaceSlug, projectId, issueId),
+        fetchActivities(workspaceSlug, projectId, issueId),
+      ]);
+    } catch (error) {
+      setToast({ type: TOAST_TYPE.ERROR, title: t("pieces_panel.rework.error"), message: pieceErrorMessage(t, error) });
+    } finally {
+      setRequestingRework(false);
+    }
+  };
+
   const handleImageClick = (ev: React.MouseEvent<HTMLDivElement>) => {
     if (disabled || ev.target !== imgRef.current) return;
     const rect = imgRef.current!.getBoundingClientRect();
@@ -171,6 +216,8 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
     try {
       for (const pin of toSave) {
         const raw = `📍 Marcação de ${authorName} em (${pin.x.toFixed(1)}%, ${pin.y.toFixed(1)}%): ${pin.texto.trim()}`;
+        // Uma de cada vez, para os comentários saírem na ordem das marcações.
+        // oxlint-disable-next-line no-await-in-loop
         await createComment(workspaceSlug, projectId, issueId, { comment_html: `<p>${raw}</p>` });
       }
       setNewImagePins([]);
@@ -181,7 +228,10 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
 
   const addVideoPin = () => {
     if (!videoRef.current) return;
-    setNewVideoPins((prev) => [...prev, { localId: nextLocalId.current++, tempo: videoRef.current!.currentTime, texto: "" }]);
+    setNewVideoPins((prev) => [
+      ...prev,
+      { localId: nextLocalId.current++, tempo: videoRef.current!.currentTime, texto: "" },
+    ]);
   };
 
   const saveVideoPins = async () => {
@@ -191,6 +241,8 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
     try {
       for (const pin of toSave) {
         const raw = `🎬 Marcação de ${authorName} em ${formatTime(pin.tempo)}: ${pin.texto.trim()}`;
+        // Uma de cada vez, para os comentários saírem na ordem das marcações.
+        // oxlint-disable-next-line no-await-in-loop
         await createComment(workspaceSlug, projectId, issueId, { comment_html: `<p>${raw}</p>` });
       }
       setNewVideoPins([]);
@@ -208,7 +260,7 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
   return (
     <div className="flex flex-col gap-3 px-1.5 pb-2">
       {latestApproval ? (
-        <div className="flex items-center gap-2 rounded-md border border-green-500/30 bg-green-500/10 px-3 py-2">
+        <div className="border-green-500/30 bg-green-500/10 flex items-center gap-2 rounded-md border px-3 py-2">
           <span className="text-16">✅</span>
           <p className="text-13 text-secondary">
             <span className="font-medium text-primary">Aprovada</span> por {latestApproval.autor} em{" "}
@@ -216,15 +268,48 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
           </p>
         </div>
       ) : (
-        !disabled && (
-          <Button variant="primary" size="sm" onClick={handleApprove} loading={approving} disabled={approving} className="self-start">
-            Aprovar peça
-          </Button>
+        canReview && (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Button variant="primary" size="sm" onClick={handleApprove} loading={approving} disabled={approving}>
+                Aprovar peça
+              </Button>
+              <Button variant="neutral-primary" size="sm" onClick={() => setIsReworkOpen((open) => !open)}>
+                {t("pieces_panel.rework.button")}
+              </Button>
+            </div>
+            {isReworkOpen && (
+              <div className="flex flex-col gap-2 rounded-md border border-subtle p-2">
+                <TextArea
+                  value={reworkReason}
+                  onChange={(e) => setReworkReason(e.target.value)}
+                  placeholder={t("pieces_panel.rework.placeholder")}
+                  className="min-h-16 w-full resize-none text-13"
+                />
+                <div className="flex justify-end gap-2">
+                  <Button variant="neutral-primary" size="sm" onClick={() => setIsReworkOpen(false)}>
+                    {t("cancel")}
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => void handleRequestRework()}
+                    loading={requestingRework}
+                    disabled={!reworkReason.trim() || requestingRework}
+                  >
+                    {t("pieces_panel.rework.submit")}
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         )
       )}
       {kind === "imagem" && (
         <>
           <p className="text-13 text-tertiary">Clique na imagem pra deixar uma marcação.</p>
+          {/* Clicar num ponto da imagem marca a posição (x/y); não há equivalente de teclado para isso. */}
+          {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions */}
           <div className="relative inline-block max-w-full" onClick={handleImageClick}>
             <img
               ref={imgRef}
@@ -276,7 +361,10 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
             <div className="flex flex-col gap-1">
               {savedImagePins.map((pin, i) => (
                 <p key={pin.id} className="text-13 text-secondary">
-                  <span className="font-medium">{i + 1}. {pin.autor}:</span> {pin.texto}
+                  <span className="font-medium">
+                    {i + 1}. {pin.autor}:
+                  </span>{" "}
+                  {pin.texto}
                 </p>
               ))}
             </div>
@@ -302,7 +390,7 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
                   />
                   <button
                     type="button"
-                    className="text-13 text-red-500"
+                    className="text-red-500 text-13"
                     onClick={() => setNewImagePins((prev) => prev.filter((p) => p.localId !== pin.localId))}
                   >
                     Remover
@@ -340,7 +428,7 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
                   className="flex items-start gap-2 text-left text-13 text-secondary hover:text-primary"
                   onClick={() => seekTo(pin.tempo)}
                 >
-                  <span className="flex-shrink-0 rounded bg-layer-2 px-1.5 py-0.5 font-mono text-11">
+                  <span className="font-mono flex-shrink-0 rounded bg-layer-2 px-1.5 py-0.5 text-11">
                     {pin.tempoFormatado}
                   </span>
                   <span>
@@ -355,7 +443,7 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
             <div className="flex flex-col gap-2">
               {newVideoPins.map((pin) => (
                 <div key={pin.localId} className="flex items-center gap-2">
-                  <span className="flex-shrink-0 rounded bg-accent-primary px-1.5 py-0.5 font-mono text-11 text-white">
+                  <span className="font-mono flex-shrink-0 rounded bg-accent-primary px-1.5 py-0.5 text-11 text-white">
                     {formatTime(pin.tempo)}
                   </span>
                   <Input
@@ -371,7 +459,7 @@ export const PecaMarkingCollapsibleContent = observer(function PecaMarkingCollap
                   />
                   <button
                     type="button"
-                    className="text-13 text-red-500"
+                    className="text-red-500 text-13"
                     onClick={() => setNewVideoPins((prev) => prev.filter((p) => p.localId !== pin.localId))}
                   >
                     Remover

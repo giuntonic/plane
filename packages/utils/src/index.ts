@@ -21,6 +21,7 @@ export * from "./filter";
 export * from "./get-icon-for-link";
 export * from "./google-drive";
 export * from "./home-agenda";
+export * from "./calendar-view";
 export * from "./home-widgets";
 export * from "./issue-checklist";
 export * from "./intake";

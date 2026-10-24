@@ -12,6 +12,8 @@ import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { EFileAssetType } from "@plane/types";
 // components
+import { EntityTemplateSelect } from "@/components/entity-templates/template-select";
+import { useEntityTemplateForCreate } from "@/components/entity-templates/use-template-for-create";
 import ProjectCommonAttributes from "@/components/project/create/common-attributes";
 import ProjectCreateHeader from "@/components/project/create/header";
 import ProjectCreateButtons from "@/components/project/create/project-create-buttons";
@@ -38,9 +40,11 @@ export const CreateProjectForm = observer(function CreateProjectForm(props: TCre
   const { setToFavorite, workspaceSlug, data, onClose, handleNextStep, updateCoverImageStatus } = props;
   // store
   const { t } = useTranslation();
-  const { addProjectToFavorites, createProject, updateProject } = useProject();
+  const { addProjectToFavorites, createProject, updateProject, fetchProjectDetails } = useProject();
   // states
   const [shouldAutoSyncIdentifier, setShouldAutoSyncIdentifier] = useState(true);
+  // Pespo: projeto a partir de um modelo (estados, etiquetas, módulos e itens entram depois de criar).
+  const template = useEntityTemplateForCreate(workspaceSlug, "project");
   // form info
   const methods = useForm<TProject>({
     defaultValues: { ...getProjectFormValues(), ...data },
@@ -110,6 +114,10 @@ export const CreateProjectForm = observer(function CreateProjectForm(props: TCre
         if (setToFavorite) {
           handleAddToFavorites(res.id);
         }
+        if (template.templateId) {
+          await template.apply({ project_id: res.id });
+          await fetchProjectDetails(workspaceSlug.toString(), res.id).catch(() => undefined);
+        }
         return handleNextStep(res.id);
       })
       .catch((err) => {
@@ -165,6 +173,7 @@ export const CreateProjectForm = observer(function CreateProjectForm(props: TCre
   };
 
   const handleClose = () => {
+    template.clear();
     onClose();
     setShouldAutoSyncIdentifier(true);
     setTimeout(() => {
@@ -185,6 +194,12 @@ export const CreateProjectForm = observer(function CreateProjectForm(props: TCre
             setShouldAutoSyncIdentifier={setShouldAutoSyncIdentifier}
           />
           <ProjectAttributes isMobile={isMobile} />
+          <EntityTemplateSelect
+            workspaceSlug={workspaceSlug}
+            kind="project"
+            value={template.templateId}
+            onChange={(id) => void template.choose(id)}
+          />
         </div>
         <ProjectCreateButtons handleClose={handleClose} />
       </form>

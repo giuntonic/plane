@@ -449,6 +449,94 @@
     "collapse": "Collapse",
     "drag": "Drag to reorder",
     "hint": "Enter: new line · Tab: indent · Shift+Tab: outdent · Alt+↑/↓: move",
-    "save_error": "Couldn't save the subtask"
+    "save_error": "Couldn't save the subtask",
+    "convert": "Turn into work item",
+    "convert_sub_item": "Sub-work item of this one",
+    "convert_standalone": "Standalone work item",
+    "converted": "“{name}” is now a work item",
+    "convert_error": "Could not turn the sub-task into a work item",
+    "open": "Open",
+    "named": {
+      "action": "Checklist",
+      "new": "New checklist",
+      "default_name": "Checklist",
+      "name_placeholder": "Checklist name",
+      "rename": "Rename checklist",
+      "delete": "Delete checklist",
+      "delete_title": "Delete checklist",
+      "delete_content": "Delete the checklist “{name}”? {count, plural, =0 {It is empty.} one {Its # line goes too.} other {Its # lines go too.}}",
+      "add_line": "Add item",
+      "placeholder": "Write an item…"
+    }
+  },
+  "work_item_structure": {
+    "copy_error_title": "Copy created without its sub-tasks",
+    "copy_error": "The work item was created, but its sub-tasks and sub-work items could not be copied.",
+    "to_checklist": {
+      "menu": "Turn into a sub-task",
+      "title": "Turn into a sub-task",
+      "description": "“{name}” becomes a sub-task (checklist line) of the work item you choose.",
+      "target": "Work item",
+      "choose_target": "Choose a work item",
+      "change_target": "Change",
+      "keeps": "Goes along: the name, the first assignee, the due date, whether it is done, and its sub-tasks.",
+      "loses": "The work item is removed as in a deletion: description, comments, attachments and links do not go along.",
+      "has_sub_items": "This work item has sub-work items. Move or convert them first.",
+      "submit": "Turn into sub-task",
+      "success": "Now a sub-task of “{target}”",
+      "error": "Could not turn it into a sub-task",
+      "forbidden": "Only project admins or whoever created the work item can do this."
+    }
+  },
+  "issue_cover": {
+    "set": "Use as cover",
+    "remove": "Remove cover",
+    "badge": "Cover",
+    "set_done": "Cover updated",
+    "error": "Could not change the cover"
+  },
+  "issue_recurrence": {
+    "label": "Repeat",
+    "none": "Does not repeat",
+    "frequency": {
+      "none": "Does not repeat",
+      "daily": "Daily",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    },
+    "every": "Every",
+    "unit": {
+      "daily": "{count, plural, one {day} other {days}}",
+      "weekly": "{count, plural, one {week} other {weeks}}",
+      "monthly": "{count, plural, one {month} other {months}}",
+      "yearly": "{count, plural, one {year} other {years}}"
+    },
+    "summary": {
+      "daily": "{count, plural, one {Every day} other {Every # days}}",
+      "weekly": "{count, plural, one {Every week} other {Every # weeks}}",
+      "monthly": "{count, plural, one {Every month} other {Every # months}}",
+      "yearly": "{count, plural, one {Every year} other {Every # years}}"
+    },
+    "weekday": {
+      "0": "Mon",
+      "1": "Tue",
+      "2": "Wed",
+      "3": "Thu",
+      "4": "Fri",
+      "5": "Sat",
+      "6": "Sun"
+    },
+    "on_days": "On",
+    "end_date": "Until (optional)",
+    "next": "Next copy: {date}",
+    "ended": "The series has ended",
+    "help": "On each date, a copy of this work item (with its sub-tasks, checklists and sub-work items) is created, due that day.",
+    "save": "Save",
+    "stop": "Stop repeating",
+    "saved": "Repeat saved",
+    "stopped": "This work item no longer repeats",
+    "error": "Could not save the repeat",
+    "card_tooltip": "Recurring work item"
   }
 }

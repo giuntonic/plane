@@ -24,6 +24,7 @@ from plane.bgtasks.issue_activities_task import issue_activity
 from plane.utils.host import base_host
 from plane.bgtasks.webhook_task import model_activity
 from .relation import issue_in_project
+from plane.utils.team_only_comments import hide_team_only_comments
 
 # Only the content and visibility are client-writable; actor, parent and the
 # other relations are set by the server.
@@ -38,6 +39,10 @@ class IssueCommentViewSet(BaseViewSet):
     filterset_fields = ["issue__id", "workspace__id"]
 
     def get_queryset(self):
+        # Pespo: sinais automáticos (Laya) falam do cliente; convidados não veem.
+        return hide_team_only_comments(self._comment_queryset(), self.request.user, self.kwargs.get("project_id"))
+
+    def _comment_queryset(self):
         return self.filter_queryset(
             super()
             .get_queryset()

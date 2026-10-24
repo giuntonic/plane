@@ -24,7 +24,11 @@ from .project.member import (
     ProjectMemberPreferenceEndpoint,
 )
 
-from .project.metabase import ProjectMetabaseEmbedEndpoint
+from .project.pieces import (
+    ProjectPiecesPanelEndpoint,
+    ProjectPiecesRequestEndpoint,
+    IssueReworkRequestEndpoint,
+)
 
 from .user.base import (
     UserEndpoint,
@@ -41,6 +45,7 @@ from .user.google_calendar import (
     GoogleCalendarDisconnectEndpoint,
     GoogleCalendarSyncNowEndpoint,
     GoogleCalendarEventsEndpoint,
+    GoogleCalendarEventAttendeesEndpoint,
     GoogleCalendarNotificationEndpoint,
 )
 
@@ -105,6 +110,11 @@ from .workspace.module import WorkspaceModulesEndpoint
 from .workspace.cycle import WorkspaceCyclesEndpoint
 from .workspace.quick_link import QuickLinkViewSet
 from .workspace.task import WorkspaceUserTaskViewSet
+from .workspace.template import (
+    EntityTemplateEndpoint,
+    EntityTemplateDetailEndpoint,
+    EntityTemplateApplyEndpoint,
+)
 from .workspace.sticky import WorkspaceStickyViewSet
 
 from .state.base import StateViewSet, IntakeStateEndpoint
@@ -181,7 +191,19 @@ from .issue.google_drive import (
     IssueGoogleDriveImportEndpoint,
 )
 
-from .issue.checklist import IssueChecklistItemEndpoint, IssueChecklistItemDetailEndpoint
+from .issue.checklist import (
+    IssueChecklistItemEndpoint,
+    IssueChecklistItemDetailEndpoint,
+    IssueChecklistEndpoint,
+    IssueChecklistDetailEndpoint,
+)
+from .issue.card import ProjectCardExtrasEndpoint, IssueCoverEndpoint
+from .issue.recurrence import IssueRecurrenceEndpoint
+from .issue.structure import (
+    IssueCopyStructureEndpoint,
+    IssueChecklistItemConvertEndpoint,
+    IssueConvertToChecklistEndpoint,
+)
 
 from .issue.relation import IssueRelationViewSet
 

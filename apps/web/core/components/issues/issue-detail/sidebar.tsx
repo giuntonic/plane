@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { Repeat } from "lucide-react";
 import { observer } from "mobx-react";
 // i18n
 import { useTranslation } from "@plane/i18n";
@@ -37,6 +38,7 @@ import { useProject } from "@/hooks/store/use-project";
 import { useProjectState } from "@/hooks/store/use-project-state";
 // components
 import { IssueParentSelectRoot } from "@/components/issues/parent-select-root";
+import { IssueRecurrenceSelect } from "@/components/issues/recurrence";
 import { SidebarPropertyListItem } from "@/components/common/layout/sidebar/property-list-item";
 import { IssueCycleSelect } from "./cycle-select";
 import { IssueCustomFieldValuesList } from "./custom-field-values";
@@ -237,6 +239,16 @@ export const IssueDetailsSidebar = observer(function IssueDetailsSidebar(props: 
                 projectId={projectId}
                 issueId={issueId}
                 issueOperations={issueOperations}
+                disabled={!isEditable}
+              />
+            </SidebarPropertyListItem>
+
+            {/* Pespo: item recorrente */}
+            <SidebarPropertyListItem icon={Repeat} label={t("issue_recurrence.label")}>
+              <IssueRecurrenceSelect
+                workspaceSlug={workspaceSlug}
+                projectId={projectId}
+                issueId={issueId}
                 disabled={!isEditable}
               />
             </SidebarPropertyListItem>

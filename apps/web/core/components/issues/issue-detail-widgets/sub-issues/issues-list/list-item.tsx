@@ -5,7 +5,7 @@
  */
 
 import { observer } from "mobx-react";
-import { Link as Loader } from "lucide-react";
+import { Link as Loader, ListChecks } from "lucide-react";
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, EditIcon, TrashIcon, CloseIcon, ChevronRightIcon } from "@plane/propel/icons";
 // plane imports
@@ -16,6 +16,7 @@ import { ControlLink, CustomMenu } from "@plane/ui";
 import { cn, generateWorkItemLink } from "@plane/utils";
 // helpers
 import { useSubIssueOperations } from "@/components/issues/issue-detail-widgets/sub-issues/helper";
+import { openConvertToChecklistModal } from "@/components/issues/convert-to-checklist/store";
 import { WithDisplayPropertiesHOC } from "@/components/issues/issue-layouts/properties/with-display-properties-HOC";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
@@ -88,7 +89,7 @@ export const SubIssuesListItem = observer(function SubIssuesListItem(props: Prop
   const displayProperties = subIssueFilters?.displayProperties ?? {};
 
   //
-  const handleIssuePeekOverview = (issue: TIssue) => handleRedirection(workspaceSlug, issue, isMobile);
+  const handleIssuePeekOverview = (peekedIssue: TIssue) => handleRedirection(workspaceSlug, peekedIssue, isMobile);
 
   if (!issue) return <></>;
 
@@ -125,6 +126,7 @@ export const SubIssuesListItem = observer(function SubIssuesListItem(props: Prop
                       <Loader width={14} strokeWidth={2} className="animate-spin" />
                     </div>
                   ) : (
+                    // oxlint-disable-next-line jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions -- upstream: seta dentro do link da linha
                     <div
                       className="flex h-full w-full cursor-pointer items-center justify-center text-placeholder hover:text-tertiary"
                       onClick={async (e) => {
@@ -170,6 +172,7 @@ export const SubIssuesListItem = observer(function SubIssuesListItem(props: Prop
               </Tooltip>
             </div>
 
+            {/* oxlint-disable-next-line jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions -- upstream: só segura o clique para não abrir o link da linha */}
             <div
               className="flex-shrink-0 text-13"
               onClick={(e) => {
@@ -227,6 +230,18 @@ export const SubIssuesListItem = observer(function SubIssuesListItem(props: Prop
                       {issueServiceType === EIssueServiceType.ISSUES
                         ? t("issue.remove.parent.label")
                         : t("issue.remove.label")}
+                    </div>
+                  </CustomMenu.MenuItem>
+                )}
+
+                {/* Pespo: o sub-item vira subtarefa (linha do checklist) do item pai. */}
+                {canEdit && issueServiceType === EIssueServiceType.ISSUES && (
+                  <CustomMenu.MenuItem
+                    onClick={() => openConvertToChecklistModal({ issueId: issue.id, targetIssueId: parentIssueId })}
+                  >
+                    <div className="flex items-center gap-2">
+                      <ListChecks className="h-3.5 w-3.5" strokeWidth={2} />
+                      <span>{t("work_item_structure.to_checklist.menu")}</span>
                     </div>
                   </CustomMenu.MenuItem>
                 )}

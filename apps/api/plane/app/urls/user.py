@@ -27,6 +27,7 @@ from plane.app.views import (
     GoogleCalendarDisconnectEndpoint,
     GoogleCalendarSyncNowEndpoint,
     GoogleCalendarEventsEndpoint,
+    GoogleCalendarEventAttendeesEndpoint,
     GoogleCalendarNotificationEndpoint,
     ## End Google Calendar
     ## Google Drive
@@ -94,6 +95,11 @@ urlpatterns = [
         name="google-calendar-sync-now",
     ),
     path("users/me/google-calendar/events/", GoogleCalendarEventsEndpoint.as_view(), name="google-calendar-events"),
+    path(
+        "users/me/google-calendar/events/attendees/",
+        GoogleCalendarEventAttendeesEndpoint.as_view(),
+        name="google-calendar-event-attendees",
+    ),
     # Google Calendar push notifications (no user session — see the view)
     path(
         "google-calendar/notifications/",

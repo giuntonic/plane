@@ -6,6 +6,8 @@
 
 import { observer } from "mobx-react";
 // components
+import { SaveAsTemplateModal } from "@/components/entity-templates";
+import { ConvertToChecklistModal } from "@/components/issues/convert-to-checklist";
 import { CreateProjectModal } from "@/components/project/create-project-modal";
 // hooks
 import { useCommandPalette } from "@/hooks/store/use-command-palette";
@@ -26,6 +28,8 @@ export const WorkspaceLevelModals = observer(function WorkspaceLevelModals(props
         onClose={() => toggleCreateProjectModal(false)}
         workspaceSlug={workspaceSlug.toString()}
       />
+      <SaveAsTemplateModal workspaceSlug={workspaceSlug.toString()} />
+      <ConvertToChecklistModal workspaceSlug={workspaceSlug.toString()} />
     </>
   );
 });

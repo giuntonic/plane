@@ -5,12 +5,13 @@
  */
 
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { Controller, useForm } from "react-hook-form";
 // plane imports
 import { ETabIndices } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
-import type { IModule } from "@plane/types";
+import type { IModule, TModuleCycleTemplatePrefill } from "@plane/types";
 // ui
 import { Input, TextArea } from "@plane/ui";
 import { getDate, renderFormattedPayloadDate, getTabIndex } from "@plane/utils";
@@ -30,6 +31,17 @@ type Props = {
   setActiveProject: React.Dispatch<React.SetStateAction<string | null>>;
   data?: IModule;
   isMobile?: boolean;
+  /** Pespo: seletor de modelo ao lado do projeto (só na criação). */
+  templateSlot?: ReactNode;
+  /** Pespo: campos do modelo escolhido; `duration_days` sugere o fim a partir do início já escolhido. */
+  templatePrefill?: Partial<TModuleCycleTemplatePrefill> | null;
+};
+
+const plusDays = (value: string | null | undefined, days: number) => {
+  const date = getDate(value);
+  if (!date) return null;
+  date.setDate(date.getDate() + days);
+  return renderFormattedPayloadDate(date) ?? null;
 };
 
 const defaultValues: Partial<IModule> = {
@@ -41,7 +53,17 @@ const defaultValues: Partial<IModule> = {
 };
 
 export function ModuleForm(props: Props) {
-  const { handleFormSubmit, handleClose, status, projectId, setActiveProject, data, isMobile = false } = props;
+  const {
+    handleFormSubmit,
+    handleClose,
+    status,
+    projectId,
+    setActiveProject,
+    data,
+    isMobile = false,
+    templateSlot,
+    templatePrefill,
+  } = props;
   // store hooks
   const { projectsWithCreatePermissions } = useUser();
   // form info
@@ -80,6 +102,18 @@ export function ModuleForm(props: Props) {
     });
   }, [data, reset]);
 
+  useEffect(() => {
+    if (!templatePrefill) return;
+    reset((current) => ({
+      ...current,
+      name: templatePrefill.name || current.name,
+      description: templatePrefill.description ?? current.description,
+      ...(current.start_date && templatePrefill.duration_days != null
+        ? { target_date: plusDays(current.start_date, templatePrefill.duration_days) }
+        : {}),
+    }));
+  }, [templatePrefill, reset]);
+
   return (
     <form onSubmit={handleSubmit(handleCreateUpdateModule)}>
       <div className="space-y-5 p-5">
@@ -100,13 +134,14 @@ export function ModuleForm(props: Props) {
                     }}
                     multiple={false}
                     buttonVariant="border-with-text"
-                    renderCondition={(projectId) => !!projectsWithCreatePermissions?.[projectId]}
+                    renderCondition={(id) => !!projectsWithCreatePermissions?.[id]}
                     tabIndex={getIndex("cover_image")}
                   />
                 </div>
               )}
             />
           )}
+          {!status && templateSlot}
           <h3 className="text-18 font-medium text-secondary">
             {status ? t("common.update") : t("common.create")} {t("common.module").toLowerCase()}
           </h3>
@@ -134,6 +169,7 @@ export function ModuleForm(props: Props) {
                   placeholder={t("title")}
                   className="w-full text-14"
                   tabIndex={getIndex("name")}
+                  // oxlint-disable-next-line jsx_a11y/no-autofocus -- o nome é o primeiro campo do modal
                   autoFocus
                 />
               )}

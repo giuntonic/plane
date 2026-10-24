@@ -51,6 +51,8 @@ def get_default_product_tour():
 
 class BotTypeEnum(models.TextChoices):
     WORKSPACE_SEED = "WORKSPACE_SEED", "Workspace Seed"
+    # Pespo: bot que assina os sinais automáticos do briefing (Laya) nas peças solicitadas.
+    PESPO_LAYA = "PESPO_LAYA", "Pespo Laya"
 
 
 class User(AbstractBaseUser, PermissionsMixin):

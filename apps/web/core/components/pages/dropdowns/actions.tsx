@@ -8,7 +8,7 @@ import { useTranslation } from "@plane/i18n";
 import { useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
-import { ArchiveRestoreIcon, FileOutput, LockKeyhole, LockKeyholeOpen } from "lucide-react";
+import { ArchiveRestoreIcon, FileOutput, LayoutTemplate, LockKeyhole, LockKeyholeOpen } from "lucide-react";
 // constants
 import { EPageAccess } from "@plane/constants";
 // plane editor
@@ -18,6 +18,7 @@ import type { TContextMenuItem } from "@plane/ui";
 import { ContextMenu, CustomMenu } from "@plane/ui";
 // components
 import { cn } from "@plane/utils";
+import { openSaveTemplateModal } from "@/components/entity-templates/save-modal-store";
 import { DeletePageModal } from "@/components/pages/modals/delete-page-modal";
 // hooks
 import { usePageOperations } from "@/hooks/use-page-operations";
@@ -36,6 +37,7 @@ export type TPageActions =
   | "open-in-new-tab"
   | "copy-link"
   | "make-a-copy"
+  | "save-as-template"
   | "archive-restore"
   | "delete"
   | "version-history"
@@ -54,9 +56,11 @@ export const PageActions = observer(function PageActions(props: Props) {
   const { extraOptions, optionsOrder, page, parentRef, storeType } = props;
   // states
   const [deletePageModal, setDeletePageModal] = useState(false);
-  const [movePageModal, setMovePageModal] = useState(false);
+  const [_movePageModal, setMovePageModal] = useState(false);
   // params
   const { workspaceSlug } = useParams();
+  // Pespo: useTranslation fica no topo; dentro do useMemo ele muda a ordem dos hooks quando o memo não recalcula.
+  const { t } = useTranslation();
   // page flag
   const { isMovePageEnabled } = usePageFlag({
     workspaceSlug: workspaceSlug?.toString() ?? "",
@@ -80,7 +84,6 @@ export const PageActions = observer(function PageActions(props: Props) {
   // menu items
   const MENU_ITEMS = useMemo(
     function MENU_ITEMS() {
-      const { t } = useTranslation();
       const menuItems: (TContextMenuItem & { key: TPageActions })[] = [
         {
           key: "toggle-lock",
@@ -122,6 +125,16 @@ export const PageActions = observer(function PageActions(props: Props) {
           title: t("make_a_copy"),
           icon: CopyIcon,
           shouldRender: canCurrentUserDuplicatePage,
+        },
+        // Pespo: a página vira modelo para criar outras.
+        {
+          key: "save-as-template",
+          action: () => {
+            if (page.id) openSaveTemplateModal({ kind: "page", sourceId: page.id, sourceName: page.name ?? "" });
+          },
+          title: t("entity_templates.save_as_template"),
+          icon: LayoutTemplate,
+          shouldRender: canCurrentUserDuplicatePage && !archived_at,
         },
         {
           key: "archive-restore",
@@ -167,6 +180,9 @@ export const PageActions = observer(function PageActions(props: Props) {
       canCurrentUserMovePage,
       isMovePageEnabled,
       pageOperations,
+      page.id,
+      page.name,
+      t,
     ]
   );
   // arrange options
