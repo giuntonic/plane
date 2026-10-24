@@ -63,8 +63,8 @@ Do commit mais recente pro mais antigo:
 
 1. **Adiciona botão de aprovação na Marcação da Peça**
 2. **Aplica cor de marca da Pespo instância-wide e limpa chrome pra convidados**
-3. **Adiciona tela de configuração do dashboard (settings do projeto)**
-4. **Adiciona widget nativo de Dashboard (embed do Metabase por projeto)**
+3. **Adiciona tela de configuração do dashboard (settings do projeto)** (removida na 1.5)
+4. **Adiciona widget nativo de Dashboard (embed do Metabase por projeto)** (removido na 1.5, ver "Versão 1.5")
 5. **Força novo hash do entry.client (contorna cache stale do Cloudflare)**
 6. **Adiciona widget nativo de Marcação de Peça (pins de imagem / timestamp de vídeo)**
 7. **Rebrand: Plane -> Pespo Hub (textos, título, i18n pt-BR/en)**
@@ -162,7 +162,7 @@ Merge da `pespo-branding-v1.4.1` sobre o `origin/preview` (upstream até #9530 �
 Headless UI v2, tokens de design do `@makeplane/propel` — mais dashboards configuráveis e Custom Fields).
 Decisões tomadas nos conflitos, pra repetir num próximo merge:
 
-- **Dashboard do projeto:** o embed do Metabase (nosso) continua em `/projects/:id/dashboard` com a aba
+- **Dashboard do projeto** (na 1.5 o Metabase saiu e a rota virou o painel de peças): o embed do Metabase (nosso) continuava em `/projects/:id/dashboard` com a aba
   "Dashboard"; os dashboards nativos do preview foram movidos pra `/projects/:id/dashboards` com aba
   própria "Dashboards" (rotas em `apps/web/app/routes/core.ts`, itens em `use-navigation-items.ts` e
   `workspace/sidebar/project-navigation.tsx`).
@@ -247,6 +247,179 @@ Correções feitas depois do merge:
 9. **Conferir visualmente** as áreas da seção 3 acima (planos/billing, active cycles, sidebar) e os
    dropdowns (patch do Headless UI), e procurar texto em inglês novo (varredura de `JsxText`).
 10. Só depois de tudo isso, atualizar o `docker compose` de produção e redeployar.
+
+---
+
+## Versão 1.5: modelos, cópia com estrutura, calendário novo e painel de peças (2026-10-24)
+
+A partir desta versão o Pespo Hub tem número de versão próprio. Ele fica em `PESPO_HUB_VERSION`, em
+`apps/web/core/components/release-notes/releases.ts`. Ao publicar uma versão nova, acrescentar uma
+entrada no topo de `PESPO_RELEASES`, com a data do deploy, o resumo, as novidades e as correções.
+
+- **Versão e página de Novidades:**
+  - O botão "Community" no rodapé da barra lateral (`workspace/edition-badge.tsx`) virou o número da
+    versão ("v1.5").
+  - Passar o mouse abre um popover com o resumo da versão e o link "Ver novidades e correções". O
+    popover é o `Popover` do propel com `openOnHover`.
+  - Um ponto roxo aparece até a pessoa abrir a página. Ele é guardado no `localStorage`, na chave
+    `pespo-hub:release-notes-seen`.
+  - A página é `/:workspaceSlug/whats-new`, com rota em `app/routes/core.ts` e componentes em
+    `components/release-notes/`.
+  - O texto das notas é conteúdo, por isso fica só em português. Os rótulos da página passam pelo i18n
+    (`common.json`, `release_notes.*`).
+  - As versões 1.4.0 a 1.4.4 foram reconstruídas a partir desta documentação e do histórico.
+- **Cópia de item leva a estrutura:** "Fazer uma cópia" (nos menus do item, da lista e do quadro) abre o
+  modal com "(cópia)" no nome. Depois de criar o item, o modal chama
+  `POST …/issues/<novo>/copy-structure/` com `source_issue_id`.
+  - **O que vai junto:** a árvore de subtarefas (desmarcadas, com responsável e prazo), os links e os
+    sub-itens. Cada sub-item vai com as próprias subtarefas e sub-itens.
+  - **Limites:** até 5 níveis e 300 itens e subtarefas (`MAX_TREE_DEPTH` e `MAX_TREE_NODES` em
+    `plane/utils/work_item_tree.py`).
+  - **Datas:** andam junto com a data de início do item novo. Sem data de início, ficam como estavam.
+  - **Etiquetas, responsáveis e estimativa:** etiquetas são achadas pelo id e, em outro projeto, pelo
+    nome. Responsáveis só entram se forem membros do projeto de destino.
+  - **Imagens:** as imagens da descrição são copiadas no MinIO, como na cópia do upstream.
+  - Quem copia precisa ser membro do projeto de origem.
+- **Subtarefa vira item:** o ícone ↗ na linha da subtarefa (`checklist/extras.tsx`) chama
+  `POST …/checklist-items/<id>/convert/` com `as_sub_item`, e a linha pode virar um "Sub-item deste
+  item" ou um "Item solto no projeto".
+  - **O que o item novo recebe:** o nome, o responsável, o prazo e as sublinhas, que viram as
+    subtarefas dele. Uma linha marcada como feita cria o item já no primeiro estado "Concluído".
+  - A linha sai do checklist (é apagada de vez, não vai para a lixeira).
+- **Progresso das subtarefas nos cards:** a lista e o quadro mostram "3/5" ao lado
+  da contagem de sub-itens.
+  - Os números vêm de `GET projects/<id>/checklist-progress/`, uma consulta só por projeto.
+  - Usa a mesma propriedade de exibição da contagem de sub-itens.
+  - O cache do SWR é atualizado quando o checklist muda no item aberto.
+- **Modelos (templates):** modelo de item de trabalho, módulo, ciclo, página e projeto.
+  - **Banco:** tabela nova `entity_templates`, modelo `EntityTemplate` em `db/models/template.py`
+    (migration `0135`). Guarda o tipo, o nome, a descrição, o projeto (vazio = vale no workspace todo)
+    e um JSON com a fotografia do que foi salvo.
+  - **API:** `workspaces/<slug>/templates/` (listar e salvar a partir de um objeto existente),
+    `…/<id>/` (ler, renomear, abrir para o workspace e excluir) e `…/<id>/apply/`. Ver
+    `app/views/workspace/template.py` e `plane/utils/entity_templates.py`.
+  - **Permissões:** quem vê é quem é membro do projeto do modelo, ou todo mundo quando o modelo vale no
+    workspace. Excluir fica com o autor ou um admin do workspace.
+  - **Limite:** o mesmo da cópia (300 itens e subtarefas); acima disso a API responde
+    `TEMPLATE_TOO_LARGE`.
+  - **Salvar:** "Salvar como modelo" fica no menu do item, do módulo, do ciclo, da página e do projeto
+    (na barra lateral). O modal (`components/entity-templates/save-as-template-modal.tsx`) pergunta o
+    nome, a descrição e se o modelo vale para um projeto ou para todos.
+  - **Usar:** o seletor "Modelo" aparece nos formulários de criação de item, módulo, ciclo e projeto, e
+    no cabeçalho da lista de páginas. Ele some quando não há modelo daquele tipo.
+    - No item, o modelo preenche o formulário. Depois de criar, as subtarefas e os sub-itens são
+      aplicados com o mesmo código da cópia.
+    - Módulo e ciclo criam os itens deles, com as datas andando junto com a data de início.
+    - A página nasce com o conteúdo do modelo, incluindo as imagens copiadas.
+    - Num projeto novo, o modelo traz os estados (os estados padrão que não estão no modelo saem), as
+      etiquetas, os módulos com os itens e os itens soltos, quando o modelo foi salvo "com itens".
+  - **Configurações → Modelos** (`settings/templates`) lista, renomeia, abre para o workspace e exclui.
+  - O modelo é uma fotografia: mudar o objeto original depois não muda o modelo.
+- **Calendário refeito** (`components/workspace/calendar-sync/`):
+  - **Seletor de agendas na própria página:** é a barra lateral à esquerda, com a cor do Google em cada
+    checkbox. A escolha fica salva na conta, no mesmo `overlay_calendar_ids` que as configurações do
+    perfil usavam; mês/semana e "Mostrar itens de trabalho" ficam no navegador. A lista de agendas
+    saiu das configurações do perfil, que agora só apontam para a página.
+  - **Cor, nome e detalhes das agendas:** o `users/me/google-calendar/status/` passou a devolver
+    `foreground_color`, `description`, `time_zone` e `is_plane`. Os eventos usam a cor da agenda ou a
+    cor própria do evento (`colorId`, paleta em `packages/utils/src/calendar-view.ts`), com texto claro
+    ou escuro conforme o contraste.
+  - **Visões:** mês (até 3 por dia e "mais N" num popover) e semana (linha de dia inteiro, eventos com
+    horário em colunas lado a lado quando se sobrepõem e a linha da hora atual). A conta de layout é
+    pura e testada em UTC, São Paulo e Tóquio.
+  - **Detalhes do evento:** clicar abre um modal com horário, local, Meet, descrição e convidados (com a
+    resposta de cada um).
+    - "Adicionar pessoas" sugere membros do workspace e aceita qualquer e-mail.
+    - Chama o endpoint novo `POST users/me/google-calendar/events/attendees/` (até 50 e-mails por vez),
+      que faz `patch` no evento com `sendUpdates=all`, então o Google manda o convite.
+    - Se o Google recusa (só quem organizou pode convidar), aparece "Só quem organizou pode adicionar
+      pessoas a este evento".
+  - **Bug "compactação de itens de trabalho":** a agenda "Plane" do Google (onde a sincronização
+    espelha os itens com data) aparecia de novo como eventos, mesmo com "Mostrar itens de trabalho"
+    desligado. Agora os eventos-espelho (`plane_kind = task`) nunca aparecem como evento, e a agenda
+    "Plane" nem entra no seletor. Os itens aparecem só pelo próprio toggle.
+  - Corrigido junto: os dias do mês anterior apareciam com números negativos na visão de mês.
+- **Painel de peças (sai o Metabase):** a aba "Dashboard" do projeto virou "Peças", na mesma rota
+  `/projects/:id/dashboard`, com o painel em `components/projects/pieces-panel/`.
+  - **O que mostra:** total de peças, peças em produção, entregues no mês e refações (internas e pelo
+    cliente). Também mostra o saldo do contrato por categoria (Post, Reels, Artigo, Anúncio), as
+    urgentes disponíveis, as peças por situação, as que estão em refação agora, as mais refeitas e as
+    entregas do mês.
+  - **Avisos:** contrato vencendo (a partir de 14 dias do fim, como no portal) ou vencido.
+  - **API:** `GET projects/<id>/pieces/`, em `app/views/project/pieces.py` e `plane/utils/pieces.py`.
+  - **Contas:** são as mesmas do portal do cliente.
+    - Uma peça é um item com etiqueta de categoria.
+    - O que conta como usada e as urgentes (limite do contrato e até 3 abertas ao mesmo tempo) seguem o
+      `portal-cliente`.
+    - Refação é cada entrada em estado de retrabalho no histórico do item. "Reprovado Interno" conta
+      como interna e "Reprovado Cliente" como pelo cliente.
+  - **De onde vem o contrato:** o Plane lê o contrato direto do banco do portal, só leitura, pela
+    variável nova `PORTAL_DATABASE_URL` (`plane/utils/portal_contracts.py`, psycopg 3, timeout de 3 s).
+    - Lê as tabelas `clientes` (por `plane_project_id`), `contratos` e `contrato_categorias`.
+    - Sem a variável, ou com o banco fora do ar, o painel mostra as peças e avisa que o contrato não
+      está disponível. Nada quebra.
+  - **"Solicitar peças":** `POST projects/<id>/pieces/request/`, com até 30 peças por pedido e as
+    mesmas validações de saldo e de urgentes do portal.
+    - O servidor confere de novo, com um `pg_advisory_xact_lock` por projeto, para dois pedidos ao
+      mesmo tempo não passarem do saldo.
+    - As peças entram no estado "Fila de Criacao", com a etiqueta da categoria, mais "Urgente" e
+      "Precisa Impressao" quando marcadas (esta é criada se não existir). A data desejada vira o prazo e
+      o briefing vai na descrição.
+  - **"Pedir refação":** botão na Marcação da Peça, para a equipe e para convidados (o cliente).
+    - Chama `POST …/issues/<id>/request-rework/`.
+    - Move o item para o estado de retrabalho do cliente e registra o motivo como comentário
+      ("🔁 Refação pedida por …").
+  - **Saiu:** a view e a URL do Metabase, as configurações `METABASE_*`, os campos
+    `Project.metabase_dashboard_id` e `Project.metabase_cliente_id` (migration `0136`, que **apaga as
+    duas colunas**), a tela de configuração do dashboard nas settings do projeto, o serviço
+    `project-metabase.service.ts` e as chaves de i18n.
+  - **Não veio do portal:** os sinais de briefing da Laya. O fluxo do n8n "Peça Aprovada" continua
+    ouvindo o comentário de aprovação, que não mudou.
+- **Notas adesivas no bloco estreito da home:** abaixo de 420 px de largura a grade usa uma coluna só
+  (`stickies/layout/stickies-list.tsx`), e o cabeçalho do widget encolhe com container queries.
+- **Correção junto (bug da varredura de tradução, já em produção):** o `useTranslation()` tinha sido
+  colocado dentro de um `useMemo` no menu de ações da página (`pages/dropdowns/actions.tsx`) e em
+  `hooks/use-realtime-page-events.tsx`. Quando o memo não recalculava, a ordem dos hooks mudava e a lista
+  de páginas abria na tela de erro ("Rendered fewer hooks than expected"). O hook voltou para o topo do
+  componente. Na varredura não sobrou outro caso.
+- **i18n:** chaves novas só em `en` e `pt-BR`:
+  - `work-item.json`: `work_item_structure.*` e `issue_checklist.convert*`.
+  - `template.json`: `entity_templates.*`.
+  - `integration.json`: `google_calendar_integration.calendar_view.*`.
+  - `project.json`: `pieces_panel.*`.
+  - `navigation.json`: `sidebar.pieces`.
+  - `common.json`: `release_notes.*`.
+- **Testes do backend:** `test_work_item_structure_app.py` (9), `test_entity_templates_app.py` (13),
+  `test_project_pieces_app.py` (11) e `TestCalendarPageAttendees` em `test_google_calendar_app.py`.
+  No front, testes de `calendar-view.ts` em `packages/utils`.
+- **Verificado no navegador** (Playwright, com API e web locais e um banco de portal local):
+  - notas adesivas no bloco estreito, popover da versão e página de Novidades;
+  - cópia com subtarefas e sub-itens, converter subtarefa e o "1/3" nos cards;
+  - modelos de item, módulo e página, e Configurações → Modelos;
+  - calendário com o Google simulado: cores, seletor, "mais N", semana com sobreposição, detalhes e
+    convite;
+  - painel de peças com contrato, aviso de vencimento, saldo, solicitação e refação.
+- **Deploy:**
+  - Rebuildar `api` e `web` e rodar o `migrator`: migrations `0135`, que cria a tabela, e `0136`, que
+    **apaga** `metabase_dashboard_id` e `metabase_cliente_id` de `projects`. Retaguear as imagens antes,
+    como no checklist.
+  - Para o painel de peças ler o contrato:
+    1. Criar no `portal-db` um usuário só leitura (ex.: `plane_portal_ro`) com `SELECT` em `clientes`,
+       `contratos` e `contrato_categorias`.
+    2. Ligar o container da api do Plane à rede do banco do portal (`portal-cliente_backend`).
+    3. Pôr `PORTAL_DATABASE_URL=postgresql://plane_portal_ro:<senha>@<host do portal-db>:5432/<banco>`
+       no `.env` do Plane.
+  - Sem esses três passos, o painel funciona sem a parte do contrato.
+  - Nada muda no worker, no beat nem no live.
+- **Risco de upgrade:** médio a alto.
+  - **Pontos que o upstream mexe:** o modal de item (`issue-modal/provider.tsx`, `form.tsx`, `base.tsx`),
+    os formulários de módulo e ciclo, os menus de ações rápidas, `pages/dropdowns/actions.tsx`, a
+    criação de projeto e `project-navigation.tsx`.
+  - **Modelos do upstream:** o upstream tem modelos só no plano pago, então os nossos são código nosso.
+    Se um dia o upstream abrir os modelos na Community, decidir qual fica. O
+    `handleTemplateChange`/`workItemTemplateId` do provider é o ponto onde os dois se encontram.
+  - **Migrations:** `0135` e `0136` são nossas. Num merge com o upstream, criar uma migration de merge
+    se houver duas folhas.
 
 ---
 
