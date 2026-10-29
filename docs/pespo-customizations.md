@@ -250,6 +250,21 @@ Correções feitas depois do merge:
 
 ---
 
+## Versão 1.5.1: checklists que recolhem e ícones alinhados (2026-10-29)
+
+- **Recolher cada checklist com nome:** seta (e clique no nome) no cabeçalho de
+  `checklist/named-checklist.tsx`. O estado fica no `localStorage`, na chave
+  `pespo-hub:checklist-collapsed:<id>`, por navegador; sem `localStorage`, só não lembra. A área
+  "Subtarefas" continua recolhendo inteira pelo cabeçalho dela, como antes.
+- **Ícones da linha alinhados:** o fim da linha tem controles de alturas diferentes (progresso da sublista,
+  responsável e prazo, ↗ de transformar em item, + e lixeira), e a linha alinha pelo topo. Eles agora
+  ficam num contêiner da altura da primeira linha do texto, centralizados
+  (`checklist-tree/item.tsx`, que vale também para o widget Tarefas da home). O ↗ ficou do tamanho
+  dos outros botões (`checklist/extras.tsx`).
+- **Deploy:** rebuildar só o `web`. Não tem migration nem mudança no backend.
+
+---
+
 ## Versão 1.5: modelos, cópia com estrutura, recorrência, checklists, capas, calendário e painel de peças (2026-10-24)
 
 A partir desta versão o Pespo Hub tem número de versão próprio. Ele fica em `PESPO_HUB_VERSION`, em

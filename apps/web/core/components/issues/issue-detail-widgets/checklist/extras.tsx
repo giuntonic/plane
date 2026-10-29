@@ -83,7 +83,7 @@ const ConvertToWorkItemMenu = observer(function ConvertToWorkItemMenu(props: {
     <CustomMenu
       customButton={
         <Tooltip tooltipContent={t("issue_checklist.convert")}>
-          <span className="grid size-5 place-items-center rounded-sm text-placeholder hover:bg-layer-1 hover:text-secondary">
+          <span className="grid size-6 place-items-center rounded-sm text-tertiary hover:bg-layer-transparent-hover hover:text-primary">
             <ArrowUpRight className="size-3.5" />
           </span>
         </Tooltip>

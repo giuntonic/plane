@@ -21,6 +21,15 @@ export type TPespoRelease = {
 
 export const PESPO_RELEASES: TPespoRelease[] = [
   {
+    version: "1.5.1",
+    date: "2026-10-29",
+    summary: "Ajustes nas subtarefas: checklists que recolhem e ícones alinhados.",
+    features: ["Cada checklist com nome pode ser recolhida pela seta ao lado do nome; o navegador lembra a escolha."],
+    fixes: [
+      "Os ícones no fim da linha da subtarefa (responsável, prazo, transformar em item, adicionar e excluir) ficavam desalinhados.",
+    ],
+  },
+  {
     version: "1.5",
     date: "2026-10-23",
     summary:
