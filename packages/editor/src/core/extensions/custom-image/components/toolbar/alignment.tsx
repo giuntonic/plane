@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { useEffect, useRef, useState } from "react";
 // plane imports
 import { useOutsideClickDetector } from "@plane/hooks";
@@ -37,7 +38,7 @@ export function ImageAlignmentAction(props: Props) {
 
   return (
     <div ref={dropdownRef} className="relative h-full">
-      <Tooltip disabled={isTouchDevice} tooltipContent="Align">
+      <Tooltip disabled={isTouchDevice} tooltipContent={i18nInstance.t("editor_ui.image.align")}>
         <button
           type="button"
           className="flex h-full items-center gap-1 text-white/60 transition-colors hover:text-white"

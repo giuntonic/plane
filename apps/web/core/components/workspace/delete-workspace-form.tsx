@@ -47,7 +47,7 @@ export const DeleteWorkspaceForm = observer(function DeleteWorkspaceForm(props: 
     watch,
   } = useForm({ defaultValues });
 
-  const canDelete = watch("workspaceName") === data?.name && watch("confirmDelete") === "delete my workspace";
+  const canDelete = watch("workspaceName") === data?.name && watch("confirmDelete") === t("ui.delete_workspace_phrase");
 
   const handleClose = () => {
     const timer = setTimeout(() => {
@@ -125,7 +125,7 @@ export const DeleteWorkspaceForm = observer(function DeleteWorkspaceForm(props: 
           <div className="mt-4 text-secondary">
             <p className="text-body-xs-regular">
               {t("ui.jsx_for_final_confirmation_type")}{" "}
-              <span className="text-body-xs-medium text-primary">delete my workspace </span>
+              <span className="text-body-xs-medium text-primary">{t("ui.delete_workspace_phrase")} </span>
               {t("ui.jsx_below_2")}
             </p>
             <Controller

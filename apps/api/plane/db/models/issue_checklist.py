@@ -31,7 +31,8 @@ class IssueChecklist(ProjectBaseModel):
 
 class IssueChecklistItem(ProjectBaseModel):
     """Pespo: subtarefa leve dentro de um item de trabalho (estilo Trello/ClickUp/Notion).
-    Não é um item de trabalho: não aparece nas visualizações nem tem estado próprio.
+    Não é um item de trabalho: não aparece nas visualizações. Pode ter um estado do fluxo do projeto
+    (``state``, opcional), que anda junto com o ``is_completed`` (ver ``plane/app/views/issue/checklist.py``).
     As linhas formam uma árvore (``parent``), então qualquer linha pode virar uma
     sublista. A ordem entre irmãos vem de ``sort_order``.
 
@@ -54,6 +55,9 @@ class IssueChecklistItem(ProjectBaseModel):
         related_name="assigned_checklist_items",
     )
     due_date = models.DateField(null=True, blank=True)
+    state = models.ForeignKey(
+        "db.State", on_delete=models.SET_NULL, null=True, blank=True, related_name="checklist_items"
+    )
     sort_order = models.FloatField(default=65535)
 
     class Meta:

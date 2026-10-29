@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import {
   useFloating,
   autoUpdate,
@@ -152,7 +153,7 @@ export function BlockMenu(props: Props) {
     {
       icon: TrashIcon,
       key: "delete",
-      label: "Delete",
+      label: i18nInstance.t("editor_ui.block.delete"),
       onClick: (_e) => {
         // Execute the delete action
         editor.chain().deleteSelection().focus().run();
@@ -161,7 +162,7 @@ export function BlockMenu(props: Props) {
     {
       icon: CopyIcon,
       key: "duplicate",
-      label: "Duplicate",
+      label: i18nInstance.t("editor_ui.block.duplicate"),
       isDisabled:
         editor.state.selection.content().content.firstChild?.type.name === CORE_EXTENSIONS.IMAGE ||
         editor.isActive(CORE_EXTENSIONS.CUSTOM_IMAGE),

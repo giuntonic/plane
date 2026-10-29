@@ -35,6 +35,8 @@ export type TProjectSettingsTabs =
   | "features_views"
   | "features_pages"
   | "features_intake"
+  // Pespo: aba "Peças"
+  | "features_pieces"
   | "states"
   | "labels"
   | "estimates"

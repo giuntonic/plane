@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable no-shadow -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
+import { i18nInstance } from "@plane/i18n";
 import type { HocuspocusProvider } from "@hocuspocus/provider";
 import type { Extensions } from "@tiptap/core";
 import { Placeholder } from "@tiptap/extension-placeholder";
@@ -64,7 +67,7 @@ export const useTitleEditor = (props: TUseTitleEditorProps) => {
         ...TitleExtensions,
         ...(extensions ?? []),
         Placeholder.configure({
-          placeholder: () => "Untitled",
+          placeholder: () => i18nInstance.t("editor_ui.placeholder.untitled"),
           includeChildren: true,
           showOnlyWhenEditable: false,
         }),

@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { Shapes } from "lucide-react";
 import { observer } from "mobx-react";
 // plane imports
 import { i18nInstance, useTranslation } from "@plane/i18n";
@@ -93,6 +94,20 @@ const PROJECT_FEATURES_LIST = {
     isPro: false,
     isEnabled: true,
   },
+  // Pespo: aba "Peças" (painel de peças do cliente)
+  pieces: {
+    key: "pieces",
+    property: "pieces_view",
+    get title() {
+      return i18nInstance.t("pieces");
+    },
+    get description() {
+      return i18nInstance.t("pieces_description");
+    },
+    icon: <Shapes className="h-5 w-5 flex-shrink-0 text-tertiary" />,
+    isPro: false,
+    isEnabled: true,
+  },
 };
 
 export const ProjectFeaturesList = observer(function ProjectFeaturesList(props: Props) {
@@ -116,11 +131,11 @@ export const ProjectFeaturesList = observer(function ProjectFeaturesList(props: 
       loading: t("ui.updating_project_feature"),
       success: {
         title: t("toast.success"),
-        message: () => "Project feature updated successfully.",
+        message: () => t("ui.project_feature_updated"),
       },
       error: {
         title: t("toast.error"),
-        message: () => "Something went wrong while updating project feature. Please try again.",
+        message: () => t("ui.project_feature_update_failed"),
       },
     });
     void updateProjectPromise.then(() => {

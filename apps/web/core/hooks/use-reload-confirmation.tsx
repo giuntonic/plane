@@ -4,13 +4,16 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable hooks/exhaustive-deps, no-unused-expressions -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { useCallback, useEffect, useState } from "react";
+import { i18nInstance } from "@plane/i18n";
 
 //TODO: remove temp flag isActive later and use showAlert as the source of truth
 const useReloadConfirmations = (isActive = true, message?: string, defaultShowAlert = false, onLeave?: () => void) => {
   const [showAlert, setShowAlert] = useState(defaultShowAlert);
 
-  const alertMessage = message ?? "Are you sure you want to leave? Changes you made may not be saved.";
+  const alertMessage = message ?? i18nInstance.t("ui.leave_unsaved_changes");
 
   const handleBeforeUnload = useCallback(
     (event: BeforeUnloadEvent) => {

@@ -14,6 +14,7 @@ import { Breadcrumbs, Header } from "@plane/ui";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
 import { IssueDetailQuickActions } from "@/components/issues/issue-detail/issue-detail-quick-actions";
+import { WorkItemPropertiesPanelToggle } from "@/components/issues/properties-panel";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useProject } from "@/hooks/store/use-project";
@@ -55,6 +56,10 @@ export const WorkItemDetailsHeader = observer(function WorkItemDetailsHeader() {
         </Breadcrumbs>
       </Header.LeftItem>
       <Header.RightItem>
+        {/* Pespo: esconder/mostrar a coluna de propriedades (no celular ela já fica escondida) */}
+        <div className="hidden md:flex">
+          <WorkItemPropertiesPanelToggle />
+        </div>
         {projectId && issueId && (
           <IssueDetailQuickActions
             workspaceSlug={workspaceSlug?.toString()}

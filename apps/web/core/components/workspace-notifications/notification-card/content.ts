@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { replaceUnderscoreIfSnakeCase } from "@plane/utils";
 import type { TNotificationContentMap } from "@/components/workspace-notifications/sidebar/notification-card/content";
 
@@ -11,9 +12,22 @@ import type { TNotificationContentMap } from "@/components/workspace-notificatio
 export const ADDITIONAL_NOTIFICATION_CONTENT_MAP: TNotificationContentMap = {};
 
 // Fallback action renderer for fields not in the map
+// Pespo: verbo e campo traduzidos ("atualizou o estado"); campo sem tradução cai no nome do campo.
+const translateOr = (key: string, fallback: string) => {
+  const value = i18nInstance.t(key);
+  return value && value !== key ? value : fallback;
+};
+
 export const renderAdditionalAction = (notificationField: string, verb: string | undefined) => {
-  const baseAction = !["comment", "archived_at"].includes(notificationField) ? verb : "";
-  return `${baseAction} ${replaceUnderscoreIfSnakeCase(notificationField)}`;
+  const baseAction =
+    !["comment", "archived_at"].includes(notificationField) && verb
+      ? translateOr(`ui.notification.verb.${verb}`, verb)
+      : "";
+  const field = translateOr(
+    `ui.notification.field.${notificationField}`,
+    replaceUnderscoreIfSnakeCase(notificationField)
+  );
+  return `${baseAction} ${field}`.trim();
 };
 
 // Fallback value renderer for fields not in the map

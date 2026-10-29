@@ -5,19 +5,37 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ListTodo, Pencil, Trash2 } from "lucide-react";
+import { ChevronRight, ListTodo, Pencil, Trash2 } from "lucide-react";
 import { observer } from "mobx-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import type { TIssueChecklist, TIssueChecklistItem } from "@plane/types";
 import { AlertModalCore } from "@plane/ui";
-import { countCompletedChecklistItems } from "@plane/utils";
+import { cn, countCompletedChecklistItems } from "@plane/utils";
 // components
 import type { TChecklistTreeLabels, TChecklistTreeNode } from "@/components/checklist-tree";
 import { ChecklistTreeList } from "@/components/checklist-tree";
 // local imports
 import { IssueChecklistItemExtras } from "./extras";
 import { consumePendingChecklistRename, useIssueChecklistOperations } from "./helper";
+
+// Recolhida ou não, por checklist, só neste navegador.
+const collapsedKey = (checklistId: string) => `pespo-hub:checklist-collapsed:${checklistId}`;
+const readCollapsed = (checklistId: string) => {
+  try {
+    return window.localStorage.getItem(collapsedKey(checklistId)) === "1";
+  } catch {
+    return false;
+  }
+};
+const writeCollapsed = (checklistId: string, collapsed: boolean) => {
+  try {
+    if (collapsed) window.localStorage.setItem(collapsedKey(checklistId), "1");
+    else window.localStorage.removeItem(collapsedKey(checklistId));
+  } catch {
+    // sem localStorage (janela privada etc.): só não lembra
+  }
+};
 
 type Props = {
   workspaceSlug: string;
@@ -39,6 +57,7 @@ export const IssueNamedChecklist = observer(function IssueNamedChecklist(props: 
   const [name, setName] = useState(checklist.name);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => readCollapsed(checklist.id));
   const inputRef = useRef<HTMLInputElement>(null);
   const completed = countCompletedChecklistItems(operations.items);
 
@@ -71,6 +90,13 @@ export const IssueNamedChecklist = observer(function IssueNamedChecklist(props: 
     if (next !== checklist.name) void onRename(next);
   };
 
+  const toggleCollapsed = () => {
+    setIsCollapsed((current) => {
+      writeCollapsed(checklist.id, !current);
+      return !current;
+    });
+  };
+
   const handleDelete = async () => {
     setIsDeleting(true);
     await onDelete();
@@ -90,6 +116,16 @@ export const IssueNamedChecklist = observer(function IssueNamedChecklist(props: 
   return (
     <section className="flex flex-col gap-1 border-t border-subtle pt-2">
       <div className="group/named-checklist flex items-center gap-2 px-2.5">
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          aria-expanded={!isCollapsed}
+          aria-label={isCollapsed ? labels.expand : labels.collapse}
+          title={isCollapsed ? labels.expand : labels.collapse}
+          className="grid size-5 flex-shrink-0 place-items-center rounded-sm text-tertiary hover:bg-layer-transparent-hover hover:text-primary"
+        >
+          <ChevronRight className={cn("size-3.5 transition-transform", { "rotate-90": !isCollapsed })} />
+        </button>
         <ListTodo className="size-4 flex-shrink-0 text-tertiary" />
         {isEditing ? (
           <input
@@ -110,7 +146,10 @@ export const IssueNamedChecklist = observer(function IssueNamedChecklist(props: 
             className="min-w-0 flex-1 rounded-sm border border-strong bg-surface-1 px-1.5 py-0.5 text-body-sm-medium text-primary outline-none"
           />
         ) : (
-          <h4 className="min-w-0 truncate text-body-sm-medium text-primary">{checklist.name}</h4>
+          // clicar no nome também recolhe/abre a lista (renomear fica no lápis)
+          <button type="button" onClick={toggleCollapsed} className="min-w-0 text-left">
+            <h4 className="truncate text-body-sm-medium text-primary">{checklist.name}</h4>
+          </button>
         )}
         <span className="flex-shrink-0 text-body-xs-regular text-tertiary tabular-nums">
           {completed}/{operations.items.length}
@@ -138,15 +177,21 @@ export const IssueNamedChecklist = observer(function IssueNamedChecklist(props: 
           </div>
         )}
       </div>
-      <ChecklistTreeList
-        scopeId={`${issueId}:${checklist.id}`}
-        disabled={disabled}
-        operations={operations}
-        labels={listLabels}
-        renderItemExtras={renderItemExtras}
-        className="px-1.5 pb-2"
-      />
+      {isCollapsed ? (
+        <div className="pb-1" />
+      ) : (
+        <ChecklistTreeList
+          scopeId={`${issueId}:${checklist.id}`}
+          disabled={disabled}
+          operations={operations}
+          labels={listLabels}
+          renderItemExtras={renderItemExtras}
+          className="px-1.5 pb-2"
+        />
+      )}
+      {/* preventOutsideClick: no peek, o clique em "Excluir" fechava o painel (e a exclusão não acontecia) */}
       <AlertModalCore
+        preventOutsideClick
         isOpen={isDeleteOpen}
         handleClose={() => setIsDeleteOpen(false)}
         handleSubmit={() => void handleDelete()}

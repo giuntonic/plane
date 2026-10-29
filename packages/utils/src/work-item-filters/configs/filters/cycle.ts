@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import type { ICycle, TCycleGroups, TFilterProperty, TSupportedOperators } from "@plane/types";
 import { EQUALITY_OPERATOR, COLLECTION_OPERATOR } from "@plane/types";
 // local imports
@@ -53,7 +54,7 @@ export const getCycleFilterConfig =
   (params: TCreateCycleFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Cycle",
+      label: i18nInstance.t("common.cycle"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([

@@ -491,6 +491,13 @@
         "loading": "Atualizando recurso do projeto...",
         "success": "Recurso do projeto atualizado com sucesso.",
         "error": "Algo deu errado ao atualizar o recurso do projeto. Por favor, tente novamente."
+      },
+      "pieces": {
+        "title": "Peças",
+        "short_title": "Peças",
+        "description": "O painel de peças do cliente: contrato, saldo por categoria, peças por situação e pedido de peças novas.",
+        "toggle_title": "Ativar peças",
+        "toggle_description": "A aba Peças aparece no projeto, com o painel do contrato do cliente."
       }
     },
     "project_updates": {

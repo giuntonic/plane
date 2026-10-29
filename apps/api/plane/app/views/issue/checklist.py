@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from .. import BaseAPIView
 from plane.app.permissions import allow_permission, ROLE
 from plane.app.serializers.issue_checklist import IssueChecklistItemSerializer, IssueChecklistSerializer
-from plane.db.models import Issue, IssueChecklist, IssueChecklistItem, ProjectMember
+from plane.db.models import Issue, IssueChecklist, IssueChecklistItem, ProjectMember, State, StateGroup
 
 SORT_ORDER_STEP = 10000
 
@@ -64,6 +64,32 @@ def _validate_assignee(project_id, assignee_id):
     return ProjectMember.objects.filter(project_id=project_id, member_id=assignee_id, is_active=True).exists()
 
 
+def _validate_state(project_id, state_id):
+    """Vazio = sem estado. O estado tem que ser do fluxo do mesmo projeto (fora a triagem)."""
+    if not state_id:
+        return True
+    return State.objects.filter(project_id=project_id, pk=state_id).exists()
+
+
+def _state_after_toggle(project_id, state, is_completed):
+    """Estado de uma linha que tem estado e acabou de ser marcada ou desmarcada no quadradinho.
+
+    Marcada: o primeiro estado de "concluído" do projeto, se ela ainda não está num. Desmarcada estando
+    num estado de concluído: o estado padrão do projeto (ou nenhum, se o padrão também for de concluído).
+    Nos outros casos o estado fica como está."""
+    is_done_state = state.group == StateGroup.COMPLETED.value
+    if is_completed and not is_done_state:
+        completed = (
+            State.objects.filter(project_id=project_id, group=StateGroup.COMPLETED.value).order_by("sequence").first()
+        )
+        return completed or state
+    if not is_completed and is_done_state:
+        return (
+            State.objects.filter(project_id=project_id, default=True).exclude(group=StateGroup.COMPLETED.value).first()
+        )
+    return state
+
+
 def _next_sort_order(issue, parent, checklist=None):
     siblings = IssueChecklistItem.objects.filter(issue=issue, parent=parent)
     if parent is None:
@@ -99,16 +125,23 @@ class IssueChecklistItemEndpoint(BaseAPIView):
                 return error
         if not _validate_assignee(project_id, request.data.get("assignee")):
             return Response({"error": "Assignee must be a project member"}, status=status.HTTP_400_BAD_REQUEST)
+        if not _validate_state(project_id, request.data.get("state")):
+            return Response({"error": "Invalid state"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = IssueChecklistItemSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        state = serializer.validated_data.get("state")
         is_completed = serializer.validated_data.get("is_completed", False)
+        # Com estado e sem o quadradinho no pedido, o estado decide se a linha nasce concluída.
+        if state and "is_completed" not in serializer.validated_data:
+            is_completed = state.group == StateGroup.COMPLETED.value
         item = serializer.save(
             issue=issue,
             project_id=project_id,
             parent=parent,
             checklist=checklist,
             sort_order=serializer.validated_data.get("sort_order", _next_sort_order(issue, parent, checklist)),
+            is_completed=is_completed,
             completed_at=timezone.now() if is_completed else None,
         )
         return Response(IssueChecklistItemSerializer(item).data, status=status.HTTP_201_CREATED)
@@ -119,7 +152,7 @@ class IssueChecklistItemDetailEndpoint(BaseAPIView):
     def patch(self, request, slug, project_id, issue_id, pk):
         item = (
             IssueChecklistItem.objects.filter(workspace__slug=slug, project_id=project_id, issue_id=issue_id, pk=pk)
-            .select_related("issue")
+            .select_related("issue", "state")
             .first()
         )
         if not item:
@@ -142,14 +175,24 @@ class IssueChecklistItemDetailEndpoint(BaseAPIView):
             extra["parent"] = None
         if "assignee" in request.data and not _validate_assignee(project_id, request.data.get("assignee")):
             return Response({"error": "Assignee must be a project member"}, status=status.HTTP_400_BAD_REQUEST)
+        if "state" in request.data and not _validate_state(project_id, request.data.get("state")):
+            return Response({"error": "Invalid state"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = IssueChecklistItemSerializer(item, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        if (
-            "is_completed" in serializer.validated_data
-            and serializer.validated_data["is_completed"] != item.is_completed
-        ):
-            extra["completed_at"] = timezone.now() if serializer.validated_data["is_completed"] else None
+        data = serializer.validated_data
+        is_completed = data.get("is_completed", item.is_completed)
+        # Estado e quadradinho andam juntos: escolher um estado de "concluído" marca a linha e qualquer
+        # outro a desmarca; marcar ou desmarcar uma linha que tem estado troca o estado
+        # (_state_after_toggle). Linha sem estado é só o quadradinho, como antes.
+        if "state" in data:
+            if data["state"] and "is_completed" not in data:
+                is_completed = data["state"].group == StateGroup.COMPLETED.value
+                extra["is_completed"] = is_completed
+        elif "is_completed" in data and item.state_id and is_completed != item.is_completed:
+            extra["state"] = _state_after_toggle(project_id, item.state, is_completed)
+        if is_completed != item.is_completed:
+            extra["completed_at"] = timezone.now() if is_completed else None
         if new_checklist != item.checklist:
             IssueChecklistItem.objects.filter(pk__in=_subtree_ids(item)).update(checklist=new_checklist)
             item.checklist = new_checklist

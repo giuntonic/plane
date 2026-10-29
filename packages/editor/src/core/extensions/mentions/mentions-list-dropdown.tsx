@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable hooks/exhaustive-deps, jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
+import { i18nInstance } from "@plane/i18n";
 import { FloatingOverlay } from "@floating-ui/react";
 import type { SuggestionProps } from "@tiptap/suggestion";
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState } from "react";
@@ -200,7 +203,7 @@ export const MentionsListDropdown = forwardRef(function MentionsListDropdown(pro
             </div>
           ))
         ) : (
-          <div className="text-center text-13 text-placeholder">No results</div>
+          <div className="text-center text-13 text-placeholder">{i18nInstance.t("editor_ui.no_results")}</div>
         )}
       </div>
     </>

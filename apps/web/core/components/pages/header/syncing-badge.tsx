@@ -40,13 +40,12 @@ export function PageSyncingBadge({ syncStatus }: Props) {
     syncing: {
       label: t("ui.syncing"),
       tooltipHeading: t("ui.syncing"),
-      tooltipContent: "Your changes are being synced with the server. You can continue making changes.",
+      tooltipContent: t("ui.page_syncing_description"),
     },
     error: {
       label: t("ui.connection_lost"),
       tooltipHeading: t("ui.connection_lost"),
-      tooltipContent:
-        "We're having trouble connecting to the websocket server. Your changes will be synced and saved every 10 seconds.",
+      tooltipContent: t("ui.page_connection_lost_description"),
     },
   };
 

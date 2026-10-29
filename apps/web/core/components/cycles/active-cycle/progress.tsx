@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions, react/no-array-index-key -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { observer } from "mobx-react";
 import { useTheme } from "next-themes";
 // plane imports
@@ -55,9 +57,10 @@ export const ActiveCycleProgress = observer(function ActiveCycleProgress(props: 
           <h3 className="text-14 font-semibold text-tertiary">{t("project_cycles.active_cycle.progress")}</h3>
           {cycle.total_issues > 0 && (
             <span className="flex gap-1 rounded-xs px-3 py-1 text-13 font-medium whitespace-nowrap text-placeholder">
-              {`${cycle.completed_issues + cycle.cancelled_issues}/${cycle.total_issues - cycle.cancelled_issues} ${
-                cycle.completed_issues + cycle.cancelled_issues > 1 ? "Work items" : "Work item"
-              } closed`}
+              {t("ui.work_items_closed", {
+                closed: cycle.completed_issues + cycle.cancelled_issues,
+                total: cycle.total_issues - cycle.cancelled_issues,
+              })}
             </span>
           )}
         </div>
@@ -83,11 +86,9 @@ export const ActiveCycleProgress = observer(function ActiveCycleProgress(props: 
                           backgroundColor: PROGRESS_STATE_GROUPS_DETAILS[index].color,
                         }}
                       />
-                      <span className="w-16 font-medium text-tertiary capitalize">{group}</span>
+                      <span className="w-16 font-medium text-tertiary">{t(`common.state_group.${group}`)}</span>
                     </div>
-                    <span className="text-tertiary">{`${groupedIssues[group]} ${
-                      groupedIssues[group] > 1 ? "Work items" : "Work item"
-                    }`}</span>
+                    <span className="text-tertiary">{t("ui.work_items_count", { count: groupedIssues[group] })}</span>
                   </div>
                 </div>
               )}
@@ -95,11 +96,7 @@ export const ActiveCycleProgress = observer(function ActiveCycleProgress(props: 
           ))}
           {cycle.cancelled_issues > 0 && (
             <span className="flex items-center gap-2 text-13 text-tertiary">
-              <span>
-                {`${cycle.cancelled_issues} cancelled ${
-                  cycle.cancelled_issues > 1 ? "work items are" : "work item is"
-                } excluded from this report.`}{" "}
-              </span>
+              <span>{t("ui.cancelled_excluded", { count: cycle.cancelled_issues })} </span>
             </span>
           )}
         </div>

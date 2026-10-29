@@ -6,6 +6,7 @@
 
 import { useCallback, useEffect, useMemo } from "react";
 // hooks
+import { i18nInstance } from "@plane/i18n";
 import { useMultipleSelectStore } from "@/hooks/store/use-multiple-select-store";
 //
 import useReloadConfirmations from "./use-reload-confirmation";
@@ -60,7 +61,7 @@ export const useMultipleSelect = (props: Props) => {
 
   useReloadConfirmations(
     selectedEntityIds && selectedEntityIds.length > 0,
-    "Are you sure you want to leave? Your current bulk operation selections will be lost.",
+    i18nInstance.t("ui.leave_bulk_selection"),
     true,
     () => {
       clearSelection();
@@ -71,14 +72,12 @@ export const useMultipleSelect = (props: Props) => {
 
   const entitiesList: TEntityDetails[] = useMemo(
     () =>
-      groups
-        ?.map((groupID) =>
-          entities?.[groupID]?.map((entityID) => ({
-            entityID,
-            groupID,
-          }))
-        )
-        .flat(1),
+      groups?.flatMap((groupID) =>
+        entities?.[groupID]?.map((entityID) => ({
+          entityID,
+          groupID,
+        }))
+      ),
     [entities, groups]
   );
 

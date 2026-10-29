@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import type { IModule, TFilterProperty } from "@plane/types";
 import { EQUALITY_OPERATOR, COLLECTION_OPERATOR } from "@plane/types";
 // local imports
@@ -53,7 +54,7 @@ export const getModuleFilterConfig =
   (params: TCreateModuleFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Module",
+      label: i18nInstance.t("common.module"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([

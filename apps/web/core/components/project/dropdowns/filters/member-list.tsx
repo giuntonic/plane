@@ -85,6 +85,7 @@ const RoleFilterGroup = observer(function RoleFilterGroup({
   handleUpdate: (role: string) => void;
   memberType: "project" | "workspace";
 }) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(true);
   const appliedFiltersCount = appliedFilters?.length ?? 0;
   const roleOptions = memberType === "project" ? PROJECT_ROLE_OPTIONS : WORKSPACE_ROLE_OPTIONS;
@@ -92,7 +93,7 @@ const RoleFilterGroup = observer(function RoleFilterGroup({
   return (
     <div className="space-y-2">
       <FilterHeader
-        title={`Roles${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("ui.roles")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={isExpanded}
         handleIsPreviewEnabled={() => setIsExpanded(!isExpanded)}
       />

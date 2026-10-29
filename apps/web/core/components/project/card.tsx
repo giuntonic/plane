@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { useTranslation } from "@plane/i18n";
 import React, { useRef, useState } from "react";
 import { observer } from "mobx-react";
@@ -83,7 +85,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
       loading: t("ui.adding_project_to_favorites"),
       success: {
         title: t("toast.success"),
-        message: () => "Project added to favorites.",
+        message: () => t("ui.project_added_to_favorites"),
         actionItems: () => {
           if (!isFavoriteMenuOpen) toggleFavoriteMenu(true);
           return <></>;
@@ -91,7 +93,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
       },
       error: {
         title: t("toast.error"),
-        message: () => "Couldn't add the project to favorites. Please try again.",
+        message: () => t("ui.project_add_to_favorites_failed"),
       },
     });
   };
@@ -104,11 +106,11 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
       loading: t("ui.removing_project_from_favorites"),
       success: {
         title: t("toast.success"),
-        message: () => "Project removed from favorites.",
+        message: () => t("ui.project_removed_from_favorites"),
       },
       error: {
         title: t("toast.error"),
-        message: () => "Couldn't remove the project from favorites. Please try again.",
+        message: () => t("ui.project_remove_from_favorites_failed"),
       },
     });
   };
@@ -276,7 +278,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
           <p className="line-clamp-2 text-13 break-words text-tertiary">
             {project.description && project.description.trim() !== ""
               ? project.description
-              : `Created on ${renderFormattedDate(project.created_at)}`}
+              : t("ui.created_on_date", { date: renderFormattedDate(project.created_at) ?? "" })}
           </p>
           <div className="item-center flex justify-between">
             <div className="flex items-center justify-center gap-2">

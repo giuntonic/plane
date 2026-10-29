@@ -45,7 +45,7 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
     watch,
   } = useForm({ defaultValues });
 
-  const canDelete = watch("projectName") === project?.name && watch("confirmDelete") === "delete my project";
+  const canDelete = watch("projectName") === project?.name && watch("confirmDelete") === t("ui.delete_project_phrase");
 
   const handleClose = () => {
     const timer = setTimeout(() => {
@@ -121,8 +121,8 @@ export function DeleteProjectModal(props: DeleteProjectModal) {
         </div>
         <div className="text-secondary">
           <p className="text-13">
-            {t("ui.jsx_to_confirm_type")} <span className="font-medium text-primary">delete my project</span>{" "}
-            {t("ui.jsx_below")}
+            {t("ui.jsx_to_confirm_type")}{" "}
+            <span className="font-medium text-primary">{t("ui.delete_project_phrase")}</span> {t("ui.jsx_below")}
           </p>
           <Controller
             control={control}

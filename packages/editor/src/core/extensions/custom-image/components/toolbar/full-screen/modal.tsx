@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/alt-text, jsx_a11y/no-static-element-interactions -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
+import { i18nInstance } from "@plane/i18n";
 import { Download, Minus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReactDOM from "react-dom";
@@ -82,7 +85,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
         targetZoom = ZOOM_STEPS.find((step) => step > prev) ?? MAX_ZOOM;
       } else {
         // Reverse the array to find the next lower step
-        targetZoom = [...ZOOM_STEPS].reverse().find((step) => step < prev) ?? MIN_ZOOM;
+        targetZoom = [...ZOOM_STEPS].toReversed().find((step) => step < prev) ?? MIN_ZOOM;
       }
 
       // Reset position when zoom matches initial magnification
@@ -206,7 +209,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
       })}
       role="dialog"
       aria-modal="true"
-      aria-label="Fullscreen image viewer"
+      aria-label={i18nInstance.t("editor_ui.image.viewer")}
     >
       <div
         ref={modalRef}
@@ -217,7 +220,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
           type="button"
           onClick={handleClose}
           className="absolute top-10 right-10 grid size-8 place-items-center"
-          aria-label="Close image viewer"
+          aria-label={i18nInstance.t("editor_ui.image.close_viewer")}
         >
           <CloseIcon className="size-8 text-white/60 transition-colors hover:text-white" />
         </button>
@@ -250,7 +253,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
               }}
               className="grid size-6 place-items-center text-white/60 transition-colors duration-200 hover:text-white disabled:text-white/30"
               disabled={magnification <= MIN_ZOOM}
-              aria-label="Zoom out"
+              aria-label={i18nInstance.t("editor_ui.image.zoom_out")}
             >
               <Minus className="size-4" />
             </button>
@@ -266,7 +269,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
               }}
               className="grid size-6 place-items-center text-white/60 transition-colors duration-200 hover:text-white disabled:text-white/30"
               disabled={magnification >= MAX_ZOOM}
-              aria-label="Zoom in"
+              aria-label={i18nInstance.t("editor_ui.image.zoom_in")}
             >
               <PlusIcon className="size-4" />
             </button>
@@ -276,7 +279,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
               type="button"
               onClick={() => window.open(downloadSrc, "_blank")}
               className="grid size-8 flex-shrink-0 place-items-center text-white/60 transition-colors duration-200 hover:text-white"
-              aria-label="Download image"
+              aria-label={i18nInstance.t("editor_ui.image.download_image")}
             >
               <Download className="size-4" />
             </button>
@@ -286,7 +289,7 @@ function ImageFullScreenModalWithoutPortal(props: Props) {
               type="button"
               onClick={() => window.open(src, "_blank")}
               className="grid size-8 flex-shrink-0 place-items-center text-white/60 transition-colors duration-200 hover:text-white"
-              aria-label="Open image in new tab"
+              aria-label={i18nInstance.t("editor_ui.image.open_new_tab")}
             >
               <NewTabIcon className="size-4" />
             </button>

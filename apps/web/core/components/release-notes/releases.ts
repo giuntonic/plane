@@ -21,6 +21,25 @@ export type TPespoRelease = {
 
 export const PESPO_RELEASES: TPespoRelease[] = [
   {
+    version: "1.5.1",
+    date: "2026-10-29",
+    summary: "Estado nas subtarefas, Peças como funcionalidade do projeto e propriedades e checklists que recolhem.",
+    features: [
+      "Subtarefas com estado: escolha um estado do fluxo do projeto na linha da subtarefa. Um estado de concluído marca a subtarefa, e marcar o quadradinho leva ao estado de concluído. Escolher de novo o estado atual tira o estado.",
+      "Peças virou uma funcionalidade do projeto, como Ciclos e Páginas: dá para desligar a aba em Configurações do projeto › Funcionalidades › Peças.",
+      "No painel lateral e no modal, a seção Propriedades recolhe pela seta ao lado do título.",
+      "Na página cheia do item e no painel em tela cheia, um botão no cabeçalho esconde ou mostra a coluna de propriedades.",
+      "Cada checklist com nome pode ser recolhida pela seta ao lado do nome.",
+      "O navegador lembra o que ficou recolhido ou escondido.",
+    ],
+    fixes: [
+      'Partes que ainda estavam em inglês agora aparecem em português: o editor de texto (menu "/", formatação, cores, tabelas e imagens), o seletor de emoji e ícone (com busca em português), a confirmação de excluir item, filtros, notificações, histórico, análises e várias mensagens.',
+      "Os ícones no fim da linha da subtarefa (responsável, prazo, transformar em item, adicionar e excluir) ficavam desalinhados.",
+      '"Data de vencimento" e outros rótulos longos das propriedades cobriam o campo ao lado.',
+      'No painel lateral, mexer no "Repetir", confirmar a exclusão de uma checklist ou usar "Transformar em subtarefa" e "Salvar como modelo" fechava o item.',
+    ],
+  },
+  {
     version: "1.5",
     date: "2026-10-23",
     summary:

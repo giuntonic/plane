@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/no-autofocus, jsx_a11y/no-static-element-interactions -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
+import { i18nInstance } from "@plane/i18n";
 import type { Node } from "@tiptap/pm/model";
 import { Link2Off } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -144,8 +147,19 @@ export function LinkEditView({ viewProps }: LinkEditViewProps) {
       }}
       tabIndex={0}
     >
-      <InputView label="URL" placeholder="Enter or paste URL" value={localUrl} onChange={setLocalUrl} autoFocus />
-      <InputView label="Text" placeholder="Enter Text to display" value={localText} onChange={handleTextChange} />
+      <InputView
+        label="URL"
+        placeholder={i18nInstance.t("editor_ui.link.enter_or_paste_url")}
+        value={localUrl}
+        onChange={setLocalUrl}
+        autoFocus
+      />
+      <InputView
+        label={i18nInstance.t("editor_ui.link.text")}
+        placeholder={i18nInstance.t("editor_ui.link.text_placeholder")}
+        value={localText}
+        onChange={handleTextChange}
+      />
       <div className="bg-strong mb-1 h-[1px] w-full gap-2" />
       <div className="flex items-center gap-2 text-13 text-secondary">
         <Link2Off size={14} className="inline-block" />

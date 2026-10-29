@@ -138,7 +138,7 @@ export const ConvertToChecklistModal = observer(function ConvertToChecklistModal
   };
 
   return (
-    <ModalCore isOpen handleClose={close}>
+    <ModalCore isOpen handleClose={close} preventOutsideClick>
       <div className="space-y-4 p-5">
         <div className="space-y-1">
           <h3 className="text-18 font-medium text-secondary">{t("work_item_structure.to_checklist.title")}</h3>

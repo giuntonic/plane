@@ -23,6 +23,7 @@ class IssueChecklistItemSerializer(SaveOnlySentFieldsMixin, BaseSerializer):
             "completed_at",
             "assignee",
             "due_date",
+            "state",
             "sort_order",
             "created_by",
             "created_at",

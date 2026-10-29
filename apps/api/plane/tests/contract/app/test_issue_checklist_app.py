@@ -272,3 +272,105 @@ class TestNamedChecklists:
         assert guest_client.get(_checklists_url(workspace, project, issue)).status_code == status.HTTP_200_OK
         response = guest_client.post(_checklists_url(workspace, project, issue), {"name": "Minha"}, format="json")
         assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.fixture
+def flow(db, project):
+    """Fluxo do projeto: o padrão é de backlog e há dois estados de concluído (vale o de menor sequence)."""
+
+    def make(name, group, sequence, **extra):
+        return State.objects.create(
+            name=name, group=group, sequence=sequence, project=project, workspace=project.workspace, **extra
+        )
+
+    return {
+        "queue": make("Fila", "backlog", 1, default=True),
+        "doing": make("Em produção", "started", 2),
+        "delivered": make("Entregue", "completed", 3),
+        "approved": make("Aprovado", "completed", 4),
+    }
+
+
+@pytest.mark.contract
+class TestChecklistItemState:
+    """Pespo: a subtarefa pode ter um estado do fluxo do projeto, que anda junto com o quadradinho."""
+
+    def _create(self, client, workspace, project, issue, **data):
+        response = client.post(_list_url(workspace, project, issue), data, format="json")
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        return response.json()
+
+    def _patch(self, client, workspace, project, issue, item_id, **data):
+        response = client.patch(_detail_url(workspace, project, issue, item_id), data, format="json")
+        assert response.status_code == status.HTTP_200_OK, response.data
+        return response.json()
+
+    def test_completed_state_checks_the_line_and_another_state_unchecks_it(
+        self, session_client, workspace, project, issue, flow
+    ):
+        item = self._create(session_client, workspace, project, issue, name="Arte")
+        assert item["state"] is None and item["is_completed"] is False
+
+        done = self._patch(session_client, workspace, project, issue, item["id"], state=str(flow["approved"].id))
+        assert done["state"] == str(flow["approved"].id)
+        assert done["is_completed"] is True and done["completed_at"]
+
+        doing = self._patch(session_client, workspace, project, issue, item["id"], state=str(flow["doing"].id))
+        assert doing["state"] == str(flow["doing"].id)
+        assert doing["is_completed"] is False and doing["completed_at"] is None
+
+    def test_checkbox_moves_the_state(self, session_client, workspace, project, issue, flow):
+        item = self._create(session_client, workspace, project, issue, name="Arte", state=str(flow["doing"].id))
+        assert item["is_completed"] is False
+
+        # Marcada: vai para o primeiro estado de concluído (pela sequence do fluxo).
+        checked = self._patch(session_client, workspace, project, issue, item["id"], is_completed=True)
+        assert checked["state"] == str(flow["delivered"].id) and checked["completed_at"]
+
+        # Desmarcada estando em concluído: volta para o estado padrão do projeto.
+        unchecked = self._patch(session_client, workspace, project, issue, item["id"], is_completed=False)
+        assert unchecked["state"] == str(flow["queue"].id) and unchecked["is_completed"] is False
+
+    def test_checking_a_line_already_in_a_completed_state_keeps_it(
+        self, session_client, workspace, project, issue, flow
+    ):
+        line = IssueChecklistItem.objects.create(
+            issue=issue, project=project, workspace=workspace, name="Antiga", state=flow["approved"]
+        )
+        checked = self._patch(session_client, workspace, project, issue, line.id, is_completed=True)
+        assert checked["state"] == str(flow["approved"].id) and checked["is_completed"] is True
+
+    def test_line_without_state_is_just_the_checkbox(self, session_client, workspace, project, issue, flow):
+        item = self._create(session_client, workspace, project, issue, name="Simples")
+        checked = self._patch(session_client, workspace, project, issue, item["id"], is_completed=True)
+        assert checked["is_completed"] is True and checked["state"] is None
+
+    def test_clearing_the_state_keeps_the_checkbox(self, session_client, workspace, project, issue, flow):
+        item = self._create(session_client, workspace, project, issue, name="Arte", state=str(flow["delivered"].id))
+        assert item["is_completed"] is True and item["completed_at"]
+        cleared = self._patch(session_client, workspace, project, issue, item["id"], state=None)
+        assert cleared["state"] is None and cleared["is_completed"] is True
+
+    def test_state_of_another_project_is_refused(self, session_client, workspace, project, issue, create_user):
+        other = Project.objects.create(name="Outro", identifier="OUTRO", workspace=workspace, created_by=create_user)
+        foreign = State.objects.create(name="Feito", group="completed", project=other, workspace=workspace)
+        response = session_client.post(
+            _list_url(workspace, project, issue), {"name": "X", "state": str(foreign.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+        item = self._create(session_client, workspace, project, issue, name="Y")
+        response = session_client.patch(
+            _detail_url(workspace, project, issue, item["id"]), {"state": str(foreign.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert IssueChecklistItem.objects.get(pk=item["id"]).state_id is None
+
+    def test_deleting_the_state_leaves_the_line_without_state(self, session_client, workspace, project, issue, flow):
+        item = self._create(session_client, workspace, project, issue, name="Arte", state=str(flow["doing"].id))
+        # O nome "project-state" se repete no urls.py (mark-default), então o caminho vai escrito.
+        response = session_client.delete(
+            f"/api/workspaces/{workspace.slug}/projects/{project.id}/states/{flow['doing'].id}/"
+        )
+        assert response.status_code == status.HTTP_204_NO_CONTENT
+        assert IssueChecklistItem.objects.get(pk=item["id"]).state_id is None

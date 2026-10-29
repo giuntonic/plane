@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import type { LucideIcon } from "lucide-react";
 import {
   AlignCenter,
@@ -49,20 +50,78 @@ export type ToolbarMenuItem<T extends TEditorCommands = TEditorCommands> = {
 };
 
 export const TYPOGRAPHY_ITEMS: ToolbarMenuItem<"text" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6">[] = [
-  { itemKey: "text", renderKey: "text", name: "Text", icon: CaseSensitive, editors: ["document"] },
-  { itemKey: "h1", renderKey: "h1", name: "Heading 1", icon: Heading1, editors: ["document"] },
-  { itemKey: "h2", renderKey: "h2", name: "Heading 2", icon: Heading2, editors: ["document"] },
-  { itemKey: "h3", renderKey: "h3", name: "Heading 3", icon: Heading3, editors: ["document"] },
-  { itemKey: "h4", renderKey: "h4", name: "Heading 4", icon: Heading4, editors: ["document"] },
-  { itemKey: "h5", renderKey: "h5", name: "Heading 5", icon: Heading5, editors: ["document"] },
-  { itemKey: "h6", renderKey: "h6", name: "Heading 6", icon: Heading6, editors: ["document"] },
+  {
+    itemKey: "text",
+    renderKey: "text",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.text");
+    },
+    icon: CaseSensitive,
+    editors: ["document"],
+  },
+  {
+    itemKey: "h1",
+    renderKey: "h1",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.heading_1");
+    },
+    icon: Heading1,
+    editors: ["document"],
+  },
+  {
+    itemKey: "h2",
+    renderKey: "h2",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.heading_2");
+    },
+    icon: Heading2,
+    editors: ["document"],
+  },
+  {
+    itemKey: "h3",
+    renderKey: "h3",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.heading_3");
+    },
+    icon: Heading3,
+    editors: ["document"],
+  },
+  {
+    itemKey: "h4",
+    renderKey: "h4",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.heading_4");
+    },
+    icon: Heading4,
+    editors: ["document"],
+  },
+  {
+    itemKey: "h5",
+    renderKey: "h5",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.heading_5");
+    },
+    icon: Heading5,
+    editors: ["document"],
+  },
+  {
+    itemKey: "h6",
+    renderKey: "h6",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.heading_6");
+    },
+    icon: Heading6,
+    editors: ["document"],
+  },
 ];
 
 export const TEXT_ALIGNMENT_ITEMS: ToolbarMenuItem<"text-align">[] = [
   {
     itemKey: "text-align",
     renderKey: "text-align-left",
-    name: "Left align",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.left_align");
+    },
     icon: AlignLeft,
     shortcut: ["Cmd", "Shift", "L"],
     editors: ["lite", "document"],
@@ -73,7 +132,9 @@ export const TEXT_ALIGNMENT_ITEMS: ToolbarMenuItem<"text-align">[] = [
   {
     itemKey: "text-align",
     renderKey: "text-align-center",
-    name: "Center align",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.center_align");
+    },
     icon: AlignCenter,
     shortcut: ["Cmd", "Shift", "E"],
     editors: ["lite", "document"],
@@ -84,7 +145,9 @@ export const TEXT_ALIGNMENT_ITEMS: ToolbarMenuItem<"text-align">[] = [
   {
     itemKey: "text-align",
     renderKey: "text-align-right",
-    name: "Right align",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.right_align");
+    },
     icon: AlignRight,
     shortcut: ["Cmd", "Shift", "R"],
     editors: ["lite", "document"],
@@ -98,7 +161,9 @@ const BASIC_MARK_ITEMS: ToolbarMenuItem<"bold" | "italic" | "underline" | "strik
   {
     itemKey: "bold",
     renderKey: "bold",
-    name: "Bold",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.bold");
+    },
     icon: Bold,
     shortcut: ["Cmd", "B"],
     editors: ["lite", "document"],
@@ -106,7 +171,9 @@ const BASIC_MARK_ITEMS: ToolbarMenuItem<"bold" | "italic" | "underline" | "strik
   {
     itemKey: "italic",
     renderKey: "italic",
-    name: "Italic",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.italic");
+    },
     icon: Italic,
     shortcut: ["Cmd", "I"],
     editors: ["lite", "document"],
@@ -114,7 +181,9 @@ const BASIC_MARK_ITEMS: ToolbarMenuItem<"bold" | "italic" | "underline" | "strik
   {
     itemKey: "underline",
     renderKey: "underline",
-    name: "Underline",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.underline");
+    },
     icon: Underline,
     shortcut: ["Cmd", "U"],
     editors: ["lite", "document"],
@@ -122,7 +191,9 @@ const BASIC_MARK_ITEMS: ToolbarMenuItem<"bold" | "italic" | "underline" | "strik
   {
     itemKey: "strikethrough",
     renderKey: "strikethrough",
-    name: "Strikethrough",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.strikethrough");
+    },
     icon: Strikethrough,
     shortcut: ["Cmd", "Shift", "S"],
     editors: ["lite", "document"],
@@ -133,7 +204,9 @@ const LIST_ITEMS: ToolbarMenuItem<"bulleted-list" | "numbered-list" | "to-do-lis
   {
     itemKey: "bulleted-list",
     renderKey: "bulleted-list",
-    name: "Bulleted list",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.bulleted_list");
+    },
     icon: List,
     shortcut: ["Cmd", "Shift", "7"],
     editors: ["lite", "document"],
@@ -141,7 +214,9 @@ const LIST_ITEMS: ToolbarMenuItem<"bulleted-list" | "numbered-list" | "to-do-lis
   {
     itemKey: "numbered-list",
     renderKey: "numbered-list",
-    name: "Numbered list",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.numbered_list");
+    },
     icon: ListOrdered,
     shortcut: ["Cmd", "Shift", "8"],
     editors: ["lite", "document"],
@@ -149,7 +224,9 @@ const LIST_ITEMS: ToolbarMenuItem<"bulleted-list" | "numbered-list" | "to-do-lis
   {
     itemKey: "to-do-list",
     renderKey: "to-do-list",
-    name: "To-do list",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.to_do_list");
+    },
     icon: ListTodo,
     shortcut: ["Cmd", "Shift", "9"],
     editors: ["lite", "document"],
@@ -157,13 +234,45 @@ const LIST_ITEMS: ToolbarMenuItem<"bulleted-list" | "numbered-list" | "to-do-lis
 ];
 
 export const USER_ACTION_ITEMS: ToolbarMenuItem<"quote" | "code">[] = [
-  { itemKey: "quote", renderKey: "quote", name: "Quote", icon: TextQuote, editors: ["lite", "document"] },
-  { itemKey: "code", renderKey: "code", name: "Code", icon: Code2, editors: ["lite", "document"] },
+  {
+    itemKey: "quote",
+    renderKey: "quote",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.quote");
+    },
+    icon: TextQuote,
+    editors: ["lite", "document"],
+  },
+  {
+    itemKey: "code",
+    renderKey: "code",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.code");
+    },
+    icon: Code2,
+    editors: ["lite", "document"],
+  },
 ];
 
 export const COMPLEX_ITEMS: ToolbarMenuItem<"table" | "image">[] = [
-  { itemKey: "table", renderKey: "table", name: "Table", icon: Table, editors: ["document"] },
-  { itemKey: "image", renderKey: "image", name: "Image", icon: Image, editors: ["lite", "document"] },
+  {
+    itemKey: "table",
+    renderKey: "table",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.table");
+    },
+    icon: Table,
+    editors: ["document"],
+  },
+  {
+    itemKey: "image",
+    renderKey: "image",
+    get name() {
+      return i18nInstance.t("editor_ui.menu.image");
+    },
+    icon: Image,
+    editors: ["lite", "document"],
+  },
 ];
 
 export const IMAGE_ITEM = COMPLEX_ITEMS.find((item): item is ToolbarMenuItem<"image"> => item.itemKey === "image")!;
@@ -201,49 +310,65 @@ export const COLORS_LIST: {
 }[] = [
   {
     key: "gray",
-    label: "Gray",
+    get label() {
+      return i18nInstance.t("editor_ui.colors.gray");
+    },
     textColor: "var(--editor-colors-gray-text)",
     backgroundColor: "var(--editor-colors-gray-background)",
   },
   {
     key: "peach",
-    label: "Peach",
+    get label() {
+      return i18nInstance.t("editor_ui.colors.peach");
+    },
     textColor: "var(--editor-colors-peach-text)",
     backgroundColor: "var(--editor-colors-peach-background)",
   },
   {
     key: "pink",
-    label: "Pink",
+    get label() {
+      return i18nInstance.t("editor_ui.colors.pink");
+    },
     textColor: "var(--editor-colors-pink-text)",
     backgroundColor: "var(--editor-colors-pink-background)",
   },
   {
     key: "orange",
-    label: "Orange",
+    get label() {
+      return i18nInstance.t("editor_ui.colors.orange");
+    },
     textColor: "var(--editor-colors-orange-text)",
     backgroundColor: "var(--editor-colors-orange-background)",
   },
   {
     key: "green",
-    label: "Green",
+    get label() {
+      return i18nInstance.t("editor_ui.colors.green");
+    },
     textColor: "var(--editor-colors-green-text)",
     backgroundColor: "var(--editor-colors-green-background)",
   },
   {
     key: "light-blue",
-    label: "Light blue",
+    get label() {
+      return i18nInstance.t("editor_ui.colors.light_blue");
+    },
     textColor: "var(--editor-colors-light-blue-text)",
     backgroundColor: "var(--editor-colors-light-blue-background)",
   },
   {
     key: "dark-blue",
-    label: "Dark blue",
+    get label() {
+      return i18nInstance.t("editor_ui.colors.dark_blue");
+    },
     textColor: "var(--editor-colors-dark-blue-text)",
     backgroundColor: "var(--editor-colors-dark-blue-background)",
   },
   {
     key: "purple",
-    label: "Purple",
+    get label() {
+      return i18nInstance.t("editor_ui.colors.purple");
+    },
     textColor: "var(--editor-colors-purple-text)",
     backgroundColor: "var(--editor-colors-purple-background)",
   },
@@ -260,7 +385,25 @@ export const EDITOR_FONT_STYLES: {
   label: string;
   icon: React.FC;
 }[] = [
-  { key: "sans-serif", label: "Sans serif", icon: SansSerifIcon },
-  { key: "serif", label: "Serif", icon: SerifIcon },
-  { key: "monospace", label: "Mono", icon: MonospaceIcon },
+  {
+    key: "sans-serif",
+    get label() {
+      return i18nInstance.t("editor_ui.fonts.sans_serif");
+    },
+    icon: SansSerifIcon,
+  },
+  {
+    key: "serif",
+    get label() {
+      return i18nInstance.t("editor_ui.fonts.serif");
+    },
+    icon: SerifIcon,
+  },
+  {
+    key: "monospace",
+    get label() {
+      return i18nInstance.t("editor_ui.fonts.monospace");
+    },
+    icon: MonospaceIcon,
+  },
 ];

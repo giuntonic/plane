@@ -48,7 +48,7 @@ export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(pro
   });
 
   const fileError =
-    fileRejections.length > 0 ? `Invalid file type or size (max ${maxFileSize / 1024 / 1024} MB)` : null;
+    fileRejections.length > 0 ? t("ui.invalid_file_type_or_size", { size: maxFileSize / 1024 / 1024 }) : null;
 
   return (
     <div

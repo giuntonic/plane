@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions, promise/always-return, unicorn/consistent-function-scoping -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { useTranslation } from "@plane/i18n";
 import type { SyntheticEvent } from "react";
 import React, { useRef } from "react";
@@ -83,11 +85,11 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
       loading: t("ui.adding_module_to_favorites"),
       success: {
         title: t("toast.success"),
-        message: () => "Module added to favorites.",
+        message: () => t("ui.module_added_to_favorites"),
       },
       error: {
         title: t("toast.error"),
-        message: () => "Couldn't add the module to favorites. Please try again.",
+        message: () => t("ui.module_add_to_favorites_failed"),
       },
     });
   };
@@ -107,11 +109,11 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
       loading: t("ui.removing_module_from_favorites"),
       success: {
         title: t("toast.success"),
-        message: () => "Module removed from favorites.",
+        message: () => t("ui.module_removed_from_favorites"),
       },
       error: {
         title: t("toast.error"),
-        message: () => "Couldn't remove the module from favorites. Please try again.",
+        message: () => t("ui.module_remove_from_favorites_failed"),
       },
     });
   };
@@ -136,7 +138,7 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
         setToast({
           type: TOAST_TYPE.ERROR,
           title: t("toast.error"),
-          message: err?.detail ?? "Module could not be updated. Please try again.",
+          message: err?.detail ?? t("ui.module_update_failed"),
         });
       });
   };
@@ -168,13 +170,12 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
 
   const moduleStatus = MODULE_STATUS.find((status) => status.value === moduleDetails.status);
 
-  const issueCount = moduleDetails
-    ? !moduleTotalIssues || moduleTotalIssues === 0
-      ? `0 work items`
-      : moduleTotalIssues === moduleCompletedIssues
-        ? `${moduleTotalIssues} Work item${moduleTotalIssues > 1 ? `s` : ``}`
-        : `${moduleCompletedIssues}/${moduleTotalIssues} Work items`
-    : `0 work items`;
+  const issueCount =
+    moduleDetails && moduleTotalIssues
+      ? moduleTotalIssues === moduleCompletedIssues
+        ? t("ui.work_items_count", { count: moduleTotalIssues })
+        : t("ui.work_items_progress", { completed: moduleCompletedIssues, total: moduleTotalIssues })
+      : t("ui.work_items_count", { count: 0 });
 
   const moduleLeadDetails = moduleDetails.lead_id ? getUserDetails(moduleDetails.lead_id) : undefined;
 

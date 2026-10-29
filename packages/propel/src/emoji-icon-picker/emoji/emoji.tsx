@@ -4,18 +4,25 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable no-shadow -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { useEffect, useRef } from "react";
 import { EmojiPicker } from "frimousse";
+import type { Locale } from "frimousse";
+import { useTranslation } from "@plane/i18n";
 import { cn } from "../../utils";
 
 type EmojiRootProps = {
   onChange: (value: string) => void;
   searchPlaceholder?: string;
   searchDisabled?: boolean;
+  /** Idioma dos dados de emoji (categorias e busca); padrão "en". */
+  locale?: Locale;
 };
 
 export function EmojiRoot(props: EmojiRootProps) {
-  const { onChange, searchPlaceholder = "Search", searchDisabled = false } = props;
+  const { onChange, searchPlaceholder, searchDisabled = false, locale = "en" } = props;
+  const { t } = useTranslation();
   const searchWrapperRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const focusInput = () => {
@@ -36,11 +43,12 @@ export function EmojiRoot(props: EmojiRootProps) {
       data-slot="emoji-picker"
       className="isolate flex h-full w-full flex-col rounded-md border-none p-2"
       onEmojiSelect={(val) => onChange(val.emoji)}
+      locale={locale}
     >
       <div className="sticky top-0 z-10 flex items-center justify-between gap-2 bg-surface-1 px-1.5 py-2 [&>[data-slot='emoji-picker-search-wrapper']]:flex-grow [&>[data-slot='emoji-picker-search-wrapper']]:p-0">
         <div ref={searchWrapperRef} data-slot="emoji-picker-search-wrapper" className="p-2">
           <EmojiPicker.Search
-            placeholder={searchPlaceholder}
+            placeholder={searchPlaceholder ?? t("search")}
             disabled={searchDisabled}
             className="block h-full w-full flex-grow-0 rounded-md border-[0.5px] border-subtle bg-transparent p-0 px-3 py-2 text-16 placeholder-(--text-color-placeholder) focus:border-accent-strong focus:outline-none"
           />
@@ -51,6 +59,9 @@ export function EmojiRoot(props: EmojiRootProps) {
         />
       </div>
       <EmojiPicker.Viewport data-slot="emoji-picker-content" className={cn("relative flex-1 outline-none")}>
+        <EmojiPicker.Empty className="px-3 py-6 text-center text-13 text-tertiary">
+          {t("ui.no_emojis_found")}
+        </EmojiPicker.Empty>
         <EmojiPicker.List
           data-slot="emoji-picker-list"
           className={cn("pb-2 select-none")}

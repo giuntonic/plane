@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable promise/always-return -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -117,10 +119,9 @@ export const DeleteIssueModal = observer(function DeleteIssueModal(props: Props)
       title={t("entity.delete.label", { entity: isEpic ? t("common.epic") : t("common.work_item") })}
       content={
         <>
-          {/* TODO: Translate here */}
-          {`Are you sure you want to delete ${isEpic ? "epic" : "work item"} `}
+          {isEpic ? t("ui.delete_epic_confirm") : t("ui.jsx_are_you_sure_you_want_to_delete")}{" "}
           <span className="font-medium break-words text-primary">{issue?.name}</span>
-          {` ? All of the data related to the ${isEpic ? "epic" : "work item"} will be permanently removed. This action cannot be undone.`}
+          {isEpic ? t("ui.delete_epic_confirm_after") : t("ui.delete_work_item_confirm_after")}
         </>
       }
     />

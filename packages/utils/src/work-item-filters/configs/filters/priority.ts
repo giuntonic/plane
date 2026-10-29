@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import type { TIssuePriorities } from "@plane/constants";
 import { ISSUE_PRIORITIES } from "@plane/constants";
 import type { TFilterProperty, TSupportedOperators } from "@plane/types";
@@ -57,7 +58,7 @@ export const getPriorityFilterConfig =
   (params: TCreatePriorityFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Priority",
+      label: i18nInstance.t("common.priority"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([

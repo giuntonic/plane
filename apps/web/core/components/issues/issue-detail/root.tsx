@@ -12,6 +12,7 @@ import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setPromiseToast, setToast } from "@plane/propel/toast";
 import type { TIssue } from "@plane/types";
 import { EIssuesStoreType } from "@plane/types";
+import { cn } from "@plane/utils";
 // assets
 import emptyIssue from "@/app/assets/empty-state/issue.svg?url";
 // components
@@ -24,6 +25,7 @@ import { useUserPermissions } from "@/hooks/store/user";
 import { useAppRouter } from "@/hooks/use-app-router";
 // local components
 import { IssuePeekOverview } from "../peek-overview";
+import { workItemPropertiesPanelStore } from "../properties-panel";
 import { IssueMainContent } from "./main-content";
 import { IssueDetailsSidebar } from "./sidebar";
 
@@ -58,6 +60,7 @@ export type TIssueDetailRoot = {
   is_archived?: boolean;
 };
 
+// oxlint-disable no-shadow -- upstream: as funções de issueOperations recebem workspaceSlug/projectId/issueId com os mesmos nomes das props
 export const IssueDetailRoot = observer(function IssueDetailRoot(props: TIssueDetailRoot) {
   const { t } = useTranslation();
   const { workspaceSlug, projectId, issueId, is_archived = false } = props;
@@ -249,8 +252,13 @@ export const IssueDetailRoot = observer(function IssueDetailRoot(props: TIssueDe
               isArchived={is_archived}
             />
           </div>
+          {/* Pespo: no desktop a coluna de propriedades pode ser escondida (botão no cabeçalho); no celular segue o
+              upstream (issueDetailSidebarCollapsed). */}
           <div
-            className="fixed right-0 z-[5] h-full w-full min-w-[300px] border-l border-subtle bg-surface-1 sm:w-1/2 md:relative md:w-1/4 lg:min-w-80 xl:min-w-96"
+            className={cn(
+              "fixed right-0 z-[5] h-full w-full min-w-[300px] border-l border-subtle bg-surface-1 sm:w-1/2 md:relative md:w-1/4 lg:min-w-80 xl:min-w-96",
+              { "md:hidden": workItemPropertiesPanelStore.isHidden }
+            )}
             style={issueDetailSidebarCollapsed ? { right: `-${window?.innerWidth || 0}px` } : {}}
           >
             <IssueDetailsSidebar

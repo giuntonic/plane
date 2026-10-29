@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import type { Editor } from "@tiptap/core";
 import { AlignCenter, AlignLeft, AlignRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -44,17 +45,23 @@ export const IMAGE_ALIGNMENT_OPTIONS: {
   icon: LucideIcon;
 }[] = [
   {
-    label: "Left",
+    get label() {
+      return i18nInstance.t("editor_ui.image.align_left");
+    },
     value: "left",
     icon: AlignLeft,
   },
   {
-    label: "Center",
+    get label() {
+      return i18nInstance.t("editor_ui.image.align_center");
+    },
     value: "center",
     icon: AlignCenter,
   },
   {
-    label: "Right",
+    get label() {
+      return i18nInstance.t("editor_ui.image.align_right");
+    },
     value: "right",
     icon: AlignRight,
   },

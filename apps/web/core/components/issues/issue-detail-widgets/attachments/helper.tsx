@@ -52,11 +52,11 @@ export const useAttachmentOperations = (
           loading: t("ui.uploading_attachment"),
           success: {
             title: t("ui.attachment_uploaded"),
-            message: () => "The attachment has been successfully uploaded",
+            message: () => t("ui.attachment_upload_success"),
           },
           error: {
             title: t("ui.attachment_not_uploaded"),
-            message: () => "The attachment could not be uploaded",
+            message: () => t("ui.attachment_upload_failed"),
           },
         });
 

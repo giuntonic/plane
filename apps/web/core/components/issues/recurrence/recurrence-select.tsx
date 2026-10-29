@@ -125,7 +125,9 @@ export const IssueRecurrenceSelect = observer(function IssueRecurrenceSelect(pro
         {recurrence && <Repeat className="size-3.5 flex-shrink-0 text-accent-primary" />}
         <span className="truncate">{summarize(recurrence)}</span>
       </Popover.Button>
+      {/* data-prevent-outside-click: o painel abre num portal, fora do peek, e sem isso o clique nele fechava o peek */}
       <Popover.Panel
+        data-prevent-outside-click="true"
         side="bottom"
         align="start"
         positionerClassName="z-50"

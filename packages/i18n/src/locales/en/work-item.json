@@ -479,7 +479,7 @@
       "target": "Work item",
       "choose_target": "Choose a work item",
       "change_target": "Change",
-      "keeps": "Goes along: the name, the first assignee, the due date, whether it is done, and its sub-tasks.",
+      "keeps": "Goes along: the name, the first assignee, the due date, the state (when the target is in the same project), whether it is done, and its sub-tasks.",
       "loses": "The work item is removed as in a deletion: description, comments, attachments and links do not go along.",
       "has_sub_items": "This work item has sub-work items. Move or convert them first.",
       "submit": "Turn into sub-task",
@@ -538,5 +538,9 @@
     "stopped": "This work item no longer repeats",
     "error": "Could not save the repeat",
     "card_tooltip": "Recurring work item"
+  },
+  "work_item_properties_panel": {
+    "hide": "Hide properties",
+    "show": "Show properties"
   }
 }

@@ -64,11 +64,11 @@ export const ThemeSwitcher = observer(function ThemeSwitcher(props: {
           loading: t("ui.updating_theme"),
           success: {
             title: t("ui.theme_updated"),
-            message: () => "Reloading to apply changes...",
+            message: () => t("ui.reloading_to_apply_changes"),
           },
           error: {
             title: t("toast.error"),
-            message: () => "Failed to update theme. Please try again.",
+            message: () => t("ui.theme_update_failed"),
           },
         });
         // Wait for the promise to resolve, then reload after showing toast
@@ -78,7 +78,7 @@ export const ThemeSwitcher = observer(function ThemeSwitcher(props: {
         console.error("Error updating theme:", error);
       }
     },
-    [setTheme, updateUserTheme, userProfile]
+    [setTheme, updateUserTheme, userProfile, t]
   );
 
   if (!userProfile) return null;

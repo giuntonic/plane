@@ -6,12 +6,13 @@
 
 import { useMemo, useCallback } from "react";
 import { Tabs } from "@base-ui-components/react";
+import { useTranslation } from "@plane/i18n";
 import { Popover } from "../popover";
 import { cn } from "../utils/classname";
 import { convertPlacementToSideAndAlign } from "../utils/placement";
 import { EmojiRoot } from "./emoji/emoji";
 import type { TCustomEmojiPicker } from "./helper";
-import { emojiToString, EmojiIconPickerTypes } from "./helper";
+import { emojiToString, EmojiIconPickerTypes, getEmojiLocale } from "./helper";
 import { IconRoot } from "./icon/icon-root";
 
 export function EmojiPicker(props: TCustomEmojiPicker) {
@@ -28,11 +29,15 @@ export function EmojiPicker(props: TCustomEmojiPicker) {
     onChange,
     placement = "bottom-start",
     searchDisabled = false,
-    searchPlaceholder = "Search",
+    searchPlaceholder: searchPlaceholderProp,
     iconType = "lucide",
     side = "bottom",
     align = "start",
   } = props;
+  const { t, currentLocale } = useTranslation();
+  const searchPlaceholder = searchPlaceholderProp ?? t("search");
+  // Pespo: os dados do frimousse (nomes das categorias e busca) no idioma da pessoa.
+  const emojiLocale = getEmojiLocale(currentLocale);
 
   // side and align calculations
   const { finalSide, finalAlign } = useMemo(() => {
@@ -70,18 +75,19 @@ export function EmojiPicker(props: TCustomEmojiPicker) {
       [
         {
           key: "emoji",
-          label: "Emoji",
+          label: t("ui.emoji"),
           content: (
             <EmojiRoot
               onChange={handleEmojiChange}
               searchPlaceholder={searchPlaceholder}
               searchDisabled={searchDisabled}
+              locale={emojiLocale}
             />
           ),
         },
         {
           key: "icon",
-          label: "Icon",
+          label: t("ui.jsx_icon"),
           content: (
             <IconRoot
               defaultColor={defaultIconColor}
@@ -96,7 +102,7 @@ export function EmojiPicker(props: TCustomEmojiPicker) {
         label: tab.label,
         content: tab.content,
       })),
-    [defaultIconColor, searchDisabled, searchPlaceholder, iconType, handleEmojiChange, handleIconChange]
+    [defaultIconColor, searchDisabled, searchPlaceholder, iconType, handleEmojiChange, handleIconChange, t, emojiLocale]
   );
 
   return (

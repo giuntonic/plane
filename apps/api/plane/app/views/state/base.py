@@ -18,7 +18,7 @@ from rest_framework import status
 from .. import BaseViewSet, BaseAPIView
 from plane.app.serializers import StateSerializer
 from plane.app.permissions import ROLE, allow_permission
-from plane.db.models import State, Issue
+from plane.db.models import State, Issue, IssueChecklistItem
 from plane.utils.cache import invalidate_cache
 
 
@@ -134,6 +134,8 @@ class StateViewSet(BaseViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # Pespo: subtarefas (linhas do checklist) nesse estado ficam sem estado.
+        IssueChecklistItem.objects.filter(state_id=pk).update(state=None)
         state.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

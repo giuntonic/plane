@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable unicorn/prefer-array-find -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
+import { i18nInstance } from "@plane/i18n";
 import type { Editor } from "@tiptap/react";
 
 import { CheckIcon, ChevronDownIcon } from "@plane/propel/icons";
@@ -56,7 +59,7 @@ export function BubbleMenuNodeSelector(props: Props) {
   ] as EditorMenuItem<TEditorCommands>[];
 
   const activeItem = items.filter((item) => item.isActive()).pop() ?? {
-    name: "Multiple",
+    name: i18nInstance.t("editor_ui.menu.multiple"),
   };
 
   return (

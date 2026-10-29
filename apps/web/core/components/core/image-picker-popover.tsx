@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/click-events-have-key-events, jsx_a11y/img-redundant-alt, jsx_a11y/no-static-element-interactions, no-shadow -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { useTranslation } from "@plane/i18n";
 import React, { useState, useRef, useCallback, useMemo } from "react";
 import { observer } from "mobx-react";
@@ -89,7 +91,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
         isEnabled: true,
       },
     ],
-    [hasUnsplashConfigured]
+    [hasUnsplashConfigured, t]
   );
 
   const enabledTabs = useMemo(() => tabOptions.filter((tab) => tab.isEnabled), [tabOptions]);
@@ -341,7 +343,7 @@ function ImagePickerPopoverComponent<TFieldValues extends FieldValues = FieldVal
                     {fileRejections.length > 0 && (
                       <p className="text-13 text-danger-primary">
                         {fileRejections[0].errors[0].code === "file-too-large"
-                          ? "The image size cannot exceed 5 MB."
+                          ? t("ui.image_size_limit_5mb")
                           : t("ui.please_upload_a_file_in_a_valid")}
                       </p>
                     )}

@@ -117,22 +117,39 @@ const LabelPill = observer(function LabelPill({ labelId, workspaceSlug }: { labe
   );
 });
 
+// Pespo: getters, para o texto sair no idioma escolhido na hora de mostrar.
 const inboxActivityMessage = {
   declined: {
-    showIssue: "declined work item",
-    noIssue: "declined this work item from intake.",
+    get showIssue() {
+      return i18nInstance.t("ui.intake_activity.declined_issue");
+    },
+    get noIssue() {
+      return i18nInstance.t("ui.intake_activity.declined");
+    },
   },
   snoozed: {
-    showIssue: "snoozed work item",
-    noIssue: "snoozed this work item.",
+    get showIssue() {
+      return i18nInstance.t("ui.intake_activity.snoozed_issue");
+    },
+    get noIssue() {
+      return i18nInstance.t("ui.intake_activity.snoozed");
+    },
   },
   accepted: {
-    showIssue: "accepted work item",
-    noIssue: "accepted this work item from intake.",
+    get showIssue() {
+      return i18nInstance.t("ui.intake_activity.accepted_issue");
+    },
+    get noIssue() {
+      return i18nInstance.t("ui.intake_activity.accepted");
+    },
   },
   markedDuplicate: {
-    showIssue: "declined work item",
-    noIssue: "declined this work item from intake by marking a duplicate work item.",
+    get showIssue() {
+      return i18nInstance.t("ui.intake_activity.declined_issue");
+    },
+    get noIssue() {
+      return i18nInstance.t("ui.intake_activity.declined_duplicate");
+    },
   },
 };
 
@@ -147,7 +164,7 @@ const getInboxUserActivityMessage = (activity: IIssueActivity, showIssue: boolea
     case "2":
       return showIssue ? inboxActivityMessage.markedDuplicate.showIssue : inboxActivityMessage.markedDuplicate.noIssue;
     default:
-      return "updated intake work item status.";
+      return i18nInstance.t("ui.intake_activity.updated_status");
   }
 };
 
@@ -430,7 +447,8 @@ const activityDetails: {
         return (
           <>
             <span className="flex-shrink-0">
-              {i18nInstance.t("ui.jsx_added")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+              {i18nInstance.t("ui.jsx_added")}{" "}
+              {showIssue ? <IssueLink activity={activity} /> : i18nInstance.t("ui.this_work_item")}{" "}
               <span className="whitespace-nowrap">{i18nInstance.t("ui.jsx_to_the_cycle")}</span>{" "}
             </span>
             <a
@@ -480,7 +498,8 @@ const activityDetails: {
       if (activity.verb === "created")
         return (
           <>
-            {i18nInstance.t("ui.jsx_added")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_added")}{" "}
+            {showIssue ? <IssueLink activity={activity} /> : i18nInstance.t("ui.this_work_item")}{" "}
             {i18nInstance.t("ui.jsx_to_the_module")}{" "}
             <a
               href={`/${workspaceSlug}/projects/${activity.project}/modules/${activity.new_identifier}`}
@@ -591,7 +610,8 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            {i18nInstance.t("ui.jsx_marked_that")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_marked_that")}{" "}
+            {showIssue ? <IssueLink activity={activity} /> : i18nInstance.t("ui.this_work_item")}{" "}
             {i18nInstance.t("ui.jsx_relates_to")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>.
           </>
@@ -611,7 +631,8 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            {i18nInstance.t("ui.jsx_marked")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_marked")}{" "}
+            {showIssue ? <IssueLink activity={activity} /> : i18nInstance.t("ui.this_work_item")}{" "}
             {i18nInstance.t("ui.jsx_is_blocking_work_item")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>.
           </>
@@ -631,7 +652,8 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            {i18nInstance.t("ui.jsx_marked")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_marked")}{" "}
+            {showIssue ? <IssueLink activity={activity} /> : i18nInstance.t("ui.this_work_item")}{" "}
             {i18nInstance.t("ui.jsx_is_being_blocked_by")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>.
           </>
@@ -639,7 +661,8 @@ const activityDetails: {
       else
         return (
           <>
-            {i18nInstance.t("ui.jsx_removed")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_removed")}{" "}
+            {showIssue ? <IssueLink activity={activity} /> : i18nInstance.t("ui.this_work_item")}{" "}
             {i18nInstance.t("ui.jsx_being_blocked_by_work_item")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.old_value}</span>.
           </>
@@ -652,7 +675,8 @@ const activityDetails: {
       if (activity.old_value === "")
         return (
           <>
-            {i18nInstance.t("ui.jsx_marked")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_marked")}{" "}
+            {showIssue ? <IssueLink activity={activity} /> : i18nInstance.t("ui.this_work_item")}{" "}
             {i18nInstance.t("ui.jsx_as_duplicate_of")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.new_value}</span>.
           </>
@@ -660,7 +684,8 @@ const activityDetails: {
       else
         return (
           <>
-            {i18nInstance.t("ui.jsx_removed")} {showIssue ? <IssueLink activity={activity} /> : "this work item"}{" "}
+            {i18nInstance.t("ui.jsx_removed")}{" "}
+            {showIssue ? <IssueLink activity={activity} /> : i18nInstance.t("ui.this_work_item")}{" "}
             {i18nInstance.t("ui.jsx_as_a_duplicate_of")}{" "}
             <span className="font-medium whitespace-nowrap text-primary">{activity.old_value}</span>.
           </>
@@ -756,7 +781,7 @@ const activityDetails: {
             <IssueLink activity={activity} />
           </>
         )}
-        {activity.verb === "2" && ` from intake by marking a duplicate work item.`}
+        {activity.verb === "2" && ` ${i18nInstance.t("ui.intake_activity.by_marking_duplicate")}`}
       </>
     ),
     icon: <IntakeIcon className="size-3 text-secondary" aria-hidden="true" />,

@@ -30,12 +30,12 @@ export const FilterCreatedDate = observer(function FilterCreatedDate(props: Prop
   const appliedFiltersCount = appliedFilters?.length ?? 0;
 
   const filteredOptions = DATE_BEFORE_FILTER_OPTIONS.filter((d) =>
-    d.name.toLowerCase().includes(searchQuery.toLowerCase())
+    t(d.i18n_name).toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const isCustomDateSelected = () => {
     const isValidDateSelected = appliedFilters?.filter((f) => isInDateFormat(f.split(";")[0])) || [];
-    return isValidDateSelected.length > 0 ? true : false;
+    return isValidDateSelected.length > 0;
   };
   const handleCustomDate = () => {
     if (isCustomDateSelected()) {
@@ -55,7 +55,7 @@ export const FilterCreatedDate = observer(function FilterCreatedDate(props: Prop
         />
       )}
       <FilterHeader
-        title={`Created date${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("ui.created_date")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -66,9 +66,9 @@ export const FilterCreatedDate = observer(function FilterCreatedDate(props: Prop
               {filteredOptions.map((option) => (
                 <FilterOption
                   key={option.value}
-                  isChecked={appliedFilters?.includes(option.value) ? true : false}
+                  isChecked={!!appliedFilters?.includes(option.value)}
                   onClick={() => handleUpdate(option.value)}
-                  title={option.name}
+                  title={t(option.i18n_name)}
                   multiple
                 />
               ))}

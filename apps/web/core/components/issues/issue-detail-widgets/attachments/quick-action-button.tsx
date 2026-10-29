@@ -82,11 +82,11 @@ export const IssueAttachmentActionButton = observer(function IssueAttachmentActi
         message:
           totalAttachedFiles > 1
             ? t("ui.only_one_file_can_be_uploaded_at")
-            : `File must be of ${maxFileSize / 1024 / 1024}MB or less in size.`,
+            : t("ui.file_size_limit", { size: maxFileSize / 1024 / 1024 }),
       });
       return;
     },
-    [attachmentOperations, maxFileSize, workspaceSlug, handleFetchPropertyActivities, setLastWidgetAction]
+    [attachmentOperations, maxFileSize, workspaceSlug, handleFetchPropertyActivities, setLastWidgetAction, t]
   );
 
   const { getRootProps, getInputProps } = useDropzone({

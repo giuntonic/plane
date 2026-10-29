@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { Repeat } from "lucide-react";
+import { ChevronRight, Repeat } from "lucide-react";
 import { observer } from "mobx-react";
 // i18n
 import { useTranslation } from "@plane/i18n";
@@ -40,6 +40,7 @@ import { useProjectState } from "@/hooks/store/use-project-state";
 import { IssueParentSelectRoot } from "@/components/issues/parent-select-root";
 import { IssueRecurrenceSelect } from "@/components/issues/recurrence";
 import type { TIssueOperations } from "../issue-detail";
+import { workItemPropertiesPanelStore } from "../properties-panel";
 import { IssueCycleSelect } from "../issue-detail/cycle-select";
 import { IssueLabel } from "../issue-detail/label";
 import { IssueModuleSelect } from "../issue-detail/module-select";
@@ -50,10 +51,12 @@ interface IPeekOverviewProperties {
   issueId: string;
   disabled: boolean;
   issueOperations: TIssueOperations;
+  /** Pespo: no meio do conteúdo (painel lateral e modal) a seção recolhe; na coluna da tela cheia, não. */
+  collapsible?: boolean;
 }
 
 export const PeekOverviewProperties = observer(function PeekOverviewProperties(props: IPeekOverviewProperties) {
-  const { workspaceSlug, projectId, issueId, issueOperations, disabled } = props;
+  const { workspaceSlug, projectId, issueId, issueOperations, disabled, collapsible = false } = props;
   const { t } = useTranslation();
   // store hooks
   const { getProjectById } = useProject();
@@ -76,10 +79,30 @@ export const PeekOverviewProperties = observer(function PeekOverviewProperties(p
   const maxDate = getDate(issue.target_date);
   maxDate?.setDate(maxDate.getDate());
 
+  const isCollapsed = collapsible && workItemPropertiesPanelStore.isCollapsed;
+
   return (
     <div>
-      <h6 className="text-body-xs-medium">{t("common.properties")}</h6>
-      <div className={`mt-3 w-full space-y-3 ${disabled ? "opacity-60" : ""}`}>
+      {/* Pespo: a seção recolhe pela seta (ou pelo título); o navegador lembra a escolha */}
+      <h6 className="text-body-xs-medium">
+        {collapsible ? (
+          <button
+            type="button"
+            onClick={workItemPropertiesPanelStore.toggleCollapsed}
+            aria-expanded={!isCollapsed}
+            className="-ml-1 flex items-center gap-1 rounded-sm px-1 py-0.5 hover:bg-layer-transparent-hover"
+          >
+            <ChevronRight
+              className={cn("size-3.5 text-tertiary transition-transform", { "rotate-90": !isCollapsed })}
+              aria-hidden="true"
+            />
+            {t("common.properties")}
+          </button>
+        ) : (
+          t("common.properties")
+        )}
+      </h6>
+      <div className={cn("mt-3 w-full space-y-3", { "opacity-60": disabled, hidden: isCollapsed })}>
         <SidebarPropertyListItem icon={StatePropertyIcon} label={t("common.state")}>
           <StateDropdown
             value={issue?.state_id}

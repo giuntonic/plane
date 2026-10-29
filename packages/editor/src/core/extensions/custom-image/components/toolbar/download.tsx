@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { Download } from "lucide-react";
 // plane imports
 import { Tooltip } from "@plane/propel/tooltip";
@@ -16,12 +17,12 @@ export function ImageDownloadAction(props: Props) {
   const { src } = props;
 
   return (
-    <Tooltip tooltipContent="Download">
+    <Tooltip tooltipContent={i18nInstance.t("editor_ui.image.download")}>
       <button
         type="button"
         onClick={() => window.open(src, "_blank")}
         className="grid h-full flex-shrink-0 place-items-center text-white/60 transition-colors hover:text-white"
-        aria-label="Download image"
+        aria-label={i18nInstance.t("editor_ui.image.download_image")}
       >
         <Download className="size-3" />
       </button>

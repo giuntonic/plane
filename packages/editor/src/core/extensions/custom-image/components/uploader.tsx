@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
+import { i18nInstance } from "@plane/i18n";
 import { ImageIcon, RotateCcw } from "lucide-react";
 import type { ChangeEvent } from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
@@ -184,18 +187,18 @@ export function CustomImageUploader(props: CustomImageUploaderProps) {
   const getDisplayMessage = useCallback(() => {
     const isUploading = isImageBeingUploaded;
     if (isErrorState) {
-      return "Error loading image";
+      return i18nInstance.t("editor_ui.image.error_loading");
     }
 
     if (isUploading) {
-      return "Uploading...";
+      return i18nInstance.t("editor_ui.image.uploading");
     }
 
     if (draggedInside && editor.isEditable) {
-      return "Drop image here";
+      return i18nInstance.t("editor_ui.image.drop_here");
     }
 
-    return "Add an image";
+    return i18nInstance.t("editor_ui.image.add");
   }, [draggedInside, editor.isEditable, isErrorState, isImageBeingUploaded]);
 
   const handleRetryClick = useCallback(
@@ -247,7 +250,7 @@ export function CustomImageUploader(props: CustomImageUploaderProps) {
               "hover:bg-danger-subtle-hover": selected,
             }
           )}
-          title="Retry duplication"
+          title={i18nInstance.t("editor_ui.image.retry_duplication")}
         >
           <RotateCcw className="size-3" />
           <span className="text-11">Retry</span>

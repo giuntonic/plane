@@ -148,7 +148,7 @@ export const ProjectNavigation = observer(function ProjectNavigation(props: TPro
         href: `/${slug}/projects/${id}/dashboard`,
         icon: Shapes,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
-        shouldRender: true,
+        shouldRender: project?.pieces_view ?? false,
         sortOrder: 7,
       },
       {

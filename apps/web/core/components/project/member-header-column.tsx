@@ -15,6 +15,7 @@ import { useTranslation } from "@plane/i18n";
 // types
 import { CustomMenu } from "@plane/ui";
 import type { IMemberFilters } from "@/store/member/utils";
+import { translateSortOrderTitle } from "@/components/common/sort-order-title";
 
 interface Props {
   property: keyof IProjectMemberDisplayProperties;
@@ -79,9 +80,9 @@ export const MemberHeaderColumn = observer(function MemberHeaderColumn(props: Pr
             >
               <div className="flex items-center gap-2">
                 <ArrowDownWideNarrow className="h-3 w-3 stroke-[1.5]" />
-                <span>{propertyDetails.ascendingOrderTitle}</span>
+                <span>{translateSortOrderTitle(t, propertyDetails.ascendingOrderTitle)}</span>
                 <MoveRight className="h-3 w-3" />
-                <span>{propertyDetails.descendingOrderTitle}</span>
+                <span>{translateSortOrderTitle(t, propertyDetails.descendingOrderTitle)}</span>
               </div>
               {activeSortingProperty === propertyDetails.ascendingOrderKey && <CheckIcon className="h-3 w-3" />}
             </div>
@@ -97,9 +98,9 @@ export const MemberHeaderColumn = observer(function MemberHeaderColumn(props: Pr
             >
               <div className="flex items-center gap-2">
                 <ArrowUpNarrowWide className="h-3 w-3 stroke-[1.5]" />
-                <span>{propertyDetails.descendingOrderTitle}</span>
+                <span>{translateSortOrderTitle(t, propertyDetails.descendingOrderTitle)}</span>
                 <MoveRight className="h-3 w-3" />
-                <span>{propertyDetails.ascendingOrderTitle}</span>
+                <span>{translateSortOrderTitle(t, propertyDetails.ascendingOrderTitle)}</span>
               </div>
               {activeSortingProperty === propertyDetails.descendingOrderKey && <CheckIcon className="h-3 w-3" />}
             </div>

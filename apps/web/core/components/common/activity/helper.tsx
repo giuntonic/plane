@@ -88,8 +88,8 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
   const workspaceDetail = store.workspaceRoot.getWorkspaceById(activity.workspace);
 
   const getBooleanActionText = (value: string | undefined) => {
-    if (value === "true") return "enabled";
-    if (value === "false") return "disabled";
+    if (value === "true") return i18nInstance.t("ui.activity.enabled");
+    if (value === "false") return i18nInstance.t("ui.activity.disabled");
     return verb;
   };
 
@@ -99,13 +99,16 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
         message: (
           <>
             {i18nInstance.t("ui.jsx_set_the_priority_to")}{" "}
-            <span className="font-medium text-primary">{newValue || "none"}</span>
+            <span className="font-medium text-primary">{newValue || i18nInstance.t("ui.activity.none")}</span>
           </>
         ),
       };
     case "archived_at":
       return {
-        message: newValue === "restore" ? "restored the project" : "archived the project",
+        message:
+          newValue === "restore"
+            ? i18nInstance.t("ui.activity.project_restored")
+            : i18nInstance.t("ui.activity.project_archived"),
         customUserName: newValue === "archive" ? "Pespo Hub" : undefined,
       };
     case "name":
@@ -119,7 +122,9 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
       };
     case "description":
       return {
-        message: newValue ? "updated the project description" : "removed the project description",
+        message: newValue
+          ? i18nInstance.t("ui.activity.project_description_updated")
+          : i18nInstance.t("ui.activity.project_description_removed"),
       };
     case "start_date":
       return {
@@ -131,7 +136,7 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
                 <span className="font-medium text-primary">{newValue}</span>
               </>
             ) : (
-              "removed the start date"
+              i18nInstance.t("ui.activity.start_date_removed")
             )}
           </>
         ),
@@ -146,7 +151,7 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
                 <span className="font-medium text-primary">{newValue}</span>
               </>
             ) : (
-              "removed the target date"
+              i18nInstance.t("ui.activity.target_date_removed")
             )}
           </>
         ),
@@ -156,7 +161,7 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
         message: (
           <>
             {i18nInstance.t("ui.jsx_set_the_state_to")}{" "}
-            <span className="font-medium text-primary">{newValue || "none"}</span>
+            <span className="font-medium text-primary">{newValue || i18nInstance.t("ui.activity.none")}</span>
           </>
         ),
       };
@@ -265,7 +270,7 @@ export const messages = (activity: TProjectActivity): { message: string | ReactN
         message: (
           <>
             {i18nInstance.t("ui.jsx_updated_project_identifier_to")}{" "}
-            <span className="font-medium text-primary">{newValue || "none"}</span>
+            <span className="font-medium text-primary">{newValue || i18nInstance.t("ui.activity.none")}</span>
           </>
         ),
       };

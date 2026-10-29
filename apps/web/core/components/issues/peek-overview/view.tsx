@@ -26,6 +26,9 @@ import { IssuePeekOverviewHeader } from "./header";
 import { PeekOverviewIssueDetails } from "./issue-detail";
 import { IssuePeekOverviewLoader } from "./loader";
 import { PeekOverviewProperties } from "./properties";
+import { workItemPropertiesPanelStore } from "../properties-panel";
+import { convertToChecklistModalStore } from "../convert-to-checklist/store";
+import { saveTemplateModalStore } from "@/components/entity-templates/save-modal-store";
 
 interface IIssueView {
   workspaceSlug: string;
@@ -89,8 +92,17 @@ export const IssueView = observer(function IssueView(props: IIssueView) {
     issuePeekOverviewRef,
     () => {
       const isAnyDropbarOpen = editorRef.current?.isAnyDropbarOpen();
+      // Pespo: os modais globais "Transformar em subtarefa" e "Salvar como modelo" (e o seletor de item que abre
+      // de dentro do primeiro) ficam fora do peek; com eles abertos o peek não fecha.
+      const isAnyPespoModalOpen = !!convertToChecklistModalStore.request || !!saveTemplateModalStore.request;
       if (!embedIssue) {
-        if (!isAnyModalOpen && !isAnyEpicModalOpen && !isAnyLocalModalOpen && !isAnyDropbarOpen) {
+        if (
+          !isAnyModalOpen &&
+          !isAnyEpicModalOpen &&
+          !isAnyLocalModalOpen &&
+          !isAnyDropbarOpen &&
+          !isAnyPespoModalOpen
+        ) {
           removeRoutePeekId();
         }
       }
@@ -203,6 +215,7 @@ export const IssueView = observer(function IssueView(props: IIssueView) {
                       issueId={issueId}
                       issueOperations={issueOperations}
                       disabled={disabled || is_archived}
+                      collapsible
                     />
 
                     <IssueActivity
@@ -246,19 +259,22 @@ export const IssueView = observer(function IssueView(props: IIssueView) {
                         />
                       </div>
                     </div>
-                    <div
-                      className={`vertical-scrollbar scrollbar-sm h-full !w-[400px] flex-shrink-0 overflow-hidden border-l border-subtle p-4 py-5 ${
-                        is_archived ? "pointer-events-none" : ""
-                      }`}
-                    >
-                      <PeekOverviewProperties
-                        workspaceSlug={workspaceSlug}
-                        projectId={projectId}
-                        issueId={issueId}
-                        issueOperations={issueOperations}
-                        disabled={disabled || is_archived}
-                      />
-                    </div>
+                    {/* Pespo: a coluna de propriedades pode ser escondida (botão no cabeçalho do painel) */}
+                    {!workItemPropertiesPanelStore.isHidden && (
+                      <div
+                        className={`vertical-scrollbar scrollbar-sm h-full !w-[400px] flex-shrink-0 overflow-hidden border-l border-subtle p-4 py-5 ${
+                          is_archived ? "pointer-events-none" : ""
+                        }`}
+                      >
+                        <PeekOverviewProperties
+                          workspaceSlug={workspaceSlug}
+                          projectId={projectId}
+                          issueId={issueId}
+                          issueOperations={issueOperations}
+                          disabled={disabled || is_archived}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

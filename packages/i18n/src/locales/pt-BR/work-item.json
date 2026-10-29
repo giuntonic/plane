@@ -19,7 +19,7 @@
       "assignee": "Adicionar responsáveis",
       "start_date": "Adicionar data de início",
       "due_date": "Adicionar data de vencimento",
-      "parent": "Adicionar item de trabalho pai",
+      "parent": "Adicionar item pai",
       "sub_issue": "Adicionar sub-item de trabalho",
       "dependency": "Adicionar dependência",
       "relation": "Adicionar relação",
@@ -479,7 +479,7 @@
       "target": "Item de destino",
       "choose_target": "Escolher item",
       "change_target": "Trocar",
-      "keeps": "Vão junto: o nome, o primeiro responsável, o prazo, se está concluído e as subtarefas dele.",
+      "keeps": "Vão junto: o nome, o primeiro responsável, o prazo, o estado (se o destino for do mesmo projeto), se está concluído e as subtarefas dele.",
       "loses": "O item sai como numa exclusão: descrição, comentários, anexos e links não vão junto.",
       "has_sub_items": "Este item tem sub-itens. Mova ou converta os sub-itens antes.",
       "submit": "Transformar em subtarefa",
@@ -538,5 +538,9 @@
     "stopped": "O item não se repete mais",
     "error": "Não foi possível salvar a repetição",
     "card_tooltip": "Item recorrente"
+  },
+  "work_item_properties_panel": {
+    "hide": "Esconder propriedades",
+    "show": "Mostrar propriedades"
   }
 }

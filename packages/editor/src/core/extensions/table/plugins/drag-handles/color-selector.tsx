@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import { Disclosure } from "@headlessui/react";
 import type { Editor } from "@tiptap/core";
 import { Ban, Palette } from "lucide-react";
@@ -67,7 +68,7 @@ export function TableDragHandleDropdownColorSelector(props: Props) {
       </Disclosure.Button>
       <Disclosure.Panel className="mb-1.5 space-y-2 p-1">
         {/* <div className="space-y-1.5">
-          <p className="text-11 text-tertiary font-semibold">Text colors</p>
+          <p className="text-11 text-tertiary font-semibold">{i18nInstance.t("editor_ui.colors.text_colors")}</p>
           <div className="flex items-center flex-wrap gap-2">
             {COLORS_LIST.map((color) => (
               <button
@@ -90,7 +91,7 @@ export function TableDragHandleDropdownColorSelector(props: Props) {
           </div>
         </div> */}
         <div className="space-y-1">
-          <p className="text-11 font-semibold text-tertiary">Background colors</p>
+          <p className="text-11 font-semibold text-tertiary">{i18nInstance.t("editor_ui.colors.background_colors")}</p>
           <div className="flex flex-wrap items-center gap-2">
             {COLORS_LIST.map((color) => (
               <button

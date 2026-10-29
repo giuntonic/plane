@@ -59,7 +59,7 @@ export function SelectMonthModal({ type, initialValues, isOpen, handleClose, han
                     control={control}
                     name="close_in"
                     rules={{
-                      required: "Select a month between 1 and 12.",
+                      required: t("ui.select_month_between_1_and_12"),
                       min: 1,
                       max: 12,
                     }}
@@ -93,7 +93,7 @@ export function SelectMonthModal({ type, initialValues, isOpen, handleClose, han
                     control={control}
                     name="archive_in"
                     rules={{
-                      required: "Select a month between 1 and 12.",
+                      required: t("ui.select_month_between_1_and_12"),
                       min: 1,
                       max: 12,
                     }}

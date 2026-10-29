@@ -263,41 +263,45 @@ export const ChecklistTreeItem = observer(function ChecklistTreeItem(props: Prop
             { "text-tertiary line-through": item.is_completed }
           )}
         />
-        {/* progress of the sublist */}
-        {hasChildren && (
-          <span className="mt-1 flex-shrink-0 text-caption-sm-regular text-tertiary">
-            {countCompletedChecklistItems(children)}/{children.length}
-          </span>
-        )}
-        {renderItemExtras?.(item)}
-        {/* add to sublist / delete */}
-        {!disabled && (
-          <div className="flex flex-shrink-0 items-center opacity-0 group-hover/checklist-row:opacity-100 focus-within:opacity-100">
-            <Tooltip tooltipContent={labels.addChild}>
-              <button
-                type="button"
-                tabIndex={-1}
-                className={actionClassName}
-                onClick={async () => {
-                  toggleCollapsed(item.id, false);
-                  await operations.createAtEnd(item.id);
-                }}
-              >
-                <Plus className="size-3.5" />
-              </button>
-            </Tooltip>
-            <Tooltip tooltipContent={labels.delete}>
-              <button
-                type="button"
-                tabIndex={-1}
-                className={cn(actionClassName, "hover:text-danger-primary")}
-                onClick={() => void operations.remove(item.id)}
-              >
-                <Trash2 className="size-3.5" />
-              </button>
-            </Tooltip>
-          </div>
-        )}
+        {/* Everything right of the text sits in one box as tall as the first line of text, so the controls
+            (each with its own height) line up with it and with each other. */}
+        <div className="flex h-6 flex-shrink-0 items-center gap-0.5">
+          {/* progress of the sublist */}
+          {hasChildren && (
+            <span className="flex-shrink-0 text-caption-sm-regular text-tertiary">
+              {countCompletedChecklistItems(children)}/{children.length}
+            </span>
+          )}
+          {renderItemExtras?.(item)}
+          {/* add to sublist / delete */}
+          {!disabled && (
+            <div className="flex flex-shrink-0 items-center opacity-0 group-hover/checklist-row:opacity-100 focus-within:opacity-100">
+              <Tooltip tooltipContent={labels.addChild}>
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className={actionClassName}
+                  onClick={async () => {
+                    toggleCollapsed(item.id, false);
+                    await operations.createAtEnd(item.id);
+                  }}
+                >
+                  <Plus className="size-3.5" />
+                </button>
+              </Tooltip>
+              <Tooltip tooltipContent={labels.delete}>
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className={cn(actionClassName, "hover:text-danger-primary")}
+                  onClick={() => void operations.remove(item.id)}
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              </Tooltip>
+            </div>
+          )}
+        </div>
       </div>
       <DropIndicator isVisible={closestEdge === "bottom"} />
       {/* sublist */}

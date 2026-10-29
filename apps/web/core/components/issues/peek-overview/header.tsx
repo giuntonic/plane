@@ -28,6 +28,7 @@ import { IssueSubscription } from "../issue-detail/subscription";
 import { WorkItemDetailQuickActions } from "../issue-layouts/quick-action-dropdowns";
 import { NameDescriptionUpdateStatus } from "../issue-update-status";
 import { IconButton } from "@plane/propel/icon-button";
+import { WorkItemPropertiesPanelToggle } from "@/components/issues/properties-panel";
 
 export type TPeekModes = "side-peek" | "modal" | "full-screen";
 
@@ -119,6 +120,7 @@ export const IssuePeekOverviewHeader = observer(function IssuePeekOverviewHeader
   const handleCopyText = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
+    // oxlint-disable-next-line promise/always-return -- upstream: só mostra o aviso
     copyUrlToClipboard(workItemLink).then(() => {
       setToast({
         type: TOAST_TYPE.SUCCESS,
@@ -132,6 +134,7 @@ export const IssuePeekOverviewHeader = observer(function IssuePeekOverviewHeader
     try {
       const deleteIssue = issueDetails?.archived_at ? removeArchivedIssue : removeIssue;
 
+      // oxlint-disable-next-line promise/always-return -- upstream: só fecha o painel
       return deleteIssue(workspaceSlug, projectId, issueId).then(() => {
         setPeekIssue(undefined);
       });
@@ -202,6 +205,9 @@ export const IssuePeekOverviewHeader = observer(function IssuePeekOverviewHeader
       <div className="flex items-center gap-x-4">
         <NameDescriptionUpdateStatus isSubmitting={isSubmitting} />
         <div className="flex items-center gap-2">
+          {/* Pespo: na tela cheia as propriedades ficam numa coluna à parte, que pode ser escondida (no painel
+              lateral e no modal elas ficam no meio do conteúdo e recolhem pela seta do título) */}
+          {currentMode?.key === "full-screen" && <WorkItemPropertiesPanelToggle />}
           {currentUser && !isArchived && (
             <IssueSubscription workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
           )}
