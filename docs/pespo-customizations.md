@@ -250,7 +250,19 @@ Correções feitas depois do merge:
 
 ---
 
-## Versão 1.5.1: checklists que recolhem e ícones alinhados (2026-10-29)
+## Versão 1.5.1: propriedades que se escondem, checklists que recolhem e alinhamentos (2026-10-29)
+
+- **Esconder a coluna de propriedades:** botão no cabeçalho da página cheia do item (`browse/[workItem]/work-item-header.tsx`)
+  e do peek em modo modal ou tela cheia (`peek-overview/header.tsx`).
+  - A preferência é uma só, guardada no `localStorage` na chave `pespo-hub:work-item-properties-hidden`
+    (`components/issues/properties-panel/`).
+  - Na página cheia a coluna ganha `md:hidden` (`issue-detail/root.tsx`) e o conteúdo ocupa a largura toda.
+  - No celular nada muda: a barra continua controlada pelo `issueDetailSidebarCollapsed` do upstream, e o
+    botão nem aparece.
+- **Rótulos das propriedades:** a coluna de rótulos de `SidebarPropertyListItem` tinha 120 px fixos, e
+  "Data de vencimento" (e campos personalizados com nome longo) passava por cima do valor. Agora tem 152 px e,
+  se ainda não couber, o rótulo quebra em duas linhas. O placeholder do pai virou "Adicionar item pai", numa
+  linha só.
 
 - **Recolher cada checklist com nome:** seta (e clique no nome) no cabeçalho de
   `checklist/named-checklist.tsx`. O estado fica no `localStorage`, na chave
@@ -262,6 +274,8 @@ Correções feitas depois do merge:
   (`checklist-tree/item.tsx`, que vale também para o widget Tarefas da home). O ↗ ficou do tamanho
   dos outros botões (`checklist/extras.tsx`).
 - **Deploy:** rebuildar só o `web`. Não tem migration nem mudança no backend.
+- **Junto:** avisos de lint antigos do upstream anotados ou corrigidos nos arquivos tocados
+  (`issue-detail/root.tsx`, `peek-overview/header.tsx`, `issue-detail/parent-select.tsx`).
 
 ---
 

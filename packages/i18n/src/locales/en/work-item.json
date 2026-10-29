@@ -538,5 +538,9 @@
     "stopped": "This work item no longer repeats",
     "error": "Could not save the repeat",
     "card_tooltip": "Recurring work item"
+  },
+  "work_item_properties_panel": {
+    "hide": "Hide properties",
+    "show": "Show properties"
   }
 }

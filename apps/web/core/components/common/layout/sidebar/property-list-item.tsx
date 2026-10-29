@@ -20,9 +20,11 @@ export function SidebarPropertyListItem(props: TSidebarPropertyListItemProps) {
 
   return (
     <div className="flex items-start gap-2">
-      <div className="flex h-7.5 w-30 shrink-0 items-center gap-1.5 text-body-xs-regular text-tertiary">
+      {/* Pespo: rótulos em português ("Data de vencimento") passavam dos 120 px e cobriam o valor. A coluna ficou
+          mais larga e, se ainda não couber, o rótulo quebra em duas linhas em vez de invadir o campo. */}
+      <div className="flex min-h-7.5 w-38 shrink-0 items-center gap-1.5 text-body-xs-regular text-tertiary">
         <Icon className="size-4 shrink-0" />
-        <span>{label}</span>
+        <span className="min-w-0 leading-tight break-words">{label}</span>
         {appendElement}
       </div>
       <div className={cn("flex grow flex-wrap items-center gap-1", childrenClassName)}>{children}</div>

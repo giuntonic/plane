@@ -23,10 +23,14 @@ export const PESPO_RELEASES: TPespoRelease[] = [
   {
     version: "1.5.1",
     date: "2026-10-29",
-    summary: "Ajustes nas subtarefas: checklists que recolhem e ícones alinhados.",
-    features: ["Cada checklist com nome pode ser recolhida pela seta ao lado do nome; o navegador lembra a escolha."],
+    summary: "Propriedades que se escondem, checklists que recolhem e ajustes de alinhamento.",
+    features: [
+      "Na página cheia do item (e no painel em modo modal ou tela cheia), um botão no cabeçalho esconde ou mostra a coluna de propriedades; o navegador lembra a escolha.",
+      "Cada checklist com nome pode ser recolhida pela seta ao lado do nome; o navegador lembra a escolha.",
+    ],
     fixes: [
       "Os ícones no fim da linha da subtarefa (responsável, prazo, transformar em item, adicionar e excluir) ficavam desalinhados.",
+      '"Data de vencimento" e outros rótulos longos das propriedades cobriam o campo ao lado.',
     ],
   },
   {

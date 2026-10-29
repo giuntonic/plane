@@ -19,7 +19,7 @@
       "assignee": "Adicionar responsáveis",
       "start_date": "Adicionar data de início",
       "due_date": "Adicionar data de vencimento",
-      "parent": "Adicionar item de trabalho pai",
+      "parent": "Adicionar item pai",
       "sub_issue": "Adicionar sub-item de trabalho",
       "dependency": "Adicionar dependência",
       "relation": "Adicionar relação",
@@ -538,5 +538,9 @@
     "stopped": "O item não se repete mais",
     "error": "Não foi possível salvar a repetição",
     "card_tooltip": "Item recorrente"
+  },
+  "work_item_properties_panel": {
+    "hide": "Esconder propriedades",
+    "show": "Mostrar propriedades"
   }
 }
