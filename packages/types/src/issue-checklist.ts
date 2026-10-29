@@ -20,6 +20,8 @@ export type TIssueChecklistItem = {
   completed_at: string | null;
   assignee: string | null;
   due_date: string | null;
+  /** Optional state of the project's workflow; kept in step with is_completed by the server. */
+  state: string | null;
   sort_order: number;
   created_by: string | null;
   created_at: string;
@@ -27,7 +29,10 @@ export type TIssueChecklistItem = {
 };
 
 export type TIssueChecklistItemPayload = Partial<
-  Pick<TIssueChecklistItem, "parent" | "checklist" | "name" | "is_completed" | "assignee" | "due_date" | "sort_order">
+  Pick<
+    TIssueChecklistItem,
+    "parent" | "checklist" | "name" | "is_completed" | "assignee" | "due_date" | "state" | "sort_order"
+  >
 >;
 
 /** A named checklist of a work item (…/issues/<id>/checklists/). Its lines come from the lines endpoint. */

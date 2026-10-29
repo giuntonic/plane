@@ -479,7 +479,7 @@
       "target": "Item de destino",
       "choose_target": "Escolher item",
       "change_target": "Trocar",
-      "keeps": "Vão junto: o nome, o primeiro responsável, o prazo, se está concluído e as subtarefas dele.",
+      "keeps": "Vão junto: o nome, o primeiro responsável, o prazo, o estado (se o destino for do mesmo projeto), se está concluído e as subtarefas dele.",
       "loses": "O item sai como numa exclusão: descrição, comentários, anexos e links não vão junto.",
       "has_sub_items": "Este item tem sub-itens. Mova ou converta os sub-itens antes.",
       "submit": "Transformar em subtarefa",

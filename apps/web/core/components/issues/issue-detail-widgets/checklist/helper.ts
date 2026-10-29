@@ -46,7 +46,8 @@ export const useIssueChecklistOperations = (
     create: (payload) => issueChecklistService.create(workspaceSlug, projectId, issueId, payload),
     update: (id, payload) => issueChecklistService.update(workspaceSlug, projectId, issueId, id, payload),
     remove: (id) => issueChecklistService.remove(workspaceSlug, projectId, issueId, id),
-    serverFields: ["completed_at", "updated_at"],
+    // is_completed e state: o servidor acerta um pelo outro (ver extras.tsx).
+    serverFields: ["completed_at", "updated_at", "is_completed", "state"],
     errorMessage: t("issue_checklist.save_error"),
   });
 };

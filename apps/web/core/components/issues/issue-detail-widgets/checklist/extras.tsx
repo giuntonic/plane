@@ -19,8 +19,10 @@ import { cn, getDate, renderFormattedPayloadDate } from "@plane/utils";
 // components
 import { DateDropdown } from "@/components/dropdowns/date";
 import { MemberDropdown } from "@/components/dropdowns/member/dropdown";
+import { StateDropdown } from "@/components/dropdowns/state/dropdown";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
+import { useProjectState } from "@/hooks/store/use-project-state";
 // services
 import { issueChecklistService } from "@/services/issue-checklist.service";
 // local imports
@@ -104,15 +106,45 @@ const ConvertToWorkItemMenu = observer(function ConvertToWorkItemMenu(props: {
   );
 });
 
-/** Assignee and due date of a checklist line: always visible when set, on hover otherwise. */
+/** State, assignee and due date of a checklist line: always visible when set, on hover otherwise. */
 export const IssueChecklistItemExtras = observer(function IssueChecklistItemExtras(props: Props) {
   const { item, projectId, disabled, operations } = props;
   const { t } = useTranslation();
+  const { getStateById } = useProjectState();
   const dueDate = getDate(item.due_date);
   const isOverdue = !!dueDate && !item.is_completed && dueDate < new Date(new Date().toDateString());
 
+  // Pespo: o estado anda junto com o quadradinho (o servidor faz o mesmo): um estado de "concluído" marca a
+  // linha e qualquer outro desmarca. Escolher de novo o estado atual tira o estado da linha.
+  const changeState = (stateId: string) => {
+    if (stateId === item.state) return operations.update(item.id, { state: null });
+    const group = getStateById(stateId)?.group;
+    return operations.update(
+      item.id,
+      group ? { state: stateId, is_completed: group === "completed" } : { state: stateId }
+    );
+  };
+
   return (
     <>
+      <div
+        className={cn("flex flex-shrink-0 items-center", {
+          "opacity-0 group-hover/checklist-row:opacity-100 focus-within:opacity-100": !item.state,
+          hidden: disabled && !item.state,
+        })}
+      >
+        <StateDropdown
+          projectId={projectId}
+          value={item.state}
+          onChange={(stateId) => void changeState(stateId)}
+          disabled={disabled}
+          buttonVariant="transparent-without-text"
+          showDefaultState={false}
+          iconSize="size-3.5"
+          placement="bottom-end"
+          showTooltip
+        />
+      </div>
       <div
         className={cn("flex flex-shrink-0 items-center", {
           "opacity-0 group-hover/checklist-row:opacity-100 focus-within:opacity-100": !item.assignee,

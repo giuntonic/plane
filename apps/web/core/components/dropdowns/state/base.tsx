@@ -202,7 +202,9 @@ export const WorkItemStateDropdownBase = observer(function WorkItemStateDropdown
       as="div"
       ref={dropdownRef}
       className={cn("h-full", className)}
-      value={stateValue}
+      // Pespo: null (não undefined) quando não há estado, para o Combobox não alternar entre controlado e não
+      // controlado (a subtarefa pode ficar sem estado).
+      value={stateValue ?? null}
       onChange={dropdownOnChange}
       disabled={disabled}
       onKeyDown={handleKeyDown}

@@ -123,6 +123,15 @@ class TestCopyStructure:
         assert IssueChecklistItem.objects.filter(issue=source).count() == 3
         assert Issue.issue_objects.filter(parent=source).count() == 1
 
+    def test_copied_lines_start_without_state(self, session_client, workspace, project, states, source):
+        _line(source, "Com estado", state=states["doing"])
+        copy = _issue(project, states["todo"], "Cópia")
+        response = session_client.post(
+            _copy_url(workspace, project, copy), {"source_issue_id": str(source.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        assert IssueChecklistItem.objects.get(issue=copy, name="Com estado").state_id is None
+
     def test_copy_brings_named_checklists(self, session_client, workspace, project, states, source):
         approval = IssueChecklist.objects.create(issue=source, project=project, workspace=workspace, name="Aprovação")
         line = _line(source, "Cliente aprova", checklist=approval, is_completed=True)
@@ -225,6 +234,13 @@ class TestConvertChecklistItem:
         assert new_issue.parent_id is None
         assert new_issue.state_id == states["done"].id
 
+    def test_line_state_goes_to_the_new_item(self, session_client, workspace, project, states):
+        issue = _issue(project, states["todo"], "Peça")
+        line = _line(issue, "Em andamento", state=states["doing"])
+        response = session_client.post(_convert_url(workspace, project, issue, line), {}, format="json")
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        assert Issue.issue_objects.get(pk=response.data["id"]).state_id == states["doing"].id
+
     def test_line_of_another_work_item_is_not_found(self, session_client, workspace, project, states):
         issue = _issue(project, states["todo"], "A")
         other = _issue(project, states["todo"], "B")
@@ -268,6 +284,35 @@ class TestConvertToChecklist:
         # O item sai como numa exclusão normal (soft delete).
         assert not Issue.issue_objects.filter(pk=child.id).exists()
         assert Issue.all_objects.get(pk=child.id).deleted_at is not None
+
+    def test_state_goes_to_the_line_in_the_same_project(self, session_client, workspace, project, states):
+        target = _issue(project, states["todo"], "Destino")
+        issue = _issue(project, states["doing"], "Em produção")
+        sub = _line(issue, "Rascunho", state=states["done"], is_completed=True)
+        response = session_client.post(
+            _to_checklist_url(workspace, project, issue), {"target_issue_id": str(target.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        line = IssueChecklistItem.objects.get(pk=response.data["checklist_item_id"])
+        assert line.state_id == states["doing"].id and line.is_completed is False
+        sub.refresh_from_db()
+        assert sub.state_id == states["done"].id
+
+    def test_states_are_dropped_in_another_project(self, session_client, workspace, project, states, create_user):
+        other = Project.objects.create(name="Outro", identifier="OUT2", workspace=workspace, created_by=create_user)
+        ProjectMember.objects.create(project=other, member=create_user, role=20, is_active=True)
+        other_todo = State.objects.create(name="Todo", group="unstarted", project=other, workspace=workspace)
+        target = _issue(other, other_todo, "Destino em outro projeto")
+        issue = _issue(project, states["doing"], "Em produção")
+        sub = _line(issue, "Rascunho", state=states["doing"])
+        response = session_client.post(
+            _to_checklist_url(workspace, project, issue), {"target_issue_id": str(target.id)}, format="json"
+        )
+        assert response.status_code == status.HTTP_201_CREATED, response.data
+        line = IssueChecklistItem.objects.get(pk=response.data["checklist_item_id"])
+        assert line.state_id is None
+        sub.refresh_from_db()
+        assert sub.issue_id == target.id and sub.state_id is None
 
     def test_named_checklists_become_sublines_too(self, session_client, workspace, project, states):
         target = _issue(project, states["todo"], "Destino")

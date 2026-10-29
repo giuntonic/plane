@@ -99,14 +99,15 @@ class IssueChecklistItemConvertEndpoint(BaseAPIView):
     @allow_permission([ROLE.ADMIN, ROLE.MEMBER])
     def post(self, request, slug, project_id, issue_id, pk):
         issue = Issue.issue_objects.filter(workspace__slug=slug, project_id=project_id, pk=issue_id).first()
-        line = IssueChecklistItem.objects.filter(issue=issue, pk=pk).first() if issue else None
+        line = IssueChecklistItem.objects.filter(issue=issue, pk=pk).select_related("state").first() if issue else None
         if not line:
             return Response({"error": "Checklist item not found"}, status=status.HTTP_404_NOT_FOUND)
 
         project = Project.objects.get(pk=project_id)
         as_sub_item = request.data.get("as_sub_item", True) is not False
-        state = None
-        if line.is_completed:
+        # O estado da linha vai para o item; sem estado, uma linha concluída vira item concluído.
+        state = line.state if line.state_id else None
+        if not state and line.is_completed:
             state = State.objects.filter(project=project, group="completed").order_by("sequence").first()
 
         ctx = project_context(project, request.user)
@@ -209,6 +210,9 @@ class IssueConvertToChecklistEndpoint(BaseAPIView):
             .first()
         )
         is_completed = bool(issue.state and issue.state.group == "completed")
+        # O estado só vale no mesmo projeto (o fluxo é de cada projeto); a triagem não é estado de linha.
+        same_project = target.project_id == issue.project_id
+        line_state_id = issue.state_id if same_project and issue.state and issue.state.group != "triage" else None
         last_sort = IssueChecklistItem.objects.filter(
             issue=target, parent__isnull=True, checklist__isnull=True
         ).aggregate(value=Max("sort_order"))["value"]
@@ -221,6 +225,7 @@ class IssueConvertToChecklistEndpoint(BaseAPIView):
                 name=issue.name,
                 assignee_id=assignee_id,
                 due_date=issue.target_date,
+                state_id=line_state_id,
                 is_completed=is_completed,
                 completed_at=(issue.completed_at or now) if is_completed else None,
                 sort_order=(last_sort or 0) + 65535,
@@ -231,9 +236,10 @@ class IssueConvertToChecklistEndpoint(BaseAPIView):
                 IssueChecklistItem.objects.filter(issue=issue, parent__isnull=True).values_list("id", flat=True)
             )
             # As checklists com nome do item viram sublinhas também (a linha nova fica na lista padrão).
-            IssueChecklistItem.objects.filter(issue=issue).update(
-                issue=target, project_id=target.project_id, workspace_id=target.workspace_id, checklist=None
-            )
+            moved = IssueChecklistItem.objects.filter(issue=issue)
+            if not same_project:
+                moved.update(state=None)
+            moved.update(issue=target, project_id=target.project_id, workspace_id=target.workspace_id, checklist=None)
             IssueChecklistItem.objects.filter(pk__in=roots).update(parent=line)
             IssueChecklist.objects.filter(issue=issue).delete(soft=False)
             issue.delete()
