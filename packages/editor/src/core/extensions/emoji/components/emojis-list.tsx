@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/click-events-have-key-events, jsx_a11y/no-static-element-interactions -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
+import { i18nInstance } from "@plane/i18n";
 import { FloatingOverlay } from "@floating-ui/react";
 import type { SuggestionKeyDownProps, SuggestionProps } from "@tiptap/suggestion";
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
@@ -172,7 +175,7 @@ export const EmojisListDropdown = forwardRef(function EmojisListDropdown(
             );
           })
         ) : (
-          <div className="py-2 text-center text-13 text-placeholder">No emojis found</div>
+          <div className="py-2 text-center text-13 text-placeholder">{i18nInstance.t("editor_ui.no_emojis_found")}</div>
         )}
       </div>
     </>

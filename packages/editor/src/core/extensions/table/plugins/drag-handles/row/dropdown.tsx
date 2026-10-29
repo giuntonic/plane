@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import type { Editor } from "@tiptap/core";
 import { TableMap } from "@tiptap/pm/tables";
 import { ArrowDown, ArrowUp, ToggleRight } from "lucide-react";
@@ -24,19 +25,25 @@ const DROPDOWN_ITEMS: {
 }[] = [
   {
     key: "insert-above",
-    label: "Insert above",
+    get label() {
+      return i18nInstance.t("editor_ui.table.insert_above");
+    },
     icon: ArrowUp,
     action: (editor) => editor.chain().focus().addRowBefore().run(),
   },
   {
     key: "insert-below",
-    label: "Insert below",
+    get label() {
+      return i18nInstance.t("editor_ui.table.insert_below");
+    },
     icon: ArrowDown,
     action: (editor) => editor.chain().focus().addRowAfter().run(),
   },
   {
     key: "duplicate",
-    label: "Duplicate",
+    get label() {
+      return i18nInstance.t("editor_ui.table.duplicate");
+    },
     icon: CopyIcon,
     action: (editor) => {
       const table = findTable(editor.state.selection);
@@ -51,13 +58,17 @@ const DROPDOWN_ITEMS: {
   },
   {
     key: "clear-contents",
-    label: "Clear contents",
+    get label() {
+      return i18nInstance.t("editor_ui.table.clear_contents");
+    },
     icon: CloseIcon,
     action: (editor) => editor.chain().focus().clearSelectedCells().run(),
   },
   {
     key: "delete",
-    label: "Delete",
+    get label() {
+      return i18nInstance.t("editor_ui.table.delete");
+    },
     icon: TrashIcon,
     action: (editor) => editor.chain().focus().deleteRow().run(),
   },
@@ -83,7 +94,7 @@ export function RowOptionsDropdown(props: Props) {
           onClose();
         }}
       >
-        <div className="flex-grow truncate">Header row</div>
+        <div className="flex-grow truncate">{i18nInstance.t("editor_ui.table.header_row")}</div>
         <ToggleRight className="size-3 shrink-0" />
       </button>
       <hr className="my-2 border-subtle" />

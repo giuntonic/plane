@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
 import type { Editor } from "@tiptap/react";
 import { ALargeSmall, Ban } from "lucide-react";
 import { useMemo } from "react";
@@ -39,7 +40,7 @@ export function BubbleMenuColorSelector(props: Props) {
       }}
       menuButton={
         <>
-          <span>Color</span>
+          <span>{i18nInstance.t("editor_ui.menu.color")}</span>
           <span
             className={cn("grid size-6 flex-shrink-0 place-items-center rounded-sm border-[0.5px] border-strong", {
               "bg-surface-1": !activeBackgroundColor,
@@ -65,7 +66,7 @@ export function BubbleMenuColorSelector(props: Props) {
     >
       <section className="mt-1 space-y-2 rounded-md border-[0.5px] border-strong bg-surface-1 p-2 shadow-raised-200">
         <div className="space-y-1.5">
-          <p className="text-11 font-semibold text-tertiary">Text colors</p>
+          <p className="text-11 font-semibold text-tertiary">{i18nInstance.t("editor_ui.colors.text_colors")}</p>
           <div className="flex items-center gap-2">
             {COLORS_LIST.map((color) => (
               <button
@@ -88,7 +89,7 @@ export function BubbleMenuColorSelector(props: Props) {
           </div>
         </div>
         <div className="space-y-1.5">
-          <p className="text-11 font-semibold text-tertiary">Background colors</p>
+          <p className="text-11 font-semibold text-tertiary">{i18nInstance.t("editor_ui.colors.background_colors")}</p>
           <div className="flex items-center gap-2">
             {COLORS_LIST.map((color) => (
               <button
