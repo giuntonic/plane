@@ -215,6 +215,7 @@ export const IssueView = observer(function IssueView(props: IIssueView) {
                       issueId={issueId}
                       issueOperations={issueOperations}
                       disabled={disabled || is_archived}
+                      collapsible
                     />
 
                     <IssueActivity

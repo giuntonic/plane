@@ -205,8 +205,9 @@ export const IssuePeekOverviewHeader = observer(function IssuePeekOverviewHeader
       <div className="flex items-center gap-x-4">
         <NameDescriptionUpdateStatus isSubmitting={isSubmitting} />
         <div className="flex items-center gap-2">
-          {/* Pespo: no modal e na tela cheia as propriedades ficam numa coluna à parte, que pode ser escondida */}
-          {currentMode && currentMode.key !== "side-peek" && <WorkItemPropertiesPanelToggle />}
+          {/* Pespo: na tela cheia as propriedades ficam numa coluna à parte, que pode ser escondida (no painel
+              lateral e no modal elas ficam no meio do conteúdo e recolhem pela seta do título) */}
+          {currentMode?.key === "full-screen" && <WorkItemPropertiesPanelToggle />}
           {currentUser && !isArchived && (
             <IssueSubscription workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
           )}

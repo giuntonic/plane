@@ -6,36 +6,57 @@
 
 import { action, makeObservable, observable } from "mobx";
 
-// Pespo: esconder a coluna de propriedades na página cheia do item e no painel lateral em modo modal ou tela
-// cheia. Uma preferência só, lembrada neste navegador. No celular a página cheia segue o comportamento do
-// upstream (a barra fica escondida).
+// Pespo: duas preferências das propriedades do item, lembradas neste navegador.
+// - isHidden: esconde a coluna de propriedades da página cheia do item e do painel em tela cheia (botão no
+//   cabeçalho). No celular a página cheia segue o comportamento do upstream (a barra fica escondida).
+// - isCollapsed: recolhe a seção "Propriedades" do painel lateral e do modal, onde ela fica no meio do
+//   conteúdo (seta ao lado do título).
 
-const STORAGE_KEY = "pespo-hub:work-item-properties-hidden";
+const HIDDEN_KEY = "pespo-hub:work-item-properties-hidden";
+const COLLAPSED_KEY = "pespo-hub:work-item-properties-collapsed";
 
-const readHidden = () => {
+const readFlag = (key: string) => {
   try {
-    return window.localStorage.getItem(STORAGE_KEY) === "1";
+    return window.localStorage.getItem(key) === "1";
   } catch {
     return false;
   }
 };
 
+const writeFlag = (key: string, value: boolean) => {
+  try {
+    if (value) window.localStorage.setItem(key, "1");
+    else window.localStorage.removeItem(key);
+  } catch {
+    // sem localStorage (janela privada etc.): vale só nesta aba
+  }
+};
+
 class WorkItemPropertiesPanelStore {
   isHidden = false;
+  isCollapsed = false;
 
   constructor() {
-    makeObservable(this, { isHidden: observable.ref, toggle: action });
-    if (typeof window !== "undefined") this.isHidden = readHidden();
+    makeObservable(this, {
+      isHidden: observable.ref,
+      isCollapsed: observable.ref,
+      toggle: action,
+      toggleCollapsed: action,
+    });
+    if (typeof window !== "undefined") {
+      this.isHidden = readFlag(HIDDEN_KEY);
+      this.isCollapsed = readFlag(COLLAPSED_KEY);
+    }
   }
 
   toggle = () => {
     this.isHidden = !this.isHidden;
-    try {
-      if (this.isHidden) window.localStorage.setItem(STORAGE_KEY, "1");
-      else window.localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // sem localStorage (janela privada etc.): vale só nesta aba
-    }
+    writeFlag(HIDDEN_KEY, this.isHidden);
+  };
+
+  toggleCollapsed = () => {
+    this.isCollapsed = !this.isCollapsed;
+    writeFlag(COLLAPSED_KEY, this.isCollapsed);
   };
 }
 

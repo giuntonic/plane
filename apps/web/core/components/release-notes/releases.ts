@@ -23,10 +23,14 @@ export const PESPO_RELEASES: TPespoRelease[] = [
   {
     version: "1.5.1",
     date: "2026-10-29",
-    summary: "Propriedades que se escondem, checklists que recolhem e ajustes de alinhamento.",
+    summary: "Estado nas subtarefas, Peças como funcionalidade do projeto e propriedades e checklists que recolhem.",
     features: [
-      "Na página cheia do item (e no painel em modo modal ou tela cheia), um botão no cabeçalho esconde ou mostra a coluna de propriedades; o navegador lembra a escolha.",
-      "Cada checklist com nome pode ser recolhida pela seta ao lado do nome; o navegador lembra a escolha.",
+      "Subtarefas com estado: escolha um estado do fluxo do projeto na linha da subtarefa. Um estado de concluído marca a subtarefa, e marcar o quadradinho leva ao estado de concluído. Escolher de novo o estado atual tira o estado.",
+      "Peças virou uma funcionalidade do projeto, como Ciclos e Páginas: dá para desligar a aba em Configurações do projeto › Funcionalidades › Peças.",
+      "No painel lateral e no modal, a seção Propriedades recolhe pela seta ao lado do título.",
+      "Na página cheia do item e no painel em tela cheia, um botão no cabeçalho esconde ou mostra a coluna de propriedades.",
+      "Cada checklist com nome pode ser recolhida pela seta ao lado do nome.",
+      "O navegador lembra o que ficou recolhido ou escondido.",
     ],
     fixes: [
       "Os ícones no fim da linha da subtarefa (responsável, prazo, transformar em item, adicionar e excluir) ficavam desalinhados.",

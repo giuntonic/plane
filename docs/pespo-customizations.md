@@ -250,12 +250,52 @@ Correções feitas depois do merge:
 
 ---
 
-## Versão 1.5.1: propriedades que se escondem, checklists que recolhem e alinhamentos (2026-10-29)
+## Versão 1.5.1: estado nas subtarefas, Peças desligável, propriedades e checklists que recolhem (2026-10-29)
 
-- **Esconder a coluna de propriedades:** botão no cabeçalho da página cheia do item (`browse/[workItem]/work-item-header.tsx`)
-  e do peek em modo modal ou tela cheia (`peek-overview/header.tsx`).
-  - A preferência é uma só, guardada no `localStorage` na chave `pespo-hub:work-item-properties-hidden`
-    (`components/issues/properties-panel/`).
+- **Estado na subtarefa:** `IssueChecklistItem.state` (FK opcional para `State`, `SET_NULL`, migration `0140`).
+  - O estado tem que ser do fluxo do mesmo projeto, fora a triagem (`_validate_state` em
+    `app/views/issue/checklist.py`). Senão a API responde 400.
+  - Estado e quadradinho andam juntos, no servidor:
+    - Um estado do grupo "completed" marca a linha, e qualquer outro a desmarca.
+    - Marcar uma linha que tem estado leva ao primeiro estado de "completed" do projeto (pela `sequence`).
+    - Desmarcar uma linha num estado de concluído leva ao estado padrão do projeto, ou a nenhum se o padrão
+      também for de concluído (`_state_after_toggle`).
+    - Tirar o estado não mexe no quadradinho.
+    - Linha sem estado é só o quadradinho, como antes.
+  - Na tela, o seletor fica nos extras da linha (`checklist/extras.tsx`), antes do responsável: visível quando
+    tem estado, no hover quando não tem.
+    - O `StateDropdown` não tem opção "sem estado": escolher de novo o estado atual tira o estado.
+    - O frontend manda o `is_completed` junto com o estado, para a linha mudar na hora. Quando a pessoa usa o
+      quadradinho, o `state` escolhido pelo servidor volta pelos `serverFields` (`checklist/helper.ts`).
+    - `dropdowns/state/base.tsx` passa `null` (não `undefined`) ao Combobox quando não há estado, para não
+      alternar entre controlado e não controlado.
+  - Conversões (`app/views/issue/structure.py`):
+    - Subtarefa → item: o item nasce no estado da linha. Se a linha não tem estado e está concluída, nasce
+      no primeiro estado de concluído, como antes.
+    - Item → subtarefa: a linha leva o estado do item quando o destino é do mesmo projeto. Em outro projeto, a
+      linha e as sublinhas que vão junto ficam sem estado (o fluxo é de cada projeto).
+  - Cópia, modelos e recorrência não levam o estado das linhas: o resultado é um começo, como o quadradinho
+    desmarcado (`utils/work_item_tree.py` não fotografa o campo).
+  - Excluir um estado (`app/views/state/base.py`) deixa sem estado as linhas que estavam nele.
+- **Peças como funcionalidade do projeto:** `Project.pieces_view` (padrão `True`, migration `0139`), em
+  Configurações do projeto › Funcionalidades › Peças (`settings/projects/[projectId]/features/pieces/`,
+  `PROJECT_SETTINGS.features_pieces`).
+  - Desligada, a aba some da barra lateral e da navegação do projeto (`project-navigation.tsx`,
+    `use-navigation-items.ts`). Quem abre `/projects/<id>/dashboard` vê um aviso com o botão "Gerenciar
+    funcionalidades", que leva à configuração (`dashboard/page.tsx`).
+  - Também está na lista de funcionalidades da criação de projeto (`project/settings/features-list.tsx`) e nos
+    modelos de projeto (`PROJECT_FEATURES` em `utils/entity_templates.py`).
+  - A lista de projetos (`app/views/project/base.py`) e o serializer da API pública passaram a mandar o campo.
+  - A API do painel não checa a opção, como o upstream faz com ciclos e páginas.
+- **Propriedades recolhíveis no peek:** no painel lateral e no modal as propriedades ficam no meio do
+  conteúdo, e o título "Propriedades" agora recolhe a seção (`peek-overview/properties.tsx`, prop
+  `collapsible`). A preferência fica no `localStorage`, na chave `pespo-hub:work-item-properties-collapsed`.
+- **Esconder a coluna de propriedades:** botão no cabeçalho da página cheia do item
+  (`browse/[workItem]/work-item-header.tsx`) e do peek em tela cheia (`peek-overview/header.tsx`).
+  - A primeira versão também mostrava o botão no modal, onde ele não fazia nada (lá as propriedades não são
+    uma coluna). Agora o modal usa a seção recolhível.
+  - Esta preferência é outra, guardada no `localStorage` na chave `pespo-hub:work-item-properties-hidden`. As
+    duas ficam em `components/issues/properties-panel/store.ts`.
   - Na página cheia a coluna ganha `md:hidden` (`issue-detail/root.tsx`) e o conteúdo ocupa a largura toda.
   - No celular nada muda: a barra continua controlada pelo `issueDetailSidebarCollapsed` do upstream, e o
     botão nem aparece.
@@ -284,8 +324,9 @@ Correções feitas depois do merge:
   - Enquanto um dos dois modais globais está aberto, o callback do peek (`peek-overview/view.tsx`) também não
     fecha. Isso cobre o seletor de item que abre de dentro do "Transformar em subtarefa".
   - Clicar fora de verdade (fora do peek e sem modal aberto) continua fechando.
-- **Deploy:** rebuildar só o `web`. Não tem migration nem mudança no backend. A mudança em `packages/ui` entra
-  no build do `web`.
+- **Deploy:** rebuildar as imagens do `api` e do `web` e rodar as migrations `0139` e `0140`. As duas só
+  acrescentam colunas: `projects.pieces_view`, com padrão verdadeiro, e `issue_checklist_items.state_id`, que
+  pode ficar vazio. A mudança em `packages/ui` entra no build do `web`.
 - **Junto:** avisos de lint antigos do upstream anotados ou corrigidos nos arquivos tocados
   (`issue-detail/root.tsx`, `peek-overview/header.tsx`, `issue-detail/parent-select.tsx`,
   `packages/ui/src/modals/alert-modal.tsx`).
