@@ -58,7 +58,7 @@ export const FilterModule = observer(function FilterModule(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`Module ${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("common.module")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -70,7 +70,7 @@ export const FilterModule = observer(function FilterModule(props: Props) {
                 {sortedOptions.slice(0, itemsToRender).map((cycle) => (
                   <FilterOption
                     key={cycle.id}
-                    isChecked={appliedFilters?.includes(cycle.id) ? true : false}
+                    isChecked={!!appliedFilters?.includes(cycle.id)}
                     onClick={() => handleUpdate(cycle.id)}
                     icon={<ModuleIcon className="h-3 w-3 flex-shrink-0" />}
                     title={cycle.name}

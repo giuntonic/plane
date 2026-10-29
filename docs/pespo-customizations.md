@@ -324,6 +324,27 @@ Correções feitas depois do merge:
   - Enquanto um dos dois modais globais está aberto, o callback do peek (`peek-overview/view.tsx`) também não
     fecha. Isso cobre o seletor de item que abre de dentro do "Transformar em subtarefa".
   - Clicar fora de verdade (fora do peek e sem modal aberto) continua fechando.
+- **Textos que ainda estavam em inglês:** varredura no código (literais com cara de frase em inglês) e nas telas
+  principais, menus e modais em pt-BR.
+  - **Editor (`packages/editor`):** passou a depender de `@plane/i18n` (o `pnpm-lock.yaml` ganhou o link) e usa o
+    `i18nInstance` do app. As chaves ficam em `editor.json`, prefixo `editor_ui`: menu "/" (títulos e descrições, que
+    também valem para a busca, então "/tab" acha "Tabela"), barra e menu de formatação, cores, fontes, tabela, imagem,
+    menu do bloco, link, menções e o placeholder. Listas constantes (cores, alinhamentos, itens da tabela) usam
+    getters, para o texto sair no idioma da hora em que o menu abre.
+  - **Seletor de emoji e ícone (`packages/propel`):** abas, busca e o aviso de contraste. O frimousse recebe
+    `locale` pelo idioma da pessoa (`getEmojiLocale`: "pt-BR" vira "pt"), então categorias e busca vêm do Emojibase em
+    português, do mesmo CDN (jsdelivr) que já servia o inglês. Sem resultado, aparece "Nenhum emoji encontrado".
+  - **App:** confirmação de excluir item e épico, ações do toast de criação, filtros (títulos, opções de data,
+    rótulos e operadores dos filtros novos, em `packages/utils`), notificações e histórico, recepção, páginas,
+    favoritos, módulos, ciclo ativo, análises (eixos e os valores de prioridade e grupo de estado que vêm da API
+    como chave, em `chart/utils.ts`), títulos de ordenação da planilha, mensagens de validação de formulário
+    (`packages/utils/src/validation.ts`) e frases de confirmação ("excluir meu projeto").
+  - As chaves novas do app ficam em `common.json`, quase todas no prefixo `ui.`, e `date_filters.*` (a opção "1 mês
+    atrás" do upstream apontava para uma chave que não existia).
+  - Ficaram de fora telas que a Pespo não usa: planos pagos, integrações do GitHub e do Slack, a IA do Plane ("Pi")
+    e mensagens de erro internas que não chegam à tela.
+  - Os arquivos tocados que tinham avisos antigos de lint do upstream ganharam um `oxlint-disable` no topo, com o
+    motivo, porque o commit roda `oxlint --deny-warnings` neles.
 - **Deploy:** rebuildar as imagens do `api` e do `web` e rodar as migrations `0139` e `0140`. As duas só
   acrescentam colunas: `projects.pieces_view`, com padrão verdadeiro, e `issue_checklist_items.state_id`, que
   pode ficar vazio. A mudança em `packages/ui` entra no build do `web`.

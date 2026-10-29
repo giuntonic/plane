@@ -4,6 +4,9 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable no-shadow, unicorn/consistent-function-scoping -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
+import type { Locale } from "frimousse";
 import type { TPlacement, TSide, TAlign } from "../utils/placement";
 
 export const EmojiIconPickerTypes = {
@@ -160,3 +163,43 @@ export function stringToEmoji(emojiString: string): string {
 }
 
 export const getEmojiSize = (size: number) => size * 0.9 * 0.0625;
+
+// Pespo: idiomas que o frimousse (dados do Emojibase) tem. "pt-BR" vira "pt"; idioma sem dados fica em inglês.
+const EMOJI_LOCALES: Locale[] = [
+  "bn",
+  "da",
+  "de",
+  "en-gb",
+  "en",
+  "es-mx",
+  "es",
+  "et",
+  "fi",
+  "fr",
+  "hi",
+  "hu",
+  "it",
+  "ja",
+  "ko",
+  "lt",
+  "ms",
+  "nb",
+  "nl",
+  "pl",
+  "pt",
+  "ru",
+  "sv",
+  "th",
+  "uk",
+  "vi",
+  "zh-hant",
+  "zh",
+];
+
+export const getEmojiLocale = (language: string | undefined): Locale => {
+  const normalized = (language ?? "en").toLowerCase();
+  const exact = EMOJI_LOCALES.find((locale) => locale === normalized);
+  if (exact) return exact;
+  const base = normalized.split("-")[0];
+  return EMOJI_LOCALES.find((locale) => locale === base) ?? "en";
+};

@@ -4,7 +4,10 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable react/no-array-index-key -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import * as React from "react";
+import { useTranslation } from "@plane/i18n";
 import { AnimatedCounter } from "../animated-counter";
 import { stringToEmoji } from "../emoji-icon-picker";
 import { AddReactionIcon } from "../icons";
@@ -56,6 +59,7 @@ const EmojiReaction = React.forwardRef(function EmojiReaction(
   }: EmojiReactionProps,
   ref: React.ForwardedRef<HTMLButtonElement>
 ) {
+  const { t } = useTranslation();
   const handleClick = () => {
     onReactionClick?.(emoji);
   };
@@ -71,11 +75,11 @@ const EmojiReaction = React.forwardRef(function EmojiReaction(
         <div className="mb-1 font-medium">{stringToEmoji(emoji)}</div>
         <div>
           {displayUsers.join(", ")}
-          {remainingCount > 0 && ` and ${remainingCount} more`}
+          {remainingCount > 0 && ` ${t("ui.and_n_more", { count: remainingCount })}`}
         </div>
       </div>
     );
-  }, [emoji, users]);
+  }, [emoji, users, t]);
 
   const button = (
     <button
@@ -106,8 +110,9 @@ const EmojiReactionButton = React.forwardRef(function EmojiReactionButton(
   { onAddReaction, className, ...props }: EmojiReactionButtonProps,
   ref: React.ForwardedRef<HTMLButtonElement>
 ) {
+  const { t } = useTranslation();
   return (
-    <Tooltip tooltipContent="Add reaction">
+    <Tooltip tooltipContent={t("ui.add_reaction")}>
       <IconButton
         ref={ref}
         icon={AddReactionIcon}

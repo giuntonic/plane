@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable promise/always-return -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import React from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -73,11 +75,11 @@ export const ModuleListItemAction = observer(function ModuleListItemAction(props
       loading: t("ui.adding_module_to_favorites"),
       success: {
         title: t("toast.success"),
-        message: () => "Module added to favorites.",
+        message: () => t("ui.module_added_to_favorites"),
       },
       error: {
         title: t("toast.error"),
-        message: () => "Couldn't add the module to favorites. Please try again.",
+        message: () => t("ui.module_add_to_favorites_failed"),
       },
     });
   };
@@ -97,11 +99,11 @@ export const ModuleListItemAction = observer(function ModuleListItemAction(props
       loading: t("ui.removing_module_from_favorites"),
       success: {
         title: t("toast.success"),
-        message: () => "Module removed from favorites.",
+        message: () => t("ui.module_removed_from_favorites"),
       },
       error: {
         title: t("toast.error"),
-        message: () => "Couldn't remove the module from favorites. Please try again.",
+        message: () => t("ui.module_remove_from_favorites_failed"),
       },
     });
   };
@@ -121,7 +123,7 @@ export const ModuleListItemAction = observer(function ModuleListItemAction(props
         setToast({
           type: TOAST_TYPE.ERROR,
           title: t("toast.error"),
-          message: err?.detail ?? "Module could not be updated. Please try again.",
+          message: err?.detail ?? t("ui.module_update_failed"),
         });
       });
   };

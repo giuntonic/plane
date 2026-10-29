@@ -48,61 +48,79 @@ export const BASE_NOTIFICATION_CONTENT_MAP: TNotificationContentMap = {
   duplicate: ({ verb }) => ({
     action:
       verb === "created"
-        ? "marked that this work item is a duplicate of"
-        : "marked that this work item is not a duplicate",
+        ? i18nInstance.t("ui.notification.duplicate_marked")
+        : i18nInstance.t("ui.notification.duplicate_unmarked"),
     value: null,
     showConnector: false,
   }),
   assignees: ({ newValue, oldValue }) => ({
-    action: newValue !== "" ? "added assignee" : "removed assignee",
+    action:
+      newValue !== ""
+        ? i18nInstance.t("ui.notification.assignee_added")
+        : i18nInstance.t("ui.notification.assignee_removed"),
     value: newValue !== "" ? newValue : oldValue,
     showConnector: false,
   }),
   start_date: ({ newValue }) => ({
-    action: newValue !== "" ? "set start date" : "removed the start date",
+    action:
+      newValue !== ""
+        ? i18nInstance.t("ui.notification.start_date_set")
+        : i18nInstance.t("ui.notification.start_date_removed"),
     value: renderFormattedDate(newValue),
     showConnector: false,
   }),
   target_date: ({ newValue }) => ({
-    action: newValue !== "" ? "set due date" : "removed the due date",
+    action:
+      newValue !== ""
+        ? i18nInstance.t("ui.notification.due_date_set")
+        : i18nInstance.t("ui.notification.due_date_removed"),
     value: renderFormattedDate(newValue),
     showConnector: false,
   }),
   labels: ({ newValue, oldValue }) => ({
-    action: newValue !== "" ? "added label" : "removed label",
+    action:
+      newValue !== "" ? i18nInstance.t("ui.notification.label_added") : i18nInstance.t("ui.notification.label_removed"),
     value: newValue !== "" ? newValue : oldValue,
     showConnector: false,
   }),
   parent: ({ newValue, oldValue }) => ({
-    action: newValue !== "" ? "added parent" : "removed parent",
+    action:
+      newValue !== ""
+        ? i18nInstance.t("ui.notification.parent_added")
+        : i18nInstance.t("ui.notification.parent_removed"),
     value: newValue !== "" ? newValue : oldValue,
     showConnector: false,
   }),
   relates_to: () => ({
-    action: "marked that this work item is related to",
+    // Pespo: sem o conector ("related to to …" no upstream)
+    action: i18nInstance.t("ui.notification.related_marked"),
     value: null,
-    showConnector: true,
+    showConnector: false,
   }),
   comment: ({ newValue }, renderCommentBox?: boolean) => ({
-    action: "commented",
+    action: i18nInstance.t("ui.notification.commented"),
     value: renderCommentBox ? null : sanitizeCommentForNotification(newValue),
     showConnector: false,
   }),
   archived_at: ({ newValue }) => ({
-    action: newValue === "restore" ? "restored the work item" : "archived the work item",
+    action:
+      newValue === "restore" ? i18nInstance.t("ui.notification.restored") : i18nInstance.t("ui.notification.archived"),
     value: null,
     showConnector: false,
   }),
   None: () => ({
-    action: null,
-    value: "the work item and assigned it to you.",
+    action: i18nInstance.t("ui.notification.created_and_assigned"),
+    value: null,
     showConnector: false,
   }),
   // Fields below only define value - action falls through to default handler
-  attachment: () => ({
-    action: null,
-    value: "the work item",
-    showConnector: true,
+  attachment: ({ verb }) => ({
+    action:
+      verb === "deleted"
+        ? i18nInstance.t("ui.notification.attachment_removed")
+        : i18nInstance.t("ui.notification.attachment_added"),
+    value: null,
+    showConnector: false,
   }),
   description: ({ newValue }) => ({
     value: stripAndTruncateHTML(newValue || "", 55),

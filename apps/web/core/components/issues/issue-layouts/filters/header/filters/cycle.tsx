@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable no-shadow -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import React, { useMemo, useState } from "react";
 import { sortBy } from "lodash-es";
 import { observer } from "mobx-react";
@@ -65,7 +67,7 @@ export const FilterCycle = observer(function FilterCycle(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`Cycle ${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("common.cycle")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -77,13 +79,13 @@ export const FilterCycle = observer(function FilterCycle(props: Props) {
                 {sortedOptions.slice(0, itemsToRender).map((cycle) => (
                   <FilterOption
                     key={cycle.id}
-                    isChecked={appliedFilters?.includes(cycle.id) ? true : false}
+                    isChecked={!!appliedFilters?.includes(cycle.id)}
                     onClick={() => handleUpdate(cycle.id)}
                     icon={
                       <CycleGroupIcon cycleGroup={cycleStatus(cycle?.status)} className="h-3.5 w-3.5 flex-shrink-0" />
                     }
                     title={cycle.name}
-                    activePulse={cycleStatus(cycle?.status) === "current" ? true : false}
+                    activePulse={cycleStatus(cycle?.status) === "current"}
                   />
                 ))}
                 {sortedOptions.length > 5 && (

@@ -18,8 +18,9 @@ type Props = {
   plotTitle?: string;
 };
 
-function ProgressChart({ distribution, totalIssues, className = "", plotTitle = "work items" }: Props) {
+function ProgressChart({ distribution, totalIssues, className = "", plotTitle: plotTitleProp }: Props) {
   const { t } = useTranslation();
+  const plotTitle = plotTitleProp ?? t("issues");
   const chartData: TChartData<string, string>[] = Object.keys(distribution ?? []).map((key, index) => ({
     name: renderFormattedDateWithoutYear(key),
     current: distribution[key] ?? 0,
@@ -33,7 +34,7 @@ function ProgressChart({ distribution, totalIssues, className = "", plotTitle = 
         areas={[
           {
             key: "current",
-            label: `Current ${plotTitle}`,
+            label: t("ui.chart_current", { name: plotTitle }),
             strokeColor: "#3F76FF",
             fill: "#3F76FF33",
             fillOpacity: 1,
@@ -44,7 +45,7 @@ function ProgressChart({ distribution, totalIssues, className = "", plotTitle = 
           },
           {
             key: "ideal",
-            label: `Ideal ${plotTitle}`,
+            label: t("ui.chart_ideal", { name: plotTitle }),
             strokeColor: "#A9BBD0",
             fill: "#A9BBD0",
             fillOpacity: 0,

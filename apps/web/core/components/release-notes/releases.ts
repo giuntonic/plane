@@ -33,6 +33,7 @@ export const PESPO_RELEASES: TPespoRelease[] = [
       "O navegador lembra o que ficou recolhido ou escondido.",
     ],
     fixes: [
+      'Partes que ainda estavam em inglês agora aparecem em português: o editor de texto (menu "/", formatação, cores, tabelas e imagens), o seletor de emoji e ícone (com busca em português), a confirmação de excluir item, filtros, notificações, histórico, análises e várias mensagens.',
       "Os ícones no fim da linha da subtarefa (responsável, prazo, transformar em item, adicionar e excluir) ficavam desalinhados.",
       '"Data de vencimento" e outros rótulos longos das propriedades cobriam o campo ao lado.',
       'No painel lateral, mexer no "Repetir", confirmar a exclusão de uma checklist ou usar "Transformar em subtarefa" e "Salvar como modelo" fechava o item.',

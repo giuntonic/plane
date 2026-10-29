@@ -96,13 +96,13 @@ export const usePageOperations = (
           setToast({
             type: TOAST_TYPE.SUCCESS,
             title: i18nInstance.t("toast.success"),
-            message: `The page has been marked ${changedPageType} and moved to the ${changedPageType} section.`,
+            message: i18nInstance.t(`ui.page_marked_${changedPageType}`),
           });
         } catch (_error) {
           setToast({
             type: TOAST_TYPE.ERROR,
             title: i18nInstance.t("toast.error"),
-            message: `The page couldn't be marked ${changedPageType}. Please try again.`,
+            message: i18nInstance.t(`ui.page_mark_${changedPageType}_failed`),
           });
         }
       },

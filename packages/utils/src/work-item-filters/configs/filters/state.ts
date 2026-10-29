@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import { STATE_GROUPS } from "@plane/constants";
 import type { IState, TFilterProperty, TStateGroups, TSupportedOperators } from "@plane/types";
 import { COLLECTION_OPERATOR, EQUALITY_OPERATOR } from "@plane/types";
@@ -32,7 +33,7 @@ export const getStateGroupMultiSelectConfig = (
     {
       items: Object.values(STATE_GROUPS),
       getId: (state) => state.key,
-      getLabel: (state) => state.label,
+      getLabel: (state) => i18nInstance.t(`common.state_group.${state.key}`),
       getValue: (state) => state.key,
       getIconData: (state) => state.key,
     },
@@ -56,7 +57,7 @@ export const getStateGroupFilterConfig =
   (params: TCreateStateGroupFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "State Group",
+      label: i18nInstance.t("common.state_group_filter_title"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([
@@ -110,7 +111,7 @@ export const getStateFilterConfig =
   (params: TCreateStateFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "State",
+      label: i18nInstance.t("common.state"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([

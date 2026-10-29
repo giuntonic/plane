@@ -160,11 +160,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
             {canMarkAsAccepted && !isAcceptedOrDeclined && (
               <CustomMenu.MenuItem
                 onClick={() =>
-                  handleActionWithPermission(
-                    isProjectAdmin,
-                    handleIssueSnoozeAction,
-                    "Only project admins can snooze/Un-snooze work items"
-                  )
+                  handleActionWithPermission(isProjectAdmin, handleIssueSnoozeAction, t("ui.intake_admin_only.snooze"))
                 }
               >
                 <div className="flex items-center gap-2">
@@ -179,7 +175,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
                   handleActionWithPermission(
                     isProjectAdmin,
                     () => setSelectDuplicateIssue(true),
-                    "Only project admins can mark work items as duplicate"
+                    t("ui.intake_admin_only.duplicate")
                   )
                 }
               >
@@ -195,7 +191,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
                   handleActionWithPermission(
                     isProjectAdmin,
                     () => setAcceptIssueModal(true),
-                    "Only project admins can accept work items"
+                    t("ui.intake_admin_only.accept")
                   )
                 }
               >
@@ -211,7 +207,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
                   handleActionWithPermission(
                     isProjectAdmin,
                     () => setDeclineIssueModal(true),
-                    "Only project admins can deny work items"
+                    t("ui.intake_admin_only.decline")
                   )
                 }
               >

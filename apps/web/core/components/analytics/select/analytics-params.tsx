@@ -11,7 +11,7 @@ import type { Control, UseFormSetValue } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import { SlidersHorizontal } from "lucide-react";
 // plane package imports
-import { ANALYTICS_X_AXIS_VALUES, ANALYTICS_Y_AXIS_VALUES } from "@plane/constants";
+import { ANALYTICS_X_AXIS_I18N_KEYS, ANALYTICS_X_AXIS_VALUES, ANALYTICS_Y_AXIS_VALUES } from "@plane/constants";
 import { CalendarLayoutIcon } from "@plane/propel/icons";
 import type { IAnalyticsParams } from "@plane/types";
 import { ChartYAxisMetric } from "@plane/types";
@@ -74,7 +74,9 @@ export const AnalyticsSelectParams = observer(function AnalyticsSelectParams(pro
                 <div className="flex items-center gap-2">
                   <CalendarLayoutIcon className="h-3 w-3" />
                   <span className={cn("text-secondary", value && "text-primary")}>
-                    {xAxisOptions.find((v) => v.value === value)?.label || t("ui.add_property")}
+                    {(value && ANALYTICS_X_AXIS_I18N_KEYS[value]
+                      ? t(ANALYTICS_X_AXIS_I18N_KEYS[value]!)
+                      : xAxisOptions.find((v) => v.value === value)?.label) || t("ui.add_property")}
                   </span>
                 </div>
               }
@@ -95,7 +97,9 @@ export const AnalyticsSelectParams = observer(function AnalyticsSelectParams(pro
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="h-3 w-3" />
                   <span className={cn("text-secondary", value && "text-primary")}>
-                    {groupByOptions.find((v) => v.value === value)?.label || t("ui.add_property")}
+                    {(value && ANALYTICS_X_AXIS_I18N_KEYS[value]
+                      ? t(ANALYTICS_X_AXIS_I18N_KEYS[value]!)
+                      : groupByOptions.find((v) => v.value === value)?.label) || t("ui.add_property")}
                   </span>
                 </div>
               }

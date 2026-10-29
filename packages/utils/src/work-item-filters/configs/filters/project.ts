@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import type { TFilterProperty } from "@plane/types";
 import { EQUALITY_OPERATOR, COLLECTION_OPERATOR } from "@plane/types";
 // local imports
@@ -24,7 +25,7 @@ export const getProjectFilterConfig =
   (params: TCreateProjectFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Projects",
+      label: i18nInstance.t("projects"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([

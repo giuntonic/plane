@@ -4,9 +4,13 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable oxc/no-map-spread, unicorn/no-array-sort -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { getWeekOfMonth, isValid } from "date-fns";
+import { i18nInstance } from "@plane/i18n";
 import { CHART_X_AXIS_DATE_PROPERTIES, ChartXAxisDateGrouping, TO_CAPITALIZE_PROPERTIES } from "@plane/constants";
-import type { ChartXAxisProperty, TChart, TChartDatum } from "@plane/types";
+import { ChartXAxisProperty } from "@plane/types";
+import type { TChart, TChartDatum } from "@plane/types";
 import {
   capitalizeFirstLetter,
   hexToHsl,
@@ -55,6 +59,19 @@ const getDateGroupingName = (date: string, dateGrouping: ChartXAxisDateGrouping)
   return parsedName ?? date;
 };
 
+// Pespo: prioridade e grupo de estado chegam da API como chave ("high", "backlog"): mostra o nome traduzido.
+const translateKeyValue = (property: ChartXAxisProperty, value: string): string => {
+  const key =
+    property === ChartXAxisProperty.PRIORITY
+      ? (value ?? "").toLowerCase()
+      : property === ChartXAxisProperty.STATE_GROUPS
+        ? `common.state_group.${(value ?? "").toLowerCase()}`
+        : undefined;
+  if (!key) return capitalizeFirstLetter(value);
+  const translated = i18nInstance.t(key);
+  return translated && translated !== key ? translated : capitalizeFirstLetter(value);
+};
+
 export const parseChartData = (
   data: TChart | null | undefined,
   xAxisProperty: ChartXAxisProperty | null | undefined,
@@ -78,7 +95,7 @@ export const parseChartData = (
     if (xAxisProperty) {
       // capitalize first letter if xAxisProperty is in TO_CAPITALIZE_PROPERTIES and no groupByProperty is set
       if (TO_CAPITALIZE_PROPERTIES.includes(xAxisProperty)) {
-        datum.name = capitalizeFirstLetter(datum.name);
+        datum.name = translateKeyValue(xAxisProperty, datum.name);
       }
 
       // parse timestamp to visual date if xAxisProperty is in WIDGET_X_AXIS_DATE_PROPERTIES
@@ -98,7 +115,7 @@ export const parseChartData = (
   if (groupByProperty) {
     if (TO_CAPITALIZE_PROPERTIES.includes(groupByProperty)) {
       Object.keys(updatedSchema).forEach((key) => {
-        updatedSchema[key] = capitalizeFirstLetter(updatedSchema[key]);
+        updatedSchema[key] = translateKeyValue(groupByProperty, updatedSchema[key]);
       });
     }
 

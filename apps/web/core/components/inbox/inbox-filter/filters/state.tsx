@@ -49,7 +49,7 @@ export const FilterState = observer(function FilterState(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`State${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("common.state")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -61,7 +61,7 @@ export const FilterState = observer(function FilterState(props: Props) {
                 {filteredOptions.slice(0, itemsToRender).map((state) => (
                   <FilterOption
                     key={state?.id}
-                    isChecked={filterValue?.includes(state?.id) ? true : false}
+                    isChecked={!!filterValue?.includes(state?.id)}
                     onClick={() => handleInboxIssueFilters("state", handleFilterValue(state.id))}
                     icon={
                       <StateGroupIcon

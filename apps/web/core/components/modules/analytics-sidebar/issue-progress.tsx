@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable oxc/const-comparisons -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { Fragment, useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import { useSearchParams } from "next/navigation";
@@ -59,7 +61,7 @@ export const ModuleAnalyticsProgress = observer(function ModuleAnalyticsProgress
   const selectedStateGroups = moduleFilter?.findFirstConditionByPropertyAndOperator("state_group", "in");
   const moduleDetails = getModuleById(moduleId);
   const plotType: TModulePlotType = getPlotTypeByModuleId(moduleId);
-  const isCurrentProjectEstimateEnabled = projectId && areEstimateEnabledByProjectId(projectId) ? true : false;
+  const isCurrentProjectEstimateEnabled = !!projectId && !!areEstimateEnabledByProjectId(projectId);
   const estimateDetails =
     isCurrentProjectEstimateEnabled && currentActiveEstimateId && estimateById(currentActiveEstimateId);
   const isCurrentEstimateTypeIsPoints = estimateDetails && estimateDetails?.type === EEstimateSystem.POINTS;
@@ -120,7 +122,7 @@ export const ModuleAnalyticsProgress = observer(function ModuleAnalyticsProgress
   if (!moduleDetails) return <></>;
   return (
     <div className="space-y-4 border-t border-subtle px-3 py-4">
-      <Disclosure defaultOpen={isModuleDateValid ? true : false}>
+      <Disclosure defaultOpen={!!isModuleDateValid}>
         {({ open }) => (
           <div className="space-y-6">
             {/* progress bar header */}
@@ -187,13 +189,13 @@ export const ModuleAnalyticsProgress = observer(function ModuleAnalyticsProgress
                         <ProgressChart
                           distribution={completionChartDistributionData}
                           totalIssues={totalEstimatePoints}
-                          plotTitle={"points"}
+                          plotTitle={t("points")}
                         />
                       ) : (
                         <ProgressChart
                           distribution={completionChartDistributionData}
                           totalIssues={totalIssues}
-                          plotTitle={"work items"}
+                          plotTitle={t("issues")}
                         />
                       )}
                     </Fragment>

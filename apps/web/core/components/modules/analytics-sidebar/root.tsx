@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable no-shadow -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
@@ -71,7 +73,7 @@ export const ModuleAnalyticsSidebar = observer(function ModuleAnalyticsSidebar(p
   const moduleDetails = getModuleById(moduleId);
   const areEstimateEnabled = projectId && areEstimateEnabledByProjectId(projectId.toString());
   const estimateType = areEstimateEnabled && currentActiveEstimateId && estimateById(currentActiveEstimateId);
-  const isEstimatePointValid = estimateType && estimateType?.type == EEstimateSystem.POINTS ? true : false;
+  const isEstimatePointValid = !!estimateType && estimateType?.type == EEstimateSystem.POINTS;
 
   const { reset, control } = useForm({
     defaultValues,
@@ -155,12 +157,12 @@ export const ModuleAnalyticsSidebar = observer(function ModuleAnalyticsSidebar(p
 
   const issueCount =
     moduleDetails.total_issues === 0
-      ? "0 work items"
+      ? t("ui.work_items_count", { count: 0 })
       : `${moduleDetails.completed_issues}/${moduleDetails.total_issues}`;
 
   const issueEstimatePointCount =
     moduleDetails.total_estimate_points === 0
-      ? "0 work items"
+      ? t("ui.work_items_count", { count: 0 })
       : `${moduleDetails.completed_estimate_points}/${moduleDetails.total_estimate_points}`;
 
   const isEditingAllowed = allowPermissions(

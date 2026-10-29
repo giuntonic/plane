@@ -58,7 +58,7 @@ export const FilterLabels = observer(function FilterLabels(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`Label${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("common.label")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -70,7 +70,7 @@ export const FilterLabels = observer(function FilterLabels(props: Props) {
                 {sortedOptions.slice(0, itemsToRender).map((label) => (
                   <FilterOption
                     key={label?.id}
-                    isChecked={appliedFilters?.includes(label?.id) ? true : false}
+                    isChecked={!!appliedFilters?.includes(label?.id)}
                     onClick={() => handleUpdate(label?.id)}
                     icon={<LabelIcons color={label.color} />}
                     title={label.name}

@@ -5,6 +5,7 @@
  */
 
 import { useState } from "react";
+import { useTranslation } from "@plane/i18n";
 import { observer } from "mobx-react";
 // plane imports
 import { DEFAULT_GLOBAL_VIEWS_LIST } from "@plane/constants";
@@ -16,6 +17,7 @@ import { useWorkspace } from "@/hooks/store/use-workspace";
 import type { Route } from "./+types/page";
 
 function GlobalViewIssuesPage({ params }: Route.ComponentProps) {
+  const { t } = useTranslation();
   // router
   const { globalViewId } = params;
   // store hooks
@@ -25,7 +27,7 @@ function GlobalViewIssuesPage({ params }: Route.ComponentProps) {
 
   // derived values
   const defaultView = DEFAULT_GLOBAL_VIEWS_LIST.find((view) => view.key === globalViewId);
-  const pageTitle = currentWorkspace?.name ? `${currentWorkspace?.name} - All Views` : undefined;
+  const pageTitle = currentWorkspace?.name ? `${currentWorkspace?.name} - ${t("all_views")}` : undefined;
 
   // handlers
   const toggleLoading = (value: boolean) => setIsLoading(value);

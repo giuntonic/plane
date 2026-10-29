@@ -131,11 +131,11 @@ export const ProjectFeaturesList = observer(function ProjectFeaturesList(props: 
       loading: t("ui.updating_project_feature"),
       success: {
         title: t("toast.success"),
-        message: () => "Project feature updated successfully.",
+        message: () => t("ui.project_feature_updated"),
       },
       error: {
         title: t("toast.error"),
-        message: () => "Something went wrong while updating project feature. Please try again.",
+        message: () => t("ui.project_feature_update_failed"),
       },
     });
     void updateProjectPromise.then(() => {

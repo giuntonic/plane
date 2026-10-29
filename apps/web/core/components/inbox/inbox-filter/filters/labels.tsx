@@ -51,7 +51,7 @@ export const FilterLabels = observer(function FilterLabels(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`Label${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("common.label")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -63,7 +63,7 @@ export const FilterLabels = observer(function FilterLabels(props: Props) {
                 {filteredOptions.slice(0, itemsToRender).map((label) => (
                   <FilterOption
                     key={label?.id}
-                    isChecked={filterValue?.includes(label?.id) ? true : false}
+                    isChecked={!!filterValue?.includes(label?.id)}
                     onClick={() => handleInboxIssueFilters("labels", handleFilterValue(label.id))}
                     icon={<LabelIcons color={label.color} />}
                     title={label.name}

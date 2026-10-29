@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import type { TFilterProperty } from "@plane/types";
 import { EQUALITY_OPERATOR, COLLECTION_OPERATOR } from "@plane/types";
 // local imports
@@ -29,7 +30,7 @@ export const getAssigneeFilterConfig =
   (params: TCreateAssigneeFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Assignees",
+      label: i18nInstance.t("common.assignees"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([
@@ -57,7 +58,7 @@ export const getMentionFilterConfig =
   (params: TCreateMentionFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Mentions",
+      label: i18nInstance.t("mentions"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([
@@ -85,7 +86,7 @@ export const getCreatedByFilterConfig =
   (params: TCreateCreatedByFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Created by",
+      label: i18nInstance.t("common.created_by"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([
@@ -113,7 +114,7 @@ export const getSubscriberFilterConfig =
   (params: TCreateSubscriberFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Subscriber",
+      label: i18nInstance.t("ui.subscriber"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([

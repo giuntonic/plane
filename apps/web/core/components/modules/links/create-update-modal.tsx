@@ -72,7 +72,7 @@ export function CreateUpdateModuleLinkModal(props: Props) {
       setToast({
         type: TOAST_TYPE.ERROR,
         title: t("toast.error"),
-        message: error?.data?.error ?? "Some error occurred. Please try again.",
+        message: error?.data?.error ?? t("something_went_wrong_please_try_again"),
       });
     }
   };
@@ -100,7 +100,7 @@ export function CreateUpdateModuleLinkModal(props: Props) {
                 control={control}
                 name="url"
                 rules={{
-                  required: "URL is required",
+                  required: t("ui.url_required"),
                 }}
                 render={({ field: { value, onChange, ref } }) => (
                   <Input

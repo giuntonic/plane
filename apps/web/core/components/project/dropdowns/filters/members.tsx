@@ -60,7 +60,7 @@ export const FilterMembers = observer(function FilterMembers(props: Props) {
   return (
     <>
       <FilterHeader
-        title={`Members${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
+        title={`${t("common.members")}${appliedFiltersCount > 0 ? ` (${appliedFiltersCount})` : ""}`}
         isPreviewEnabled={previewEnabled}
         handleIsPreviewEnabled={() => setPreviewEnabled(!previewEnabled)}
       />
@@ -76,7 +76,7 @@ export const FilterMembers = observer(function FilterMembers(props: Props) {
                   return (
                     <FilterOption
                       key={`member-${member.id}`}
-                      isChecked={appliedFilters?.includes(member.id) ? true : false}
+                      isChecked={!!appliedFilters?.includes(member.id)}
                       onClick={() => handleUpdate(member.id)}
                       icon={
                         <Avatar

@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+// oxlint-disable jsx_a11y/tabindex-no-positive -- upstream: avisos antigos do Plane neste arquivo; a Pespo só traduziu textos aqui
+
 import { useTranslation } from "@plane/i18n";
 import { useState } from "react";
 // ui
@@ -48,7 +50,7 @@ export function ArchiveRestoreProjectModal(props: Props) {
         setToast({
           type: TOAST_TYPE.SUCCESS,
           title: t("ui.archive_success"),
-          message: `${projectDetails.name} has been archived successfully`,
+          message: t("ui.project_archived_message", { name: projectDetails.name }),
         });
         onClose();
         router.push(`/${workspaceSlug}/projects/`);
@@ -71,7 +73,7 @@ export function ArchiveRestoreProjectModal(props: Props) {
         setToast({
           type: TOAST_TYPE.SUCCESS,
           title: t("ui.restore_success"),
-          message: `You can find ${projectDetails.name} in your projects.`,
+          message: t("ui.project_restored_message", { name: projectDetails.name }),
         });
         onClose();
         router.push(`/${workspaceSlug}/projects/`);
@@ -94,9 +96,7 @@ export function ArchiveRestoreProjectModal(props: Props) {
           {archive ? t("archive") : t("restore")} {projectDetails.name}
         </h3>
         <p className="mt-3 text-13 text-secondary">
-          {archive
-            ? "This project and its work items, cycles, modules, and pages will be archived. Its work items won't appear in search. Only project admins can restore the project."
-            : "Restoring a project will activate it and make it visible to all members of the project. Are you sure you want to continue?"}
+          {archive ? t("ui.archive_project_description") : t("ui.restore_project_description")}
         </p>
         <div className="mt-3 flex justify-end gap-2">
           <Button variant="secondary" size="lg" onClick={onClose}>

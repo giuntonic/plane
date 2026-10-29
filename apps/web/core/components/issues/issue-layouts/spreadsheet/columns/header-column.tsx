@@ -15,6 +15,7 @@ import type { IIssueDisplayFilterOptions, IIssueDisplayProperties, TIssueOrderBy
 import { CustomMenu, Row } from "@plane/ui";
 import useLocalStorage from "@/hooks/use-local-storage";
 import { SpreadSheetPropertyIcon } from "../../utils";
+import { translateSortOrderTitle } from "@/components/common/sort-order-title";
 
 interface Props {
   property: keyof IIssueDisplayProperties;
@@ -86,9 +87,9 @@ export function HeaderColumn(props: Props) {
         >
           <div className="flex items-center gap-2">
             <ArrowDownWideNarrow className="h-3 w-3 stroke-[1.5]" />
-            <span>{propertyDetails.ascendingOrderTitle}</span>
+            <span>{translateSortOrderTitle(t, propertyDetails.ascendingOrderTitle)}</span>
             <MoveRight className="h-3 w-3" />
-            <span>{propertyDetails.descendingOrderTitle}</span>
+            <span>{translateSortOrderTitle(t, propertyDetails.descendingOrderTitle)}</span>
           </div>
 
           {selectedMenuItem === `${propertyDetails.ascendingOrderKey}_${property}` && <CheckIcon className="h-3 w-3" />}
@@ -104,9 +105,9 @@ export function HeaderColumn(props: Props) {
         >
           <div className="flex items-center gap-2">
             <ArrowUpNarrowWide className="h-3 w-3 stroke-[1.5]" />
-            <span>{propertyDetails.descendingOrderTitle}</span>
+            <span>{translateSortOrderTitle(t, propertyDetails.descendingOrderTitle)}</span>
             <MoveRight className="h-3 w-3" />
-            <span>{propertyDetails.ascendingOrderTitle}</span>
+            <span>{translateSortOrderTitle(t, propertyDetails.ascendingOrderTitle)}</span>
           </div>
 
           {selectedMenuItem === `${propertyDetails.descendingOrderKey}_${property}` && (

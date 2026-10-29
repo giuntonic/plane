@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import { i18nInstance } from "@plane/i18n";
+
 /**
  * Input Validation Utilities
  * Following OWASP Input Validation best practices using allowlist approach
@@ -71,19 +73,19 @@ export const SLUG_REGEX = /^[\p{L}\p{N}_-]+$/u;
  */
 export const validatePersonName = (name: string): boolean | string => {
   if (!name || name.trim() === "") {
-    return "Name is required";
+    return i18nInstance.t("ui.validation.name_required");
   }
 
   if (name.length > 50) {
-    return "Name must be 50 characters or less";
+    return i18nInstance.t("ui.validation.name_max_50");
   }
 
   if (hasInjectionRiskChars(name)) {
-    return "Names cannot contain special characters like < > ' \" { } [ ] * ^ ! # %";
+    return i18nInstance.t("ui.validation.name_special_chars");
   }
 
   if (!PERSON_NAME_REGEX.test(name)) {
-    return "Names can only contain letters, spaces, hyphens, and apostrophes";
+    return i18nInstance.t("ui.validation.name_allowed_chars");
   }
 
   return true;
@@ -105,15 +107,15 @@ export const validateDisplayName = (displayName: string): boolean | string => {
   }
 
   if (displayName.length > 50) {
-    return "Display name must be 50 characters or less";
+    return i18nInstance.t("ui.validation.display_name_max_50");
   }
 
   if (hasInjectionRiskChars(displayName)) {
-    return "Display name cannot contain special characters like < > ' \" { } [ ] * ^ ! # %";
+    return i18nInstance.t("ui.validation.display_name_special_chars");
   }
 
   if (!DISPLAY_NAME_REGEX.test(displayName)) {
-    return "Display name can only contain letters, numbers, periods, hyphens, and underscores";
+    return i18nInstance.t("ui.validation.display_name_allowed_chars");
   }
 
   return true;
@@ -131,23 +133,23 @@ export const validateDisplayName = (displayName: string): boolean | string => {
  */
 export const validateCompanyName = (companyName: string, required: boolean = false): boolean | string => {
   if (!companyName || companyName.trim() === "") {
-    return required ? "Company name is required" : true;
+    return required ? i18nInstance.t("ui.validation.company_name_required") : true;
   }
 
   if (companyName.length > 80) {
-    return "Company name must be 80 characters or less";
+    return i18nInstance.t("ui.validation.company_name_max_80");
   }
 
   if (hasInjectionRiskChars(companyName)) {
-    return "Company name cannot contain special characters like < > ' \" { } [ ] * ^ ! # %";
+    return i18nInstance.t("ui.validation.company_name_special_chars");
   }
 
   if (!COMPANY_NAME_REGEX.test(companyName)) {
-    return "Company name can only contain letters, numbers, spaces, hyphens, and underscores";
+    return i18nInstance.t("ui.validation.company_name_allowed_chars");
   }
 
   if (!HAS_ALPHANUMERIC_REGEX.test(companyName)) {
-    return "Company name must contain at least one letter or number";
+    return i18nInstance.t("ui.validation.company_name_needs_alnum");
   }
 
   return true;
@@ -165,23 +167,23 @@ export const validateCompanyName = (companyName: string, required: boolean = fal
  */
 export const validateWorkspaceName = (workspaceName: string, required: boolean = false): boolean | string => {
   if (!workspaceName || workspaceName.trim() === "") {
-    return required ? "Workspace name is required" : true;
+    return required ? i18nInstance.t("ui.validation.workspace_name_required") : true;
   }
 
   if (workspaceName.length > 80) {
-    return "Workspace name must be 80 characters or less";
+    return i18nInstance.t("ui.validation.workspace_name_max_80");
   }
 
   if (hasInjectionRiskChars(workspaceName)) {
-    return "Workspace name cannot contain special characters like < > ' \" { } [ ] * ^ ! # %";
+    return i18nInstance.t("ui.validation.workspace_name_special_chars");
   }
 
   if (!COMPANY_NAME_REGEX.test(workspaceName)) {
-    return "Workspace name can only contain letters, numbers, spaces, hyphens, and underscores";
+    return i18nInstance.t("ui.validation.workspace_name_allowed_chars");
   }
 
   if (!HAS_ALPHANUMERIC_REGEX.test(workspaceName)) {
-    return "Workspace name must contain at least one letter or number";
+    return i18nInstance.t("ui.validation.workspace_name_needs_alnum");
   }
 
   return true;
@@ -198,19 +200,19 @@ export const validateWorkspaceName = (workspaceName: string, required: boolean =
  */
 export const validateSlug = (slug: string): boolean | string => {
   if (!slug || slug.trim() === "") {
-    return "Slug is required";
+    return i18nInstance.t("ui.validation.slug_required");
   }
 
   if (slug.length > 48) {
-    return "Slug must be 48 characters or less";
+    return i18nInstance.t("ui.validation.slug_max_48");
   }
 
   if (hasInjectionRiskChars(slug)) {
-    return "Slug cannot contain special characters like < > ' \" { } [ ] * ^ ! # %";
+    return i18nInstance.t("ui.validation.slug_special_chars");
   }
 
   if (!SLUG_REGEX.test(slug)) {
-    return "Slug can only contain letters, numbers, hyphens, and underscores";
+    return i18nInstance.t("ui.validation.slug_allowed_chars");
   }
 
   return true;

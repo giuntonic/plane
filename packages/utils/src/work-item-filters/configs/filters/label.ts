@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import type { IIssueLabel, TFilterProperty, TSupportedOperators } from "@plane/types";
 import { EQUALITY_OPERATOR, COLLECTION_OPERATOR } from "@plane/types";
 // local imports
@@ -53,7 +54,7 @@ export const getLabelFilterConfig =
   (params: TCreateLabelFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Label",
+      label: i18nInstance.t("common.labels"),
       ...params,
       icon: params.filterIcon,
       supportedOperatorConfigsMap: new Map([

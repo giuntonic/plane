@@ -5,6 +5,7 @@
  */
 
 // plane imports
+import { i18nInstance } from "@plane/i18n";
 import type { TFilterProperty } from "@plane/types";
 // local imports
 import type { TCreateFilterConfig, TCreateDateFilterParams } from "../../../rich-filters";
@@ -23,7 +24,7 @@ export const getStartDateFilterConfig =
   (params: TCreateDateFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Start date",
+      label: i18nInstance.t("start_date"),
       ...params,
       icon: params.filterIcon,
       allowMultipleFilters: true,
@@ -41,7 +42,7 @@ export const getTargetDateFilterConfig =
   (params: TCreateDateFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Target date",
+      label: i18nInstance.t("due_date"),
       ...params,
       icon: params.filterIcon,
       allowMultipleFilters: true,
@@ -59,7 +60,7 @@ export const getCreatedAtFilterConfig =
   (params: TCreateDateFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Created at",
+      label: i18nInstance.t("common.created_at"),
       ...params,
       icon: params.filterIcon,
       allowMultipleFilters: true,
@@ -77,7 +78,7 @@ export const getUpdatedAtFilterConfig =
   (params: TCreateDateFilterParams) =>
     createFilterConfig<P>({
       id: key,
-      label: "Updated at",
+      label: i18nInstance.t("common.updated_at"),
       ...params,
       icon: params.filterIcon,
       allowMultipleFilters: true,

@@ -5,6 +5,7 @@
  */
 
 import * as React from "react";
+import { useTranslation } from "@plane/i18n";
 import { Combobox as BaseCombobox } from "@base-ui-components/react/combobox";
 import { SearchIcon } from "../icons";
 import { cn } from "../utils/classname";
@@ -116,13 +117,15 @@ function ComboboxOptions({
   className,
   inputClassName,
   optionsContainerClassName,
-  emptyMessage = "No results found",
+  emptyMessage: emptyMessageProp,
   positionerClassName,
   searchQuery: controlledSearchQuery,
   onSearchQueryChange,
   onSearchQueryKeyDown,
   dataPreventOutsideClick,
 }: ComboboxOptionsProps) {
+  const { t } = useTranslation();
+  const emptyMessage = emptyMessageProp ?? t("ui.no_results_found");
   // const [searchQuery, setSearchQuery] = React.useState("");
   const [internalSearchQuery, setInternalSearchQuery] = React.useState("");
 
