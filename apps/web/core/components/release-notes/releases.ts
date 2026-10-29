@@ -31,6 +31,7 @@ export const PESPO_RELEASES: TPespoRelease[] = [
     fixes: [
       "Os ícones no fim da linha da subtarefa (responsável, prazo, transformar em item, adicionar e excluir) ficavam desalinhados.",
       '"Data de vencimento" e outros rótulos longos das propriedades cobriam o campo ao lado.',
+      'No painel lateral, mexer no "Repetir", confirmar a exclusão de uma checklist ou usar "Transformar em subtarefa" e "Salvar como modelo" fechava o item.',
     ],
   },
   {

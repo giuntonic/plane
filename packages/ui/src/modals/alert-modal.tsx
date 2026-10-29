@@ -36,6 +36,8 @@ type Props = {
   variant?: TModalVariant;
   width?: EModalWidth;
   customIcon?: React.ReactNode;
+  /** Same as ModalCore's: keeps panels that close on outside clicks (the peek) open while this modal is used. */
+  preventOutsideClick?: boolean;
 };
 
 const VARIANT_ICONS: Record<TModalVariant, LucideIcon> = {
@@ -68,6 +70,7 @@ export function AlertModalCore(props: Props) {
     variant = "danger",
     width = EModalWidth.XL,
     customIcon,
+    preventOutsideClick = false,
   } = props;
   const { t } = useTranslation();
   const primaryButtonText = primaryButtonTextProp ?? {
@@ -79,7 +82,13 @@ export function AlertModalCore(props: Props) {
   const Icon = VARIANT_ICONS[variant];
 
   return (
-    <ModalCore isOpen={isOpen} handleClose={handleClose} position={position} width={width}>
+    <ModalCore
+      isOpen={isOpen}
+      handleClose={handleClose}
+      position={position}
+      width={width}
+      preventOutsideClick={preventOutsideClick}
+    >
       <div className="flex flex-col items-center gap-4 p-5 sm:flex-row sm:items-start">
         {!hideIcon && (
           <span
@@ -100,6 +109,7 @@ export function AlertModalCore(props: Props) {
         <Button variant="secondary" onClick={handleClose}>
           {secondaryButtonText}
         </Button>
+        {/* oxlint-disable-next-line jsx_a11y/tabindex-no-positive -- upstream: o foco inicial vai para o botão principal */}
         <Button variant={BUTTON_VARIANTS[variant]} tabIndex={1} onClick={handleSubmit} loading={isSubmitting}>
           {isSubmitting ? primaryButtonText.loading : primaryButtonText.default}
         </Button>

@@ -189,7 +189,9 @@ export const IssueNamedChecklist = observer(function IssueNamedChecklist(props: 
           className="px-1.5 pb-2"
         />
       )}
+      {/* preventOutsideClick: no peek, o clique em "Excluir" fechava o painel (e a exclusão não acontecia) */}
       <AlertModalCore
+        preventOutsideClick
         isOpen={isDeleteOpen}
         handleClose={() => setIsDeleteOpen(false)}
         handleSubmit={() => void handleDelete()}

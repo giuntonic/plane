@@ -273,9 +273,22 @@ Correções feitas depois do merge:
   ficam num contêiner da altura da primeira linha do texto, centralizados
   (`checklist-tree/item.tsx`, que vale também para o widget Tarefas da home). O ↗ ficou do tamanho
   dos outros botões (`checklist/extras.tsx`).
-- **Deploy:** rebuildar só o `web`. Não tem migration nem mudança no backend.
+- **Cliques que fechavam o peek:** o peek fecha com qualquer `mousedown` fora dele
+  (`hooks/use-peek-overview-outside-click.tsx`), exceto dentro de um elemento com `data-prevent-outside-click`.
+  O painel do "Repetir" (Popover num portal), a confirmação de excluir checklist (`AlertModalCore`) e os modais
+  globais "Transformar em subtarefa" e "Salvar como modelo" ficam fora do peek e não tinham a marca, então
+  qualquer clique neles fechava o item.
+  - O painel do "Repetir" ganhou `data-prevent-outside-click`.
+  - Os modais passaram `preventOutsideClick` ao `ModalCore`. O `AlertModalCore` (`packages/ui`) ganhou a prop
+    `preventOutsideClick`, repassada ao `ModalCore`, desligada por padrão, então o upstream não muda.
+  - Enquanto um dos dois modais globais está aberto, o callback do peek (`peek-overview/view.tsx`) também não
+    fecha. Isso cobre o seletor de item que abre de dentro do "Transformar em subtarefa".
+  - Clicar fora de verdade (fora do peek e sem modal aberto) continua fechando.
+- **Deploy:** rebuildar só o `web`. Não tem migration nem mudança no backend. A mudança em `packages/ui` entra
+  no build do `web`.
 - **Junto:** avisos de lint antigos do upstream anotados ou corrigidos nos arquivos tocados
-  (`issue-detail/root.tsx`, `peek-overview/header.tsx`, `issue-detail/parent-select.tsx`).
+  (`issue-detail/root.tsx`, `peek-overview/header.tsx`, `issue-detail/parent-select.tsx`,
+  `packages/ui/src/modals/alert-modal.tsx`).
 
 ---
 

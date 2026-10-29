@@ -70,7 +70,7 @@ export const SaveAsTemplateModal = observer(function SaveAsTemplateModal(props: 
   };
 
   return (
-    <ModalCore isOpen handleClose={close}>
+    <ModalCore isOpen handleClose={close} preventOutsideClick>
       <form onSubmit={(e) => void handleSubmit(e)}>
         <div className="space-y-4 p-5">
           <div className="space-y-1">
