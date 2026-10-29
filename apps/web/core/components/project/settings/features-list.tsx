@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import { Shapes } from "lucide-react";
 import { observer } from "mobx-react";
 // plane imports
 import { i18nInstance, useTranslation } from "@plane/i18n";
@@ -90,6 +91,20 @@ const PROJECT_FEATURES_LIST = {
       return i18nInstance.t("ui.consider_and_discuss_work_items_before_you");
     },
     icon: <IntakeIcon className="h-5 w-5 flex-shrink-0 text-tertiary" />,
+    isPro: false,
+    isEnabled: true,
+  },
+  // Pespo: aba "Peças" (painel de peças do cliente)
+  pieces: {
+    key: "pieces",
+    property: "pieces_view",
+    get title() {
+      return i18nInstance.t("pieces");
+    },
+    get description() {
+      return i18nInstance.t("pieces_description");
+    },
+    icon: <Shapes className="h-5 w-5 flex-shrink-0 text-tertiary" />,
     isPro: false,
     isEnabled: true,
   },

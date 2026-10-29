@@ -536,3 +536,26 @@ class TestProjectAPIPatchDelete(TestProjectBase):
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
         assert Project.objects.filter(id=project.id).exists()
+
+
+@pytest.mark.contract
+class TestProjectPiecesFeature(TestProjectBase):
+    """Pespo: a aba "Peças" é uma funcionalidade do projeto (pieces_view), ligada por padrão."""
+
+    @pytest.mark.django_db
+    def test_pieces_view_is_on_by_default_and_can_be_turned_off(self, session_client, workspace, create_user):
+        project = Project.objects.create(name="Cliente", identifier="CLI", workspace=workspace)
+        ProjectMember.objects.create(project=project, member=create_user, role=20, is_active=True)
+
+        response = session_client.get(self.get_project_url(workspace.slug))
+        assert response.status_code == status.HTTP_200_OK
+        listed = next(item for item in response.json() if item["id"] == str(project.id))
+        assert listed["pieces_view"] is True
+
+        response = session_client.patch(
+            self.get_project_url(workspace.slug, pk=project.id), {"pieces_view": False}, format="json"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json()["pieces_view"] is False
+        project.refresh_from_db()
+        assert project.pieces_view is False

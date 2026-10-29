@@ -491,6 +491,13 @@
         "loading": "Updating project feature...",
         "success": "Project feature updated successfully.",
         "error": "Something went wrong while updating project feature. Please try again."
+      },
+      "pieces": {
+        "title": "Pieces",
+        "short_title": "Pieces",
+        "description": "The client's pieces panel: contract, balance per category, pieces by status and new piece requests.",
+        "toggle_title": "Enable pieces",
+        "toggle_description": "The Pieces tab shows up in the project, with the client's contract panel."
       }
     },
     "project_updates": {

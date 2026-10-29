@@ -110,7 +110,7 @@ export const useNavigationItems = ({
         href: `/${workspaceSlug}/projects/${projectId}/dashboard`,
         icon: Shapes,
         access: [EUserPermissions.ADMIN, EUserPermissions.MEMBER, EUserPermissions.GUEST],
-        shouldRender: true,
+        shouldRender: !!project?.pieces_view,
         sortOrder: 7,
       },
       {

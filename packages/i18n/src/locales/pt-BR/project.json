@@ -333,6 +333,13 @@
         "primary_button": {
           "text": "Gerenciar funcionalidades"
         }
+      },
+      "pieces": {
+        "title": "As peças não estão ativadas neste projeto.",
+        "description": "O painel de peças mostra o contrato do cliente, o saldo por categoria e as peças por situação. Ative as peças nas configurações do projeto para usar o painel.",
+        "primary_button": {
+          "text": "Gerenciar funcionalidades"
+        }
       }
     }
   },

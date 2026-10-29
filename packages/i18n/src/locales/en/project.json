@@ -333,6 +333,13 @@
         "primary_button": {
           "text": "Manage features"
         }
+      },
+      "pieces": {
+        "title": "Pieces are not enabled for this project.",
+        "description": "The pieces panel shows the client's contract, the balance per category and the pieces by status. Enable pieces in the project settings to use it.",
+        "primary_button": {
+          "text": "Manage features"
+        }
       }
     }
   },

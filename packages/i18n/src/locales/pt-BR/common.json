@@ -2249,5 +2249,7 @@
     "badge_aria": "Pespo Hub versão {version}: ver novidades",
     "see_all": "Ver novidades e correções"
   },
-  "work_item_copy_name": "{name} (cópia)"
+  "work_item_copy_name": "{name} (cópia)",
+  "pieces": "Peças",
+  "pieces_description": "Contrato do cliente, saldo de peças por categoria e pedido de peças novas."
 }
