@@ -4,7 +4,9 @@
 
 # Django imports
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 # Module imports
 from .project import ProjectBaseModel
@@ -51,3 +53,55 @@ class MediaReviewComment(ProjectBaseModel):
 
     def __str__(self):
         return f"{self.asset_id} -> {self.text[:50]}"
+
+
+class MediaRendition(models.Model):
+    """Pespo: o que a conversão gerou para um vídeo anexado (``plane/bgtasks/media_review_task.py``).
+
+    ``playback_key`` é uma cópia em MP4 (H.264/AAC, até 1080p) quando o original não toca bem no
+    navegador; vazio quando o original já serve. ``poster_key`` é um quadro do vídeo e ``sprite_key`` uma
+    grade de miniaturas para a linha do tempo, descrita em ``sprite`` (intervalo, colunas, linhas e
+    tamanho de cada miniatura). Os arquivos ficam no mesmo bucket, em ``media-review/<id do anexo>/``."""
+
+    class Status(models.TextChoices):
+        PENDING = "pending"
+        PROCESSING = "processing"
+        READY = "ready"
+        FAILED = "failed"
+
+    asset = models.OneToOneField(
+        "db.FileAsset", on_delete=models.CASCADE, primary_key=True, related_name="media_rendition"
+    )
+    status = models.CharField(max_length=16, choices=Status.choices, default=Status.PENDING)
+    duration = models.FloatField(null=True, blank=True)
+    width = models.IntegerField(null=True, blank=True)
+    height = models.IntegerField(null=True, blank=True)
+    fps = models.FloatField(null=True, blank=True)
+    video_codec = models.CharField(max_length=32, blank=True, default="")
+    playback_key = models.CharField(max_length=800, blank=True, default="")
+    poster_key = models.CharField(max_length=800, blank=True, default="")
+    sprite_key = models.CharField(max_length=800, blank=True, default="")
+    sprite = models.JSONField(default=dict, blank=True)
+    error = models.TextField(blank=True, default="")
+    attempts = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Media Rendition"
+        verbose_name_plural = "Media Renditions"
+        db_table = "media_renditions"
+
+    def __str__(self):
+        return f"{self.asset_id} -> {self.status}"
+
+
+@receiver(post_delete, sender=MediaRendition)
+def delete_rendition_files_on_delete(sender, instance, **kwargs):
+    """Os arquivos gerados saem do bucket junto com o registro (o anexo apagado de vez leva os dois)."""
+    keys = [key for key in (instance.playback_key, instance.poster_key, instance.sprite_key) if key]
+    if not keys:
+        return
+    from plane.bgtasks.media_review_task import delete_rendition_files
+
+    transaction.on_commit(lambda: delete_rendition_files.delay(keys))

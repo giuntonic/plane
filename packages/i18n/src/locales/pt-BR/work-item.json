@@ -601,6 +601,10 @@
     "approve": "Aprovar peça",
     "approved_by": "Aprovada por {name} em {date}",
     "rework_by": "Refação pedida por {name} em {date}",
-    "latest_only": "Aprovar e pedir refação ficam na versão mais nova."
+    "latest_only": "Aprovar e pedir refação ficam na versão mais nova.",
+    "converting": "Convertendo o vídeo…",
+    "conversion_failed": "Não foi possível converter",
+    "retry": "Tentar de novo",
+    "video_converting": "O vídeo está sendo convertido para tocar no navegador. Ele abre aqui quando terminar."
   }
 }

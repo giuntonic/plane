@@ -199,7 +199,13 @@ from .issue.checklist import (
 )
 from .issue.card import ProjectCardExtrasEndpoint, IssueCoverEndpoint
 from .issue.recurrence import IssueRecurrenceEndpoint
-from .issue.media_review import MediaReviewCommentEndpoint, MediaReviewCommentDetailEndpoint
+from .issue.media_review import (
+    MediaReviewCommentEndpoint,
+    MediaReviewCommentDetailEndpoint,
+    MediaRenditionEndpoint,
+    MediaRenditionFileEndpoint,
+    MediaRenditionRetryEndpoint,
+)
 from .issue.structure import (
     IssueCopyStructureEndpoint,
     IssueChecklistItemConvertEndpoint,

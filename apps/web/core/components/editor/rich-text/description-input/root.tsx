@@ -17,8 +17,6 @@ import { getDescriptionPlaceholderI18n } from "@plane/utils";
 import { RichTextEditor } from "@/components/editor/rich-text";
 // hooks
 import { useEditorAsset } from "@/hooks/store/use-editor-asset";
-import { useIssueDetail } from "@/hooks/store/use-issue-detail";
-import { useUser } from "@/hooks/store/user";
 import { useWorkspace } from "@/hooks/store/use-workspace";
 // plane web services
 import { WorkspaceService } from "@/services/workspace.service";
@@ -137,10 +135,6 @@ export const DescriptionInput = observer(function DescriptionInput(props: Props)
   // store hooks
   const { getWorkspaceBySlug } = useWorkspace();
   const { uploadEditorAsset, duplicateEditorAsset } = useEditorAsset();
-  const { data: currentUser } = useUser();
-  const {
-    comment: { createComment },
-  } = useIssueDetail();
   // derived values
   const workspaceDetails = getWorkspaceBySlug(workspaceSlug);
   // translation
@@ -226,20 +220,6 @@ export const DescriptionInput = observer(function DescriptionInput(props: Props)
     []
   );
 
-  // Pespo: botão "Aprovar edição" do embed do Clapshot — mesmo truque do
-  // botão "Aprovar peça" da Revisão da peça (media-review/decision-bar.tsx):
-  // vira um comentário no work item num formato fixo, sem tabela nova.
-  // Se quiser que essa aprovação também seja registrada no portal, o webhook
-  // Plane -> n8n ("Peça Aprovada") que já escuta o padrão "✅ Peça aprovada..."
-  // precisa ganhar esse regex novo também (não fiz isso aqui).
-  const handleApproveEdit = useCallback(async () => {
-    const authorName = currentUser?.display_name || currentUser?.email || "Alguém";
-    const dateBR = new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
-    await createComment(workspaceSlug, projectId ?? "", entityId, {
-      comment_html: `<p>✅ Edição aprovada por ${authorName} em ${dateBR}</p>`,
-    });
-  }, [createComment, currentUser, entityId, projectId, workspaceSlug]);
-
   if (!workspaceDetails) return null;
 
   if (!localDescription.description_html) return <DescriptionInputLoader />;
@@ -279,7 +259,6 @@ export const DescriptionInput = observer(function DescriptionInput(props: Props)
             })
           }
           containerClassName={containerClassName}
-          onApproveEdit={handleApproveEdit}
           uploadFile={async (blockId, file) => {
             try {
               const { asset_id } = await uploadEditorAsset({

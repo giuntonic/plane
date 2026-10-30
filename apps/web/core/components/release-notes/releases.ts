@@ -32,6 +32,10 @@ export const PESPO_RELEASES: TPespoRelease[] = [
       "Aprovar e pedir refação valem por versão: uma versão nova volta a pedir aprovação.",
       'O botão "Ampliar" abre a revisão em tela grande, com a peça de um lado e os comentários do outro.',
       "Dá para enviar a versão nova direto da revisão. Os comentários continuam aparecendo na atividade do item e avisando quem segue o item.",
+      "Vídeos de até 5 GB nos anexos (os outros arquivos seguem no limite de antes).",
+      "Conversão automática: um vídeo que não abre no navegador (ProRes, HEVC, AVI…) ou pesado demais ganha uma cópia em MP4 que toca em qualquer navegador. O original continua nos anexos para baixar.",
+      "Capa no player e prévia do quadro ao passar o mouse na linha do tempo.",
+      'O Clapshot foi desligado: o comando "/clapshot" saiu do editor, e os blocos antigos viraram um aviso.',
     ],
     fixes: [
       "A Marcação da Peça olhava só o anexo mais recente e, depois da primeira aprovação, não deixava aprovar de novo.",

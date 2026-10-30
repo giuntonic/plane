@@ -601,6 +601,10 @@
     "approve": "Approve piece",
     "approved_by": "Approved by {name} on {date}",
     "rework_by": "Rework requested by {name} on {date}",
-    "latest_only": "Approving and requesting rework happen on the newest version."
+    "latest_only": "Approving and requesting rework happen on the newest version.",
+    "converting": "Converting the video…",
+    "conversion_failed": "The conversion failed",
+    "retry": "Try again",
+    "video_converting": "The video is being converted to play in the browser. It opens here when it's done."
   }
 }

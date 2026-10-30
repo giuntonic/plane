@@ -14,17 +14,19 @@
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { observer } from "mobx-react";
-import { Eye, EyeOff, Maximize2, Upload, X } from "lucide-react";
+import { AlertTriangle, Eye, EyeOff, Loader2, Maximize2, RotateCw, Upload, X } from "lucide-react";
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { Tooltip } from "@plane/propel/tooltip";
 import type { TIssueServiceType } from "@plane/types";
-import { cn, renderFormattedDate } from "@plane/utils";
+import { cn, getFileURL, renderFormattedDate } from "@plane/utils";
 // components
 import { useAttachmentOperations } from "@/components/issues/issue-detail-widgets/attachments/helper";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
+// services
+import { renditionFilePath } from "@/services/media-review.service";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
 import { useFileSize } from "@/hooks/use-file-size";
 // local imports
@@ -51,7 +53,7 @@ import type {
   TReviewVersion,
   TVersionDecision,
 } from "./types";
-import { useMediaReview } from "./use-media-review";
+import { useMediaRenditions, useMediaReview } from "./use-media-review";
 import { ReviewVideoStage } from "./video-stage";
 import type { TVideoStageHandle } from "./video-stage";
 
@@ -105,6 +107,12 @@ export const MediaReview = observer(function MediaReview(props: Props) {
   );
   const review = useMediaReview(workspaceSlug, projectId, issueId, issueServiceType);
   const versions = useReviewVersions(issueId, issueServiceType);
+  const { renditions, retry: retryRendition } = useMediaRenditions(
+    workspaceSlug,
+    projectId,
+    issueId,
+    versions.filter((item) => item.kind === "video").map((item) => item.attachment.id)
+  );
   // state
   const [versionId, setVersionId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -380,6 +388,40 @@ export const MediaReview = observer(function MediaReview(props: Props) {
   const uploading = (getAttachmentsUploadStatusByIssueId(issueId) ?? [])[0];
   const decision = decisionsByVersion.get(version.attachment.id) ?? null;
 
+  // Conversão do vídeo (fase 2): a cópia que toca em qualquer navegador, a capa e as miniaturas.
+  const rendition = isVideo ? renditions?.find((item) => item.asset === version.attachment.id) : undefined;
+  const fileUrl = (kind: "playback" | "poster" | "sprite") =>
+    getFileURL(renditionFilePath(workspaceSlug, projectId, issueId, version.attachment.id, kind)) ?? "";
+  const isReady = rendition?.status === "ready";
+  const isConverting = rendition?.status === "pending" || rendition?.status === "processing";
+  const src =
+    isReady && rendition?.has_playback ? fileUrl("playback") : (getFileURL(version.attachment.asset_url) ?? "");
+  const preview = isReady && rendition?.sprite ? { ...rendition.sprite, url: fileUrl("sprite") } : null;
+
+  const conversionStatus = isConverting ? (
+    <span className="flex shrink-0 items-center gap-1 text-12 text-tertiary">
+      <Loader2 className="size-3.5 animate-spin" />
+      {t("media_review.converting")}
+    </span>
+  ) : rendition?.status === "failed" ? (
+    <Tooltip tooltipContent={rendition.error || t("media_review.conversion_failed")} position="top">
+      <span className="flex shrink-0 items-center gap-1 text-12 text-warning-primary">
+        <AlertTriangle className="size-3.5" />
+        {t("media_review.conversion_failed")}
+        {isTeam && (
+          <button
+            type="button"
+            onClick={() => void withToast(() => retryRendition(version.attachment.id))}
+            className="ml-1 flex items-center gap-0.5 text-secondary underline-offset-2 hover:underline"
+          >
+            <RotateCw className="size-3" />
+            {t("media_review.retry")}
+          </button>
+        )}
+      </span>
+    </Tooltip>
+  ) : null;
+
   const versionPicker = (
     <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
       {versions.map((item) => {
@@ -420,6 +462,7 @@ export const MediaReview = observer(function MediaReview(props: Props) {
   const toolbar = (
     <div className="flex items-center gap-2">
       {versionPicker}
+      {conversionStatus}
       {!disabled && (
         <>
           <input
@@ -478,11 +521,15 @@ export const MediaReview = observer(function MediaReview(props: Props) {
     </div>
   );
 
-  const src = version.attachment.asset_url;
   const stage = isVideo ? (
     <ReviewVideoStage
       ref={stageRef}
       src={src}
+      poster={isReady && rendition?.has_poster ? fileUrl("poster") : undefined}
+      initialAspect={rendition?.width && rendition.height ? rendition.width / rendition.height : null}
+      fps={rendition?.fps}
+      preview={preview}
+      pendingMessage={isConverting ? t("media_review.video_converting") : null}
       markers={markers}
       selectedId={selectedId}
       onMarkerClick={select}
@@ -499,7 +546,7 @@ export const MediaReview = observer(function MediaReview(props: Props) {
     />
   ) : (
     <ReviewImageStage
-      src={src}
+      src={getFileURL(version.attachment.asset_url) ?? ""}
       alt={version.attachment.attributes.name}
       markers={markers}
       selectedId={selectedId}

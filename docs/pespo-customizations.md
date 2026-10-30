@@ -254,8 +254,8 @@ Correções feitas depois do merge:
 
 Decisão do Giuliano (30/10): trazer o que o Clapshot fazia para dentro do Hub e desligar o Clapshot, sem
 migrar o histórico (era tudo teste). Ficaram de fora: o link de revisão sem conta (os clientes vão ser
-convidados do projeto) e a sessão para assistir junto. Esta é a fase 1 (revisão no item); a conversão de
-vídeo e os arquivos grandes vêm na fase 2.
+convidados do projeto) e a sessão para assistir junto. Fase 1: a revisão no item. Fase 2: vídeos grandes e
+conversão. O desligamento do Clapshot na VPS está no `pespo-infra` (`docs/deploy-plane-1.6.md`).
 
 - **Modelo:** `MediaReviewComment` (`db/models/media_review.py`, tabela `media_review_comments`, migration
   `0141`), preso a um anexo do item (`asset`, `FileAsset` com `ISSUE_ATTACHMENT`).
@@ -305,10 +305,49 @@ vídeo e os arquivos grandes vêm na fase 2.
     As cópias dos comentários novos ficam de fora, pelo id em `comment`.
   - "Ampliar" abre a revisão num `ModalCore` com `preventOutsideClick`, para o clique não fechar o painel
     lateral. Enquanto isso, o widget mostra só um aviso, para não ficarem dois players tocando.
+- **Fase 2: vídeos grandes e conversão.**
+  - Limite próprio para vídeo: `VIDEO_FILE_SIZE_LIMIT` (padrão 5 GB, o máximo de um upload de uma vez no S3;
+    nunca menor que `FILE_SIZE_LIMIT`). Vale no POST do anexo (`app/views/issue/attachment.py`, tipos
+    `video/*`) e vai para a tela pela config da instância (`video_file_size_limit`). No frontend,
+    `useFileSize` ganhou `maxVideoFileSize`, `limitFor` e `sizeValidator`: as três áreas que sobem anexo
+    usam `maxSize: maxVideoFileSize` com o `validator` (os outros arquivos seguem no limite normal).
+  - `MediaRendition` (tabela `media_renditions`, migration `0142`, chave = o anexo): estado
+    (`pending`/`processing`/`ready`/`failed`), duração, medidas, quadros por segundo, e as chaves no bucket
+    de `playback.mp4`, `poster.jpg` e `sprite.jpg`, em `media-review/<id do anexo>/`. Apagar o registro
+    apaga os arquivos (`post_delete` → `delete_rendition_files`).
+  - Tarefa `process_media_asset` (`bgtasks/media_review_task.py`), na fila `media` (`CELERY_TASK_ROUTES`):
+    - baixa o original do bucket e lê com o ffprobe (`summarize`: medidas já giradas, fps, codecs);
+    - faz a cópia em MP4 (H.264 `veryfast`/CRF 22, AAC, lado menor até 1080, quadro-chave a cada 2 s,
+      `faststart`) quando o original não toca bem (`needs_playback_copy`): container fora de mp4/mov/webm,
+      codec fora de H.264/VP8/VP9/AV1, cor que não seja 4:2:0 de 8 bits, áudio estranho, mais de 1080 no
+      lado menor ou mais de 20 Mbps;
+    - gera a capa (um quadro perto de 1 s, até 720) e a grade de até 100 miniaturas de 160 px (`sprite_plan`).
+      Na cópia lê só os quadros-chave (rápido); no original lê tudo, porque há vídeos com um quadro-chave só.
+      Sem miniaturas a linha do tempo só não mostra a prévia;
+    - roda com `nice` e `MEDIA_FFMPEG_THREADS` (padrão 2), com limite de tempo (`MEDIA_TRANSCODE_TIMEOUT`,
+      4 h). Pasta temporária em `MEDIA_TMP_DIR` (padrão `/tmp` do container);
+    - qualquer falha vira `failed` com a mensagem, e a equipe tem "Tentar de novo".
+  - Entra na fila quando o upload termina (PATCH do anexo, `queue_media_processing`). Um vídeo sem
+    conversão (enviado antes da 1.6 ou pela API pública) entra na primeira vez que alguém abre a revisão.
+  - Endpoints: `…/media-review/renditions/` (estado dos vídeos do item), `…/renditions/<anexo>/<playback|
+poster|sprite>/` (redireciona para a URL assinada; a do vídeo vale 6 h, porque o player continua pedindo
+    trechos na mesma URL) e `…/renditions/<anexo>/retry/` (só membro e admin).
+  - Tela: `useMediaRenditions` pergunta de novo a cada 5 s enquanto algum vídeo converte. Com a conversão
+    pronta, o player usa a cópia (quando há), a capa, os fps reais e a prévia de miniatura ao passar o mouse
+    na linha do tempo. Trocar o original pela cópia no meio da revisão volta o vídeo ao começo, uma vez.
+  - ffmpeg na imagem da API (`Dockerfile.api`). O worker é um container novo do compose de produção
+    (`media-worker`, `celery -A plane worker -Q media --concurrency=1`), ver `pespo-infra`.
+- **Clapshot desligado no editor:** o comando `/clapshot` saiu do menu "/" (`ce/extensions/slash-commands.tsx`).
+  O bloco continua no schema e na allowlist do `content_validator.py`, para as descrições antigas abrirem,
+  mas agora só mostra um aviso com o link antigo e o botão de tirar (`clapshot-embed/components/node-view.tsx`).
+  Saiu junto o "Aprovar edição" do bloco (`onApproveEdit` em `description-input/root.tsx`, `editor.tsx` e
+  `IEditorPropsExtended`).
 - **Teste local:** o Chromium do Playwright não tem H.264, então os vídeos de teste são WebM, e a resposta
-  precisa aceitar `Range` para o vídeo poder buscar (como o MinIO faz).
-- **Risco de upgrade:** baixo. É tudo arquivo novo, fora o widget `peca-marking/root.tsx` e as URLs em
-  `app/urls/issue.py`.
+  precisa aceitar `Range` para o vídeo poder buscar (como o MinIO faz). Para a conversão, um S3 local com o
+  `moto_server` e `process_media_asset` chamado direto (o broker local é em memória).
+- **Risco de upgrade:** baixo. É quase tudo arquivo novo. Fora isso: o widget `peca-marking/root.tsx`, as
+  URLs em `app/urls/issue.py`, o limite no POST e a fila no PATCH do anexo (`attachment.py`), o
+  `useFileSize` e as três áreas de upload, e o `Dockerfile.api`.
 
 ## Versão 1.5.1: estado nas subtarefas, Peças desligável, propriedades e checklists que recolhem (2026-10-29)
 

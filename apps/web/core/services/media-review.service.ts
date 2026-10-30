@@ -8,6 +8,7 @@
 import { API_BASE_URL } from "@plane/constants";
 // components
 import type {
+  TMediaRendition,
   TMediaReviewComment,
   TMediaReviewCommentPayload,
   TMediaReviewCommentUpdate,
@@ -69,4 +70,40 @@ export class MediaReviewService extends APIService {
   }
 }
 
+/** Caminho (relativo à API) de um arquivo gerado pela conversão: redireciona para o armazenamento. */
+export function renditionFilePath(
+  workspaceSlug: string,
+  projectId: string,
+  issueId: string,
+  assetId: string,
+  kind: "playback" | "poster" | "sprite"
+) {
+  return `/api/workspaces/${workspaceSlug}/projects/${projectId}/issues/${issueId}/media-review/renditions/${assetId}/${kind}/`;
+}
+
+export class MediaRenditionService extends APIService {
+  constructor() {
+    super(API_BASE_URL);
+  }
+
+  async list(workspaceSlug: string, projectId: string, issueId: string): Promise<TMediaRendition[]> {
+    return this.get(`/api/workspaces/${workspaceSlug}/projects/${projectId}/issues/${issueId}/media-review/renditions/`)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async retry(workspaceSlug: string, projectId: string, issueId: string, assetId: string): Promise<TMediaRendition> {
+    return this.post(
+      `/api/workspaces/${workspaceSlug}/projects/${projectId}/issues/${issueId}/media-review/renditions/${assetId}/retry/`
+    )
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+}
+
 export const mediaReviewService = new MediaReviewService();
+export const mediaRenditionService = new MediaRenditionService();

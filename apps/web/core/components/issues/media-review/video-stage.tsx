@@ -13,7 +13,7 @@ import { cn } from "@plane/utils";
 import { DrawingLayer } from "./drawing-layer";
 import { DEFAULT_FPS, PLAYBACK_RATES, estimateFps, formatTimecode } from "./helpers";
 import { ReviewTimeline } from "./timeline";
-import type { TDrawingShape, TDrawingTool, TReviewMarker } from "./types";
+import type { TDrawingShape, TDrawingTool, TReviewMarker, TTimelinePreview } from "./types";
 import { useFitBox } from "./use-fit-box";
 
 export type TVideoStageHandle = {
@@ -24,6 +24,13 @@ export type TVideoStageHandle = {
 
 type Props = {
   src: string;
+  /** Capa (um quadro do vídeo, da conversão) e proporção conhecida antes de o vídeo carregar. */
+  poster?: string;
+  initialAspect?: number | null;
+  /** Miniaturas para a prévia da linha do tempo. */
+  preview?: TTimelinePreview | null;
+  /** Texto no lugar do aviso de erro enquanto a conversão não termina. */
+  pendingMessage?: string | null;
   /** Quadros por segundo conhecidos (conversão); sem isso, o player estima enquanto o vídeo toca. */
   fps?: number | null;
   markers: TReviewMarker[];
@@ -62,6 +69,10 @@ function ControlButton(props: { label: string; onClick: () => void; active?: boo
 export const ReviewVideoStage = forwardRef<TVideoStageHandle, Props>(function ReviewVideoStage(props, ref) {
   const {
     src,
+    poster,
+    initialAspect = null,
+    preview = null,
+    pendingMessage = null,
     fps: knownFps = null,
     markers,
     selectedId,
@@ -78,7 +89,7 @@ export const ReviewVideoStage = forwardRef<TVideoStageHandle, Props>(function Re
   const stageRef = useRef<HTMLDivElement>(null);
   const boxAreaRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [aspect, setAspect] = useState(16 / 9);
+  const [aspect, setAspect] = useState(initialAspect || 16 / 9);
   const [duration, setDuration] = useState(0);
   const [time, setTime] = useState(0);
   const [buffered, setBuffered] = useState(0);
@@ -274,6 +285,7 @@ export const ReviewVideoStage = forwardRef<TVideoStageHandle, Props>(function Re
           <video
             ref={videoRef}
             src={src}
+            poster={poster}
             preload="metadata"
             playsInline
             muted={muted}
@@ -318,7 +330,7 @@ export const ReviewVideoStage = forwardRef<TVideoStageHandle, Props>(function Re
           )}
           {failed && (
             <div className="absolute inset-0 grid place-items-center bg-black/80 p-4 text-center text-13 text-white">
-              {t("media_review.video_failed")}
+              {pendingMessage ?? t("media_review.video_failed")}
             </div>
           )}
         </div>
@@ -333,6 +345,7 @@ export const ReviewVideoStage = forwardRef<TVideoStageHandle, Props>(function Re
           loop={loop}
           onSeek={seek}
           onMarkerClick={onMarkerClick}
+          preview={preview}
         />
         <div className="flex items-center gap-0.5">
           <ControlButton label={playing ? t("media_review.pause") : t("media_review.play")} onClick={togglePlay}>

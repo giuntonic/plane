@@ -92,3 +92,29 @@ export type TReviewMarker = {
   legacy: boolean;
   hasDrawing: boolean;
 };
+
+/** Conversão de um vídeo anexado (cópia que toca no navegador, capa e miniaturas da linha do tempo). */
+export type TMediaRenditionSprite = {
+  interval: number;
+  count: number;
+  columns: number;
+  rows: number;
+  tile_width: number;
+  tile_height: number;
+};
+
+export type TMediaRendition = {
+  asset: string;
+  status: "pending" | "processing" | "ready" | "failed";
+  duration: number | null;
+  width: number | null;
+  height: number | null;
+  fps: number | null;
+  has_playback: boolean;
+  has_poster: boolean;
+  sprite: TMediaRenditionSprite | null;
+  error: string;
+  updated_at: string;
+};
+
+export type TTimelinePreview = TMediaRenditionSprite & { url: string };

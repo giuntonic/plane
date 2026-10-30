@@ -28,6 +28,9 @@ from plane.app.views import (
     IssueRecurrenceEndpoint,
     MediaReviewCommentEndpoint,
     MediaReviewCommentDetailEndpoint,
+    MediaRenditionEndpoint,
+    MediaRenditionFileEndpoint,
+    MediaRenditionRetryEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -215,6 +218,23 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/media-review/comments/<uuid:pk>/",
         MediaReviewCommentDetailEndpoint.as_view(),
         name="project-issue-media-review-comment-detail",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/media-review/renditions/",
+        MediaRenditionEndpoint.as_view(),
+        name="project-issue-media-renditions",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/media-review/renditions/"
+        "<uuid:asset_id>/retry/",
+        MediaRenditionRetryEndpoint.as_view(),
+        name="project-issue-media-rendition-retry",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/media-review/renditions/"
+        "<uuid:asset_id>/<str:kind>/",
+        MediaRenditionFileEndpoint.as_view(),
+        name="project-issue-media-rendition-file",
     ),
     # Pespo: extras dos cards (progresso das subtarefas, capa) e a capa do item
     path(

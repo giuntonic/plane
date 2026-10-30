@@ -9,7 +9,7 @@ import { useTranslation } from "@plane/i18n";
 import { cn } from "@plane/utils";
 // local imports
 import { formatTimecode } from "./helpers";
-import type { TReviewMarker } from "./types";
+import type { TReviewMarker, TTimelinePreview } from "./types";
 
 type Props = {
   duration: number;
@@ -20,11 +20,31 @@ type Props = {
   loop: { start: number | null; end: number | null; enabled: boolean };
   onSeek: (time: number) => void;
   onMarkerClick: (id: string) => void;
+  /** Grade de miniaturas da conversão: mostra o quadro ao passar o mouse. */
+  preview?: TTimelinePreview | null;
 };
+
+function PreviewTile({ preview, time }: { preview: TTimelinePreview; time: number }) {
+  const index = Math.min(preview.count - 1, Math.max(0, Math.floor(time / preview.interval)));
+  const column = index % preview.columns;
+  const row = Math.floor(index / preview.columns);
+  return (
+    <div
+      className="mb-1 rounded-sm border border-white/30 bg-black bg-no-repeat"
+      style={{
+        width: preview.tile_width,
+        height: preview.tile_height,
+        backgroundImage: `url("${preview.url}")`,
+        backgroundSize: `${preview.columns * preview.tile_width}px ${preview.rows * preview.tile_height}px`,
+        backgroundPosition: `-${column * preview.tile_width}px -${row * preview.tile_height}px`,
+      }}
+    />
+  );
+}
 
 /** Linha do tempo do vídeo: arrastar para buscar, os comentários como marcadores e o trecho em repetição. */
 export function ReviewTimeline(props: Props) {
-  const { duration, time, buffered, markers, selectedId, loop, onSeek, onMarkerClick } = props;
+  const { duration, time, buffered, markers, selectedId, loop, onSeek, onMarkerClick, preview = null } = props;
   const { t } = useTranslation();
   const trackRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<number | null>(null);
@@ -101,10 +121,15 @@ export function ReviewTimeline(props: Props) {
         />
         {hover !== null && (
           <div
-            className="pointer-events-none absolute bottom-full mb-1 -translate-x-1/2 rounded-sm bg-black/80 px-1.5 py-0.5 text-11 text-white tabular-nums"
-            style={{ left: `${percent(hover)}%` }}
+            className="pointer-events-none absolute bottom-full z-10 mb-1 flex -translate-x-1/2 flex-col items-center"
+            style={{
+              left: `clamp(${preview ? preview.tile_width / 2 : 20}px, ${percent(hover)}%, calc(100% - ${preview ? preview.tile_width / 2 : 20}px))`,
+            }}
           >
-            {formatTimecode(hover)}
+            {preview && <PreviewTile preview={preview} time={hover} />}
+            <span className="rounded-sm bg-black/80 px-1.5 py-0.5 text-11 text-white tabular-nums">
+              {formatTimecode(hover)}
+            </span>
           </div>
         )}
       </div>

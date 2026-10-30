@@ -9,6 +9,7 @@ import json
 # Django imports
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
+from django.http import HttpResponseRedirect
 from django.utils import timezone
 
 # Third Party imports
@@ -20,8 +21,18 @@ from .. import BaseAPIView
 from plane.app.permissions import allow_permission, ROLE
 from plane.app.serializers.media_review import MAX_TEXT, MediaReviewCommentSerializer, clean_drawing
 from plane.bgtasks.issue_activities_task import issue_activity
+from plane.bgtasks.media_review_task import is_video_asset, queue_media_processing
 from plane.bgtasks.webhook_task import model_activity
-from plane.db.models import FileAsset, Issue, IssueComment, MediaReviewComment, Project, ProjectMember
+from plane.db.models import (
+    FileAsset,
+    Issue,
+    IssueComment,
+    MediaRendition,
+    MediaReviewComment,
+    Project,
+    ProjectMember,
+)
+from plane.settings.storage import S3Storage
 from plane.utils.host import base_host
 
 # Pespo: revisão de peça (vídeo ou imagem) no item de trabalho, no lugar do Clapshot.
@@ -287,3 +298,103 @@ class MediaReviewCommentDetailEndpoint(BaseAPIView):
                 _comment_activity("deleted", request, review.issue, comment, current_instance)
             review.delete(soft=False)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# Conversão dos vídeos (fase 2): estado, e os arquivos gerados por um redirecionamento assinado, como os anexos.
+# A reprodução assinada vale 6 h: um vídeo longo continua pedindo trechos (Range) na mesma URL.
+PLAYBACK_URL_EXPIRATION = 6 * 3600
+RENDITION_FILES = {
+    "playback": ("playback_key", "video/mp4", "playback.mp4"),
+    "poster": ("poster_key", "image/jpeg", "poster.jpg"),
+    "sprite": ("sprite_key", "image/jpeg", "sprite.jpg"),
+}
+
+
+def _video_assets(issue):
+    assets = FileAsset.objects.filter(
+        issue=issue, entity_type=FileAsset.EntityTypeContext.ISSUE_ATTACHMENT, is_uploaded=True, is_deleted=False
+    )
+    return [asset for asset in assets if is_video_asset(asset)]
+
+
+def _rendition_data(rendition):
+    return {
+        "asset": str(rendition.asset_id),
+        "status": rendition.status,
+        "duration": rendition.duration,
+        "width": rendition.width,
+        "height": rendition.height,
+        "fps": rendition.fps,
+        "has_playback": bool(rendition.playback_key),
+        "has_poster": bool(rendition.poster_key),
+        "sprite": rendition.sprite if rendition.sprite_key else None,
+        "error": rendition.error if rendition.status == MediaRendition.Status.FAILED else "",
+        "updated_at": rendition.updated_at,
+    }
+
+
+class MediaRenditionEndpoint(BaseAPIView):
+    """Estado da conversão dos vídeos do item. Um vídeo que ainda não passou pela conversão (enviado antes
+    dela existir, ou por outro caminho) entra na fila aqui."""
+
+    @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])
+    def get(self, request, slug, project_id, issue_id):
+        issue = Issue.objects.filter(workspace__slug=slug, project_id=project_id, pk=issue_id).first()
+        if not issue:
+            return Response({"error": "Issue not found"}, status=status.HTTP_404_NOT_FOUND)
+        assets = _video_assets(issue)
+        existing = {r.asset_id: r for r in MediaRendition.objects.filter(asset__in=assets)}
+        renditions = []
+        for asset in assets:
+            rendition = existing.get(asset.id) or queue_media_processing(asset)
+            if rendition:
+                renditions.append(_rendition_data(rendition))
+        return Response(renditions, status=status.HTTP_200_OK)
+
+
+class MediaRenditionFileEndpoint(BaseAPIView):
+    @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])
+    def get(self, request, slug, project_id, issue_id, asset_id, kind):
+        if kind not in RENDITION_FILES:
+            return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        rendition = MediaRendition.objects.filter(
+            asset_id=asset_id,
+            asset__issue_id=issue_id,
+            asset__issue__project_id=project_id,
+            asset__workspace__slug=slug,
+            asset__is_deleted=False,
+        ).first()
+        field, content_type, filename = RENDITION_FILES[kind]
+        key = getattr(rendition, field, "") if rendition else ""
+        if not key:
+            return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        url = S3Storage(request=request).generate_presigned_url(
+            object_name=key,
+            expiration=PLAYBACK_URL_EXPIRATION if kind == "playback" else None,
+            disposition="inline",
+            filename=filename,
+            content_type=content_type,
+        )
+        if not url:
+            return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        return HttpResponseRedirect(url)
+
+
+class MediaRenditionRetryEndpoint(BaseAPIView):
+    """Tenta converter de novo um vídeo que falhou (só a equipe)."""
+
+    @allow_permission([ROLE.ADMIN, ROLE.MEMBER])
+    def post(self, request, slug, project_id, issue_id, asset_id):
+        asset = FileAsset.objects.filter(
+            pk=asset_id,
+            issue_id=issue_id,
+            issue__project_id=project_id,
+            workspace__slug=slug,
+            entity_type=FileAsset.EntityTypeContext.ISSUE_ATTACHMENT,
+            is_uploaded=True,
+            is_deleted=False,
+        ).first()
+        if not asset or not is_video_asset(asset):
+            return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
+        rendition = queue_media_processing(asset)
+        return Response(_rendition_data(rendition), status=status.HTTP_200_OK)
