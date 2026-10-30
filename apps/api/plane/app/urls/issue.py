@@ -26,6 +26,8 @@ from plane.app.views import (
     ProjectCardExtrasEndpoint,
     IssueCoverEndpoint,
     IssueRecurrenceEndpoint,
+    MediaReviewCommentEndpoint,
+    MediaReviewCommentDetailEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -202,6 +204,17 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/checklists/<uuid:pk>/",
         IssueChecklistDetailEndpoint.as_view(),
         name="project-issue-checklist-detail",
+    ),
+    # Pespo: revisão de peça (comentários no tempo do vídeo ou no ponto da imagem, com desenho)
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/media-review/comments/",
+        MediaReviewCommentEndpoint.as_view(),
+        name="project-issue-media-review-comments",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/media-review/comments/<uuid:pk>/",
+        MediaReviewCommentDetailEndpoint.as_view(),
+        name="project-issue-media-review-comment-detail",
     ),
     # Pespo: extras dos cards (progresso das subtarefas, capa) e a capa do item
     path(

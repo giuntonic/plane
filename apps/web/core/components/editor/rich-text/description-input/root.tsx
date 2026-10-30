@@ -227,7 +227,7 @@ export const DescriptionInput = observer(function DescriptionInput(props: Props)
   );
 
   // Pespo: botão "Aprovar edição" do embed do Clapshot — mesmo truque do
-  // botão "Aprovar peça" da Marcação da Peça (peca-marking/content.tsx):
+  // botão "Aprovar peça" da Revisão da peça (media-review/decision-bar.tsx):
   // vira um comentário no work item num formato fixo, sem tabela nova.
   // Se quiser que essa aprovação também seja registrada no portal, o webhook
   // Plane -> n8n ("Peça Aprovada") que já escuta o padrão "✅ Peça aprovada..."

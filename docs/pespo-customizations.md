@@ -250,6 +250,66 @@ Correções feitas depois do merge:
 
 ---
 
+## Versão 1.6: revisão de vídeo e imagem no item, no lugar do Clapshot (2026-10-30)
+
+Decisão do Giuliano (30/10): trazer o que o Clapshot fazia para dentro do Hub e desligar o Clapshot, sem
+migrar o histórico (era tudo teste). Ficaram de fora: o link de revisão sem conta (os clientes vão ser
+convidados do projeto) e a sessão para assistir junto. Esta é a fase 1 (revisão no item); a conversão de
+vídeo e os arquivos grandes vêm na fase 2.
+
+- **Modelo:** `MediaReviewComment` (`db/models/media_review.py`, tabela `media_review_comments`, migration
+  `0141`), preso a um anexo do item (`asset`, `FileAsset` com `ISSUE_ATTACHMENT`).
+  - No vídeo, `timecode` em segundos; na imagem, `x`/`y` em % (como a Marcação da Peça antiga).
+  - `drawing`: lista de formas `{tool: pen|arrow|rect, color: #rrggbb, width, points}`, com as coordenadas de
+    0 a 1 e a espessura como fração da largura da mídia. O servidor confere e normaliza
+    (`clean_drawing` em `app/serializers/media_review.py`: até 100 formas, 2000 pontos por traço).
+  - Respostas: `parent`, um nível só (responder a uma resposta responde à marcação de cima). Sem posição nem
+    desenho.
+  - `resolved_at`/`resolved_by`: só nas marcações de cima.
+  - Sem soft delete: apagar leva as respostas.
+- **API:** `…/issues/<id>/media-review/comments/` (GET de todas as versões, POST) e `…/comments/<pk>/` (PATCH
+  `text`/`resolved`, DELETE), em `app/views/issue/media_review.py`.
+  - Convidado comenta só nos itens que criou, a menos que o projeto mostre tudo (`guest_view_all_features`),
+    a mesma regra dos comentários.
+  - Editar o texto: só o autor. Resolver: o autor ou membro/admin. Apagar: o autor ou admin.
+  - O GET esconde os comentários de anexos excluídos.
+- **Cópia no feed:** cada comentário da revisão cria um comentário comum (`comment`, OneToOne), com as mesmas
+  tarefas do endpoint de comentários (`issue_activity` para histórico e notificações, `model_activity` para o
+  webhook), disparadas no `on_commit`.
+  - Texto no formato antigo: `🎬 Marcação de X em 0:14: …` e `📍 Marcação de X em (12.3%, 56.7%): …`. As
+    respostas viram `💬 Resposta de X à marcação em 0:14: …`. Desenho sem texto vira `(desenho)`.
+  - Editar atualiza a cópia; apagar apaga a cópia e as das respostas. Apagar só a cópia no feed não mexe na
+    revisão (`SET_NULL`).
+- **Tela** (`components/issues/media-review/`): o widget continua com o id `peca-marking`
+  (`issue-detail-widgets/peca-marking/root.tsx`), agora com o título "Revisão da peça". Só aparece quando o
+  item tem imagem ou vídeo anexado.
+  - Versões: as imagens e os vídeos anexados, do mais antigo (v1) ao mais novo, pelo `created_at`
+    (`buildVersions`). Enviar um anexo novo (inclusive pelo botão da revisão) passa a mostrar a versão nova.
+  - Vídeo (`video-stage.tsx`, `timeline.tsx`): player próprio com marcadores, arrastar para buscar, quadro a
+    quadro, velocidade, trecho em repetição (I/O/L), sem som e tela cheia (F).
+    - Os quadros por segundo são estimados pelo `requestVideoFrameCallback` enquanto o vídeo toca (padrão
+      30). A fase 2 vai mandar o valor real, do ffprobe.
+  - Desenho (`drawing-layer.tsx`): SVG em cima da mídia, numa caixa com a proporção exata dela
+    (`use-fit-box.ts`), para o desenho não sair do lugar em nenhum tamanho de tela.
+    - No vídeo, o desenho só aparece com o vídeo parado. O do comentário escolhido aparece parado no tempo
+      dele.
+    - Começar a desenhar trava o tempo do comentário no quadro desenhado.
+  - Imagem (`image-stage.tsx`): clicar marca o ponto. Um desenho sem ponto usa o começo do primeiro traço.
+  - Aprovar e pedir refação (`decision-bar.tsx`) continuam como comentários de texto fixo. O n8n ("Peça
+    Aprovada") e o painel de peças leem esse formato, então ele não pode mudar.
+    - Cada decisão vale para a versão que era a mais nova quando ela foi feita (`versionAt`).
+    - Os botões só aparecem na versão mais nova. Uma versão nova volta a pedir aprovação; antes, a primeira
+      aprovação escondia os botões para sempre.
+  - Marcações feitas só como comentário (Marcação da Peça antiga, portal do cliente com "do cliente (X)"):
+    lidas do feed (`parseLegacyMark`) e penduradas na versão da época, só leitura, como "Marcação antiga".
+    As cópias dos comentários novos ficam de fora, pelo id em `comment`.
+  - "Ampliar" abre a revisão num `ModalCore` com `preventOutsideClick`, para o clique não fechar o painel
+    lateral. Enquanto isso, o widget mostra só um aviso, para não ficarem dois players tocando.
+- **Teste local:** o Chromium do Playwright não tem H.264, então os vídeos de teste são WebM, e a resposta
+  precisa aceitar `Range` para o vídeo poder buscar (como o MinIO faz).
+- **Risco de upgrade:** baixo. É tudo arquivo novo, fora o widget `peca-marking/root.tsx` e as URLs em
+  `app/urls/issue.py`.
+
 ## Versão 1.5.1: estado nas subtarefas, Peças desligável, propriedades e checklists que recolhem (2026-10-29)
 
 - **Estado na subtarefa:** `IssueChecklistItem.state` (FK opcional para `State`, `SET_NULL`, migration `0140`).
