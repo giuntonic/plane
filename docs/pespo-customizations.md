@@ -250,6 +250,105 @@ Correções feitas depois do merge:
 
 ---
 
+## Versão 1.6: revisão de vídeo e imagem no item, no lugar do Clapshot (2026-10-30)
+
+Decisão do Giuliano (30/10): trazer o que o Clapshot fazia para dentro do Hub e desligar o Clapshot, sem
+migrar o histórico (era tudo teste). Ficaram de fora: o link de revisão sem conta (os clientes vão ser
+convidados do projeto) e a sessão para assistir junto. Fase 1: a revisão no item. Fase 2: vídeos grandes e
+conversão. O desligamento do Clapshot na VPS está no `pespo-infra` (`docs/deploy-plane-1.6.md`).
+
+- **Modelo:** `MediaReviewComment` (`db/models/media_review.py`, tabela `media_review_comments`, migration
+  `0141`), preso a um anexo do item (`asset`, `FileAsset` com `ISSUE_ATTACHMENT`).
+  - No vídeo, `timecode` em segundos; na imagem, `x`/`y` em % (como a Marcação da Peça antiga).
+  - `drawing`: lista de formas `{tool: pen|arrow|rect, color: #rrggbb, width, points}`, com as coordenadas de
+    0 a 1 e a espessura como fração da largura da mídia. O servidor confere e normaliza
+    (`clean_drawing` em `app/serializers/media_review.py`: até 100 formas, 2000 pontos por traço).
+  - Respostas: `parent`, um nível só (responder a uma resposta responde à marcação de cima). Sem posição nem
+    desenho.
+  - `resolved_at`/`resolved_by`: só nas marcações de cima.
+  - Sem soft delete: apagar leva as respostas.
+- **API:** `…/issues/<id>/media-review/comments/` (GET de todas as versões, POST) e `…/comments/<pk>/` (PATCH
+  `text`/`resolved`, DELETE), em `app/views/issue/media_review.py`.
+  - Convidado comenta só nos itens que criou, a menos que o projeto mostre tudo (`guest_view_all_features`),
+    a mesma regra dos comentários.
+  - Editar o texto: só o autor. Resolver: o autor ou membro/admin. Apagar: o autor ou admin.
+  - O GET esconde os comentários de anexos excluídos.
+- **Cópia no feed:** cada comentário da revisão cria um comentário comum (`comment`, OneToOne), com as mesmas
+  tarefas do endpoint de comentários (`issue_activity` para histórico e notificações, `model_activity` para o
+  webhook), disparadas no `on_commit`.
+  - Texto no formato antigo: `🎬 Marcação de X em 0:14: …` e `📍 Marcação de X em (12.3%, 56.7%): …`. As
+    respostas viram `💬 Resposta de X à marcação em 0:14: …`. Desenho sem texto vira `(desenho)`.
+  - Editar atualiza a cópia; apagar apaga a cópia e as das respostas. Apagar só a cópia no feed não mexe na
+    revisão (`SET_NULL`).
+- **Tela** (`components/issues/media-review/`): o widget continua com o id `peca-marking`
+  (`issue-detail-widgets/peca-marking/root.tsx`), agora com o título "Revisão da peça". Só aparece quando o
+  item tem imagem ou vídeo anexado.
+  - Versões: as imagens e os vídeos anexados, do mais antigo (v1) ao mais novo, pelo `created_at`
+    (`buildVersions`). Enviar um anexo novo (inclusive pelo botão da revisão) passa a mostrar a versão nova.
+  - Vídeo (`video-stage.tsx`, `timeline.tsx`): player próprio com marcadores, arrastar para buscar, quadro a
+    quadro, velocidade, trecho em repetição (I/O/L), sem som e tela cheia (F).
+    - Os quadros por segundo são estimados pelo `requestVideoFrameCallback` enquanto o vídeo toca (padrão
+      30). A fase 2 vai mandar o valor real, do ffprobe.
+  - Desenho (`drawing-layer.tsx`): SVG em cima da mídia, numa caixa com a proporção exata dela
+    (`use-fit-box.ts`), para o desenho não sair do lugar em nenhum tamanho de tela.
+    - No vídeo, o desenho só aparece com o vídeo parado. O do comentário escolhido aparece parado no tempo
+      dele.
+    - Começar a desenhar trava o tempo do comentário no quadro desenhado.
+  - Imagem (`image-stage.tsx`): clicar marca o ponto. Um desenho sem ponto usa o começo do primeiro traço.
+  - Aprovar e pedir refação (`decision-bar.tsx`) continuam como comentários de texto fixo. O n8n ("Peça
+    Aprovada") e o painel de peças leem esse formato, então ele não pode mudar.
+    - Cada decisão vale para a versão que era a mais nova quando ela foi feita (`versionAt`).
+    - Os botões só aparecem na versão mais nova. Uma versão nova volta a pedir aprovação; antes, a primeira
+      aprovação escondia os botões para sempre.
+  - Marcações feitas só como comentário (Marcação da Peça antiga, portal do cliente com "do cliente (X)"):
+    lidas do feed (`parseLegacyMark`) e penduradas na versão da época, só leitura, como "Marcação antiga".
+    As cópias dos comentários novos ficam de fora, pelo id em `comment`.
+  - "Ampliar" abre a revisão num `ModalCore` com `preventOutsideClick`, para o clique não fechar o painel
+    lateral. Enquanto isso, o widget mostra só um aviso, para não ficarem dois players tocando.
+- **Fase 2: vídeos grandes e conversão.**
+  - Limite próprio para vídeo: `VIDEO_FILE_SIZE_LIMIT` (padrão 5 GB, o máximo de um upload de uma vez no S3;
+    nunca menor que `FILE_SIZE_LIMIT`). Vale no POST do anexo (`app/views/issue/attachment.py`, tipos
+    `video/*`) e vai para a tela pela config da instância (`video_file_size_limit`). No frontend,
+    `useFileSize` ganhou `maxVideoFileSize`, `limitFor` e `sizeValidator`: as três áreas que sobem anexo
+    usam `maxSize: maxVideoFileSize` com o `validator` (os outros arquivos seguem no limite normal).
+  - `MediaRendition` (tabela `media_renditions`, migration `0142`, chave = o anexo): estado
+    (`pending`/`processing`/`ready`/`failed`), duração, medidas, quadros por segundo, e as chaves no bucket
+    de `playback.mp4`, `poster.jpg` e `sprite.jpg`, em `media-review/<id do anexo>/`. Apagar o registro
+    apaga os arquivos (`post_delete` → `delete_rendition_files`).
+  - Tarefa `process_media_asset` (`bgtasks/media_review_task.py`), na fila `media` (`CELERY_TASK_ROUTES`):
+    - baixa o original do bucket e lê com o ffprobe (`summarize`: medidas já giradas, fps, codecs);
+    - faz a cópia em MP4 (H.264 `veryfast`/CRF 22, AAC, lado menor até 1080, quadro-chave a cada 2 s,
+      `faststart`) quando o original não toca bem (`needs_playback_copy`): container fora de mp4/mov/webm,
+      codec fora de H.264/VP8/VP9/AV1, cor que não seja 4:2:0 de 8 bits, áudio estranho, mais de 1080 no
+      lado menor ou mais de 20 Mbps;
+    - gera a capa (um quadro perto de 1 s, até 720) e a grade de até 100 miniaturas de 160 px (`sprite_plan`).
+      Na cópia lê só os quadros-chave (rápido); no original lê tudo, porque há vídeos com um quadro-chave só.
+      Sem miniaturas a linha do tempo só não mostra a prévia;
+    - roda com `nice` e `MEDIA_FFMPEG_THREADS` (padrão 2), com limite de tempo (`MEDIA_TRANSCODE_TIMEOUT`,
+      4 h). Pasta temporária em `MEDIA_TMP_DIR` (padrão `/tmp` do container);
+    - qualquer falha vira `failed` com a mensagem, e a equipe tem "Tentar de novo".
+  - Entra na fila quando o upload termina (PATCH do anexo, `queue_media_processing`). Um vídeo sem
+    conversão (enviado antes da 1.6 ou pela API pública) entra na primeira vez que alguém abre a revisão.
+  - Endpoints: `…/media-review/renditions/` (estado dos vídeos do item), `…/renditions/<anexo>/<playback|
+poster|sprite>/` (redireciona para a URL assinada; a do vídeo vale 6 h, porque o player continua pedindo
+    trechos na mesma URL) e `…/renditions/<anexo>/retry/` (só membro e admin).
+  - Tela: `useMediaRenditions` pergunta de novo a cada 5 s enquanto algum vídeo converte. Com a conversão
+    pronta, o player usa a cópia (quando há), a capa, os fps reais e a prévia de miniatura ao passar o mouse
+    na linha do tempo. Trocar o original pela cópia no meio da revisão volta o vídeo ao começo, uma vez.
+  - ffmpeg na imagem da API (`Dockerfile.api`). O worker é um container novo do compose de produção
+    (`media-worker`, `celery -A plane worker -Q media --concurrency=1`), ver `pespo-infra`.
+- **Clapshot desligado no editor:** o comando `/clapshot` saiu do menu "/" (`ce/extensions/slash-commands.tsx`).
+  O bloco continua no schema e na allowlist do `content_validator.py`, para as descrições antigas abrirem,
+  mas agora só mostra um aviso com o link antigo e o botão de tirar (`clapshot-embed/components/node-view.tsx`).
+  Saiu junto o "Aprovar edição" do bloco (`onApproveEdit` em `description-input/root.tsx`, `editor.tsx` e
+  `IEditorPropsExtended`).
+- **Teste local:** o Chromium do Playwright não tem H.264, então os vídeos de teste são WebM, e a resposta
+  precisa aceitar `Range` para o vídeo poder buscar (como o MinIO faz). Para a conversão, um S3 local com o
+  `moto_server` e `process_media_asset` chamado direto (o broker local é em memória).
+- **Risco de upgrade:** baixo. É quase tudo arquivo novo. Fora isso: o widget `peca-marking/root.tsx`, as
+  URLs em `app/urls/issue.py`, o limite no POST e a fila no PATCH do anexo (`attachment.py`), o
+  `useFileSize` e as três áreas de upload, e o `Dockerfile.api`.
+
 ## Versão 1.5.1: estado nas subtarefas, Peças desligável, propriedades e checklists que recolhem (2026-10-29)
 
 - **Estado na subtarefa:** `IssueChecklistItem.state` (FK opcional para `State`, `SET_NULL`, migration `0140`).

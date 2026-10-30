@@ -345,9 +345,18 @@ CELERY_IMPORTS = (
     # Pespo
     "plane.bgtasks.piece_briefing_signals_task",
     "plane.bgtasks.issue_recurrence_task",
+    "plane.bgtasks.media_review_task",
 )
 
+# Pespo: a conversão de vídeo da revisão roda numa fila só dela, num worker com uma tarefa por vez.
+CELERY_TASK_ROUTES = {
+    "plane.bgtasks.media_review_task.process_media_asset": {"queue": "media"},
+}
+
 FILE_SIZE_LIMIT = int(os.environ.get("FILE_SIZE_LIMIT", 5242880))
+# Pespo: vídeos da revisão da peça podem ser bem maiores que os outros anexos (padrão 5 GB, o máximo de
+# um upload de uma vez no S3). Nunca menor que o limite geral.
+VIDEO_FILE_SIZE_LIMIT = max(FILE_SIZE_LIMIT, int(os.environ.get("VIDEO_FILE_SIZE_LIMIT", 5 * 1024**3)))
 
 # Unsplash Access key
 UNSPLASH_ACCESS_KEY = os.environ.get("UNSPLASH_ACCESS_KEY")

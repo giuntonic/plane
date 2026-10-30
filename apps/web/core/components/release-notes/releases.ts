@@ -21,6 +21,27 @@ export type TPespoRelease = {
 
 export const PESPO_RELEASES: TPespoRelease[] = [
   {
+    version: "1.6",
+    date: "2026-10-30",
+    summary: "Revisão de vídeo e imagem dentro do item: o que o Clapshot fazia, agora no Pespo Hub.",
+    features: [
+      "Revisão da peça, no lugar da Marcação da Peça: cada imagem ou vídeo anexado vira uma versão (v1, v2…), e os comentários ficam presos à versão.",
+      "No vídeo: comentário no segundo exato, com marcadores na linha do tempo. Também quadro a quadro, velocidade, repetir um trecho e tela cheia, com atalhos de teclado.",
+      "Desenho por cima do quadro ou da imagem: caneta, seta e retângulo, em cinco cores. Clicar no comentário leva ao momento e mostra o desenho.",
+      'Respostas nos comentários e "Marcar como resolvido", com a opção de esconder os resolvidos.',
+      "Aprovar e pedir refação valem por versão: uma versão nova volta a pedir aprovação.",
+      'O botão "Ampliar" abre a revisão em tela grande, com a peça de um lado e os comentários do outro.',
+      "Dá para enviar a versão nova direto da revisão. Os comentários continuam aparecendo na atividade do item e avisando quem segue o item.",
+      "Vídeos de até 5 GB nos anexos (os outros arquivos seguem no limite de antes).",
+      "Conversão automática: um vídeo que não abre no navegador (ProRes, HEVC, AVI…) ou pesado demais ganha uma cópia em MP4 que toca em qualquer navegador. O original continua nos anexos para baixar.",
+      "Capa no player e prévia do quadro ao passar o mouse na linha do tempo.",
+      'O Clapshot foi desligado: o comando "/clapshot" saiu do editor, e os blocos antigos viraram um aviso.',
+    ],
+    fixes: [
+      "A Marcação da Peça olhava só o anexo mais recente e, depois da primeira aprovação, não deixava aprovar de novo.",
+    ],
+  },
+  {
     version: "1.5.1",
     date: "2026-10-29",
     summary: "Estado nas subtarefas, Peças como funcionalidade do projeto e propriedades e checklists que recolhem.",

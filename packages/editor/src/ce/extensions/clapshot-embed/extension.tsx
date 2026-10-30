@@ -8,23 +8,9 @@ import { ReactNodeViewRenderer } from "@tiptap/react";
 // local imports
 import { ClapshotEmbedNodeView } from "./components/node-view";
 import { ClapshotEmbedExtensionConfig } from "./extension-config";
-import type { TClapshotEmbedExtensionOptions } from "./types";
 
-type Props = {
-  onApproveEdit?: () => Promise<void>;
-};
-
-export function ClapshotEmbedExtension(props: Props = {}) {
-  const { onApproveEdit } = props;
-
-  return ClapshotEmbedExtensionConfig.extend<TClapshotEmbedExtensionOptions>({
-    addOptions() {
-      return {
-        ...this.parent?.(),
-        onApproveEdit,
-      };
-    },
-
+export function ClapshotEmbedExtension() {
+  return ClapshotEmbedExtensionConfig.extend({
     addNodeView() {
       return ReactNodeViewRenderer(ClapshotEmbedNodeView);
     },

@@ -27,7 +27,8 @@ export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(pro
   // states
   const [isLoading, setIsLoading] = useState(false);
   // file size
-  const { maxFileSize } = useFileSize();
+  // Pespo: vídeos têm um limite próprio (revisão da peça)
+  const { maxVideoFileSize, limitFor, sizeValidator } = useFileSize();
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -42,13 +43,16 @@ export const IssueAttachmentUpload = observer(function IssueAttachmentUpload(pro
 
   const { getRootProps, getInputProps, isDragActive, isDragReject, fileRejections } = useDropzone({
     onDrop,
-    maxSize: maxFileSize,
+    maxSize: maxVideoFileSize,
+    validator: sizeValidator,
     multiple: false,
     disabled: isLoading || disabled,
   });
 
   const fileError =
-    fileRejections.length > 0 ? t("ui.invalid_file_type_or_size", { size: maxFileSize / 1024 / 1024 }) : null;
+    fileRejections.length > 0
+      ? t("ui.invalid_file_type_or_size", { size: Math.round(limitFor(fileRejections[0].file) / 1024 / 1024) })
+      : null;
 
   return (
     <div
