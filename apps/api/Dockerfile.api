@@ -18,6 +18,9 @@ RUN apk add --no-cache --upgrade \
     "ca-certificates" \
     "openssl"
 
+# Pespo: ffmpeg/ffprobe para a conversão dos vídeos da revisão da peça (worker da fila "media")
+RUN apk add --no-cache ffmpeg
+
 COPY requirements.txt ./
 COPY requirements ./requirements
 RUN apk add --no-cache libffi-dev

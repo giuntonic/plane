@@ -8,14 +8,11 @@ import type { TGoogleDriveEmbedExtensionOptions } from "../extensions/google-dri
 
 export type IEditorExtensionOptions = unknown;
 
-// Pespo: callback pro botão "Aprovar edição" do embed do Clapshot — ver
-// packages/editor/src/ce/extensions/clapshot-embed. Threading segue o
-// mesmo padrão do fileHandler (apps/web fecha sobre suas próprias stores
-// e injeta a função aqui, o editor genérico nunca conhece @/hooks/store).
 // Pespo: `onPickGoogleDriveFile` abre o seletor do Google Drive do apps/web
-// (ver packages/editor/src/ce/extensions/google-drive-embed) — mesmo padrão.
+// (ver packages/editor/src/ce/extensions/google-drive-embed). O mesmo padrão do
+// fileHandler: apps/web fecha sobre as próprias stores e injeta a função aqui, e o
+// editor genérico nunca conhece @/hooks/store.
 export type IEditorPropsExtended = {
-  onApproveEdit?: () => Promise<void>;
   onPickGoogleDriveFile?: TGoogleDriveEmbedExtensionOptions["onPickGoogleDriveFile"];
   getGoogleDrivePreviewUrl?: TGoogleDriveEmbedExtensionOptions["getPreviewUrl"];
 };

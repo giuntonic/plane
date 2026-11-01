@@ -201,6 +201,11 @@
       "heading": "Título {level}",
       "commands": "Digite / para ver os comandos...",
       "untitled": "Sem título"
+    },
+    "clapshot": {
+      "title": "Vídeo do Clapshot",
+      "retired": "O Clapshot foi desligado. Os vídeos agora ficam nos anexos do item, na Revisão da peça.",
+      "remove": "Tirar o bloco"
     }
   }
 }

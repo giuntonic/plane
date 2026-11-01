@@ -37,7 +37,8 @@ export const IssueAttachmentActionButton = observer(function IssueAttachmentActi
   // store hooks
   const { setLastWidgetAction, fetchActivities } = useIssueDetail(issueServiceType);
   // file size
-  const { maxFileSize } = useFileSize();
+  // Pespo: vídeos têm um limite próprio (revisão da peça)
+  const { maxVideoFileSize, limitFor, sizeValidator } = useFileSize();
   // operations
   const { operations: attachmentOperations } = useAttachmentOperations(
     workspaceSlug,
@@ -82,16 +83,17 @@ export const IssueAttachmentActionButton = observer(function IssueAttachmentActi
         message:
           totalAttachedFiles > 1
             ? t("ui.only_one_file_can_be_uploaded_at")
-            : t("ui.file_size_limit", { size: maxFileSize / 1024 / 1024 }),
+            : t("ui.file_size_limit", { size: Math.round(limitFor(rejectedFiles[0]?.file ?? {}) / 1024 / 1024) }),
       });
       return;
     },
-    [attachmentOperations, maxFileSize, workspaceSlug, handleFetchPropertyActivities, setLastWidgetAction, t]
+    [attachmentOperations, limitFor, workspaceSlug, handleFetchPropertyActivities, setLastWidgetAction, t]
   );
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    maxSize: maxFileSize,
+    maxSize: maxVideoFileSize,
+    validator: sizeValidator,
     multiple: false,
     disabled: isLoading || disabled,
   });

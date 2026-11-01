@@ -23,6 +23,7 @@ from .google_calendar import GoogleCalendarConnection, IssueCalendarEvent, Synce
 from .google_drive import GoogleDriveConnection, IssueGoogleDriveFile
 from .importer import Importer
 from .issue_checklist import IssueChecklist, IssueChecklistItem
+from .media_review import MediaRendition, MediaReviewComment
 from .issue_recurrence import IssueRecurrence
 from .template import EntityTemplate
 from .intake import Intake, IntakeIssue

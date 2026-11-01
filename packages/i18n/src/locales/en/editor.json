@@ -201,6 +201,11 @@
       "heading": "Heading {level}",
       "commands": "Press / for commands...",
       "untitled": "Untitled"
+    },
+    "clapshot": {
+      "title": "Clapshot video",
+      "retired": "Clapshot was shut down. Videos now live in the work item attachments, in the piece review.",
+      "remove": "Remove the block"
     }
   }
 }

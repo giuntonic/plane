@@ -28,6 +28,7 @@ from plane.utils.path_validator import sanitize_filename
 from plane.bgtasks.storage_metadata_task import get_asset_object_metadata
 from plane.utils.host import base_host
 from plane.utils.issue_cover import cover_on_first_image
+from plane.bgtasks.media_review_task import queue_media_processing
 
 
 class IssueAttachmentEndpoint(BaseAPIView):
@@ -120,8 +121,9 @@ class IssueAttachmentV2Endpoint(BaseAPIView):
         # asset key
         asset_key = f"{workspace.id}/{uuid.uuid4().hex}-{name}"
 
-        # Get the size limit
-        size_limit = min(size, settings.FILE_SIZE_LIMIT)
+        # Get the size limit (Pespo: vídeos, para a revisão da peça, têm um limite próprio e maior)
+        limit = settings.VIDEO_FILE_SIZE_LIMIT if type.startswith("video/") else settings.FILE_SIZE_LIMIT
+        size_limit = min(size, limit)
 
         # Create a File Asset
         asset = FileAsset.objects.create(
@@ -239,4 +241,6 @@ class IssueAttachmentV2Endpoint(BaseAPIView):
         issue_attachment.save()
         # Pespo: a primeira imagem de um item sem capa vira a capa do card.
         cover_on_first_image(issue_attachment)
+        # Pespo: vídeo novo vai para a conversão da revisão da peça (cópia que toca no navegador e miniaturas).
+        queue_media_processing(issue_attachment)
         return Response(status=status.HTTP_204_NO_CONTENT)

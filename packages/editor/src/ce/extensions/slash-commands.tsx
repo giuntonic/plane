@@ -4,7 +4,7 @@
  * See the LICENSE file for details.
  */
 
-import { HardDrive, Video } from "lucide-react";
+import { HardDrive } from "lucide-react";
 // constants
 import { CORE_EXTENSIONS } from "@/constants/extension";
 // extensions
@@ -15,24 +15,9 @@ import type { IEditorProps } from "@/types";
 
 type Props = Pick<IEditorProps, "disabledExtensions" | "flaggedExtensions">;
 
-export const coreEditorAdditionalSlashCommandOptions = (props: Props): TSlashCommandAdditionalOption[] => {
-  const {} = props;
-
-  // Pespo: comando pra embutir uma revisão de vídeo do Clapshot.
+export const coreEditorAdditionalSlashCommandOptions = (_props: Props): TSlashCommandAdditionalOption[] => {
+  // Pespo: o comando /clapshot saiu com o Clapshot (1.6); a revisão de vídeo agora é a do item.
   const options: TSlashCommandAdditionalOption[] = [
-    {
-      commandKey: "clapshot-embed",
-      key: "clapshot-embed",
-      title: "Clapshot",
-      description: "Embutir revisão de vídeo do Clapshot",
-      searchTerms: ["clapshot", "video", "vídeo", "embed"],
-      icon: <Video className="size-3.5" />,
-      section: "general",
-      pushAfter: "image",
-      command: ({ editor, range }) => {
-        editor.chain().focus().deleteRange(range).insertClapshotEmbed().run();
-      },
-    },
     // Pespo: embed de arquivo do Google Drive. Quando o app fornece o seletor
     // do Drive, ele abre direto; senão entra o bloco vazio pedindo o link.
     {
@@ -43,7 +28,7 @@ export const coreEditorAdditionalSlashCommandOptions = (props: Props): TSlashCom
       searchTerms: ["google", "drive", "docs", "sheets", "planilha", "documento", "slides", "embed"],
       icon: <HardDrive className="size-3.5" />,
       section: "general",
-      pushAfter: "clapshot-embed",
+      pushAfter: "image",
       command: ({ editor, range }) => {
         editor.chain().focus().deleteRange(range).run();
         const { onPickGoogleDriveFile } = (editor.extensionManager.extensions.find(

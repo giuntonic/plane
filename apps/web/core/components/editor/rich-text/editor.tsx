@@ -43,10 +43,7 @@ type RichTextEditorWrapperProps = MakeOptional<
         uploadFile: TFileHandler["upload"];
         duplicateFile: TFileHandler["duplicate"];
       }
-  ) & {
-    // Pespo: botão "Aprovar edição" do embed do Clapshot.
-    onApproveEdit?: () => Promise<void>;
-  };
+  );
 
 export const RichTextEditor = forwardRef(function RichTextEditor(
   props: RichTextEditorWrapperProps,
@@ -59,7 +56,6 @@ export const RichTextEditor = forwardRef(function RichTextEditor(
     workspaceId,
     projectId,
     disabledExtensions: additionalDisabledExtensions = [],
-    onApproveEdit,
     ...rest
   } = props;
   // store hooks
@@ -75,14 +71,13 @@ export const RichTextEditor = forwardRef(function RichTextEditor(
   });
   // editor config
   const { getEditorFileHandlers } = useEditorConfig();
-  // Pespo: "Aprovar edição" do Clapshot + seletor do Google Drive do bloco /google-drive
+  // Pespo: seletor do Google Drive do bloco /google-drive
   const extendedEditorProps = useMemo(
     () => ({
-      onApproveEdit,
       onPickGoogleDriveFile: editable ? pickGoogleDriveFile : undefined,
       getGoogleDrivePreviewUrl: googleDrivePreviewUrl,
     }),
-    [onApproveEdit, editable]
+    [editable]
   );
   // parse content
   const { getEditorMetaData } = useParseEditorContent({
