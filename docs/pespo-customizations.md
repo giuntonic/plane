@@ -250,6 +250,77 @@ Correções feitas depois do merge:
 
 ---
 
+## Versão 1.7: tempo gasto por peça e o Google como parte do Hub (2026-11-01)
+
+Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
+Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
+(`docs/deploy-plane-1.7.md`): migrations `0143` e `0144`, rebuild de api e web, e uma URI de
+redirecionamento nova no client OAuth "Interno" do Google Cloud.
+
+- **Tempo gasto: modelo.** `IssueTimeEntry` (`db/models/time_tracking.py`, migration `0143`): item,
+  pessoa, `started_at`, `stopped_at` (vazio = cronômetro correndo), `duration_seconds` (lançamento à mão),
+  `note` e `source` (`timer`, `manual`, `auto_stopped`).
+  - Um cronômetro correndo por pessoa: restrição `one_running_time_entry_per_user`. Iniciar outro para o
+    anterior (`stop_running_entry`, com `select_for_update`).
+  - `Project.time_tracking_client_visible` (padrão desligado, com `db_default` para a API antiga seguir
+    funcionando durante o deploy).
+  - Contas em `utils/time_tracking.py` (`entry_seconds`, `total_seconds`, `totals_by_issue`).
+- **Tempo gasto: API** (`app/views/issue/time_entry.py`).
+  - `…/issues/<id>/time-entries/`: GET (lançamentos e total) e POST (lançamento à mão: 1 min a 24 h, com
+    `date` ou `started_at`, e `note`). Convidado só recebe o total, e só se o projeto mostra o tempo aos
+    clientes; senão 403.
+  - `…/time-entries/<pk>/`: PATCH/DELETE pelo autor ou admin. `…/time-entries/start/`: inicia.
+  - `workspaces/<slug>/time-entries/running/`: GET (o cronômetro da pessoa, com o item, o projeto e o `now`
+    do servidor) e POST (para).
+  - O total vai para os cards pelo extra `time` do endpoint de cards (`card.py`).
+  - Tarefa `stop_forgotten_timers` (`bgtasks/time_tracking_task.py`), no beat a cada 15 min
+    (`pespo-stop-forgotten-timers`): para em 12 h (`AUTO_STOP_SECONDS`) o cronômetro esquecido, marcado como
+    `auto_stopped`.
+- **Tempo gasto: tela** (`components/issues/time-tracking/`).
+  - Propriedade "Tempo" no item e no painel (`property.tsx`), com o total ao vivo e iniciar/parar; a lista
+    de lançamentos recolhe abaixo (`entries.tsx`).
+  - Cronômetro na barra do topo (`running-timer.tsx`), com link para o item. O relógio usa a diferença
+    entre o `now` do servidor e a hora em que a resposta chegou (`clockOffset`), para não depender do relógio
+    do computador.
+  - Badge do total nos cards da lista e do quadro.
+  - Configurações do projeto › Tempo gasto (`features/time-tracking`): liga "Mostrar o tempo aos clientes".
+- **Conta Google num consentimento só.** `GoogleAccountOAuthProvider`
+  (`authentication/provider/oauth/google_account.py`) pede agenda e Drive juntos, no mesmo client OAuth
+  "Interno" das integrações. Endpoints `users/me/google/{connect,callback,status,disconnect}/`
+  (`app/views/user/google_account.py`).
+  - O callback grava as duas conexões (`store_calendar_grant`, `store_drive_grant`) conforme o que a pessoa
+    marcou (o consentimento do Google é granular).
+  - Desconectar revoga cada concessão uma vez só (a agenda e o Drive dividem o token; revogar um revoga o
+    outro). Os fluxos separados antigos continuam funcionando.
+  - Conectar no lugar: `connect/?popup=1&next=…` abre numa janela. A página final avisa quem abriu
+    (`postMessage` com a origem do `WEB_URL` e um `BroadcastChannel` de reserva) e se fecha. Ela manda
+    `Cross-Origin-Opener-Policy: unsafe-none`, porque o padrão do Django corta a ligação com a janela de
+    origem. Com a janela bloqueada, segue na mesma aba e volta para `next`.
+  - Tela: `components/integration/google/` (`useGoogleConnect`, `GoogleConnectPrompt`, `GoogleMark`), usada
+    no agendar reunião, no seletor do Drive, no calendário e no widget Agenda. Configurações › Perfil ›
+    Google (`settings/profile/content/pages/google.tsx`) junta tudo; as páginas antigas abrem esta.
+- **Drive no item.**
+  - "Anexar" virou um menu (`issue-detail-widgets/attachments/attach-menu.tsx`): do computador, do Drive
+    (vinculado ou cópia) e Novo Google Docs/Planilha/Apresentação. O documento novo nasce com o nome do item,
+    na pasta do projeto, já vinculado. A aba abre no clique (senão o navegador bloqueia) e recebe o
+    documento quando ele existe.
+  - Os arquivos do Drive aparecem dentro de "Anexos" e entram na contagem; a seção separada do Drive saiu.
+  - Pasta do projeto: `Project.google_drive_folder_id`/`google_drive_folder_name` (migration `0144`), com
+    o id conferido no serializer. Configurações do projeto › Google Drive (`features/google-drive`): escolher,
+    criar uma pasta com o nome do projeto ou tirar. O seletor ganhou o modo pasta (`onSelectFolder`), e a API
+    de arquivos aceita `kind: "folder"`.
+  - O Hub nunca compartilha arquivos: a pasta deve ficar num Drive compartilhado da equipe.
+- **Próxima reunião** nas propriedades do item e do painel (`meetings/next-meeting.tsx`): a reunião em
+  andamento ou a próxima, com "Entrar" quando tem Google Meet.
+- **Correção no i18n:** `useTranslation` devolvia um `t` novo a cada renderização. O seletor do Drive tinha
+  `t` nas dependências da busca, e cada resposta disparava outra busca, sem parar. Agora `t` vem de um
+  `useCallback` e só muda com o idioma (`packages/i18n/src/hooks/use-translation.ts`).
+- **Teste local:** sem Google de verdade, as respostas do Drive foram simuladas no navegador
+  (`context.route` do Playwright) para ver o seletor de pasta e a criação de documento.
+- **Risco de upgrade:** médio-baixo. Arquivos novos na maior parte. Fora isso: `useTranslation` (upstream),
+  o card endpoint, as propriedades do item e do painel, a barra do topo, os widgets de anexo e as rotas
+  das configurações do projeto.
+
 ## Versão 1.6: revisão de vídeo e imagem no item, no lugar do Clapshot (2026-10-30)
 
 Decisão do Giuliano (30/10): trazer o que o Clapshot fazia para dentro do Hub e desligar o Clapshot, sem

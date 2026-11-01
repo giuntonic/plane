@@ -21,6 +21,25 @@ export type TPespoRelease = {
 
 export const PESPO_RELEASES: TPespoRelease[] = [
   {
+    version: "1.7",
+    date: "2026-11-01",
+    summary:
+      "Tempo gasto por peça e o Google como parte do Hub: uma conta só para agenda e Drive, documentos criados no próprio item e a próxima reunião à vista.",
+    features: [
+      "Tempo gasto por peça: cronômetro no item (Propriedades › Tempo), com o tempo correndo na barra do topo. Cada pessoa tem um cronômetro: iniciar outro para o anterior.",
+      "Lançar tempo à mão (duração, dia e observação) e corrigir ou apagar os próprios lançamentos. O total aparece no item e nos cards da lista e do quadro.",
+      "Um cronômetro esquecido para sozinho depois de 12 horas.",
+      'Por projeto, a opção "Mostrar o tempo aos clientes" (Configurações do projeto › Tempo gasto): o cliente vê só o total de cada peça, sem quem trabalhou nem os lançamentos.',
+      "Conta Google num consentimento só: agenda e Drive conectados juntos em Configurações › Perfil › Google, e desconectados juntos.",
+      "Conectar de onde estiver: ao agendar uma reunião, anexar do Drive ou abrir o calendário sem a conta conectada, o Hub oferece conectar ali mesmo, numa janela, sem sair da página.",
+      '"Anexar" num menu só: do computador, do Google Drive (vinculado ou como cópia no Hub) ou um Google Docs, Planilha ou Apresentação novo, que já nasce com o nome do item, vinculado, e abre numa aba nova.',
+      'Os arquivos do Drive aparecem dentro de "Anexos", junto com os outros.',
+      "Pasta do projeto no Drive (Configurações do projeto › Google Drive): os documentos novos vão para ela. Dá para escolher uma pasta ou criar uma com o nome do projeto.",
+      'A próxima reunião do item aparece nas propriedades, com o botão "Entrar" quando tem Google Meet.',
+    ],
+    fixes: ["O seletor do Google Drive refazia a busca sem parar enquanto estava aberto."],
+  },
+  {
     version: "1.6",
     date: "2026-10-30",
     summary: "Revisão de vídeo e imagem dentro do item: o que o Clapshot fazia, agora no Pespo Hub.",
