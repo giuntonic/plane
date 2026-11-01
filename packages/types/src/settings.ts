@@ -14,6 +14,8 @@ export type TProfileSettingsTabs =
   | "notifications"
   | "security"
   | "api-tokens"
+  // Pespo: conta Google (agenda e Drive); as duas seguintes são os endereços antigos
+  | "google"
   | "google-calendar"
   | "google-drive";
 

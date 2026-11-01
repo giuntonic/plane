@@ -494,5 +494,26 @@
       "not_found": "The event wasn't found in Google Calendar.",
       "generic": "Something went wrong talking to Google Calendar."
     }
+  },
+  "google_account": {
+    "title": "Google account",
+    "description": "Calendar and Drive inside Pespo Hub, with a single connection of your Google account.",
+    "calendar": "Calendar",
+    "drive": "Drive",
+    "not_connected": "Google account not connected",
+    "connected_hint": "Work items with dates show up in your calendar, and Drive files go into work item attachments.",
+    "prompt_title": "Connect your Google account",
+    "prompt_description": "Just once, to use calendar, meetings and Drive inside Pespo Hub.",
+    "connect": "Connect Google account",
+    "connecting": "Waiting for Google…",
+    "connect_missing": "Connect what's missing",
+    "connected_title": "Google account connected",
+    "disconnect": "Disconnect",
+    "disconnected": "Google account disconnected",
+    "disconnect_confirm": "Disconnect the Google account? Calendar and Drive stop working in Pespo Hub until you connect again.",
+    "not_configured": "The Google integration isn't set up in this Pespo Hub yet.",
+    "for_meetings": "To schedule Google Meet meetings right from the work item.",
+    "for_drive": "To attach Drive files and create documents right here.",
+    "for_calendar": "To see your calendars and meetings next to your work items."
   }
 }

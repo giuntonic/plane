@@ -8,13 +8,13 @@ import { Check, Lock, Settings } from "lucide-react";
 import { observer } from "mobx-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
-import { Button } from "@plane/propel/button";
 import { Switch } from "@plane/propel/switch";
 import { Tooltip } from "@plane/propel/tooltip";
 import type { TGoogleCalendarListEntry } from "@plane/types";
 import { cn, readableTextColor } from "@plane/utils";
 // hooks
 import { useAppRouter } from "@/hooks/use-app-router";
+import { GoogleConnectPrompt } from "@/components/integration/google";
 
 type Props = {
   isGoogleConnected: boolean;
@@ -104,14 +104,7 @@ export const CalendarSyncSidebar = observer(function CalendarSyncSidebar(props: 
           {googleEmail && <span className="truncate text-caption-sm-regular text-tertiary">{googleEmail}</span>}
         </div>
         {!isGoogleConnected ? (
-          <div className="flex flex-col gap-2 rounded-md border border-dashed border-subtle p-3">
-            <p className="text-body-xs-regular text-secondary">
-              {t("google_calendar_integration.calendar_view.connect_hint")}
-            </p>
-            <Button variant="secondary" size="sm" onClick={() => router.push("/settings/profile/google-calendar/")}>
-              {t("google_calendar_integration.calendar_view.connect")}
-            </Button>
-          </div>
+          <GoogleConnectPrompt size="sm" description={t("google_account.for_calendar")} />
         ) : calendars.length === 0 ? (
           <p className="text-body-xs-regular text-tertiary">
             {t("google_calendar_integration.calendar_view.no_calendars")}
@@ -153,7 +146,7 @@ export const CalendarSyncSidebar = observer(function CalendarSyncSidebar(props: 
         {isGoogleConnected && (
           <button
             type="button"
-            onClick={() => router.push("/settings/profile/google-calendar/")}
+            onClick={() => router.push("/settings/profile/google/")}
             className="mt-1 flex w-fit items-center gap-1 text-caption-sm-medium text-tertiary hover:text-secondary"
           >
             <Settings className="size-3" />

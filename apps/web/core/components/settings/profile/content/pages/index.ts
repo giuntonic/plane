@@ -14,8 +14,8 @@ export const PROFILE_SETTINGS_PAGES_MAP: Record<TProfileSettingsTabs, React.Lazy
   notifications: lazy(() => import("./notifications").then((m) => ({ default: m.NotificationsProfileSettings }))),
   security: lazy(() => import("./security").then((m) => ({ default: m.SecurityProfileSettings }))),
   "api-tokens": lazy(() => import("./api-tokens").then((m) => ({ default: m.APITokensProfileSettings }))),
-  "google-calendar": lazy(() =>
-    import("./google-calendar").then((m) => ({ default: m.GoogleCalendarProfileSettings }))
-  ),
-  "google-drive": lazy(() => import("./google-drive").then((m) => ({ default: m.GoogleDriveProfileSettings }))),
+  // Pespo: a conta Google numa página só; os endereços antigos da agenda e do Drive abrem a mesma.
+  google: lazy(() => import("./google").then((m) => ({ default: m.GoogleProfileSettings }))),
+  "google-calendar": lazy(() => import("./google").then((m) => ({ default: m.GoogleProfileSettings }))),
+  "google-drive": lazy(() => import("./google").then((m) => ({ default: m.GoogleProfileSettings }))),
 };

@@ -8,8 +8,9 @@ import { useEffect, useState } from "react";
 
 // Pespo: tempo gasto por peça.
 
-/** "2h 15min", "45min", "0min". */
+/** "2h 15min", "45min", "<1min", "0min". */
 export function formatDuration(totalSeconds: number): string {
+  if (totalSeconds > 0 && totalSeconds < 60) return "<1min";
   const minutes = Math.floor(Math.max(0, totalSeconds) / 60);
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;

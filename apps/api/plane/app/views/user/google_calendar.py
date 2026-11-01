@@ -30,7 +30,7 @@ from plane.bgtasks.google_calendar_sync_task import (
     sync_user_calendar,
     teardown_connection,
 )
-from plane.db.models import GoogleCalendarConnection, Issue, IssueCalendarEvent, ProjectMember
+from plane.db.models import GoogleCalendarConnection, GoogleDriveConnection, Issue, IssueCalendarEvent, ProjectMember
 from plane.settings.redis import redis_instance
 from plane.utils import google_calendar as gcal
 from plane.utils.exception_logger import log_exception
@@ -85,6 +85,49 @@ def _preferences(connection):
     }
 
 
+def store_calendar_grant(user, token_data, google_email):
+    """Grava (ou atualiza) a conexão com o Google Calendar a partir de um consentimento. Usado pelo fluxo só
+    da agenda e pelo da conta Google (agenda e Drive juntos, ``google_account.py``)."""
+    # all_objects: a connection soft-deleted by an older version of
+    # the disconnect still owns the OneToOne slot — revive it
+    # instead of failing with an IntegrityError.
+    connection = GoogleCalendarConnection.all_objects.filter(user=user).first()
+    if connection is None:
+        connection = GoogleCalendarConnection(user=user)
+    elif connection.deleted_at is not None:
+        connection.deleted_at = None
+        connection.plane_calendar_id = ""
+        connection.project_calendar_ids = {}
+        connection.sync_tokens = {}
+        connection.watch_channels = []
+        connection.overlay_calendar_ids = []
+        connection.synced_events.all().delete(soft=False)
+
+    connection.google_email = google_email
+    connection.access_token = token_data.get("access_token")
+    # Google only returns a refresh_token on the very first consent —
+    # keep the existing one on reconnects where it's omitted.
+    if token_data.get("refresh_token"):
+        connection.refresh_token = token_data.get("refresh_token")
+    connection.token_expires_at = timezone.now() + timedelta(seconds=token_data.get("expires_in", 3600))
+
+    if not connection.plane_calendar_id:
+        connection.plane_calendar_id = gcal.create_dedicated_calendar(connection.access_token)
+        connection.overlay_calendar_ids = [connection.plane_calendar_id]
+
+    connection.save()
+    return connection
+
+
+def shares_grant(connection, other):
+    """Pespo: as duas conexões vieram do mesmo consentimento (conta Google). Revogar uma revoga a outra, então
+    desconectar um serviço só não revoga nesse caso."""
+    if not connection or not other:
+        return False
+    token = connection.refresh_token
+    return bool(token) and token == other.refresh_token
+
+
 class GoogleCalendarConnectEndpoint(View):
     def get(self, request):
         if not request.user.is_authenticated:
@@ -116,35 +159,7 @@ class GoogleCalendarCallbackEndpoint(View):
             provider = GoogleCalendarOAuthProvider(request=request, code=code)
             token_data = provider.exchange_code_for_tokens()
             google_email = provider.fetch_google_email()
-
-            # all_objects: a connection soft-deleted by an older version of
-            # the disconnect still owns the OneToOne slot — revive it
-            # instead of failing with an IntegrityError.
-            connection = GoogleCalendarConnection.all_objects.filter(user=request.user).first()
-            if connection is None:
-                connection = GoogleCalendarConnection(user=request.user)
-            elif connection.deleted_at is not None:
-                connection.deleted_at = None
-                connection.plane_calendar_id = ""
-                connection.project_calendar_ids = {}
-                connection.sync_tokens = {}
-                connection.watch_channels = []
-                connection.overlay_calendar_ids = []
-                connection.synced_events.all().delete(soft=False)
-
-            connection.google_email = google_email
-            connection.access_token = token_data.get("access_token")
-            # Google only returns a refresh_token on the very first consent —
-            # keep the existing one on reconnects where it's omitted.
-            if token_data.get("refresh_token"):
-                connection.refresh_token = token_data.get("refresh_token")
-            connection.token_expires_at = timezone.now() + timedelta(seconds=token_data.get("expires_in", 3600))
-
-            if not connection.plane_calendar_id:
-                connection.plane_calendar_id = gcal.create_dedicated_calendar(connection.access_token)
-                connection.overlay_calendar_ids = [connection.plane_calendar_id]
-
-            connection.save()
+            connection = store_calendar_grant(request.user, token_data, google_email)
         except Exception as e:
             log_exception(e)
             return _frontend_redirect(request, "?google_calendar=error")
@@ -253,7 +268,8 @@ class GoogleCalendarDisconnectEndpoint(BaseAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         teardown_connection(connection)
-        gcal.revoke_token(connection)
+        if not shares_grant(connection, GoogleDriveConnection.objects.filter(user=request.user).first()):
+            gcal.revoke_token(connection)
         # Hard delete: a soft-deleted row would keep the (encrypted) tokens
         # around and block reconnecting through the OneToOne on user.
         connection.delete(soft=False)

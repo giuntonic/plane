@@ -37,7 +37,12 @@ function SettingRow(props: { title: string; description?: string; children: Reac
   );
 }
 
-export const GoogleCalendarProfileSettings = observer(function GoogleCalendarProfileSettings() {
+/** Com `embedded` (dentro da página "Google", ver google.tsx), mostra só as opções da agenda: a conexão e a
+ * desconexão ficam no cartão da conta Google. */
+export const GoogleCalendarProfileSettings = observer(function GoogleCalendarProfileSettings(props: {
+  embedded?: boolean;
+}) {
+  const { embedded = false } = props;
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -51,7 +56,7 @@ export const GoogleCalendarProfileSettings = observer(function GoogleCalendarPro
 
   useEffect(() => {
     const result = searchParams.get("google_calendar");
-    if (!result) return;
+    if (!result || embedded) return;
 
     if (result === "connected") {
       setToast({ type: TOAST_TYPE.SUCCESS, title: t("profile.google_calendar.connected_title") });
@@ -120,23 +125,28 @@ export const GoogleCalendarProfileSettings = observer(function GoogleCalendarPro
   };
 
   if (isLoading || !status) return null;
+  if (embedded && !status.connected) return null;
 
   return (
     <div className="size-full">
-      <ProfileSettingsHeading
-        title={t("profile.google_calendar.title")}
-        description={t("profile.google_calendar.description")}
-      />
-      <div className="mt-7 max-w-xl">
+      {!embedded && (
+        <ProfileSettingsHeading
+          title={t("profile.google_calendar.title")}
+          description={t("profile.google_calendar.description")}
+        />
+      )}
+      <div className={embedded ? "max-w-xl" : "mt-7 max-w-xl"}>
         {!status.connected ? (
           <Button variant="primary" onClick={() => (window.location.href = "/api/users/me/google-calendar/connect/")}>
             {t("profile.google_calendar.connect")}
           </Button>
         ) : (
           <div className="flex flex-col gap-8">
-            <div className="text-body-md text-secondary">
-              {t("profile.google_calendar.connected_as", { email: status.google_email })}
-            </div>
+            {!embedded && (
+              <div className="text-body-md text-secondary">
+                {t("profile.google_calendar.connected_as", { email: status.google_email })}
+              </div>
+            )}
 
             <section className="flex flex-col gap-5">
               <div className="flex flex-col gap-1">
@@ -269,9 +279,11 @@ export const GoogleCalendarProfileSettings = observer(function GoogleCalendarPro
                 <Button variant="secondary" onClick={handleSyncNow} disabled={isSyncing}>
                   {isSyncing ? t("profile.google_calendar.syncing") : t("profile.google_calendar.sync_now")}
                 </Button>
-                <Button variant="error-outline" onClick={handleDisconnect}>
-                  {t("profile.google_calendar.disconnect")}
-                </Button>
+                {!embedded && (
+                  <Button variant="error-outline" onClick={handleDisconnect}>
+                    {t("profile.google_calendar.disconnect")}
+                  </Button>
+                )}
               </div>
             </div>
           </div>

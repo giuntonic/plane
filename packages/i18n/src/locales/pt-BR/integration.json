@@ -494,5 +494,26 @@
       "not_found": "O evento não foi encontrado no Google Calendar.",
       "generic": "Algo deu errado ao falar com o Google Calendar."
     }
+  },
+  "google_account": {
+    "title": "Conta Google",
+    "description": "Agenda e Drive dentro do Pespo Hub, com uma conexão só da sua conta Google.",
+    "calendar": "Agenda",
+    "drive": "Drive",
+    "not_connected": "Conta Google não conectada",
+    "connected_hint": "Os itens com data aparecem na sua agenda, e os arquivos do Drive entram nos anexos dos itens.",
+    "prompt_title": "Conecte sua conta Google",
+    "prompt_description": "Uma vez só, para usar a agenda, as reuniões e o Drive dentro do Pespo Hub.",
+    "connect": "Conectar conta Google",
+    "connecting": "Esperando o Google…",
+    "connect_missing": "Conectar o que falta",
+    "connected_title": "Conta Google conectada",
+    "disconnect": "Desconectar",
+    "disconnected": "Conta Google desconectada",
+    "disconnect_confirm": "Desconectar a conta Google? A agenda e o Drive param de funcionar no Pespo Hub até você conectar de novo.",
+    "not_configured": "A integração com o Google ainda não foi configurada neste Pespo Hub.",
+    "for_meetings": "Para agendar reuniões com Google Meet direto do item.",
+    "for_drive": "Para anexar arquivos do Drive e criar documentos aqui mesmo.",
+    "for_calendar": "Para ver suas agendas e reuniões junto dos itens de trabalho."
   }
 }

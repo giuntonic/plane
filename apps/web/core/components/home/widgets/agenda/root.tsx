@@ -7,7 +7,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
-import { CalendarDays, Check, ChevronDown, RefreshCw, Settings2 } from "lucide-react";
+import { Check, ChevronDown, RefreshCw, Settings2 } from "lucide-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
@@ -17,11 +17,11 @@ import { CustomMenu, Loader } from "@plane/ui";
 import { addDaysToDateKey, buildAgenda, cn, getAgendaRange, toLocalDateKey } from "@plane/utils";
 // hooks
 import { useHome } from "@/hooks/store/use-home";
-import { useAppRouter } from "@/hooks/use-app-router";
 // services
 import userService from "@/services/user.service";
 // local imports
 import { AgendaEventRow } from "./event-row";
+import { GoogleConnectPrompt } from "@/components/integration/google";
 
 const DEFAULT_CALENDAR_IDS = ["primary"];
 const DEFAULT_DAYS = 7;
@@ -38,7 +38,6 @@ const isCalendarSelected = (calendar: TGoogleCalendarListEntry, selectedIds: str
 export const DashboardAgenda = observer(function DashboardAgenda(props: THomeWidgetProps) {
   const { workspaceSlug } = props;
   const { t } = useTranslation();
-  const router = useAppRouter();
   const { widgetsMap, updateWidgetConfig } = useHome();
   // the clock moves the "now" highlight and, at midnight, the range
   const [now, setNow] = useState(() => new Date());
@@ -111,16 +110,7 @@ export const DashboardAgenda = observer(function DashboardAgenda(props: THomeWid
           <Loader.Item height="32px" />
         </Loader>
       );
-    if (!isConnected)
-      return (
-        <div className="flex flex-col items-center gap-3 rounded-lg bg-layer-1 px-4 py-6 text-center">
-          <CalendarDays className="size-6 text-placeholder" />
-          <p className="text-13 text-tertiary">{t("home.agenda.not_connected")}</p>
-          <Button variant="secondary" size="sm" onClick={() => router.push("/settings/profile/google-calendar/")}>
-            {t("home.agenda.connect")}
-          </Button>
-        </div>
-      );
+    if (!isConnected) return <GoogleConnectPrompt size="sm" description={t("home.agenda.not_connected")} />;
     if (error)
       return (
         <div className="flex flex-col items-center gap-2 rounded-lg bg-layer-1 px-4 py-6 text-center">

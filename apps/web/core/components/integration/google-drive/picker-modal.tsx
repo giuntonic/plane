@@ -20,7 +20,8 @@ import useDebounce from "@/hooks/use-debounce";
 // services
 import { googleDriveService } from "@/services/google-drive.service";
 // local imports
-import { getCurrentPathForRedirect, getGoogleDriveErrorKey } from "./helpers";
+import { getGoogleDriveErrorKey } from "./helpers";
+import { GoogleConnectPrompt } from "@/components/integration/google";
 
 export const GOOGLE_DRIVE_STATUS_SWR_KEY = "google-drive-status";
 
@@ -167,19 +168,9 @@ export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(p
 
     if (!isConnected) {
       return (
-        <div className="flex flex-col items-center gap-3 px-5 py-10 text-center">
-          <HardDrive className="size-8 text-tertiary" />
-          <h4 className="text-body-md-medium text-primary">{t("google_drive_integration.not_connected_title")}</h4>
-          <p className="max-w-sm text-body-sm-regular text-secondary">
-            {t("google_drive_integration.not_connected_description")}
-          </p>
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => (window.location.href = googleDriveService.getConnectUrl(getCurrentPathForRedirect()))}
-          >
-            {t("google_drive_integration.connect")}
-          </Button>
+        <div className="px-5 pb-5">
+          {/* Pespo: conecta numa janela, sem sair do item; o seletor abre o Drive quando volta */}
+          <GoogleConnectPrompt description={t("google_account.for_drive")} />
         </div>
       );
     }

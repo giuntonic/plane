@@ -59,6 +59,13 @@ from .user.google_drive import (
     GoogleDriveFilePreviewEndpoint,
 )
 
+from .user.google_account import (
+    GoogleAccountConnectEndpoint,
+    GoogleAccountCallbackEndpoint,
+    GoogleAccountStatusEndpoint,
+    GoogleAccountDisconnectEndpoint,
+)
+
 
 from .base import BaseAPIView, BaseViewSet
 
