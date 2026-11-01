@@ -11,7 +11,8 @@ import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { Tooltip } from "@plane/propel/tooltip";
-import type { TIssueTimeEntries } from "@plane/types";
+import type { TIssueTimeEntries, TRunningTimeEntry } from "@plane/types";
+import { AlertModalCore } from "@plane/ui";
 import { cn } from "@plane/utils";
 // components
 import { SidebarPropertyListItem } from "@/components/common/layout/sidebar/property-list-item";
@@ -20,7 +21,12 @@ import { useProject } from "@/hooks/store/use-project";
 import { useUserPermissions } from "@/hooks/store/user";
 // local imports
 import { clockOffset, formatClock, formatDuration, runningSeconds, useNow } from "./helpers";
-import { useIssueTimeEntries, useRunningTimer, useTimeTrackingActions } from "./use-time-tracking";
+import {
+  isTimerAlreadyRunning,
+  useIssueTimeEntries,
+  useRunningTimer,
+  useTimeTrackingActions,
+} from "./use-time-tracking";
 
 type Props = {
   workspaceSlug: string;
@@ -63,6 +69,8 @@ export const IssueTimeProperty = observer(function IssueTimeProperty(props: Prop
   const { data: runningData } = useRunningTimer(isTeam ? workspaceSlug : undefined);
   const { start, stop } = useTimeTrackingActions(workspaceSlug);
   const [busy, setBusy] = useState(false);
+  // o cronômetro que já rodava em outro item, com a hora em que a resposta chegou (para a duração)
+  const [conflict, setConflict] = useState<{ running: TRunningTimeEntry; receivedAt: number } | null>(null);
   const total = useLiveTotal(data);
   const running = runningData?.running;
   const isRunningHere = !!running && running.issue === issueId;
@@ -74,18 +82,34 @@ export const IssueTimeProperty = observer(function IssueTimeProperty(props: Prop
 
   if (!canSee) return null;
 
+  const begin = async (replace: boolean) => {
+    const result = await start(projectId, issueId, replace);
+    if (result.stopped && result.stopped.issue !== issueId)
+      setToast({
+        type: TOAST_TYPE.INFO,
+        title: t("time_tracking.switched", { duration: formatDuration(result.stopped.duration_seconds) }),
+      });
+  };
+
   const toggle = async () => {
     setBusy(true);
     try {
       if (isRunningHere) await stop();
-      else {
-        const result = await start(projectId, issueId);
-        if (result.stopped && result.stopped.issue !== issueId)
-          setToast({
-            type: TOAST_TYPE.INFO,
-            title: t("time_tracking.switched", { duration: formatDuration(result.stopped.duration_seconds) }),
-          });
-      }
+      else await begin(false);
+    } catch (error) {
+      // outro item com o cronômetro rodando: pergunta antes de trocar
+      if (isTimerAlreadyRunning(error)) setConflict({ running: error.running, receivedAt: Date.now() });
+      else setToast({ type: TOAST_TYPE.ERROR, title: t("time_tracking.error") });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const confirmSwitch = async () => {
+    setBusy(true);
+    try {
+      await begin(true);
+      setConflict(null);
     } catch {
       setToast({ type: TOAST_TYPE.ERROR, title: t("time_tracking.error") });
     } finally {
@@ -119,6 +143,34 @@ export const IssueTimeProperty = observer(function IssueTimeProperty(props: Prop
           </Tooltip>
         )}
       </div>
+      {conflict && (
+        <AlertModalCore
+          isOpen
+          variant="primary"
+          preventOutsideClick
+          customIcon={<Timer className="size-5" />}
+          title={t("time_tracking.already_running_title")}
+          content={t("time_tracking.already_running_body", {
+            name: conflict.running.issue_name,
+            id: `${conflict.running.project_identifier}-${conflict.running.issue_sequence_id}`,
+            duration: formatDuration(
+              runningSeconds(
+                conflict.running.started_at,
+                Date.now(),
+                clockOffset(conflict.running.now, conflict.receivedAt)
+              )
+            ),
+          })}
+          primaryButtonText={{
+            default: t("time_tracking.already_running_confirm"),
+            loading: t("time_tracking.already_running_confirming"),
+          }}
+          secondaryButtonText={t("time_tracking.already_running_keep")}
+          isSubmitting={busy}
+          handleClose={() => setConflict(null)}
+          handleSubmit={() => void confirmSwitch()}
+        />
+      )}
     </SidebarPropertyListItem>
   );
 });

@@ -12,6 +12,8 @@ import type {
   TIssueTimeEntryPayload,
   TRunningTimeEntry,
   TStartedTimeEntry,
+  TTimeReport,
+  TTimeReportParams,
 } from "@plane/types";
 // services
 import { APIService } from "@/services/api.service";
@@ -69,8 +71,9 @@ export class TimeTrackingService extends APIService {
       });
   }
 
-  async start(workspaceSlug: string, projectId: string, issueId: string): Promise<TStartedTimeEntry> {
-    return this.post(`${this.issueUrl(workspaceSlug, projectId, issueId)}start/`)
+  /** Rejects with `TTimerAlreadyRunningError` when another work item's timer runs, unless `replace`. */
+  async start(workspaceSlug: string, projectId: string, issueId: string, replace = false): Promise<TStartedTimeEntry> {
+    return this.post(`${this.issueUrl(workspaceSlug, projectId, issueId)}start/`, { replace })
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;
@@ -91,6 +94,22 @@ export class TimeTrackingService extends APIService {
       .catch((error) => {
         throw error?.response?.data;
       });
+  }
+
+  async report(workspaceSlug: string, params: TTimeReportParams): Promise<TTimeReport> {
+    return this.get(`/api/workspaces/${workspaceSlug}/time-report/`, { params })
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  /** Link de download do CSV (a sessão vai pelo cookie). */
+  exportUrl(workspaceSlug: string, params: TTimeReportParams): string {
+    const query = new URLSearchParams(
+      Object.entries(params).filter((entry): entry is [string, string] => !!entry[1])
+    ).toString();
+    return `${API_BASE_URL}/api/workspaces/${workspaceSlug}/time-report/export/?${query}`;
   }
 }
 

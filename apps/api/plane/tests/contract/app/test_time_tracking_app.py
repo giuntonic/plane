@@ -6,6 +6,7 @@
 nos extras dos cards e o cronômetro esquecido."""
 
 from datetime import timedelta
+from zoneinfo import ZoneInfo
 
 import pytest
 from django.urls import reverse
@@ -79,13 +80,29 @@ class TestTimer:
         assert 1795 <= listed.data["total_seconds"] <= 1805
         assert listed.data["entries"][0]["user"] == str(create_user.id)
 
-    def test_starting_another_timer_stops_the_first(self, session_client, issue, project, state):
+    def test_starting_another_timer_asks_first(self, session_client, issue, project, state):
         other = Issue.objects.create(name="Reels", project=project, workspace=project.workspace, state=state)
         first = session_client.post(_url("project-issue-time-entry-start", issue)).data
-        second = session_client.post(_url("project-issue-time-entry-start", other)).data
-        assert second["stopped"]["id"] == first["id"]
+
+        conflict = session_client.post(_url("project-issue-time-entry-start", other), {}, format="json")
+        assert conflict.status_code == status.HTTP_409_CONFLICT
+        assert conflict.data["error"] == "TIMER_ALREADY_RUNNING"
+        assert conflict.data["running"]["id"] == first["id"]
+        assert conflict.data["running"]["issue_name"] == issue.name
+        assert IssueTimeEntry.objects.get(pk=first["id"]).ended_at is None
+
+        second = session_client.post(_url("project-issue-time-entry-start", other), {"replace": True}, format="json")
+        assert second.status_code == status.HTTP_201_CREATED
+        assert second.data["stopped"]["id"] == first["id"]
         assert IssueTimeEntry.objects.filter(ended_at__isnull=True).count() == 1
         assert IssueTimeEntry.objects.get(pk=first["id"]).ended_at is not None
+
+    def test_starting_the_running_item_again_keeps_it(self, session_client, issue):
+        first = session_client.post(_url("project-issue-time-entry-start", issue)).data
+        again = session_client.post(_url("project-issue-time-entry-start", issue))
+        assert again.status_code == status.HTTP_200_OK
+        assert again.data["id"] == first["id"]
+        assert IssueTimeEntry.objects.count() == 1
 
     def test_forgotten_timer_stops_at_the_limit(self, session_client, issue):
         entry_id = session_client.post(_url("project-issue-time-entry-start", issue)).data["id"]
@@ -175,3 +192,84 @@ class TestClientVisibility:
             client.post(reverse("project-issue-time-entry-start", kwargs=kwargs)).status_code
             == status.HTTP_404_NOT_FOUND
         )
+
+
+def _period():
+    # ontem e hoje no fuso do espaço de trabalho: um lançamento de 1 h atrás cai dentro em qualquer horário
+    today = timezone.now().astimezone(ZoneInfo("America/Sao_Paulo")).date()
+    return {"start": today - timedelta(days=1), "end": today}
+
+
+def _report_url(workspace, export=False):
+    name = "workspace-time-report-export" if export else "workspace-time-report"
+    return reverse(name, kwargs={"slug": workspace.slug})
+
+
+def _entry(issue, user, hours_ago, seconds, note=""):
+    started = timezone.now() - timedelta(hours=hours_ago)
+    return IssueTimeEntry.objects.create(
+        issue=issue,
+        project=issue.project,
+        workspace=issue.workspace,
+        user=user,
+        started_at=started,
+        ended_at=started + timedelta(seconds=seconds),
+        duration_seconds=seconds,
+        note=note,
+        source=IssueTimeEntry.Source.MANUAL,
+    )
+
+
+@pytest.mark.contract
+@pytest.mark.django_db
+class TestTimeReport:
+    def test_admin_sees_everyone_grouped(self, session_client, workspace, project, issue, create_user):
+        _, member = _client(workspace, project, 15, "editor@plane.so")
+        _entry(issue, create_user, 1, 3600)
+        _entry(issue, member, 1, 1800)
+        response = session_client.get(_report_url(workspace), _period())
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["is_admin"] is True
+        assert response.data["total_seconds"] == 5400
+        assert [row["seconds"] for row in response.data["by_user"]] == [3600, 1800]
+        assert response.data["by_project"][0]["identifier"] == "TMP"
+        assert response.data["by_issue"][0]["users"] == sorted([str(create_user.id), str(member.id)])
+
+        only_member = session_client.get(_report_url(workspace), {**_period(), "user": member.id})
+        assert only_member.data["total_seconds"] == 1800
+
+    def test_member_sees_only_their_own_hours(self, workspace, project, issue, create_user):
+        client, member = _client(workspace, project, 15, "editor2@plane.so")
+        _entry(issue, create_user, 1, 3600)
+        _entry(issue, member, 1, 600)
+        response = client.get(_report_url(workspace), {**_period(), "user": create_user.id})
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["is_admin"] is False
+        assert response.data["total_seconds"] == 600
+
+    def test_guest_cannot_open_the_report(self, workspace, project):
+        client, _ = _client(workspace, project, 5, "cliente@plane.so")
+        assert client.get(_report_url(workspace)).status_code == status.HTTP_403_FORBIDDEN
+        assert client.get(_report_url(workspace, export=True)).status_code == status.HTTP_403_FORBIDDEN
+
+    def test_period_and_filters_are_checked(self, session_client, workspace):
+        assert (
+            session_client.get(_report_url(workspace), {"start": "2026-02-01", "end": "2026-01-01"}).status_code == 400
+        )
+        assert (
+            session_client.get(_report_url(workspace), {"start": "2024-01-01", "end": "2026-01-01"}).status_code == 400
+        )
+        assert session_client.get(_report_url(workspace), {"project": "nope"}).status_code == 400
+
+    def test_csv_export(self, session_client, workspace, issue, create_user):
+        _entry(issue, create_user, 1, 5400, note="=HYPERLINK(1)")
+        response = session_client.get(_report_url(workspace, export=True), _period())
+        assert response.status_code == status.HTTP_200_OK
+        assert response["Content-Type"].startswith("text/csv")
+        assert "attachment;" in response["Content-Disposition"]
+        lines = response.content.decode("utf-8").lstrip("﻿").strip().splitlines()
+        assert lines[0].startswith("Data;Pessoa;E-mail;Projeto;Item")
+        row = lines[1].split(";")
+        assert row[4] == f"TMP-{issue.sequence_id}"
+        assert row[8] == "1:30" and row[9] == "1,50"
+        assert row[11] == "'=HYPERLINK(1)"

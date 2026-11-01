@@ -26,9 +26,10 @@ export const PESPO_RELEASES: TPespoRelease[] = [
     summary:
       "Tempo gasto por peça e o Google como parte do Hub: uma conta só para agenda e Drive, documentos criados no próprio item e a próxima reunião à vista.",
     features: [
-      "Tempo gasto por peça: cronômetro no item (Propriedades › Tempo), com o tempo correndo na barra do topo. Cada pessoa tem um cronômetro: iniciar outro para o anterior.",
+      "Tempo gasto por peça: cronômetro no item (Propriedades › Tempo), com o tempo correndo na barra do topo. Cada pessoa tem um cronômetro só: ao iniciar em outro item, o Hub pergunta antes de parar o que está correndo.",
       "Lançar tempo à mão (duração, dia e observação) e corrigir ou apagar os próprios lançamentos. O total aparece no item e nos cards da lista e do quadro.",
       "Um cronômetro esquecido para sozinho depois de 12 horas.",
+      "Relatório de horas (barra lateral): horas por pessoa, por projeto e por item, por semana, mês ou período escolhido, com exportação em CSV. Admins veem a equipe toda; os outros membros, as próprias horas.",
       'Por projeto, a opção "Mostrar o tempo aos clientes" (Configurações do projeto › Tempo gasto): o cliente vê só o total de cada peça, sem quem trabalhou nem os lançamentos.',
       "Conta Google num consentimento só: agenda e Drive conectados juntos em Configurações › Perfil › Google, e desconectados juntos.",
       "Conectar de onde estiver: ao agendar uma reunião, anexar do Drive ou abrir o calendário sem a conta conectada, o Hub oferece conectar ali mesmo, numa janela, sem sair da página.",

@@ -6,7 +6,7 @@
 
 import { useCallback } from "react";
 import useSWR, { useSWRConfig } from "swr";
-import type { TIssueTimeEntryPayload } from "@plane/types";
+import type { TIssueTimeEntryPayload, TTimerAlreadyRunningError } from "@plane/types";
 // components
 import { getCardExtrasKey } from "@/components/issues/card-extras";
 // services
@@ -14,6 +14,10 @@ import { timeTrackingService } from "@/services/time-tracking.service";
 
 // Pespo: tempo gasto por peça. O cronômetro de quem está logado é um só (em qualquer item) e aparece no
 // topo do Hub; quem inicia ou para atualiza o item, o topo e os cards.
+
+/** O erro do start/ quando já há outro cronômetro rodando (a tela pergunta antes de trocar). */
+export const isTimerAlreadyRunning = (error: unknown): error is TTimerAlreadyRunningError =>
+  !!error && typeof error === "object" && (error as { error?: unknown }).error === "TIMER_ALREADY_RUNNING";
 
 export const getTimeEntriesKey = (issueId: string) => `ISSUE_TIME_ENTRIES_${issueId}`;
 export const getRunningTimerKey = (workspaceSlug: string) => `RUNNING_TIME_ENTRY_${workspaceSlug}`;
@@ -48,8 +52,8 @@ export function useTimeTrackingActions(workspaceSlug: string) {
   );
 
   const start = useCallback(
-    async (projectId: string, issueId: string) => {
-      const entry = await timeTrackingService.start(workspaceSlug, projectId, issueId);
+    async (projectId: string, issueId: string, replace = false) => {
+      const entry = await timeTrackingService.start(workspaceSlug, projectId, issueId, replace);
       refresh([projectId, entry.stopped?.project], [issueId, entry.stopped?.issue]);
       return entry;
     },

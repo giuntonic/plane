@@ -177,7 +177,10 @@ class IssueTimeEntryDetailEndpoint(BaseAPIView):
 
 
 class IssueTimeEntryStartEndpoint(BaseAPIView):
-    """Começa o cronômetro de quem chama neste item; o que estiver rodando (em qualquer item) para antes."""
+    """Começa o cronômetro de quem chama neste item.
+
+    Com outro cronômetro rodando (em outro item), responde 409 ``TIMER_ALREADY_RUNNING`` com ele, para a tela
+    perguntar antes; ``{"replace": true}`` para o outro e começa este. No mesmo item, devolve o que já roda."""
 
     @allow_permission([ROLE.ADMIN, ROLE.MEMBER])
     def post(self, request, slug, project_id, issue_id):
@@ -185,9 +188,22 @@ class IssueTimeEntryStartEndpoint(BaseAPIView):
         if not issue:
             return Response({"error": "Issue not found"}, status=status.HTTP_404_NOT_FOUND)
         note = (request.data.get("note") or "").strip()[:MAX_NOTE]
+        replace = request.data.get("replace") is True
         try:
             with transaction.atomic():
-                stopped = stop_running_entry(request.user)
+                current = (
+                    IssueTimeEntry.objects.select_for_update()
+                    .filter(user=request.user, ended_at__isnull=True)
+                    .select_related("issue", "issue__project", "issue__workspace", "user")
+                    .first()
+                )
+                if current and current.issue_id == issue.id:
+                    data = running_data(current)
+                    data["stopped"] = None
+                    return Response(data, status=status.HTTP_200_OK)
+                if current and not replace:
+                    return _already_running(current)
+                stopped = stop_running_entry(request.user) if current else None
                 entry = IssueTimeEntry.objects.create(
                     issue=issue,
                     project_id=project_id,
@@ -198,10 +214,24 @@ class IssueTimeEntryStartEndpoint(BaseAPIView):
                 )
         except IntegrityError:
             # dois cliques ao mesmo tempo: o outro já começou
+            current = (
+                IssueTimeEntry.objects.filter(user=request.user, ended_at__isnull=True)
+                .select_related("issue", "issue__project", "issue__workspace", "user")
+                .first()
+            )
+            if current:
+                return _already_running(current)
             return Response({"error": "A timer is already running"}, status=status.HTTP_409_CONFLICT)
         data = running_data(entry)
         data["stopped"] = entry_data(stopped) if stopped else None
         return Response(data, status=status.HTTP_201_CREATED)
+
+
+def _already_running(entry):
+    return Response(
+        {"error": "TIMER_ALREADY_RUNNING", "running": running_data(entry)},
+        status=status.HTTP_409_CONFLICT,
+    )
 
 
 def running_data(entry):

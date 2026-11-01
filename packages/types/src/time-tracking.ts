@@ -44,3 +44,28 @@ export type TRunningTimeEntry = TIssueTimeEntry & {
 
 /** …/issues/<id>/time-entries/start/: the new timer and the one that was stopped to start it, if any. */
 export type TStartedTimeEntry = TRunningTimeEntry & { stopped: TIssueTimeEntry | null };
+
+/** 409 from start/ when another work item's timer is running (send `replace: true` to switch). */
+export type TTimerAlreadyRunningError = { error: "TIMER_ALREADY_RUNNING"; running: TRunningTimeEntry };
+
+/** Pespo: workspaces/<slug>/time-report/ — time spent in a period, grouped. Admins see everyone. */
+export type TTimeReportParams = { start: string; end: string; project?: string; user?: string };
+
+export type TTimeReport = {
+  start: string;
+  end: string;
+  is_admin: boolean;
+  total_seconds: number;
+  by_user: { id: string; display_name: string; full_name: string; avatar_url: string | null; seconds: number }[];
+  by_project: { id: string; name: string; identifier: string; seconds: number }[];
+  by_issue: {
+    id: string;
+    name: string;
+    sequence_id: number;
+    project_id: string;
+    project_identifier: string;
+    seconds: number;
+    users: string[];
+  }[];
+  by_day: { date: string; seconds: number }[];
+};

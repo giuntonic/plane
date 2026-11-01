@@ -260,8 +260,11 @@ redirecionamento nova no client OAuth "Interno" do Google Cloud.
 - **Tempo gasto: modelo.** `IssueTimeEntry` (`db/models/time_tracking.py`, migration `0143`): item,
   pessoa, `started_at`, `stopped_at` (vazio = cronômetro correndo), `duration_seconds` (lançamento à mão),
   `note` e `source` (`timer`, `manual`, `auto_stopped`).
-  - Um cronômetro correndo por pessoa: restrição `one_running_time_entry_per_user`. Iniciar outro para o
-    anterior (`stop_running_entry`, com `select_for_update`).
+  - Um cronômetro correndo por pessoa: restrição `one_running_time_entry_per_user`. Iniciar em outro item
+    com um correndo responde 409 `TIMER_ALREADY_RUNNING` com o cronômetro atual, e a tela pergunta
+    ("Parar e começar aqui" / "Continuar no outro"). Confirmando, o pedido vai com `replace: true`, que para
+    o anterior (`stop_running_entry`, com `select_for_update`) e começa o novo. No mesmo item, devolve o que
+    já roda.
   - `Project.time_tracking_client_visible` (padrão desligado, com `db_default` para a API antiga seguir
     funcionando durante o deploy).
   - Contas em `utils/time_tracking.py` (`entry_seconds`, `total_seconds`, `totals_by_issue`).
@@ -284,6 +287,19 @@ redirecionamento nova no client OAuth "Interno" do Google Cloud.
     do computador.
   - Badge do total nos cards da lista e do quadro.
   - Configurações do projeto › Tempo gasto (`features/time-tracking`): liga "Mostrar o tempo aos clientes".
+- **Relatório de horas** (`app/views/workspace/time_report.py`, página `/<slug>/time-report/`, item
+  "Relatório de horas" na barra lateral, logo abaixo do Calendário).
+  - `…/time-report/?start&end&project&user`: totais por pessoa, por projeto e por item (e por dia, ainda
+    sem uso na tela). Até 366 dias; o dia de um lançamento é o dia em que começou, no fuso do espaço de
+    trabalho. O cronômetro rodando entra com o tempo até agora.
+  - `…/time-report/export/`: os lançamentos em CSV com `;` e BOM (o Excel em português abre direto), horas
+    em `h:mm` e decimal com vírgula. Texto começando com `= + - @` vai com apóstrofo, para não virar
+    fórmula.
+  - Admin do espaço de trabalho vê todos e filtra por pessoa; membro vê só as próprias horas (o servidor
+    ignora o filtro de pessoa). Convidado não abre.
+  - Tela (`components/time-tracking/report/`): esta semana, este mês, mês passado, últimos 30 dias ou
+    período escolhido; filtro de projeto e de pessoa; quatro números (total, itens, projetos, pessoas) e
+    as tabelas com a parcela de cada linha.
 - **Conta Google num consentimento só.** `GoogleAccountOAuthProvider`
   (`authentication/provider/oauth/google_account.py`) pede agenda e Drive juntos, no mesmo client OAuth
   "Interno" das integrações. Endpoints `users/me/google/{connect,callback,status,disconnect}/`

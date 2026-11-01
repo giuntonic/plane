@@ -4,6 +4,8 @@
 
 from django.urls import path
 
+from plane.app.views.workspace.time_report import WorkspaceTimeReportEndpoint, WorkspaceTimeReportExportEndpoint
+
 
 from plane.app.views import (
     UserWorkspaceInvitationsViewSet,
@@ -283,5 +285,16 @@ urlpatterns = [
         "workspaces/<str:slug>/sidebar-preferences/",
         WorkspaceUserPreferenceViewSet.as_view(),
         name="workspace-user-preference",
+    ),
+    # Pespo: relatório de horas (tempo gasto por peça)
+    path(
+        "workspaces/<str:slug>/time-report/",
+        WorkspaceTimeReportEndpoint.as_view(),
+        name="workspace-time-report",
+    ),
+    path(
+        "workspaces/<str:slug>/time-report/export/",
+        WorkspaceTimeReportExportEndpoint.as_view(),
+        name="workspace-time-report-export",
     ),
 ]

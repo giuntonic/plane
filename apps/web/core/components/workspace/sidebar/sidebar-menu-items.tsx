@@ -81,6 +81,12 @@ export const SidebarMenuItems = observer(function SidebarMenuItems() {
       const stickiesIndex = merged.findIndex((item) => item.key === "stickies");
       merged.splice(stickiesIndex >= 0 ? stickiesIndex + 1 : merged.length, 0, calendarItem);
     }
+    // Pespo: Relatório de horas logo abaixo do Calendário
+    const timeReportItem = WORKSPACE_SIDEBAR_STATIC_NAVIGATION_ITEMS["time-report"];
+    if (timeReportItem) {
+      const calendarIndex = merged.findIndex((item) => item.key === "calendar");
+      merged.splice(calendarIndex >= 0 ? calendarIndex + 1 : merged.length, 0, timeReportItem);
+    }
 
     return merged;
   }, [personalPreferences]);
