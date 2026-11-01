@@ -58,9 +58,16 @@ export function useTranslation(): TTranslationStore {
     [i18n]
   );
 
-  return {
-    t: (key: string, params?: Record<string, unknown>) =>
+  // Pespo: `t` estável entre renderizações (só muda com o idioma). Recriado a cada render, ele entrava nas
+  // dependências de useCallback/useEffect e disparava buscas em loop (ex.: o seletor do Google Drive).
+  const translate = useCallback(
+    (key: string, params?: Record<string, unknown>) =>
       coerceToString(key, params === undefined ? t(key) : t(key, params)),
+    [t]
+  );
+
+  return {
+    t: translate,
     currentLocale: i18n.language as TLanguage,
     changeLanguage,
     languages: SUPPORTED_LANGUAGES,

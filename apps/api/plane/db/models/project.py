@@ -100,6 +100,10 @@ class Project(BaseModel):
     # Pespo: o cliente (convidado) vê o total do tempo gasto em cada peça (a equipe sempre vê).
     # db_default: o api antigo ainda cria projetos durante o deploy (a coluna nasce com padrão no banco).
     time_tracking_client_visible = models.BooleanField(default=False, db_default=False)
+    # Pespo: pasta do projeto no Google Drive (de preferência num Drive compartilhado da equipe), para onde vão
+    # os documentos criados pelos itens. Vazia: vão para o Meu Drive de quem cria.
+    google_drive_folder_id = models.CharField(max_length=255, blank=True, default="", db_default="")
+    google_drive_folder_name = models.CharField(max_length=255, blank=True, default="", db_default="")
     is_time_tracking_enabled = models.BooleanField(default=False)
     is_issue_type_enabled = models.BooleanField(default=False)
     guest_view_all_features = models.BooleanField(default=False)

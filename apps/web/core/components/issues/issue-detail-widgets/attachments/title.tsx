@@ -12,8 +12,10 @@ import { EIssueServiceType } from "@plane/types";
 import { CollapsibleButton } from "@plane/ui";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
+import { PlusIcon } from "@plane/propel/icons";
 // local imports
-import { IssueAttachmentActionButton } from "./quick-action-button";
+import { useIssueGoogleDriveFiles } from "../google-drive/helper";
+import { IssueAttachMenu } from "./attach-menu";
 
 type Props = {
   isOpen: boolean;
@@ -34,7 +36,9 @@ export const IssueAttachmentsCollapsibleTitle = observer(function IssueAttachmen
 
   // derived values
   const issue = getIssueById(issueId);
-  const attachmentCount = issue?.attachment_count ?? 0;
+  // Pespo: os arquivos do Google Drive vinculados ao item ficam na mesma lista dos anexos
+  const { data: driveFiles } = useIssueGoogleDriveFiles(workspaceSlug, projectId, issueId);
+  const attachmentCount = (issue?.attachment_count ?? 0) + (driveFiles?.length ?? 0);
 
   // indicator element
   const indicatorElement = useMemo(
@@ -53,10 +57,11 @@ export const IssueAttachmentsCollapsibleTitle = observer(function IssueAttachmen
       indicatorElement={indicatorElement}
       actionItemElement={
         !disabled && (
-          <IssueAttachmentActionButton
+          <IssueAttachMenu
             workspaceSlug={workspaceSlug}
             projectId={projectId}
             issueId={issueId}
+            customButton={<PlusIcon className="h-4 w-4" />}
             disabled={disabled}
             issueServiceType={issueServiceType}
           />

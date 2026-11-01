@@ -5,7 +5,7 @@
  */
 
 import type { LucideIcon } from "lucide-react";
-import { ListChecks, Shapes, Timer, Users, Zap } from "lucide-react";
+import { FolderOpen, ListChecks, Shapes, Timer, Users, Zap } from "lucide-react";
 // plane imports
 import type { ISvgIcons } from "@plane/propel/icons";
 import {
@@ -32,6 +32,7 @@ export const PROJECT_SETTINGS_ICONS: Record<TProjectSettingsTabs, LucideIcon | R
   features_intake: IntakeIcon,
   features_pieces: Shapes,
   features_time_tracking: Timer,
+  features_google_drive: FolderOpen,
   states: StatePropertyIcon,
   labels: LabelPropertyIcon,
   estimates: EstimatePropertyIcon,

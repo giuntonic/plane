@@ -498,6 +498,20 @@
         "description": "O painel de peças do cliente: contrato, saldo por categoria, peças por situação e pedido de peças novas.",
         "toggle_title": "Ativar peças",
         "toggle_description": "A aba Peças aparece no projeto, com o painel do contrato do cliente."
+      },
+      "google_drive": {
+        "title": "Google Drive",
+        "short_title": "Google Drive",
+        "description": "A pasta do projeto no Drive. Os documentos criados pelos itens (Anexar › Novo Google Docs, Planilha ou Apresentação) vão para ela, com o nome do item.",
+        "no_folder": "Nenhuma pasta escolhida",
+        "no_folder_hint": "Sem pasta, os documentos novos vão para o Meu Drive de quem cria.",
+        "folder_hint": "Use uma pasta num Drive compartilhado da equipe: o Hub não compartilha arquivos, e quem não tem acesso à pasta não consegue criar documentos nela.",
+        "open": "Abrir no Drive",
+        "choose": "Escolher pasta",
+        "change": "Trocar pasta",
+        "remove": "Tirar a pasta",
+        "saved": "Pasta do projeto salva",
+        "picker_title": "Pasta do projeto no Google Drive"
       }
     },
     "project_updates": {

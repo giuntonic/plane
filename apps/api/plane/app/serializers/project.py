@@ -13,6 +13,7 @@ from .base import BaseSerializer, DynamicBaseSerializer
 from django.db.models import Max
 from plane.app.serializers.workspace import WorkspaceLiteSerializer
 from plane.app.serializers.user import UserLiteSerializer, UserAdminLiteSerializer
+from plane.utils.google_drive import is_valid_drive_id
 from plane.db.models import (
     Project,
     ProjectMember,
@@ -54,6 +55,12 @@ class ProjectSerializer(BaseSerializer):
             )
 
         return name
+
+    def validate_google_drive_folder_id(self, value):
+        # Pespo: só um id de pasta do Drive (ou vazio, para tirar a pasta)
+        if value and not is_valid_drive_id(value):
+            raise serializers.ValidationError(detail="INVALID_GOOGLE_DRIVE_FOLDER")
+        return value or ""
 
     def validate_identifier(self, identifier):
         project_id = self.instance.id if self.instance else None

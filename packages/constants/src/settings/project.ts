@@ -95,6 +95,14 @@ export const PROJECT_SETTINGS: Record<TProjectSettingsTabs, TProjectSettingsItem
     access: [EUserProjectRoles.ADMIN],
     highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/features/time-tracking/`,
   },
+  // Pespo: pasta do projeto no Google Drive
+  features_google_drive: {
+    key: "features_google_drive",
+    i18n_label: "project_settings.features.google_drive.short_title",
+    href: `/features/google-drive`,
+    access: [EUserProjectRoles.ADMIN],
+    highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/features/google-drive/`,
+  },
   states: {
     key: "states",
     i18n_label: "common.states",
@@ -144,6 +152,7 @@ export const GROUPED_PROJECT_SETTINGS: Record<PROJECT_SETTINGS_CATEGORY, TProjec
     PROJECT_SETTINGS["features_intake"],
     PROJECT_SETTINGS["features_pieces"],
     PROJECT_SETTINGS["features_time_tracking"],
+    PROJECT_SETTINGS["features_google_drive"],
   ],
   [PROJECT_SETTINGS_CATEGORY.WORK_STRUCTURE]: [
     PROJECT_SETTINGS["states"],

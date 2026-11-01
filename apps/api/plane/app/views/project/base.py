@@ -190,6 +190,8 @@ class ProjectViewSet(BaseViewSet):
             "inbox_view",
             "pieces_view",
             "time_tracking_client_visible",
+            "google_drive_folder_id",
+            "google_drive_folder_name",
             "guest_view_all_features",
             "project_lead",
             "network",

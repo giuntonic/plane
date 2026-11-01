@@ -364,7 +364,10 @@
       "new_presentation": "New Google Slides",
       "new_file_name": "Name of the new file",
       "create": "Create",
-      "modified": "Modified {date}"
+      "modified": "Modified {date}",
+      "create_folder_here": "Create the “{name}” folder here",
+      "use_folder": "Use “{name}”",
+      "open_a_folder": "Open a folder to choose it"
     },
     "widget": {
       "title": "Google Drive",
@@ -385,6 +388,15 @@
       "view_mode": "View",
       "edit_mode": "Edit",
       "blocked_hint": "Editing uses Google's own editor. If it asks you to enable cookies, click Google's button to allow it — or use \"Open in Google\"."
+    },
+    "attach": {
+      "from_computer": "From your computer",
+      "from_drive": "From Google Drive",
+      "copy_from_drive": "Copy from Google Drive (kept in the Hub)",
+      "new_document": "New Google Doc",
+      "new_spreadsheet": "New Google Sheet",
+      "new_presentation": "New Google Slides",
+      "untitled": "Untitled"
     }
   },
   "google_calendar_integration": {
@@ -493,6 +505,13 @@
       "forbidden": "Google Calendar denied access. Try reconnecting your account.",
       "not_found": "The event wasn't found in Google Calendar.",
       "generic": "Something went wrong talking to Google Calendar."
+    },
+    "next_meeting": {
+      "label": "Meeting",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "now": "Happening now",
+      "join": "Join"
     }
   },
   "google_account": {

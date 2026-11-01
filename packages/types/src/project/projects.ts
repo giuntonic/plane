@@ -34,6 +34,9 @@ export interface IPartialProject {
   pieces_view: boolean;
   /** Pespo: o cliente (convidado) vê o total do tempo gasto em cada peça. */
   time_tracking_client_visible?: boolean;
+  /** Pespo: pasta do projeto no Google Drive (documentos criados pelos itens vão para ela). */
+  google_drive_folder_id?: string;
+  google_drive_folder_name?: string;
   guest_view_all_features?: boolean;
   project_lead?: IUserLite | string | null;
   network?: number;

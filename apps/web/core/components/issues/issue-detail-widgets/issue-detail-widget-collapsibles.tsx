@@ -14,7 +14,7 @@ import { useTimeLineRelationOptions } from "@/components/relations";
 // local imports
 import { AttachmentsCollapsible } from "./attachments";
 import { ChecklistCollapsible } from "./checklist";
-import { GoogleDriveCollapsible } from "./google-drive";
+import { useIssueGoogleDriveFiles } from "./google-drive/helper";
 import { LinksCollapsible } from "./links";
 import { MeetingsCollapsible } from "./meetings";
 import { PecaMarkingCollapsible } from "./peca-marking";
@@ -51,8 +51,11 @@ export const IssueDetailWidgetCollapsibles = observer(function IssueDetailWidget
   const shouldRenderLinks = !!issue?.link_count && issue?.link_count > 0 && !hideWidgets?.includes("links");
   const attachmentUploads = getAttachmentsUploadStatusByIssueId(issueId);
   const attachmentsCount = getAttachmentsCountByIssueId(issueId);
+  // Pespo: os arquivos do Google Drive entram na seção de anexos
+  const { data: driveFiles } = useIssueGoogleDriveFiles(workspaceSlug, projectId, issueId);
   const shouldRenderAttachments =
     attachmentsCount > 0 ||
+    (driveFiles?.length ?? 0) > 0 ||
     (!!attachmentUploads && attachmentUploads.length > 0 && !hideWidgets?.includes("attachments"));
 
   return (
@@ -103,15 +106,6 @@ export const IssueDetailWidgetCollapsibles = observer(function IssueDetailWidget
       )}
       {!hideWidgets?.includes("meetings") && (
         <MeetingsCollapsible
-          workspaceSlug={workspaceSlug}
-          projectId={projectId}
-          issueId={issueId}
-          disabled={disabled}
-          issueServiceType={issueServiceType}
-        />
-      )}
-      {!hideWidgets?.includes("google-drive") && (
-        <GoogleDriveCollapsible
           workspaceSlug={workspaceSlug}
           projectId={projectId}
           issueId={issueId}

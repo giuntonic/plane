@@ -386,6 +386,11 @@ export const coreRoutes: RouteConfigEntry[] = [
               ":workspaceSlug/settings/projects/:projectId/features/time-tracking",
               "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/time-tracking/page.tsx"
             ),
+            // Pespo: pasta do projeto no Google Drive
+            route(
+              ":workspaceSlug/settings/projects/:projectId/features/google-drive",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/google-drive/page.tsx"
+            ),
             // Project States
             route(
               ":workspaceSlug/settings/projects/:projectId/states",

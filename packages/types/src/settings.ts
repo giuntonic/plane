@@ -41,6 +41,8 @@ export type TProjectSettingsTabs =
   | "features_pieces"
   // Pespo: tempo gasto por peça
   | "features_time_tracking"
+  // Pespo: pasta do projeto no Google Drive
+  | "features_google_drive"
   | "states"
   | "labels"
   | "estimates"

@@ -498,6 +498,20 @@
         "description": "The client's pieces panel: contract, balance per category, pieces by status and new piece requests.",
         "toggle_title": "Enable pieces",
         "toggle_description": "The Pieces tab shows up in the project, with the client's contract panel."
+      },
+      "google_drive": {
+        "title": "Google Drive",
+        "short_title": "Google Drive",
+        "description": "The project folder in Drive. Documents created from work items (Attach › New Google Doc, Sheet or Slides) go there, named after the work item.",
+        "no_folder": "No folder chosen",
+        "no_folder_hint": "Without a folder, new documents go to the creator's My Drive.",
+        "folder_hint": "Use a folder in a team shared drive: the Hub doesn't share files, and people without access to the folder can't create documents in it.",
+        "open": "Open in Drive",
+        "choose": "Choose folder",
+        "change": "Change folder",
+        "remove": "Remove the folder",
+        "saved": "Project folder saved",
+        "picker_title": "Project folder in Google Drive"
       }
     },
     "project_updates": {
