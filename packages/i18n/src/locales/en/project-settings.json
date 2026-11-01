@@ -474,11 +474,11 @@
         }
       },
       "time_tracking": {
-        "title": "Time tracking",
-        "short_title": "Time tracking",
-        "description": "Log time spent on work items and projects.",
-        "toggle_title": "Enable time tracking",
-        "toggle_description": "Project members will be able to log time worked."
+        "title": "Time spent",
+        "short_title": "Time spent",
+        "description": "Timer and time entries on each piece. The team always sees the time; clients only if you turn it on below.",
+        "toggle_title": "Show the time to clients",
+        "toggle_description": "Project guests see the total time of each piece, without who worked on it or the entries."
       },
       "milestones": {
         "title": "Milestones",

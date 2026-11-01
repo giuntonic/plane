@@ -37,6 +37,8 @@ export type TProjectSettingsTabs =
   | "features_intake"
   // Pespo: aba "Peças"
   | "features_pieces"
+  // Pespo: tempo gasto por peça
+  | "features_time_tracking"
   | "states"
   | "labels"
   | "estimates"

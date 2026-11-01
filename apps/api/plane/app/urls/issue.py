@@ -31,6 +31,10 @@ from plane.app.views import (
     MediaRenditionEndpoint,
     MediaRenditionFileEndpoint,
     MediaRenditionRetryEndpoint,
+    IssueTimeEntryEndpoint,
+    IssueTimeEntryDetailEndpoint,
+    IssueTimeEntryStartEndpoint,
+    WorkspaceRunningTimeEntryEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -235,6 +239,27 @@ urlpatterns = [
         "<uuid:asset_id>/<str:kind>/",
         MediaRenditionFileEndpoint.as_view(),
         name="project-issue-media-rendition-file",
+    ),
+    # Pespo: tempo gasto por peça (cronômetro e lançamentos) e o cronômetro de quem está logado
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/time-entries/",
+        IssueTimeEntryEndpoint.as_view(),
+        name="project-issue-time-entries",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/time-entries/start/",
+        IssueTimeEntryStartEndpoint.as_view(),
+        name="project-issue-time-entry-start",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/time-entries/<uuid:pk>/",
+        IssueTimeEntryDetailEndpoint.as_view(),
+        name="project-issue-time-entry-detail",
+    ),
+    path(
+        "workspaces/<str:slug>/time-entries/running/",
+        WorkspaceRunningTimeEntryEndpoint.as_view(),
+        name="workspace-running-time-entry",
     ),
     # Pespo: extras dos cards (progresso das subtarefas, capa) e a capa do item
     path(

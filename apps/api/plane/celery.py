@@ -51,6 +51,11 @@ app.conf.beat_schedule = {
         "task": "plane.license.bgtasks.telemetry_metrics.push_instance_metrics",
         "schedule": schedule(run_every=timedelta(minutes=METRICS_PUSH_INTERVAL_MINUTES)),
     },
+    # Pespo: cronômetro do tempo gasto esquecido rodando para sozinho em 12 h
+    "pespo-stop-forgotten-timers": {
+        "task": "plane.bgtasks.time_tracking_task.stop_forgotten_timers",
+        "schedule": crontab(minute="*/15"),
+    },
     "sync-google-calendars": {
         "task": "plane.bgtasks.google_calendar_sync_task.sync_google_calendars",
         "schedule": schedule(run_every=timedelta(minutes=10)),

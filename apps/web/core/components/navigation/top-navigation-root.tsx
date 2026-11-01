@@ -20,6 +20,7 @@ import { InboxIcon } from "@plane/propel/icons";
 import useSWR from "swr";
 import { useWorkspaceNotifications } from "@/hooks/store/notifications";
 import { useUserPermissions } from "@/hooks/store/user";
+import { RunningTimerChip } from "@/components/issues/time-tracking";
 
 export const TopNavigationRoot = observer(function TopNavigationRoot() {
   const { t } = useTranslation();
@@ -72,6 +73,8 @@ export const TopNavigationRoot = observer(function TopNavigationRoot() {
       )}
       {/* Additional Actions */}
       <div className="flex flex-1 shrink-0 items-center justify-end gap-1">
+        {/* Pespo: cronômetro do tempo gasto, quando há um rodando */}
+        {!isGuest && workspaceSlug && <RunningTimerChip workspaceSlug={workspaceSlug.toString()} />}
         <Tooltip tooltipContent={t("sidebar.inbox")} position="bottom">
           <AppSidebarItem
             variant="link"

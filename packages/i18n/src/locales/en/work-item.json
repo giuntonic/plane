@@ -606,5 +606,26 @@
     "conversion_failed": "The conversion failed",
     "retry": "Try again",
     "video_converting": "The video is being converted to play in the browser. It opens here when it's done."
+  },
+  "time_tracking": {
+    "label": "Time",
+    "title": "Time spent",
+    "none": "None",
+    "start": "Start the timer",
+    "start_short": "Start",
+    "stop": "Stop the timer",
+    "running": "running",
+    "switched": "The other work item's timer stopped at {duration}.",
+    "stopped": "Timer stopped: {duration}.",
+    "error": "The time couldn't be saved.",
+    "duration": "Duration",
+    "duration_placeholder": "1h30",
+    "date": "Date",
+    "note": "Note",
+    "note_placeholder": "What was done (optional)",
+    "add": "Log",
+    "empty": "No time logged. Use the timer or log it by hand.",
+    "auto_stopped": "stopped itself",
+    "auto_stopped_hint": "The timer ran for more than 12 hours and stopped itself. Adjust the duration if needed."
   }
 }

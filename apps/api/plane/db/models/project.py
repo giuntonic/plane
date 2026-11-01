@@ -97,6 +97,9 @@ class Project(BaseModel):
     intake_view = models.BooleanField(default=False)
     # Pespo: aba "Peças" (painel de peças do cliente); ligada por padrão, como era antes de virar opção.
     pieces_view = models.BooleanField(default=True)
+    # Pespo: o cliente (convidado) vê o total do tempo gasto em cada peça (a equipe sempre vê).
+    # db_default: o api antigo ainda cria projetos durante o deploy (a coluna nasce com padrão no banco).
+    time_tracking_client_visible = models.BooleanField(default=False, db_default=False)
     is_time_tracking_enabled = models.BooleanField(default=False)
     is_issue_type_enabled = models.BooleanField(default=False)
     guest_view_all_features = models.BooleanField(default=False)

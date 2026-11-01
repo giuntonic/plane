@@ -32,6 +32,8 @@ export interface IPartialProject {
   inbox_view: boolean;
   /** Pespo: aba "Peças" (painel de peças do cliente). */
   pieces_view: boolean;
+  /** Pespo: o cliente (convidado) vê o total do tempo gasto em cada peça. */
+  time_tracking_client_visible?: boolean;
   guest_view_all_features?: boolean;
   project_lead?: IUserLite | string | null;
   network?: number;

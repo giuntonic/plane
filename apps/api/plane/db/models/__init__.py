@@ -24,6 +24,7 @@ from .google_drive import GoogleDriveConnection, IssueGoogleDriveFile
 from .importer import Importer
 from .issue_checklist import IssueChecklist, IssueChecklistItem
 from .media_review import MediaRendition, MediaReviewComment
+from .time_tracking import IssueTimeEntry
 from .issue_recurrence import IssueRecurrence
 from .template import EntityTemplate
 from .intake import Intake, IntakeIssue

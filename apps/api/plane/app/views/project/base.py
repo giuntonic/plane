@@ -189,6 +189,7 @@ class ProjectViewSet(BaseViewSet):
             "page_view",
             "inbox_view",
             "pieces_view",
+            "time_tracking_client_visible",
             "guest_view_all_features",
             "project_lead",
             "network",

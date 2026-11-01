@@ -606,5 +606,26 @@
     "conversion_failed": "Não foi possível converter",
     "retry": "Tentar de novo",
     "video_converting": "O vídeo está sendo convertido para tocar no navegador. Ele abre aqui quando terminar."
+  },
+  "time_tracking": {
+    "label": "Tempo",
+    "title": "Tempo gasto",
+    "none": "Nenhum",
+    "start": "Iniciar o cronômetro",
+    "start_short": "Iniciar",
+    "stop": "Parar o cronômetro",
+    "running": "rodando",
+    "switched": "O cronômetro do outro item parou em {duration}.",
+    "stopped": "Cronômetro parado: {duration}.",
+    "error": "Não foi possível salvar o tempo.",
+    "duration": "Duração",
+    "duration_placeholder": "1h30",
+    "date": "Data",
+    "note": "Observação",
+    "note_placeholder": "O que foi feito (opcional)",
+    "add": "Lançar",
+    "empty": "Nenhum tempo lançado. Use o cronômetro ou lance à mão.",
+    "auto_stopped": "parou sozinho",
+    "auto_stopped_hint": "O cronômetro ficou rodando mais de 12 horas e parou sozinho. Ajuste a duração se precisar."
   }
 }

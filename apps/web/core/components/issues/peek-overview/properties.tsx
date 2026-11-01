@@ -39,6 +39,7 @@ import { useProjectState } from "@/hooks/store/use-project-state";
 // plane web components
 import { IssueParentSelectRoot } from "@/components/issues/parent-select-root";
 import { IssueRecurrenceSelect } from "@/components/issues/recurrence";
+import { IssueTimeProperty } from "@/components/issues/time-tracking";
 import type { TIssueOperations } from "../issue-detail";
 import { workItemPropertiesPanelStore } from "../properties-panel";
 import { IssueCycleSelect } from "../issue-detail/cycle-select";
@@ -274,6 +275,9 @@ export const PeekOverviewProperties = observer(function PeekOverviewProperties(p
             disabled={disabled}
           />
         </SidebarPropertyListItem>
+
+        {/* Pespo: tempo gasto */}
+        <IssueTimeProperty workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
 
         <SidebarPropertyListItem icon={LabelPropertyIcon} label={t("common.labels")}>
           <IssueLabel workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} disabled={disabled} />

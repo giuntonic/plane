@@ -10,7 +10,7 @@ import { xor } from "lodash-es";
 import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // icons
-import { ListChecks, Paperclip, Repeat } from "lucide-react";
+import { ListChecks, Paperclip, Repeat, Timer } from "lucide-react";
 // i18n
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, StartDatePropertyIcon, ViewsIcon, DueDatePropertyIcon } from "@plane/propel/icons";
@@ -43,6 +43,7 @@ import { useAppRouter } from "@/hooks/use-app-router";
 import { useIssueStoreType } from "@/hooks/use-issue-layout-store";
 import { usePlatformOS } from "@/hooks/use-platform-os";
 import { useCardExtras } from "@/components/issues/card-extras";
+import { formatDuration } from "@/components/issues/time-tracking/helpers";
 // local components
 import { IssuePropertyLabels } from "./labels";
 import { WithDisplayPropertiesHOC } from "./with-display-properties-HOC";
@@ -87,6 +88,7 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
   const { data: cardExtras } = useCardExtras(workspaceSlug?.toString(), issue.project_id ?? undefined);
   const checklist = cardExtras?.[issue.id]?.checklist;
   const isRecurring = !!cardExtras?.[issue.id]?.recurring;
+  const timeSpent = cardExtras?.[issue.id]?.time;
 
   const issueOperations = useMemo(
     () => ({
@@ -476,6 +478,21 @@ export const IssueProperties = observer(function IssueProperties(props: IIssuePr
         <Tooltip tooltipContent={t("issue_recurrence.card_tooltip")} isMobile={isMobile} renderByDefault={false}>
           <div className="flex h-5 flex-shrink-0 items-center justify-center rounded-sm border-[0.5px] border-strong px-1.5">
             <Repeat className="h-3 w-3 flex-shrink-0" strokeWidth={2} />
+          </div>
+        </Tooltip>
+      )}
+
+      {/* Pespo: tempo gasto */}
+      {!!timeSpent && (
+        <Tooltip
+          tooltipHeading={t("time_tracking.title")}
+          tooltipContent={formatDuration(timeSpent)}
+          isMobile={isMobile}
+          renderByDefault={false}
+        >
+          <div className="flex h-5 flex-shrink-0 items-center justify-center gap-1 rounded-sm border-[0.5px] border-strong px-1.5">
+            <Timer className="h-3 w-3 flex-shrink-0" strokeWidth={2} />
+            <div className="text-caption-sm-regular tabular-nums">{formatDuration(timeSpent)}</div>
           </div>
         </Tooltip>
       )}

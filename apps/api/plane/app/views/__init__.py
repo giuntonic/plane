@@ -199,6 +199,12 @@ from .issue.checklist import (
 )
 from .issue.card import ProjectCardExtrasEndpoint, IssueCoverEndpoint
 from .issue.recurrence import IssueRecurrenceEndpoint
+from .issue.time_entry import (
+    IssueTimeEntryEndpoint,
+    IssueTimeEntryDetailEndpoint,
+    IssueTimeEntryStartEndpoint,
+    WorkspaceRunningTimeEntryEndpoint,
+)
 from .issue.media_review import (
     MediaReviewCommentEndpoint,
     MediaReviewCommentDetailEndpoint,

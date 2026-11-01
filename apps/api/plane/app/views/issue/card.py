@@ -3,7 +3,7 @@
 # See the LICENSE file for details.
 
 """Pespo: o que os cards da lista e do quadro mostram além dos campos do item (progresso das
-subtarefas, capa, repetição), numa requisição por projeto; e a capa do item."""
+subtarefas, capa, repetição, tempo gasto), numa requisição por projeto; e a capa do item."""
 
 # Django imports
 from django.db.models import Count, Q
@@ -15,13 +15,15 @@ from rest_framework.response import Response
 # Module imports
 from .. import BaseAPIView
 from plane.app.permissions import allow_permission, ROLE
-from plane.db.models import FileAsset, Issue, IssueChecklistItem, IssueRecurrence
+from plane.db.models import FileAsset, Issue, IssueChecklistItem, IssueRecurrence, Project, ProjectMember
 from plane.utils.issue_cover import COVER_FLAG, cover_url, is_image_attachment, set_issue_cover
+from plane.utils.time_tracking import totals_by_issue
 
 
 class ProjectCardExtrasEndpoint(BaseAPIView):
-    """``{issue_id: {"checklist": {"done", "total"}, "cover": url, "recurring": true}}``, só com os itens que têm alguma
-    coisa. Itens apagados e arquivados ficam de fora."""
+    """``{issue_id: {"checklist": {"done", "total"}, "cover": url, "recurring": true, "time": segundos}}``, só com os
+    itens que têm alguma coisa. Itens apagados e arquivados ficam de fora. O tempo só vai para o cliente
+    (convidado) quando o projeto mostra o tempo aos clientes."""
 
     @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])
     def get(self, request, slug, project_id):
@@ -49,6 +51,17 @@ class ProjectCardExtrasEndpoint(BaseAPIView):
         ).values_list("issue_id", flat=True)
         for issue_id in recurring:
             extras.setdefault(str(issue_id), {})["recurring"] = True
+        is_guest = (
+            ProjectMember.objects.filter(project_id=project_id, member=request.user, is_active=True)
+            .values_list("role", flat=True)
+            .first()
+            == ROLE.GUEST.value
+        )
+        if not is_guest or Project.objects.filter(pk=project_id, time_tracking_client_visible=True).exists():
+            times = totals_by_issue(Q(workspace__slug=slug, project_id=project_id, **live))
+            for issue_id, seconds in times.items():
+                if seconds:
+                    extras.setdefault(str(issue_id), {})["time"] = seconds
         return Response(extras, status=status.HTTP_200_OK)
 
 

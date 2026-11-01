@@ -474,11 +474,11 @@
         }
       },
       "time_tracking": {
-        "title": "Rastreamento de tempo",
-        "short_title": "Rastreamento de tempo",
-        "description": "Registre o tempo gasto em itens de trabalho e projetos.",
-        "toggle_title": "Ativar rastreamento de tempo",
-        "toggle_description": "Os membros do projeto poderão registrar o tempo trabalhado."
+        "title": "Tempo gasto",
+        "short_title": "Tempo gasto",
+        "description": "Cronômetro e lançamentos de tempo em cada peça. A equipe sempre vê o tempo; o cliente, só se você ligar abaixo.",
+        "toggle_title": "Mostrar o tempo aos clientes",
+        "toggle_description": "Os convidados do projeto veem o total de tempo de cada peça, sem quem trabalhou nem os lançamentos."
       },
       "milestones": {
         "title": "Marcos",

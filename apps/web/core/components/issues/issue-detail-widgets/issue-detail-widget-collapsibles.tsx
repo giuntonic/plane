@@ -20,6 +20,7 @@ import { MeetingsCollapsible } from "./meetings";
 import { PecaMarkingCollapsible } from "./peca-marking";
 import { RelationsCollapsible } from "./relations";
 import { SubIssuesCollapsible } from "./sub-issues";
+import { TimeTrackingCollapsible } from "@/components/issues/time-tracking";
 
 type Props = {
   workspaceSlug: string;
@@ -126,6 +127,10 @@ export const IssueDetailWidgetCollapsibles = observer(function IssueDetailWidget
           disabled={disabled}
           issueServiceType={issueServiceType}
         />
+      )}
+      {/* Pespo: tempo gasto (só a equipe; o cliente vê só o total, nas propriedades) */}
+      {!hideWidgets?.includes("time-tracking") && (
+        <TimeTrackingCollapsible workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
       )}
     </div>
   );

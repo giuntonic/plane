@@ -346,6 +346,7 @@ CELERY_IMPORTS = (
     "plane.bgtasks.piece_briefing_signals_task",
     "plane.bgtasks.issue_recurrence_task",
     "plane.bgtasks.media_review_task",
+    "plane.bgtasks.time_tracking_task",
 )
 
 # Pespo: a conversão de vídeo da revisão roda numa fila só dela, num worker com uma tarefa por vez.
