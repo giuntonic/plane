@@ -614,5 +614,33 @@
       "TEMPLATE_NOT_FOUND": "The project template wasn't found.",
       "EMAILS_REQUIRED": "Fill in at least one email."
     }
+  },
+  "pespo_team": {
+    "title": "Team",
+    "description": "The Pespo apps and the team roles: each role sees some apps, and each person can have more than one role.",
+    "menu": "Pespo apps",
+    "services": {
+      "title": "Apps",
+      "hint": "Shown in the \"Pespo apps\" shortcut at the top of the Hub, for the roles that include them. Admins see all of them.",
+      "icon": "Icon",
+      "name": "Name",
+      "url": "Address",
+      "description": "Description",
+      "add": "Add app",
+      "delete": "Delete app"
+    },
+    "roles": {
+      "title": "Roles",
+      "hint": "Choose the apps each role sees and who on the team has it.",
+      "members": "People with this role",
+      "new": "New role",
+      "add": "Add role",
+      "delete": "Delete role"
+    },
+    "errors": {
+      "NAME_REQUIRED": "Fill in the name.",
+      "INVALID_URL": "The address must start with https:// or http://.",
+      "ROLE_NAME_TAKEN": "There is already a role with this name."
+    }
   }
 }

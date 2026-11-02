@@ -116,6 +116,23 @@ export type TPespoNewClient = TPespoContractInput & {
   member_ids: string[];
 };
 
+// Pespo: funções e serviços da equipe (Configurações › Equipe) e o atalho "Serviços".
+export type TTeamService = {
+  id: string;
+  name: string;
+  url: string;
+  icon: string;
+  description: string;
+  sort_order: number;
+};
+export type TTeamRole = {
+  id: string;
+  name: string;
+  description: string;
+  service_ids: string[];
+  member_ids: string[];
+};
+
 export type TPieceRequestItem = {
   category: TPieceCategory;
   quantity: number;

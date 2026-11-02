@@ -614,5 +614,33 @@
       "TEMPLATE_NOT_FOUND": "O modelo de projeto não foi encontrado.",
       "EMAILS_REQUIRED": "Preencha pelo menos um e-mail."
     }
+  },
+  "pespo_team": {
+    "title": "Equipe",
+    "description": "Os apps da Pespo e as funções da equipe: cada função vê alguns apps, e cada pessoa pode ter mais de uma função.",
+    "menu": "Apps da Pespo",
+    "services": {
+      "title": "Apps",
+      "hint": "Aparecem no atalho \"Apps da Pespo\", no topo do Hub, para as funções que os incluem. Admins veem todos.",
+      "icon": "Ícone",
+      "name": "Nome",
+      "url": "Endereço",
+      "description": "Descrição",
+      "add": "Adicionar app",
+      "delete": "Excluir app"
+    },
+    "roles": {
+      "title": "Funções",
+      "hint": "Escolha os apps que cada função vê e quem da equipe tem a função.",
+      "members": "Pessoas com esta função",
+      "new": "Nova função",
+      "add": "Adicionar função",
+      "delete": "Excluir função"
+    },
+    "errors": {
+      "NAME_REQUIRED": "Preencha o nome.",
+      "INVALID_URL": "O endereço precisa começar com https:// ou http://.",
+      "ROLE_NAME_TAKEN": "Já existe uma função com esse nome."
+    }
   }
 }

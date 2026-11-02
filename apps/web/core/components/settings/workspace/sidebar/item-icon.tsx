@@ -5,7 +5,7 @@
  */
 
 import type { LucideIcon } from "lucide-react";
-import { ArrowUpToLine, Briefcase, Building, LayoutTemplate, Users, Webhook } from "lucide-react";
+import { ArrowUpToLine, Briefcase, Building, LayoutGrid, LayoutTemplate, Users, Webhook } from "lucide-react";
 // plane imports
 import type { ISvgIcons } from "@plane/propel/icons";
 import type { TWorkspaceSettingsTabs } from "@plane/types";
@@ -17,4 +17,5 @@ export const WORKSPACE_SETTINGS_ICONS: Record<TWorkspaceSettingsTabs, LucideIcon
   webhooks: Webhook,
   templates: LayoutTemplate,
   clients: Briefcase,
+  team: LayoutGrid,
 };

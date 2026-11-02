@@ -254,7 +254,7 @@ Correções feitas depois do merge:
 
 Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
 Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
-(`docs/deploy-plane-1.7.md`): migrations `0143` a `0150`, rebuild de api e web, o worker novo
+(`docs/deploy-plane-1.7.md`): migrations `0143` a `0151`, rebuild de api e web, o worker novo
 `plane-transcriber`, uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud e, depois do
 deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
 
@@ -454,6 +454,14 @@ deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
     UTC, ligado por padrão; `PESPO_CONTRACT_EXPIRY_ENABLED=0` desliga): cria o item "Contrato vence em
     dd/mm/aaaa" no projeto a 14 dias do fim (`PESPO_CONTRACT_EXPIRY_DAYS`), avisa o cliente por e-mail e passa
     para `expired` o contrato ativo que já acabou. No lugar do workflow "Vencimento de Contratos" do n8n.
+- **Funções e serviços da equipe** (decisão de 02/11: saem do painel admin e vêm para o Hub;
+  `db/models/pespo_team.py`, migration `0151`): `TeamService` (app da Pespo: nome, endereço, ícone, descrição,
+  ordem) e `TeamRole` (função: os serviços que vê e as pessoas da equipe que a têm). Configurações do espaço de
+  trabalho › Equipe (só admins; `app/views/workspace/pespo_team.py`, `components/pespo-team/`) edita os dois, e o
+  atalho "Apps da Pespo" no topo (`services-menu.tsx`, `…/team-services/mine/`) mostra a cada pessoa os apps das
+  suas funções (admins veem todos; some sem nenhum). `python manage.py import_admin_catalog --workspace <slug>
+--database-url <admin_portal> [--dry-run]` traz o catálogo do painel (funcionários achados pelo e-mail entre a
+  equipe; só lê o painel).
 - **Avisos ao cliente por e-mail** (decisão de 02/11: peça entregue, refação pronta e contrato vencendo; o WhatsApp
   entra depois como outro canal):
   - **Gatilhos** (`db/models/pespo_client_notice.py`, sinal `post_save` do `Issue`, com o estado anterior que a

@@ -51,6 +51,7 @@ export const PESPO_RELEASES: TPespoRelease[] = [
       'O cliente entra no Hub com o e-mail cadastrado, por um código enviado por e-mail ou pela conta Google, e recebe o aviso "Seu acesso ao Pespo Hub".',
       "Configurações do projeto › Contrato: o contrato do cliente, as peças contratadas, o aviso de vencimento e o histórico, para consulta.",
       "O aviso de contrato vencendo (14 dias antes) agora é do próprio Hub: cria o item no projeto e avisa o cliente.",
+      'Funções e apps da equipe (Configurações do espaço de trabalho › Equipe): cada função vê alguns apps da Pespo, e o atalho "Apps da Pespo", no topo, mostra a cada pessoa os apps das suas funções.',
     ],
     fixes: ["O seletor do Google Drive refazia a busca sem parar enquanto estava aberto."],
   },

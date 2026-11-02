@@ -27,7 +27,9 @@ export type TWorkspaceSettingsTabs =
   | "webhooks"
   | "templates"
   // Pespo: clientes e contratos
-  | "clients";
+  | "clients"
+  // Pespo: funções e serviços da equipe
+  | "team";
 export type TWorkspaceSettingsItem = {
   key: TWorkspaceSettingsTabs;
   i18n_label: string;

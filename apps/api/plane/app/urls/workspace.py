@@ -5,6 +5,14 @@
 from django.urls import path
 
 from plane.app.views.workspace.reports import ProjectMonthlyReportEndpoint, WorkspaceWorkloadEndpoint
+from plane.app.views.workspace.pespo_team import (
+    MyTeamServicesEndpoint,
+    TeamCatalogEndpoint,
+    TeamRoleDetailEndpoint,
+    TeamRolesEndpoint,
+    TeamServiceDetailEndpoint,
+    TeamServicesEndpoint,
+)
 from plane.app.views.workspace.pespo_clients import (
     WorkspacePespoClientDetailEndpoint,
     WorkspacePespoClientLoginsEndpoint,
@@ -335,5 +343,23 @@ urlpatterns = [
         "workspaces/<str:slug>/pespo-clients/<uuid:pk>/logins/",
         WorkspacePespoClientLoginsEndpoint.as_view(),
         name="workspace-pespo-client-logins",
+    ),  # Pespo: funções e serviços da equipe (no lugar do painel admin) e o atalho "Serviços"
+    path("workspaces/<str:slug>/team-catalog/", TeamCatalogEndpoint.as_view(), name="workspace-team-catalog"),
+    path("workspaces/<str:slug>/team-services/", TeamServicesEndpoint.as_view(), name="workspace-team-services"),
+    path(
+        "workspaces/<str:slug>/team-services/mine/",
+        MyTeamServicesEndpoint.as_view(),
+        name="workspace-team-services-mine",
+    ),
+    path(
+        "workspaces/<str:slug>/team-services/<uuid:pk>/",
+        TeamServiceDetailEndpoint.as_view(),
+        name="workspace-team-service",
+    ),
+    path("workspaces/<str:slug>/team-roles/", TeamRolesEndpoint.as_view(), name="workspace-team-roles"),
+    path(
+        "workspaces/<str:slug>/team-roles/<uuid:pk>/",
+        TeamRoleDetailEndpoint.as_view(),
+        name="workspace-team-role",
     ),
 ]
