@@ -37,6 +37,44 @@
         "select_co_worker": "Select co-worker"
       }
     },
+    "client_notices": {
+      "title": "Email the client",
+      "description": "The project's guests get a short email with the link to the piece.",
+      "delivered": "Piece delivered",
+      "delivered_hint": "When a piece moves to a completed state.",
+      "rework_done": "Rework ready",
+      "rework_done_hint": "When a piece the client sent back for rework is ready for review again.",
+      "contract_expiring": "Contract expiring",
+      "contract_expiring_hint": "14 days before the contract ends."
+    },
+    "contract": {
+      "short_title": "Contract",
+      "title": "Contract",
+      "description": "The client's contract for this project. Renewals and client logins are in Workspace settings › Clients.",
+      "open_client": "Open the client",
+      "current": "Contract in use",
+      "source_portal": "Read from the client portal",
+      "source_hub": "Read from the Hub",
+      "portal_unavailable": "Couldn't reach the client portal database.",
+      "no_client": "This project isn't linked to a client.",
+      "no_active": "No active contract.",
+      "period": "{type}, from {start} to {end}",
+      "urgent_limit": "{count, plural, one {# urgent piece at a time} other {# urgent pieces at a time}}",
+      "expires_in": "{count, plural, =0 {Expires today} one {Expires in # day} other {Expires in # days}}",
+      "expired_on": "Expired on {date}",
+      "history": "Contracts in the Hub",
+      "not_imported": "This project isn't linked to a client in the Hub.",
+      "no_contracts": "No contracts for this client.",
+      "col_period": "Period",
+      "col_type": "Type",
+      "col_status": "Status",
+      "col_categories": "Contracted pieces",
+      "status_active": "Active",
+      "status_renewed": "Renewed",
+      "status_expired": "Expired",
+      "imported_at": "Last updated from the portal on {date}.",
+      "error": "Couldn't load the contract."
+    },
     "states": {
       "heading": "States",
       "description": "Define and customize workflow states to track the progress of your work items.",
@@ -474,11 +512,11 @@
         }
       },
       "time_tracking": {
-        "title": "Time tracking",
-        "short_title": "Time tracking",
-        "description": "Log time spent on work items and projects.",
-        "toggle_title": "Enable time tracking",
-        "toggle_description": "Project members will be able to log time worked."
+        "title": "Time spent",
+        "short_title": "Time spent",
+        "description": "Timer and time entries on each piece. The team always sees the time; clients only if you turn it on below.",
+        "toggle_title": "Show the time to clients",
+        "toggle_description": "Project guests see the total time of each piece, without who worked on it or the entries."
       },
       "milestones": {
         "title": "Milestones",
@@ -498,6 +536,48 @@
         "description": "The client's pieces panel: contract, balance per category, pieces by status and new piece requests.",
         "toggle_title": "Enable pieces",
         "toggle_description": "The Pieces tab shows up in the project, with the client's contract panel."
+      },
+      "google_drive": {
+        "title": "Google Drive",
+        "short_title": "Google Drive",
+        "description": "The project folder in Drive. Documents created from work items (Attach › New Google Doc, Sheet or Slides) go there, named after the work item.",
+        "no_folder": "No folder chosen",
+        "no_folder_hint": "Without a folder, new documents go to the creator's My Drive.",
+        "folder_hint": "Use a folder in a team shared drive: the Hub doesn't share files, and people without access to the folder can't create documents in it.",
+        "open": "Open in Drive",
+        "choose": "Choose folder",
+        "change": "Change folder",
+        "remove": "Remove the folder",
+        "saved": "Project folder saved",
+        "picker_title": "Project folder in Google Drive"
+      },
+      "meetings": {
+        "title": "Meetings",
+        "short_title": "Meetings",
+        "description": "The client requests a meeting from the work item, at times when the hosts are free. Every meeting booked through the Hub says in the invitation that it may be recorded.",
+        "toggle_title": "Clients can request meetings",
+        "toggle_description": "Shows “Request a meeting” in work items for the project's guests.",
+        "hosts": "Hosts",
+        "hosts_hint": "The meeting goes into the first person's calendar and invites the others. Only times when all of them are free are offered. Each one needs their Google account connected.",
+        "no_hosts": "Pick the hosts",
+        "duration": "Length",
+        "minutes": "{count} min",
+        "hours": "Hours",
+        "from": "From",
+        "to": "To",
+        "weekdays": "Days",
+        "notice": "Minimum notice (hours)",
+        "window": "How many days ahead",
+        "save": "Save",
+        "saved": "Settings saved",
+        "hosts_required": "Pick at least one host and one day.",
+        "weekday_0": "Mon",
+        "weekday_1": "Tue",
+        "weekday_2": "Wed",
+        "weekday_3": "Thu",
+        "weekday_4": "Fri",
+        "weekday_5": "Sat",
+        "weekday_6": "Sun"
       }
     },
     "project_updates": {

@@ -14,11 +14,22 @@ export type TProfileSettingsTabs =
   | "notifications"
   | "security"
   | "api-tokens"
+  // Pespo: conta Google (agenda e Drive); as duas seguintes são os endereços antigos
+  | "google"
   | "google-calendar"
   | "google-drive";
 
 // Pespo: "templates" = modelos de item, módulo, ciclo, página e projeto.
-export type TWorkspaceSettingsTabs = "general" | "members" | "export" | "webhooks" | "templates";
+export type TWorkspaceSettingsTabs =
+  | "general"
+  | "members"
+  | "export"
+  | "webhooks"
+  | "templates"
+  // Pespo: clientes e contratos
+  | "clients"
+  // Pespo: funções e serviços da equipe
+  | "team";
 export type TWorkspaceSettingsItem = {
   key: TWorkspaceSettingsTabs;
   i18n_label: string;
@@ -30,6 +41,8 @@ export type TWorkspaceSettingsItem = {
 export type TProjectSettingsTabs =
   | "general"
   | "members"
+  // Pespo: contrato do cliente (só leitura)
+  | "contract"
   | "features_cycles"
   | "features_modules"
   | "features_views"
@@ -37,6 +50,11 @@ export type TProjectSettingsTabs =
   | "features_intake"
   // Pespo: aba "Peças"
   | "features_pieces"
+  // Pespo: tempo gasto por peça
+  | "features_time_tracking"
+  // Pespo: pasta do projeto no Google Drive
+  | "features_google_drive"
+  | "features_meetings"
   | "states"
   | "labels"
   | "estimates"

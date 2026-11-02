@@ -78,6 +78,8 @@ export type TIssueCardExtras = Record<
     cover?: string;
     /** The work item has an active repeat rule. */
     recurring?: boolean;
+    /** Time spent on the work item, in seconds (guests only get it when the project shows it to clients). */
+    time?: number;
   }
 >;
 

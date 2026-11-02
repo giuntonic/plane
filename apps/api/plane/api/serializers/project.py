@@ -85,6 +85,7 @@ class ProjectCreateSerializer(BaseSerializer):
             "page_view",
             "intake_view",
             "pieces_view",
+            "time_tracking_client_visible",
             "guest_view_all_features",
             "archive_in",
             "close_in",

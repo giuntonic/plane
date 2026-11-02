@@ -49,6 +49,11 @@ export const PROFILE_SETTINGS: Record<
     key: "api-tokens",
     i18n_label: "profile.actions.api-tokens",
   },
+  // Pespo: conta Google (agenda e Drive); as duas abas abaixo ficaram só como endereço antigo
+  google: {
+    key: "google",
+    i18n_label: "profile.actions.google",
+  },
   "google-calendar": {
     key: "google-calendar",
     i18n_label: "profile.actions.google-calendar",
@@ -70,8 +75,7 @@ export const GROUPED_PROFILE_SETTINGS: Record<
     PROFILE_SETTINGS["preferences"],
     PROFILE_SETTINGS["notifications"],
     PROFILE_SETTINGS["security"],
-    PROFILE_SETTINGS["google-calendar"],
-    PROFILE_SETTINGS["google-drive"],
+    PROFILE_SETTINGS["google"],
   ],
   [PROFILE_SETTINGS_CATEGORY.DEVELOPER]: [PROFILE_SETTINGS["api-tokens"]],
 };

@@ -364,7 +364,10 @@
       "new_presentation": "Novo Google Slides",
       "new_file_name": "Nome do novo arquivo",
       "create": "Criar",
-      "modified": "Modificado em {date}"
+      "modified": "Modificado em {date}",
+      "create_folder_here": "Criar a pasta “{name}” aqui",
+      "use_folder": "Usar “{name}”",
+      "open_a_folder": "Abra uma pasta para escolher"
     },
     "widget": {
       "title": "Google Drive",
@@ -385,6 +388,15 @@
       "view_mode": "Visualizar",
       "edit_mode": "Editar",
       "blocked_hint": "A edição usa o editor do próprio Google. Se ele pedir para ativar cookies, clique no botão do Google para permitir — ou use \"Abrir no Google\"."
+    },
+    "attach": {
+      "from_computer": "Do computador",
+      "from_drive": "Do Google Drive",
+      "copy_from_drive": "Cópia do Google Drive (fica no Hub)",
+      "new_document": "Novo Google Docs",
+      "new_spreadsheet": "Nova planilha Google",
+      "new_presentation": "Nova apresentação Google",
+      "untitled": "Sem título"
     }
   },
   "google_calendar_integration": {
@@ -450,6 +462,8 @@
     },
     "calendar_view": {
       "only_mine": "Só meus itens de trabalho",
+      "only_pieces": "Só peças",
+      "all_clients": "Todos os clientes",
       "show_google": "Eventos do Google",
       "no_title": "(sem título)",
       "linked_work_item": "Item de trabalho vinculado",
@@ -493,6 +507,139 @@
       "forbidden": "O Google Calendar negou o acesso. Tente reconectar sua conta.",
       "not_found": "O evento não foi encontrado no Google Calendar.",
       "generic": "Algo deu errado ao falar com o Google Calendar."
+    },
+    "next_meeting": {
+      "label": "Reunião",
+      "today": "Hoje",
+      "tomorrow": "Amanhã",
+      "now": "Acontecendo agora",
+      "join": "Entrar"
     }
+  },
+  "google_account": {
+    "title": "Conta Google",
+    "description": "Agenda e Drive dentro do Pespo Hub, com uma conexão só da sua conta Google.",
+    "calendar": "Agenda",
+    "drive": "Drive",
+    "not_connected": "Conta Google não conectada",
+    "connected_hint": "Os itens com data aparecem na sua agenda, e os arquivos do Drive entram nos anexos dos itens.",
+    "prompt_title": "Conecte sua conta Google",
+    "prompt_description": "Uma vez só, para usar a agenda, as reuniões e o Drive dentro do Pespo Hub.",
+    "connect": "Conectar conta Google",
+    "connecting": "Esperando o Google…",
+    "connect_missing": "Conectar o que falta",
+    "connected_title": "Conta Google conectada",
+    "disconnect": "Desconectar",
+    "disconnected": "Conta Google desconectada",
+    "disconnect_confirm": "Desconectar a conta Google? A agenda e o Drive param de funcionar no Pespo Hub até você conectar de novo.",
+    "not_configured": "A integração com o Google ainda não foi configurada neste Pespo Hub.",
+    "for_meetings": "Para agendar reuniões com Google Meet direto do item.",
+    "for_drive": "Para anexar arquivos do Drive e criar documentos aqui mesmo.",
+    "for_calendar": "Para ver suas agendas e reuniões junto dos itens de trabalho."
+  },
+  "meeting_recording": {
+    "record": "Gravar",
+    "record_meeting": "Gravar reunião",
+    "record_tooltip": "Gravar esta reunião pelo Hub",
+    "start_title": "Gravar a reunião",
+    "start_intro": "O Hub grava o áudio da aba da reunião e o seu microfone. Depois, a transcrição e a ata aparecem aqui no item.",
+    "step_open": "Deixe a reunião aberta numa aba do Chrome (ou do Edge).",
+    "step_choose": "Na próxima janela, escolha a aba da reunião e deixe ligado “Compartilhar áudio da aba”.",
+    "step_notice": "Avise os participantes no começo que a reunião está sendo gravada.",
+    "step_headphones": "Com fone de ouvido, a transcrição fica melhor.",
+    "start": "Começar a gravar",
+    "starting": "Abrindo…",
+    "recording": "Gravando",
+    "stop": "Parar a gravação",
+    "stopping": "Enviando o áudio…",
+    "no_mic": "Sem microfone: só a voz dos outros participantes está sendo gravada.",
+    "list_title": "Gravações",
+    "retry": "Tentar de novo",
+    "open": "Abrir",
+    "delete": "Apagar a gravação",
+    "delete_confirm": "Apagar a gravação, o áudio e a transcrição? A ata publicada continua no item.",
+    "deleted": "Gravação apagada",
+    "by": "Gravada por {name}",
+    "error": "Não foi possível salvar.",
+    "errors": {
+      "unsupported": "Este navegador não grava reuniões. Use o Chrome ou o Edge no computador.",
+      "share_cancelled": "A gravação não começou: nenhuma aba foi escolhida.",
+      "no_tab_audio": "A aba foi escolhida sem o áudio. Grave de novo e deixe ligado “Compartilhar áudio da aba”.",
+      "start_failed": "Não foi possível começar a gravação.",
+      "upload_incomplete": "Parte do áudio não chegou ao servidor. A transcrição sai com o que chegou."
+    },
+    "status": {
+      "recording": "Gravando",
+      "queued": "Na fila para transcrever",
+      "transcribing": "Transcrevendo…",
+      "summarizing": "Preparando a ata…",
+      "ready": "Transcrição pronta",
+      "failed": "Não foi possível transcrever"
+    },
+    "summary_status": {
+      "none": "Sem ata",
+      "draft": "Ata em rascunho",
+      "published": "Ata publicada"
+    },
+    "tabs": {
+      "minutes": "Ata",
+      "transcript": "Transcrição"
+    },
+    "minutes": {
+      "summary": "Resumo",
+      "summary_placeholder": "O que foi tratado, em poucas frases",
+      "agenda": "Pauta",
+      "decisions": "Decisões",
+      "next_steps": "Próximos passos",
+      "open_points": "Pendências",
+      "item_placeholder": "Escreva e tecle Enter",
+      "task_placeholder": "Novo próximo passo",
+      "no_assignee": "Sem responsável",
+      "due": "Prazo",
+      "remove": "Tirar",
+      "subtask_created": "Virou subtarefa",
+      "create_subtasks": "Criar subtarefas ({count})",
+      "subtasks_created": "{count, plural, one {# subtarefa criada} other {# subtarefas criadas}}",
+      "save": "Salvar rascunho",
+      "saving": "Salvando…",
+      "saved": "Rascunho salvo",
+      "unsaved": "Alterações não salvas",
+      "auto_draft": "Rascunho feito automaticamente a partir da transcrição. Revise antes de publicar.",
+      "publish": "Publicar no item",
+      "update_publication": "Atualizar no item",
+      "client_visible": "Visível para o cliente",
+      "client_visible_hint": "Desligado, só a equipe vê a ata.",
+      "published": "Ata publicada no item",
+      "published_at": "Publicada em {date}",
+      "empty_error": "Escreva a ata antes de publicar."
+    },
+    "transcript": {
+      "search": "Buscar na transcrição",
+      "waiting": "A transcrição aparece aqui quando o servidor terminar. Reuniões longas podem levar até uma hora.",
+      "empty": "Nada foi entendido na gravação.",
+      "others": "Participantes",
+      "no_results": "Nada encontrado.",
+      "audio_deleted": "O áudio já foi apagado (prazo de guarda). A transcrição continua.",
+      "model": "Transcrito com o modelo {model}"
+    }
+  },
+  "meeting_booking": {
+    "request": "Solicitar reunião",
+    "title": "Solicitar uma reunião",
+    "description": "Escolha um horário livre da equipe. O convite chega por e-mail, com o link do Google Meet.",
+    "with": "Com {names} · {minutes} min",
+    "no_slots_day": "Nenhum horário livre neste dia.",
+    "no_slots": "Nenhum horário livre nestes dias.",
+    "note": "Assunto (opcional)",
+    "note_placeholder": "O que você quer tratar",
+    "confirm": "Marcar para {when}",
+    "confirming": "Marcando…",
+    "booked": "Reunião marcada. O convite vai chegar por e-mail.",
+    "slot_taken": "Esse horário acabou de ser ocupado. Escolha outro.",
+    "unavailable": "A agenda da equipe não está disponível agora.",
+    "loading": "Buscando horários livres…",
+    "notice": "A reunião pode ser gravada e transcrita pelo Pespo Hub para gerar a ata.",
+    "previous": "Dias anteriores",
+    "next": "Próximos dias"
   }
 }

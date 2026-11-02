@@ -242,6 +242,27 @@ def create_event(access_token, calendar_id, body, with_meet=False, send_updates=
     return response.json()
 
 
+def free_busy(access_token, time_min, time_max, calendar_ids=("primary",)):
+    """Pespo: os intervalos ocupados das agendas (só início e fim, sem detalhes), para o "Solicitar reunião"."""
+    response = requests.post(
+        f"{CALENDAR_API_BASE}/freeBusy",
+        headers=_headers(access_token),
+        json={
+            "timeMin": time_min.isoformat(),
+            "timeMax": time_max.isoformat(),
+            "items": [{"id": calendar_id} for calendar_id in calendar_ids],
+        },
+        timeout=15,
+    )
+    response.raise_for_status()
+    busy = []
+    for calendar in (response.json().get("calendars") or {}).values():
+        if calendar.get("errors"):
+            raise requests.HTTPError("freeBusy calendar error", response=response)
+        busy.extend((item["start"], item["end"]) for item in calendar.get("busy") or [])
+    return busy
+
+
 def patch_event(access_token, calendar_id, event_id, body, send_updates="none"):
     response = requests.patch(
         _event_url(calendar_id, event_id),

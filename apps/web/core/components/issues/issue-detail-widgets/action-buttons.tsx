@@ -5,16 +5,17 @@
  */
 
 import React from "react";
-import { CalendarPlus, HardDrive, ListChecks, Paperclip, Video, ListTodo } from "lucide-react";
+import { CalendarPlus, ListChecks, Paperclip, Video, ListTodo, CalendarClock, Mic } from "lucide-react";
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, ViewsIcon, RelationPropertyIcon } from "@plane/propel/icons";
 // plane imports
 import type { TIssueServiceType, TWorkItemWidgets } from "@plane/types";
 // local imports
-import { IssueAttachmentActionButton } from "./attachments";
+import { IssueAttachMenu } from "./attachments/attach-menu";
 import { IssueChecklistActionButton, IssueNamedChecklistActionButton } from "./checklist";
-import { IssueGoogleDriveActionButton } from "./google-drive";
 import { IssueLinksActionButton } from "./links";
+import { RecordMeetingActionButton } from "@/components/meeting-recording/record-button";
+import { RequestMeetingButton } from "@/components/meeting-recording/request-meeting";
 import { IssueMeetingActionButton, IssueMeetNowButton } from "./meetings";
 import { RelationActionButton } from "./relations";
 import { SubIssuesActionButton } from "./sub-issues";
@@ -109,8 +110,9 @@ export function IssueDetailWidgetActionButtons(props: Props) {
           issueServiceType={issueServiceType}
         />
       )}
+      {/* Pespo: "Anexar" num menu só: do computador, do Google Drive e documento novo do Google */}
       {!hideWidgets?.includes("attachments") && (
-        <IssueAttachmentActionButton
+        <IssueAttachMenu
           workspaceSlug={workspaceSlug}
           projectId={projectId}
           issueId={issueId}
@@ -157,20 +159,32 @@ export function IssueDetailWidgetActionButtons(props: Props) {
           issueServiceType={issueServiceType}
         />
       )}
-      {!hideWidgets?.includes("google-drive") && (
-        <IssueGoogleDriveActionButton
+      {/* Pespo: gravar uma reunião que não foi marcada pelo Hub (só a equipe) */}
+      {!hideWidgets?.includes("meetings") && (
+        <RecordMeetingActionButton
           workspaceSlug={workspaceSlug}
           projectId={projectId}
           issueId={issueId}
           customButton={
             <IssueDetailWidgetButton
-              title={t("google_drive_integration.widget.add")}
-              icon={<HardDrive className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
-              disabled={disabled}
+              title={t("meeting_recording.record_meeting")}
+              icon={<Mic className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
             />
           }
-          disabled={disabled}
-          issueServiceType={issueServiceType}
+        />
+      )}
+      {/* Pespo: o cliente (convidado) pede reunião nos horários livres da equipe */}
+      {!hideWidgets?.includes("meetings") && (
+        <RequestMeetingButton
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          customButton={
+            <IssueDetailWidgetButton
+              title={t("meeting_booking.request")}
+              icon={<CalendarClock className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
+            />
+          }
         />
       )}
     </div>

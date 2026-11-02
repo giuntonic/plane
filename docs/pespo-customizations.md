@@ -250,6 +250,246 @@ Correções feitas depois do merge:
 
 ---
 
+## Versão 1.7: tempo gasto por peça, reuniões gravadas e o Google como parte do Hub (2026-11-02)
+
+Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
+Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
+(`docs/deploy-plane-1.7.md`): migrations `0143` a `0151`, rebuild de api e web, o worker novo
+`plane-transcriber`, uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud e, depois do
+deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
+
+- **Tempo gasto: modelo.** `IssueTimeEntry` (`db/models/time_tracking.py`, migration `0143`): item,
+  pessoa, `started_at`, `stopped_at` (vazio = cronômetro correndo), `duration_seconds` (lançamento à mão),
+  `note` e `source` (`timer`, `manual`, `auto_stopped`).
+  - Um cronômetro correndo por pessoa: restrição `one_running_time_entry_per_user`. Iniciar em outro item
+    com um correndo responde 409 `TIMER_ALREADY_RUNNING` com o cronômetro atual, e a tela pergunta
+    ("Parar e começar aqui" / "Continuar no outro"). Confirmando, o pedido vai com `replace: true`, que para
+    o anterior (`stop_running_entry`, com `select_for_update`) e começa o novo. No mesmo item, devolve o que
+    já roda.
+  - `Project.time_tracking_client_visible` (padrão desligado, com `db_default` para a API antiga seguir
+    funcionando durante o deploy).
+  - Contas em `utils/time_tracking.py` (`entry_seconds`, `total_seconds`, `totals_by_issue`).
+- **Tempo gasto: API** (`app/views/issue/time_entry.py`).
+  - `…/issues/<id>/time-entries/`: GET (lançamentos e total) e POST (lançamento à mão: 1 min a 24 h, com
+    `date` ou `started_at`, e `note`). Convidado só recebe o total, e só se o projeto mostra o tempo aos
+    clientes; senão 403.
+  - `…/time-entries/<pk>/`: PATCH/DELETE pelo autor ou admin. `…/time-entries/start/`: inicia.
+  - `workspaces/<slug>/time-entries/running/`: GET (o cronômetro da pessoa, com o item, o projeto e o `now`
+    do servidor) e POST (para).
+  - O total vai para os cards pelo extra `time` do endpoint de cards (`card.py`).
+  - Tarefa `stop_forgotten_timers` (`bgtasks/time_tracking_task.py`), no beat a cada 15 min
+    (`pespo-stop-forgotten-timers`): para em 12 h (`AUTO_STOP_SECONDS`) o cronômetro esquecido, marcado como
+    `auto_stopped`.
+- **Tempo gasto: tela** (`components/issues/time-tracking/`).
+  - Propriedade "Tempo" no item e no painel (`property.tsx`), com o total ao vivo e iniciar/parar; a lista
+    de lançamentos recolhe abaixo (`entries.tsx`).
+  - Cronômetro na barra do topo (`running-timer.tsx`), com link para o item. O relógio usa a diferença
+    entre o `now` do servidor e a hora em que a resposta chegou (`clockOffset`), para não depender do relógio
+    do computador.
+  - Badge do total nos cards da lista e do quadro.
+  - Configurações do projeto › Tempo gasto (`features/time-tracking`): liga "Mostrar o tempo aos clientes".
+- **Relatórios** (página `/<slug>/reports/?tab=hours|client|workload`, item "Relatórios" na barra lateral,
+  logo abaixo do Calendário; `components/time-tracking/report/reports-root.tsx`). Três abas: horas (abaixo),
+  mês do cliente e carga da equipe (`app/views/workspace/reports.py`, só admin e membro).
+  - **Mês do cliente** (`…/projects/<id>/monthly-report/?month=AAAA-MM`): peças pedidas e entregues no mês
+    (regras de `plane.utils.pieces`), no prazo (entregue até o `target_date`, no fuso do espaço de trabalho),
+    refações do mês (entradas em estado de retrabalho), horas, reuniões (`IssueCalendarEvent`) e atas
+    publicadas, aprovações do mês (uma por peça, com quantas foram do cliente) e o saldo do contrato do portal.
+    "Imprimir / PDF" abre só o relatório numa janela nova com os
+    estilos do Hub (`printReport`), sem as atas só da equipe e, por padrão, sem as horas se o projeto não as
+    mostra ao cliente.
+  - **Carga da equipe** (`…/workload/?project=`): por pessoa da equipe, itens abertos (e em produção),
+    atrasados, vencendo em 7 dias, subtarefas abertas (e atrasadas), horas da semana (segunda a domingo) e os
+    próximos prazos.
+- **Calendário editorial** (`components/workspace/calendar-sync/`): filtro por cliente (vai para o servidor
+  como `project`) e "Só peças" (etiqueta de categoria, `PIECE_CATEGORIES`, pelas etiquetas do espaço de
+  trabalho); o cartão mostra a categoria. As escolhas ficam no navegador.
+- **Horas** (`app/views/workspace/time_report.py`).
+  - `…/time-report/?start&end&project&user`: totais por pessoa, por projeto e por item (e por dia, ainda
+    sem uso na tela). Até 366 dias; o dia de um lançamento é o dia em que começou, no fuso do espaço de
+    trabalho. O cronômetro rodando entra com o tempo até agora.
+  - `…/time-report/export/`: os lançamentos em CSV com `;` e BOM (o Excel em português abre direto), horas
+    em `h:mm` e decimal com vírgula. Texto começando com `= + - @` vai com apóstrofo, para não virar
+    fórmula.
+  - Admin do espaço de trabalho vê todos e filtra por pessoa; membro vê só as próprias horas (o servidor
+    ignora o filtro de pessoa). Convidado não abre.
+  - Tela (`components/time-tracking/report/`): esta semana, este mês, mês passado, últimos 30 dias ou
+    período escolhido; filtro de projeto e de pessoa; quatro números (total, itens, projetos, pessoas) e
+    as tabelas com a parcela de cada linha.
+- **Conta Google num consentimento só.** `GoogleAccountOAuthProvider`
+  (`authentication/provider/oauth/google_account.py`) pede agenda e Drive juntos, no mesmo client OAuth
+  "Interno" das integrações. Endpoints `users/me/google/{connect,callback,status,disconnect}/`
+  (`app/views/user/google_account.py`).
+  - O callback grava as duas conexões (`store_calendar_grant`, `store_drive_grant`) conforme o que a pessoa
+    marcou (o consentimento do Google é granular).
+  - Desconectar revoga cada concessão uma vez só (a agenda e o Drive dividem o token; revogar um revoga o
+    outro). Os fluxos separados antigos continuam funcionando.
+  - Conectar no lugar: `connect/?popup=1&next=…` abre numa janela. A página final avisa quem abriu
+    (`postMessage` com a origem do `WEB_URL` e um `BroadcastChannel` de reserva) e se fecha. Ela manda
+    `Cross-Origin-Opener-Policy: unsafe-none`, porque o padrão do Django corta a ligação com a janela de
+    origem. Com a janela bloqueada, segue na mesma aba e volta para `next`.
+  - Tela: `components/integration/google/` (`useGoogleConnect`, `GoogleConnectPrompt`, `GoogleMark`), usada
+    no agendar reunião, no seletor do Drive, no calendário e no widget Agenda. Configurações › Perfil ›
+    Google (`settings/profile/content/pages/google.tsx`) junta tudo; as páginas antigas abrem esta.
+- **Drive no item.**
+  - "Anexar" virou um menu (`issue-detail-widgets/attachments/attach-menu.tsx`): do computador, do Drive
+    (vinculado ou cópia) e Novo Google Docs/Planilha/Apresentação. O documento novo nasce com o nome do item,
+    na pasta do projeto, já vinculado. A aba abre no clique (senão o navegador bloqueia) e recebe o
+    documento quando ele existe.
+  - Os arquivos do Drive aparecem dentro de "Anexos" e entram na contagem; a seção separada do Drive saiu.
+  - Pasta do projeto: `Project.google_drive_folder_id`/`google_drive_folder_name` (migration `0144`), com
+    o id conferido no serializer. Configurações do projeto › Google Drive (`features/google-drive`): escolher,
+    criar uma pasta com o nome do projeto ou tirar. O seletor ganhou o modo pasta (`onSelectFolder`), e a API
+    de arquivos aceita `kind: "folder"`.
+  - O Hub nunca compartilha arquivos: a pasta deve ficar num Drive compartilhado da equipe.
+- **Próxima reunião** nas propriedades do item e do painel (`meetings/next-meeting.tsx`): a reunião em
+  andamento ou a próxima, com "Entrar" quando tem Google Meet.
+- **Correção no i18n:** `useTranslation` devolvia um `t` novo a cada renderização. O seletor do Drive tinha
+  `t` nas dependências da busca, e cada resposta disparava outra busca, sem parar. Agora `t` vem de um
+  `useCallback` e só muda com o idioma (`packages/i18n/src/hooks/use-translation.ts`).
+- **Reuniões gravadas, transcritas e com ata** (pedido de 01/11 para entrar na 1.7). Estudo das opções em
+  `pespo-infra/docs/estudo-reunioes-gravacao-transcricao.md`: o plano Business Starter do Workspace não grava
+  nem transcreve no Meet, e a decisão foi não ter custo novo. Então o Hub grava no navegador e transcreve na VPS.
+  - **Gravação** (`components/meeting-recording/recorder.ts`): `getDisplayMedia` (a aba do Meet, com "Compartilhar
+    áudio da aba"; a imagem é descartada) e `getUserMedia` (microfone), cada um num `MediaRecorder`
+    (`audio/webm;codecs=opus`, 32 kbps) cortado em pedaços de 10 s, enviados em ordem, com nova tentativa. O
+    gravador fica fora dos componentes (um por aba), então navegar no Hub não para. Indicador no topo
+    (`recording-chip.tsx`), aviso ao fechar a aba, e "Parar de compartilhar" no navegador também encerra.
+  - **Modelo** `MeetingRecording` (`db/models/meeting_recording.py`, migration `0145`): item, reunião do Google
+    (opcional), estado (`recording` → `queued` → `transcribing` → `summarizing` → `ready`/`failed`), contagem de
+    pedaços por faixa, `audio_keys` (`mic`, `tab` e `mix`), transcrição (`[{start, end, speaker, text}]`, com
+    `speaker` `recorder` ou `others`) e ata (`summary`: `resumo`, `pauta`, `decisoes`, `proximos_passos`,
+    `pendencias`).
+  - **API** (`app/views/issue/meeting_recording.py`, só admin e membro): criar (uma gravação aberta por pessoa;
+    a tela fecha sozinha a anterior que ficou aberta), pedaço (`track`, `seq`, até
+    `MEETING_CHUNK_MAX_BYTES`), finalizar (sem nenhum pedaço, apaga), detalhe e ata (PATCH, limpa em
+    `utils/meeting_summary.clean_summary`), publicar, subtarefas, nova tentativa, áudio (URL assinada de 6 h) e
+    apagar (quem gravou ou admin).
+  - **Publicar:** a ata vira comentário do item (`summary_html`, com escape). Só para a equipe:
+    `external_source = "pespo_meeting_team"`, escondido de convidados por `team_only_comments` e sem
+    `issue_activity` (a notificação por e-mail chegaria ao cliente). Para o cliente: `"pespo_meeting"`, com
+    histórico e notificação. Publicar de novo atualiza o mesmo comentário.
+  - **Subtarefas:** cada próximo passo escolhido vira `IssueChecklistItem` na lista "Subtarefas", com
+    responsável (se for da equipe) e prazo; o passo guarda o `subtask_id` e não duplica.
+  - **Worker** (`bgtasks/meeting_recording_task.py`, fila `transcribe`, container `plane-transcriber`): junta os
+    pedaços de cada faixa (o WebM do MediaRecorder é contínuo, basta concatenar), guarda o arquivo inteiro,
+    apaga os pedaços, mistura as faixas para ouvir (`mix_tracks`), converte para WAV 16 kHz e transcreve com o
+    faster-whisper em CPU (`utils/meeting_transcription.py`, `int8`, VAD, modelo carregado uma vez no processo).
+    O eco (a voz dos outros captada pelo microfone sem fone) sai em `merge_tracks`.
+  - **Configuração:** `TRANSCRIBE_MODEL` (padrão `small`, até a medição na VPS escolher), `TRANSCRIBE_THREADS`
+    (2), `TRANSCRIBE_MODEL_DIR`, `TRANSCRIBE_LANGUAGE` (`pt`), `TRANSCRIBE_TMP_DIR`. Rascunho automático da ata:
+    `MEETING_SUMMARY_ENGINE=ollama` com `OLLAMA_URL`/`OLLAMA_MODEL` (padrão `none`: a equipe escreve).
+    `MEETING_AUDIO_RETENTION_DAYS` (180).
+  - **Beat** `pespo-meeting-recordings-housekeeping` (10 min): fecha gravações sem pedaço novo há 30 min (aba
+    fechada no meio) com o que chegou, e apaga o áudio passado do prazo (a transcrição fica).
+  - **Cuidado no worker:** sem usuário logado, o `save()` do `BaseModel` apaga o `created_by` (quem gravou); todo
+    `save` da tarefa usa `disable_auto_set_user=True`.
+  - **Tela:** "Gravar" na reunião do item (de 15 min antes a 1 h depois) e na propriedade "Reunião"
+    (`record-button.tsx`), e "Gravar reunião" na barra do item para o que não foi marcado pelo Hub (sem
+    `calendar_event`), com a explicação antes (`start-modal.tsx`); "Gravações" na seção de reuniões
+    (`recordings-list.tsx`); a ata e a transcrição num modal (`recording-modal.tsx`, `minutes-editor.tsx`,
+    `transcript-view.tsx`, clique na fala leva o áudio até ela).
+- **Solicitar reunião** (`utils/meeting_booking.py`, endpoints `…/meeting-slots/` e `…/meeting-requests/` em
+  `app/views/issue/calendar_event.py`).
+  - `Project.meeting_booking` (JSON, migration `0145`): ligado, quem atende, duração, horário, dias,
+    antecedência e janela. Validado no serializer (`clean_booking`: quem atende precisa ser da equipe).
+    Tela em Configurações do projeto › Reuniões (`features/meetings`).
+  - Horários: os possíveis pelas regras (`candidate_slots`, no fuso do espaço de trabalho) menos os ocupados de
+    todas as pessoas que atendem (`gcal.free_busy`, só início e fim). Pedir confere de novo o horário (`SLOT_TAKEN`
+    se alguém pegou) e cria o evento na agenda da primeira pessoa, com Meet, convidando as outras e quem pediu
+    (`_create_meeting` com `organizer`, que vira o `created_by` da reunião).
+  - Na tela, só o convidado vê "Solicitar reunião" (`request-meeting.tsx`), e só com o projeto ligado.
+  - Todo convite criado pelo Hub leva `RECORDING_NOTICE` na descrição.
+- **Aprovação de peças no Hub** (no lugar dos workflows "Gate de Aprovação" e "Peça Aprovada" do n8n; estudo em
+  `pespo-infra/docs/estudo-clientes-contratos-aprovacao-no-hub.md`). Tudo em `db/models/piece_approval.py`:
+  - **Trava na hora** (sinal `pre_save` do `Issue`): mudar para "Aprovada - Pronta pra Ativar" (nome comparado
+    sem acento, caixa ou estilo de traço) com algum "bloqueado por" ainda aberto (bloqueador fora dos grupos
+    concluído/cancelado e não apagado) devolve 400 `{"error": "APPROVAL_BLOCKED", "blockers": [...]}`. Vale
+    para todo caminho com usuário na requisição (item, quadro, lista, API); tarefas do sistema não são
+    travadas. O n8n deixava mudar e desfazia uns segundos depois.
+  - **Registro** `PieceApproval` (tabela `piece_approvals`, migration `0146`): item, quem, quando, papel
+    (`client` para convidado do projeto, `team` para membro e admin) e `source`: `state` (mudança aceita para o
+    estado) ou `review` (o comentário fixo "✅ Peça aprovada por … em …" que o botão "Aprovar peça" da revisão
+    posta, o mesmo que o n8n ouvia; só na criação do comentário). A mesma peça pode ter os dois; o relatório
+    conta peças.
+  - **Em nome do cliente** (decisão de 02/11): na revisão, a equipe tem "Aprovar em nome do cliente", com o
+    canal (WhatsApp, e-mail, reunião, telefone, outro). O comentário fica "✅ Peça aprovada por <projeto> (via
+    <canal>, lançado por <pessoa>) em <data>"; o `PieceApproval` guarda quem lançou, `on_behalf_of_client` e
+    `channel` (migration `0149`), e o Mês do cliente conta como aprovação do cliente.
+  - **Tela:** o interceptor do `APIService` avisa pelo evento `pespo:approval-blocked`, e o
+    `PieceApprovalBlockedToast` (montado no topo, para equipe e convidados) mostra o que falta concluir. O item,
+    o painel lateral e o arrastar no quadro pulam o toast genérico de erro nesse caso (`isApprovalBlockedError`);
+    o store já desfaz a mudança otimista.
+  - A tabela `peca_aprovacoes` do portal não é migrada (o histórico antigo fica lá).
+- **Clientes e contratos no Hub** (decisões de 02/11: o cliente entra por código no e-mail e pelo Google, sem
+  período junto com o portal, que é desligado; estudo em `pespo-infra/docs/estudo-clientes-contratos-aprovacao-no-hub.md`):
+  - **Modelos** (`db/models/pespo_client.py`, migrations `0147` e `0150`): `PespoClient` (espaço de trabalho, nome,
+    projetos, `portal_client_id`), `PespoContract` (tipo FEE/FEP, início, fim, situação `active`/`renewed`/
+    `expired`, limite de urgentes, `expiry_notice_sent_at`, `portal_contract_id`), `PespoContractCategory`
+    (categoria e quantidade contratada) e `PespoClientLogin` (os e-mails do cliente, no lugar de `clientes_login`).
+  - **Configurações do espaço de trabalho › Clientes** (só admins; `app/views/workspace/pespo_clients.py`, regras em
+    `utils/pespo_clients.py`, tela em `components/pespo-clients/`), no lugar da área Clientes do painel admin:
+    - **Novo cliente:** cria o projeto (público, com Peças ligado e `guest_view_all_features`), aplica o modelo de
+      projeto escolhido (estados, etiquetas, módulos e itens, como "Novo projeto a partir de modelo"), põe a equipe
+      escolhida, cria o cliente, o contrato e as categorias e libera os logins. A sigla sai das iniciais do nome
+      quando não é preenchida (`suggest_identifier`).
+    - **Renovar:** o ativo vira `renewed` e nasce outro; com "somar o saldo", o que sobrou de cada categoria
+      (contratado menos o pedido desde o início, sem os cancelados, somando os projetos do cliente) entra no novo.
+      Um item "Contrato renovado — data" fica no projeto, como o painel admin fazia.
+    - **Logins do cliente:** cada e-mail vira convidado (papel 5) nos projetos do cliente. Quem já tem conta entra na
+      hora. Quem não tem ganha um `WorkspaceMemberInvite` já aceito, então o primeiro login (código por e-mail ou
+      Google; o convite também libera o cadastro com `ENABLE_SIGNUP=0`) cria o membro, e `attach_client_logins` põe
+      a pessoa no projeto. Ele roda depois de todo login (`post_user_auth_workflow`) e ao aceitar convite pela
+      tela ou pelo link. Nos dois casos sai o e-mail "Seu acesso ao Pespo Hub" (`ClientNotice` de tipo `access`); o
+      e-mail de convite do Plane não sai. Tirar o acesso deixa o membro do projeto inativo e apaga o convite
+      pendente.
+  - **De onde o contrato é lido:** `PESPO_CONTRACTS_SOURCE` = `hub` (padrão) ou `portal`
+    (`plane.utils.portal_contracts.get_project_contract`, mesma resposta). Vale para o painel de peças, o pedido
+    de peças, o relatório do mês e Configurações do projeto › Contrato (só leitura, com o link para o cliente).
+  - **Importação** `python manage.py import_portal_clients [--dry-run]`: copia `clientes`, `contratos` e
+    `contrato_categorias` do portal com o usuário só leitura (`PORTAL_DATABASE_URL`), achando o mesmo cliente e
+    contrato pelos ids do portal. Repetível; não escreve no portal. Serve para trazer o que o painel admin já
+    cadastrou antes de desligar o portal.
+  - **Contrato vencendo** (`bgtasks/pespo_contract_task.py`, beat `pespo-contract-expiry`, todo dia às 12:00
+    UTC, ligado por padrão; `PESPO_CONTRACT_EXPIRY_ENABLED=0` desliga): cria o item "Contrato vence em
+    dd/mm/aaaa" no projeto a 14 dias do fim (`PESPO_CONTRACT_EXPIRY_DAYS`), avisa o cliente por e-mail e passa
+    para `expired` o contrato ativo que já acabou. No lugar do workflow "Vencimento de Contratos" do n8n.
+- **Funções e serviços da equipe** (decisão de 02/11: saem do painel admin e vêm para o Hub;
+  `db/models/pespo_team.py`, migration `0151`): `TeamService` (app da Pespo: nome, endereço, ícone, descrição,
+  ordem) e `TeamRole` (função: os serviços que vê e as pessoas da equipe que a têm). Configurações do espaço de
+  trabalho › Equipe (só admins; `app/views/workspace/pespo_team.py`, `components/pespo-team/`) edita os dois, e o
+  atalho "Apps da Pespo" no topo (`services-menu.tsx`, `…/team-services/mine/`) mostra a cada pessoa os apps das
+  suas funções (admins veem todos; some sem nenhum). `python manage.py import_admin_catalog --workspace <slug>
+--database-url <admin_portal> [--dry-run]` traz o catálogo do painel (funcionários achados pelo e-mail entre a
+  equipe; só lê o painel).
+- **Avisos ao cliente por e-mail** (decisão de 02/11: peça entregue, refação pronta e contrato vencendo; o WhatsApp
+  entra depois como outro canal):
+  - **Gatilhos** (`db/models/pespo_client_notice.py`, sinal `post_save` do `Issue`, com o estado anterior que a
+    trava de aprovação já lê): peça (item com etiqueta de categoria) entrando num estado do grupo concluído
+    (`delivered`); peça saindo de "Reprovado Cliente - Retrabalho" para um estado que não é de refação nem
+    cancelado (`rework_done`; a refação interna não avisa). O aviso de contrato (`contract_expiring`) sai da
+    tarefa de vencimento, junto com o item.
+  - **Registro** `ClientNotice` (tabela `pespo_client_notices`, migration `0148`): evento, canal, destinatários
+    no momento do envio, situação (`queued`, `sent`, `failed`, `skipped`) e o erro. O mesmo aviso para o mesmo
+    item não sai de novo em 12 horas.
+  - **Envio** (`bgtasks/pespo_client_notice_task.py`, depois do commit): um e-mail por convidado ativo do projeto
+    (ninguém vê o endereço dos outros), com o SMTP configurado no god-mode e o modelo
+    `templates/emails/notifications/pespo_client_notice.html`. Sem convidado, o aviso fica `skipped`. O WhatsApp
+    entra como outro remetente em `SENDERS` e outro canal em `utils/client_notices.py`.
+  - **Opção por projeto** `Project.client_notices` (migration `0148`; vazio = tudo ligado), em Configurações do
+    projeto › Peças: liga e desliga o e-mail e cada evento.
+- **Teste local:** sem Google de verdade, as respostas do Drive foram simuladas no navegador
+  (`context.route` do Playwright) para ver o seletor de pasta e a criação de documento. A gravação foi testada
+  com tons sintéticos no lugar da aba e do microfone (`addInitScript`), com S3 local (moto) e a tarefa rodando
+  com o ffmpeg de verdade; só o reconhecimento de fala foi simulado (o Hugging Face, de onde vêm os modelos, não
+  abre na sessão).
+- **Risco de upgrade:** médio-baixo. Arquivos novos na maior parte. Fora isso: `useTranslation` (upstream),
+  o card endpoint, as propriedades do item e do painel, a barra do topo, os widgets de anexo e de reuniões,
+  `calendar_event.py` (`_create_meeting`), o serializer do projeto, `requirements/base.txt` (faster-whisper),
+  as rotas das configurações do projeto, o interceptor do `APIService` e o tratamento de erro ao salvar no item,
+  no painel lateral e no arrastar (`use-group-dragndrop.ts`), `portal_contracts.py` e a lista das configurações
+  do projeto (`PROJECT_SETTINGS`).
+
 ## Versão 1.6: revisão de vídeo e imagem no item, no lugar do Clapshot (2026-10-30)
 
 Decisão do Giuliano (30/10): trazer o que o Clapshot fazia para dentro do Hub e desligar o Clapshot, sem

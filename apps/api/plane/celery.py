@@ -21,6 +21,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "plane.settings.production")
 
 ri = redis_instance()
 
+
 # Configurable metrics push interval (in minutes)
 # Default: 360 (6 hours), set to 5 for development/testing
 def _get_metrics_push_interval_minutes() -> int:
@@ -32,6 +33,7 @@ def _get_metrics_push_interval_minutes() -> int:
         return value if 0 < value <= 10_000_000 else 360
     except (ValueError, OverflowError):
         return 360
+
 
 METRICS_PUSH_INTERVAL_MINUTES = _get_metrics_push_interval_minutes()
 
@@ -50,6 +52,22 @@ app.conf.beat_schedule = {
     "push-instance-metrics": {
         "task": "plane.license.bgtasks.telemetry_metrics.push_instance_metrics",
         "schedule": schedule(run_every=timedelta(minutes=METRICS_PUSH_INTERVAL_MINUTES)),
+    },
+    # Pespo: cronômetro do tempo gasto esquecido rodando para sozinho em 12 h
+    "pespo-stop-forgotten-timers": {
+        "task": "plane.bgtasks.time_tracking_task.stop_forgotten_timers",
+        "schedule": crontab(minute="*/15"),
+    },
+    # Pespo: gravações de reunião abandonadas (aba fechada no meio) e áudio passado do prazo de guarda
+    "pespo-meeting-recordings-housekeeping": {
+        "task": "plane.bgtasks.meeting_recording_task.meeting_recordings_housekeeping",
+        "schedule": crontab(minute="*/10"),
+    },
+    # Pespo: contrato vencendo (no lugar do workflow do n8n); 12:00 UTC = 9h em Brasília. Não faz nada enquanto
+    # PESPO_CONTRACT_EXPIRY_ENABLED estiver desligado (o padrão).
+    "pespo-contract-expiry": {
+        "task": "plane.bgtasks.pespo_contract_task.contract_expiry_check",
+        "schedule": crontab(hour=12, minute=0),
     },
     "sync-google-calendars": {
         "task": "plane.bgtasks.google_calendar_sync_task.sync_google_calendars",

@@ -99,6 +99,11 @@ export const coreRoutes: RouteConfigEntry[] = [
           route(":workspaceSlug/calendar", "./(all)/[workspaceSlug]/(projects)/calendar/page.tsx"),
         ]),
 
+        // Pespo: relatórios (horas, mês do cliente e carga da equipe)
+        layout("./(all)/[workspaceSlug]/(projects)/reports/layout.tsx", [
+          route(":workspaceSlug/reports", "./(all)/[workspaceSlug]/(projects)/reports/page.tsx"),
+        ]),
+
         // Drafts
         layout("./(all)/[workspaceSlug]/(projects)/drafts/layout.tsx", [
           route(":workspaceSlug/drafts", "./(all)/[workspaceSlug]/(projects)/drafts/page.tsx"),
@@ -327,6 +332,20 @@ export const coreRoutes: RouteConfigEntry[] = [
             ":workspaceSlug/settings/templates",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/templates/page.tsx"
           ),
+          // Pespo: funções e serviços da equipe
+          route(
+            ":workspaceSlug/settings/team",
+            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/team/page.tsx"
+          ),
+          // Pespo: clientes
+          route(
+            ":workspaceSlug/settings/clients",
+            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/clients/page.tsx"
+          ),
+          route(
+            ":workspaceSlug/settings/clients/:clientId",
+            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/clients/[clientId]/page.tsx"
+          ),
           route(
             ":workspaceSlug/settings/webhooks",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/webhooks/page.tsx"
@@ -380,6 +399,25 @@ export const coreRoutes: RouteConfigEntry[] = [
             route(
               ":workspaceSlug/settings/projects/:projectId/features/pieces",
               "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/pieces/page.tsx"
+            ),
+            // Pespo: tempo gasto por peça
+            route(
+              ":workspaceSlug/settings/projects/:projectId/features/time-tracking",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/time-tracking/page.tsx"
+            ),
+            // Pespo: pasta do projeto no Google Drive
+            route(
+              ":workspaceSlug/settings/projects/:projectId/features/google-drive",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/google-drive/page.tsx"
+            ),
+            // Pespo: contrato do cliente (só leitura)
+            route(
+              ":workspaceSlug/settings/projects/:projectId/contract",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/contract/page.tsx"
+            ),
+            route(
+              ":workspaceSlug/settings/projects/:projectId/features/meetings",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/meetings/page.tsx"
             ),
             // Project States
             route(

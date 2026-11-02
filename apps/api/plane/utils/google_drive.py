@@ -57,6 +57,8 @@ CREATABLE_KINDS = {
     "document": "application/vnd.google-apps.document",
     "spreadsheet": "application/vnd.google-apps.spreadsheet",
     "presentation": "application/vnd.google-apps.presentation",
+    # Pespo: a pasta do projeto no Drive pode ser criada pelo próprio seletor
+    "folder": FOLDER_MIME_TYPE,
 }
 
 VIEWS = ("my_drive", "shared", "recent", "starred")

@@ -38,6 +38,8 @@ export const IssueGoogleDriveCollapsibleContent = observer(function IssueGoogleD
   const actionClassName =
     "grid size-6 place-items-center rounded-sm text-tertiary hover:bg-layer-transparent-hover hover:text-primary";
 
+  if (files.length === 0) return null;
+
   return (
     <>
       <ul className="flex flex-col gap-1 px-1.5 pb-2">

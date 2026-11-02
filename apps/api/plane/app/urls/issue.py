@@ -4,6 +4,17 @@
 
 from django.urls import path
 
+from plane.app.views.issue.calendar_event import IssueMeetingRequestEndpoint, IssueMeetingSlotsEndpoint
+from plane.app.views.issue.meeting_recording import (
+    IssueMeetingRecordingEndpoint,
+    MeetingRecordingAudioEndpoint,
+    MeetingRecordingChunkEndpoint,
+    MeetingRecordingDetailEndpoint,
+    MeetingRecordingFinishEndpoint,
+    MeetingRecordingPublishEndpoint,
+    MeetingRecordingRetryEndpoint,
+    MeetingRecordingSubtasksEndpoint,
+)
 from plane.app.views import (
     BulkCreateIssueLabelsEndpoint,
     BulkDeleteIssuesEndpoint,
@@ -31,6 +42,10 @@ from plane.app.views import (
     MediaRenditionEndpoint,
     MediaRenditionFileEndpoint,
     MediaRenditionRetryEndpoint,
+    IssueTimeEntryEndpoint,
+    IssueTimeEntryDetailEndpoint,
+    IssueTimeEntryStartEndpoint,
+    WorkspaceRunningTimeEntryEndpoint,
     IssueAttachmentEndpoint,
     CommentReactionViewSet,
     IssueActivityEndpoint,
@@ -236,6 +251,27 @@ urlpatterns = [
         MediaRenditionFileEndpoint.as_view(),
         name="project-issue-media-rendition-file",
     ),
+    # Pespo: tempo gasto por peça (cronômetro e lançamentos) e o cronômetro de quem está logado
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/time-entries/",
+        IssueTimeEntryEndpoint.as_view(),
+        name="project-issue-time-entries",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/time-entries/start/",
+        IssueTimeEntryStartEndpoint.as_view(),
+        name="project-issue-time-entry-start",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/time-entries/<uuid:pk>/",
+        IssueTimeEntryDetailEndpoint.as_view(),
+        name="project-issue-time-entry-detail",
+    ),
+    path(
+        "workspaces/<str:slug>/time-entries/running/",
+        WorkspaceRunningTimeEntryEndpoint.as_view(),
+        name="workspace-running-time-entry",
+    ),
     # Pespo: extras dos cards (progresso das subtarefas, capa) e a capa do item
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/card-extras/",
@@ -423,5 +459,57 @@ urlpatterns = [
         "workspaces/<str:slug>/work-items/<str:project_identifier>-<str:issue_identifier>/",
         IssueDetailIdentifierEndpoint.as_view(),
         name="issue-detail-identifier",
+    ),
+    # Pespo: reuniões gravadas pelo Hub (gravação, transcrição e ata)
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-recordings/",
+        IssueMeetingRecordingEndpoint.as_view(),
+        name="issue-meeting-recordings",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-recordings/<uuid:pk>/",
+        MeetingRecordingDetailEndpoint.as_view(),
+        name="issue-meeting-recording-detail",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-recordings/<uuid:pk>/chunks/",
+        MeetingRecordingChunkEndpoint.as_view(),
+        name="issue-meeting-recording-chunks",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-recordings/<uuid:pk>/finish/",
+        MeetingRecordingFinishEndpoint.as_view(),
+        name="issue-meeting-recording-finish",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-recordings/<uuid:pk>/publish/",
+        MeetingRecordingPublishEndpoint.as_view(),
+        name="issue-meeting-recording-publish",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-recordings/<uuid:pk>/subtasks/",
+        MeetingRecordingSubtasksEndpoint.as_view(),
+        name="issue-meeting-recording-subtasks",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-recordings/<uuid:pk>/retry/",
+        MeetingRecordingRetryEndpoint.as_view(),
+        name="issue-meeting-recording-retry",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-recordings/<uuid:pk>/audio/<str:track>/",
+        MeetingRecordingAudioEndpoint.as_view(),
+        name="issue-meeting-recording-audio",
+    ),
+    # Pespo: "Solicitar reunião" (horários livres de quem atende e o pedido)
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-slots/",
+        IssueMeetingSlotsEndpoint.as_view(),
+        name="issue-meeting-slots",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/meeting-requests/",
+        IssueMeetingRequestEndpoint.as_view(),
+        name="issue-meeting-requests",
     ),
 ]

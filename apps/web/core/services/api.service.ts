@@ -7,6 +7,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { AxiosInstance, AxiosRequestConfig } from "axios";
 import { create } from "axios";
+// Pespo
+import { isApprovalBlockedError, notifyApprovalBlocked } from "@/components/issues/piece-approval/helpers";
 
 export abstract class APIService {
   protected baseURL: string;
@@ -29,6 +31,10 @@ export abstract class APIService {
         if (error.response && error.response.status === 401) {
           const currentPath = window.location.pathname;
           window.location.replace(`/${currentPath ? `?next_path=${currentPath}` : ``}`);
+        }
+        // Pespo: peça com bloqueio aberto não vai para "Aprovada"; o aviso diz o que falta
+        if (error.response?.status === 400 && isApprovalBlockedError(error.response.data)) {
+          notifyApprovalBlocked(error.response.data);
         }
         return Promise.reject(error);
       }

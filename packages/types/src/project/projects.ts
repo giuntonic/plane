@@ -4,6 +4,8 @@
  * See the LICENSE file for details.
  */
 
+import type { TMeetingBooking } from "../meeting-recording";
+import type { TClientNotices } from "../project-pieces";
 import type { TLogoProps } from "../common";
 import type { TUserPermissions } from "../enums";
 import type { TStateGroups } from "../state";
@@ -32,6 +34,14 @@ export interface IPartialProject {
   inbox_view: boolean;
   /** Pespo: aba "Peças" (painel de peças do cliente). */
   pieces_view: boolean;
+  /** Pespo: o cliente (convidado) vê o total do tempo gasto em cada peça. */
+  time_tracking_client_visible?: boolean;
+  /** Pespo: pasta do projeto no Google Drive (documentos criados pelos itens vão para ela). */
+  google_drive_folder_id?: string;
+  google_drive_folder_name?: string;
+  meeting_booking?: TMeetingBooking;
+  /** Pespo: avisos ao cliente por e-mail; vazio = tudo ligado. */
+  client_notices?: TClientNotices;
   guest_view_all_features?: boolean;
   project_lead?: IUserLite | string | null;
   network?: number;

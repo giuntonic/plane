@@ -5,7 +5,7 @@
  */
 
 import type { LucideIcon } from "lucide-react";
-import { ListChecks, Shapes, Users, Zap } from "lucide-react";
+import { FolderOpen, ListChecks, Shapes, Timer, Users, Zap, CalendarClock, FileText } from "lucide-react";
 // plane imports
 import type { ISvgIcons } from "@plane/propel/icons";
 import {
@@ -25,12 +25,16 @@ import { SettingIcon } from "@/components/icons/attachment";
 export const PROJECT_SETTINGS_ICONS: Record<TProjectSettingsTabs, LucideIcon | React.FC<ISvgIcons>> = {
   general: SettingIcon,
   members: Users,
+  contract: FileText,
   features_cycles: CycleIcon,
   features_modules: ModuleIcon,
   features_views: ViewsIcon,
   features_pages: PageIcon,
   features_intake: IntakeIcon,
   features_pieces: Shapes,
+  features_time_tracking: Timer,
+  features_google_drive: FolderOpen,
+  features_meetings: CalendarClock,
   states: StatePropertyIcon,
   labels: LabelPropertyIcon,
   estimates: EstimatePropertyIcon,

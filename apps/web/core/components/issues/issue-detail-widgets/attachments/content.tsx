@@ -10,6 +10,7 @@ import type { TIssueServiceType } from "@plane/types";
 import { EIssueServiceType } from "@plane/types";
 // local imports
 import { IssueAttachmentItemList } from "../../attachment/attachment-item-list";
+import { IssueGoogleDriveCollapsibleContent } from "../google-drive/content";
 import { useAttachmentOperations } from "./helper";
 
 type Props = {
@@ -25,13 +26,23 @@ export const IssueAttachmentsCollapsibleContent = observer(function IssueAttachm
   // helper
   const attachmentHelpers = useAttachmentOperations(workspaceSlug, projectId, issueId, issueServiceType);
   return (
-    <IssueAttachmentItemList
-      workspaceSlug={workspaceSlug}
-      projectId={projectId}
-      issueId={issueId}
-      disabled={disabled}
-      attachmentHelpers={attachmentHelpers}
-      issueServiceType={issueServiceType}
-    />
+    <>
+      <IssueAttachmentItemList
+        workspaceSlug={workspaceSlug}
+        projectId={projectId}
+        issueId={issueId}
+        disabled={disabled}
+        attachmentHelpers={attachmentHelpers}
+        issueServiceType={issueServiceType}
+      />
+      {/* Pespo: arquivos do Google Drive vinculados, na mesma lista (antes era uma seção à parte) */}
+      <IssueGoogleDriveCollapsibleContent
+        workspaceSlug={workspaceSlug}
+        projectId={projectId}
+        issueId={issueId}
+        disabled={disabled}
+        issueServiceType={issueServiceType}
+      />
+    </>
   );
 });

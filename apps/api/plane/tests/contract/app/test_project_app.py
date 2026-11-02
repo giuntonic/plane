@@ -559,3 +559,45 @@ class TestProjectPiecesFeature(TestProjectBase):
         assert response.json()["pieces_view"] is False
         project.refresh_from_db()
         assert project.pieces_view is False
+
+
+@pytest.mark.contract
+class TestProjectGoogleDriveFolder(TestProjectBase):
+    """Pespo: a pasta do projeto no Google Drive, onde nascem os documentos criados pelos itens."""
+
+    @pytest.mark.django_db
+    def test_set_list_and_clear_folder(self, session_client, workspace, create_user):
+        project = Project.objects.create(name="Cliente", identifier="CLI", workspace=workspace)
+        ProjectMember.objects.create(project=project, member=create_user, role=20, is_active=True)
+        url = self.get_project_url(workspace.slug, pk=project.id)
+
+        response = session_client.patch(
+            url, {"google_drive_folder_id": "1AbC-dEf_123", "google_drive_folder_name": "Cliente"}, format="json"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        assert response.json()["google_drive_folder_id"] == "1AbC-dEf_123"
+
+        response = session_client.get(self.get_project_url(workspace.slug))
+        listed = next(item for item in response.json() if item["id"] == str(project.id))
+        assert listed["google_drive_folder_id"] == "1AbC-dEf_123"
+        assert listed["google_drive_folder_name"] == "Cliente"
+
+        response = session_client.patch(
+            url, {"google_drive_folder_id": "", "google_drive_folder_name": ""}, format="json"
+        )
+        assert response.status_code == status.HTTP_200_OK
+        project.refresh_from_db()
+        assert project.google_drive_folder_id == ""
+
+    @pytest.mark.django_db
+    def test_rejects_invalid_folder_id(self, session_client, workspace, create_user):
+        project = Project.objects.create(name="Cliente", identifier="CLI", workspace=workspace)
+        ProjectMember.objects.create(project=project, member=create_user, role=20, is_active=True)
+        response = session_client.patch(
+            self.get_project_url(workspace.slug, pk=project.id),
+            {"google_drive_folder_id": "../../files?q=x"},
+            format="json",
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        project.refresh_from_db()
+        assert project.google_drive_folder_id == ""

@@ -37,6 +37,44 @@
         "select_co_worker": "Selecionar colega de trabalho"
       }
     },
+    "client_notices": {
+      "title": "Avisar o cliente por e-mail",
+      "description": "Os convidados do projeto recebem um e-mail curto com o link da peça.",
+      "delivered": "Peça entregue",
+      "delivered_hint": "Quando a peça vai para um estado de concluído.",
+      "rework_done": "Refação pronta",
+      "rework_done_hint": "Quando a peça que o cliente mandou refazer fica pronta para a revisão dele.",
+      "contract_expiring": "Contrato vencendo",
+      "contract_expiring_hint": "14 dias antes do fim do contrato."
+    },
+    "contract": {
+      "short_title": "Contrato",
+      "title": "Contrato",
+      "description": "O contrato do cliente deste projeto. Renovação e logins do cliente ficam em Configurações do espaço de trabalho › Clientes.",
+      "open_client": "Abrir o cliente",
+      "current": "Contrato em uso",
+      "source_portal": "Lido do portal do cliente",
+      "source_hub": "Lido do Hub",
+      "portal_unavailable": "Não foi possível acessar o banco do portal do cliente.",
+      "no_client": "Este projeto não está ligado a um cliente.",
+      "no_active": "Nenhum contrato ativo.",
+      "period": "{type}, de {start} a {end}",
+      "urgent_limit": "{count, plural, one {# peça urgente por vez} other {# peças urgentes por vez}}",
+      "expires_in": "{count, plural, =0 {Vence hoje} one {Vence em # dia} other {Vence em # dias}}",
+      "expired_on": "Venceu em {date}",
+      "history": "Contratos no Hub",
+      "not_imported": "Este projeto não está ligado a um cliente no Hub.",
+      "no_contracts": "Nenhum contrato deste cliente.",
+      "col_period": "Período",
+      "col_type": "Tipo",
+      "col_status": "Situação",
+      "col_categories": "Peças contratadas",
+      "status_active": "Ativo",
+      "status_renewed": "Renovado",
+      "status_expired": "Vencido",
+      "imported_at": "Atualizado do portal em {date}.",
+      "error": "Não foi possível carregar o contrato."
+    },
     "states": {
       "heading": "Estados",
       "description": "Defina e personalize os estados de fluxo de trabalho para acompanhar o progresso dos seus itens de trabalho.",
@@ -474,11 +512,11 @@
         }
       },
       "time_tracking": {
-        "title": "Rastreamento de tempo",
-        "short_title": "Rastreamento de tempo",
-        "description": "Registre o tempo gasto em itens de trabalho e projetos.",
-        "toggle_title": "Ativar rastreamento de tempo",
-        "toggle_description": "Os membros do projeto poderão registrar o tempo trabalhado."
+        "title": "Tempo gasto",
+        "short_title": "Tempo gasto",
+        "description": "Cronômetro e lançamentos de tempo em cada peça. A equipe sempre vê o tempo; o cliente, só se você ligar abaixo.",
+        "toggle_title": "Mostrar o tempo aos clientes",
+        "toggle_description": "Os convidados do projeto veem o total de tempo de cada peça, sem quem trabalhou nem os lançamentos."
       },
       "milestones": {
         "title": "Marcos",
@@ -498,6 +536,48 @@
         "description": "O painel de peças do cliente: contrato, saldo por categoria, peças por situação e pedido de peças novas.",
         "toggle_title": "Ativar peças",
         "toggle_description": "A aba Peças aparece no projeto, com o painel do contrato do cliente."
+      },
+      "google_drive": {
+        "title": "Google Drive",
+        "short_title": "Google Drive",
+        "description": "A pasta do projeto no Drive. Os documentos criados pelos itens (Anexar › Novo Google Docs, Planilha ou Apresentação) vão para ela, com o nome do item.",
+        "no_folder": "Nenhuma pasta escolhida",
+        "no_folder_hint": "Sem pasta, os documentos novos vão para o Meu Drive de quem cria.",
+        "folder_hint": "Use uma pasta num Drive compartilhado da equipe: o Hub não compartilha arquivos, e quem não tem acesso à pasta não consegue criar documentos nela.",
+        "open": "Abrir no Drive",
+        "choose": "Escolher pasta",
+        "change": "Trocar pasta",
+        "remove": "Tirar a pasta",
+        "saved": "Pasta do projeto salva",
+        "picker_title": "Pasta do projeto no Google Drive"
+      },
+      "meetings": {
+        "title": "Reuniões",
+        "short_title": "Reuniões",
+        "description": "O cliente pede reunião pelo item, nos horários livres de quem atende. Toda reunião marcada pelo Hub avisa no convite que pode ser gravada.",
+        "toggle_title": "Cliente pode solicitar reunião",
+        "toggle_description": "Mostra “Solicitar reunião” no item para os convidados do projeto.",
+        "hosts": "Quem atende",
+        "hosts_hint": "A reunião entra na agenda da primeira pessoa e convida as outras. Só aparecem horários em que todas estão livres. Cada uma precisa ter a conta Google conectada.",
+        "no_hosts": "Escolha quem atende",
+        "duration": "Duração",
+        "minutes": "{count} min",
+        "hours": "Horário",
+        "from": "Das",
+        "to": "Até",
+        "weekdays": "Dias",
+        "notice": "Antecedência mínima (horas)",
+        "window": "Até quantos dias à frente",
+        "save": "Salvar",
+        "saved": "Configuração salva",
+        "hosts_required": "Escolha pelo menos uma pessoa e um dia.",
+        "weekday_0": "seg",
+        "weekday_1": "ter",
+        "weekday_2": "qua",
+        "weekday_3": "qui",
+        "weekday_4": "sex",
+        "weekday_5": "sáb",
+        "weekday_6": "dom"
       }
     },
     "project_updates": {

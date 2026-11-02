@@ -39,6 +39,8 @@ import { useProjectState } from "@/hooks/store/use-project-state";
 // components
 import { IssueParentSelectRoot } from "@/components/issues/parent-select-root";
 import { IssueRecurrenceSelect } from "@/components/issues/recurrence";
+import { IssueTimeProperty } from "@/components/issues/time-tracking";
+import { IssueNextMeetingProperty } from "@/components/issues/issue-detail-widgets/meetings/next-meeting";
 import { SidebarPropertyListItem } from "@/components/common/layout/sidebar/property-list-item";
 import { IssueCycleSelect } from "./cycle-select";
 import { IssueCustomFieldValuesList } from "./custom-field-values";
@@ -252,6 +254,12 @@ export const IssueDetailsSidebar = observer(function IssueDetailsSidebar(props: 
                 disabled={!isEditable}
               />
             </SidebarPropertyListItem>
+
+            {/* Pespo: tempo gasto */}
+            <IssueTimeProperty workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
+
+            {/* Pespo: próxima reunião (Google Calendar) */}
+            <IssueNextMeetingProperty workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
 
             <SidebarPropertyListItem icon={LabelPropertyIcon} label={t("common.labels")}>
               <IssueLabel

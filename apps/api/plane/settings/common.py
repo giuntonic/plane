@@ -346,12 +346,34 @@ CELERY_IMPORTS = (
     "plane.bgtasks.piece_briefing_signals_task",
     "plane.bgtasks.issue_recurrence_task",
     "plane.bgtasks.media_review_task",
+    "plane.bgtasks.time_tracking_task",
+    "plane.bgtasks.meeting_recording_task",
+    "plane.bgtasks.pespo_contract_task",
+    "plane.bgtasks.pespo_client_notice_task",
 )
 
 # Pespo: a conversão de vídeo da revisão roda numa fila só dela, num worker com uma tarefa por vez.
 CELERY_TASK_ROUTES = {
     "plane.bgtasks.media_review_task.process_media_asset": {"queue": "media"},
+    # Pespo: transcrição das reuniões, no worker plane-transcriber (uma reunião por vez)
+    "plane.bgtasks.meeting_recording_task.transcribe_meeting": {"queue": "transcribe"},
 }
+
+# Pespo: reuniões gravadas pelo Hub. Transcrição local com faster-whisper (modelo "small" até a medição na VPS
+# decidir outro); a ata é escrita pela equipe, ou pré-preenchida por um modelo local no Ollama
+# (MEETING_SUMMARY_ENGINE=ollama).
+TRANSCRIBE_MODEL = os.environ.get("TRANSCRIBE_MODEL", "small")
+TRANSCRIBE_THREADS = int(os.environ.get("TRANSCRIBE_THREADS", 2))
+TRANSCRIBE_MODEL_DIR = os.environ.get("TRANSCRIBE_MODEL_DIR") or None
+TRANSCRIBE_LANGUAGE = os.environ.get("TRANSCRIBE_LANGUAGE", "pt")
+TRANSCRIBE_TMP_DIR = os.environ.get("TRANSCRIBE_TMP_DIR") or None
+MEETING_SUMMARY_ENGINE = os.environ.get("MEETING_SUMMARY_ENGINE", "none")
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://ollama:11434")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")
+OLLAMA_NUM_CTX = int(os.environ.get("OLLAMA_NUM_CTX", 16384))
+OLLAMA_THREADS = int(os.environ.get("OLLAMA_THREADS", 3))
+MEETING_AUDIO_RETENTION_DAYS = int(os.environ.get("MEETING_AUDIO_RETENTION_DAYS", 180))
+MEETING_CHUNK_MAX_BYTES = int(os.environ.get("MEETING_CHUNK_MAX_BYTES", 5 * 1024 * 1024))
 
 FILE_SIZE_LIMIT = int(os.environ.get("FILE_SIZE_LIMIT", 5242880))
 # Pespo: vídeos da revisão da peça podem ser bem maiores que os outros anexos (padrão 5 GB, o máximo de
@@ -580,6 +602,13 @@ if ENABLE_DRF_SPECTACULAR:
 # Ex.: postgresql://plane_portal_ro:<senha>@portal-db:5432/portal. Sem ele o painel mostra as peças
 # sem o saldo do contrato. (O embed do Metabase que ficava aqui saiu junto com o Metabase.)
 PORTAL_DATABASE_URL = os.environ.get("PORTAL_DATABASE_URL")
+# Pespo: de onde vem o contrato do cliente (painel de peças, pedido de peças, relatório do mês): "hub" (padrão desde
+# 02/11/2026: clientes e contratos são cadastrados no Hub) ou "portal" (o banco acima, só leitura, como até a 1.6).
+PESPO_CONTRACTS_SOURCE = os.environ.get("PESPO_CONTRACTS_SOURCE", "hub")
+# Pespo: aviso de contrato vencendo pelo beat do Hub (no lugar do workflow "Vencimento de Contratos" do n8n, que sai
+# no deploy da 1.7). "0" desliga.
+PESPO_CONTRACT_EXPIRY_ENABLED = os.environ.get("PESPO_CONTRACT_EXPIRY_ENABLED", "1") == "1"
+PESPO_CONTRACT_EXPIRY_DAYS = int(os.environ.get("PESPO_CONTRACT_EXPIRY_DAYS", "14"))
 # Pespo: Laya, o classificador da VPS (rede interna), lê urgência e humor no briefing das peças
 # solicitadas. Ex.: http://laya:8000. Sem ele a solicitação funciona igual, só sem os sinais.
 LAYA_URL = os.environ.get("LAYA_URL")

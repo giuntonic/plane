@@ -36,7 +36,15 @@ from plane.utils.work_item_tree import (
     snapshot_work_item,
 )
 
-PROJECT_FEATURES = ("module_view", "cycle_view", "issue_views_view", "page_view", "intake_view", "pieces_view")
+PROJECT_FEATURES = (
+    "module_view",
+    "cycle_view",
+    "issue_views_view",
+    "page_view",
+    "intake_view",
+    "pieces_view",
+    "time_tracking_client_visible",
+)
 
 
 def _iso(value):

@@ -29,6 +29,7 @@ from .project.pieces import (
     ProjectPiecesRequestEndpoint,
     IssueReworkRequestEndpoint,
 )
+from .project.contract import ProjectContractEndpoint
 
 from .user.base import (
     UserEndpoint,
@@ -57,6 +58,13 @@ from .user.google_drive import (
     GoogleDriveFilesEndpoint,
     GoogleDriveFileDetailEndpoint,
     GoogleDriveFilePreviewEndpoint,
+)
+
+from .user.google_account import (
+    GoogleAccountConnectEndpoint,
+    GoogleAccountCallbackEndpoint,
+    GoogleAccountStatusEndpoint,
+    GoogleAccountDisconnectEndpoint,
 )
 
 
@@ -199,6 +207,12 @@ from .issue.checklist import (
 )
 from .issue.card import ProjectCardExtrasEndpoint, IssueCoverEndpoint
 from .issue.recurrence import IssueRecurrenceEndpoint
+from .issue.time_entry import (
+    IssueTimeEntryEndpoint,
+    IssueTimeEntryDetailEndpoint,
+    IssueTimeEntryStartEndpoint,
+    WorkspaceRunningTimeEntryEndpoint,
+)
 from .issue.media_review import (
     MediaReviewCommentEndpoint,
     MediaReviewCommentDetailEndpoint,

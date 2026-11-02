@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react";
 import useSWR from "swr";
-import { ChevronRight, FilePlus2, Folder, HardDrive, Search } from "lucide-react";
+import { ChevronRight, FilePlus2, Folder, FolderPlus, HardDrive, Search } from "lucide-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
@@ -20,7 +20,8 @@ import useDebounce from "@/hooks/use-debounce";
 // services
 import { googleDriveService } from "@/services/google-drive.service";
 // local imports
-import { getCurrentPathForRedirect, getGoogleDriveErrorKey } from "./helpers";
+import { getGoogleDriveErrorKey } from "./helpers";
+import { GoogleConnectPrompt } from "@/components/integration/google";
 
 export const GOOGLE_DRIVE_STATUS_SWR_KEY = "google-drive-status";
 
@@ -32,6 +33,10 @@ type Props = {
   title?: string;
   /** Show the "New Google Docs/Sheets/Slides" actions. */
   allowCreate?: boolean;
+  /** Pespo: modo "escolher pasta" (a pasta do projeto): navega só pelas pastas e escolhe a atual, ou cria uma
+   * pasta nova com `newFolderName` ali. */
+  onSelectFolder?: (folder: { id: string; name: string }) => Promise<void> | void;
+  newFolderName?: string;
 };
 
 type TFolderCrumb = { id: string; name: string };
@@ -53,7 +58,9 @@ const CREATE_OPTIONS: { kind: TGoogleDriveCreatableKind; i18n: string }[] = [
 // trabalho e pelo embed do editor (via GoogleDrivePickerHost). Fala só com o
 // backend do Plane, que usa o token OAuth do próprio usuário.
 export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(props: Props) {
-  const { isOpen, onClose, onSelect, title, allowCreate = false } = props;
+  const { isOpen, onClose, onSelect, title, allowCreate = false, onSelectFolder, newFolderName } = props;
+  const isFolderMode = !!onSelectFolder;
+  const [isChoosingFolder, setIsChoosingFolder] = useState(false);
   const { t } = useTranslation();
   // state
   const [view, setView] = useState<TGoogleDriveView>("my_drive");
@@ -126,6 +133,7 @@ export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(p
       setFolders((prev) => [...prev, { id: file.id, name: file.name }]);
       return;
     }
+    if (isFolderMode) return;
     setSelectingId(file.id);
     try {
       await onSelect(file);
@@ -154,6 +162,36 @@ export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(p
     }
   };
 
+  const chooseFolder = async (folder: { id: string; name: string }) => {
+    if (!onSelectFolder) return;
+    setIsChoosingFolder(true);
+    try {
+      await onSelectFolder(folder);
+      setFolders([]);
+      setSearchQuery("");
+    } finally {
+      setIsChoosingFolder(false);
+    }
+  };
+
+  const createFolderHere = async () => {
+    if (!newFolderName?.trim()) return;
+    setIsChoosingFolder(true);
+    try {
+      const folder = await googleDriveService.createFile({
+        // a API aceita "folder" (só a pasta do projeto usa; o seletor normal cria Docs, Planilhas e Apresentações)
+        kind: "folder" as TGoogleDriveCreatableKind,
+        name: newFolderName.trim(),
+        parent_id: currentFolder?.id,
+      });
+      await chooseFolder({ id: folder.id, name: folder.name });
+    } catch (error) {
+      setToast({ type: TOAST_TYPE.ERROR, title: t("toast.error"), message: t(getGoogleDriveErrorKey(error)) });
+    } finally {
+      setIsChoosingFolder(false);
+    }
+  };
+
   const renderBody = () => {
     if (isStatusLoading || !status) {
       return (
@@ -167,19 +205,9 @@ export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(p
 
     if (!isConnected) {
       return (
-        <div className="flex flex-col items-center gap-3 px-5 py-10 text-center">
-          <HardDrive className="size-8 text-tertiary" />
-          <h4 className="text-body-md-medium text-primary">{t("google_drive_integration.not_connected_title")}</h4>
-          <p className="max-w-sm text-body-sm-regular text-secondary">
-            {t("google_drive_integration.not_connected_description")}
-          </p>
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => (window.location.href = googleDriveService.getConnectUrl(getCurrentPathForRedirect()))}
-          >
-            {t("google_drive_integration.connect")}
-          </Button>
+        <div className="px-5 pb-5">
+          {/* Pespo: conecta numa janela, sem sair do item; o seletor abre o Drive quando volta */}
+          <GoogleConnectPrompt description={t("google_account.for_drive")} />
         </div>
       );
     }
@@ -256,7 +284,8 @@ export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(p
                 <li key={file.id}>
                   <button
                     type="button"
-                    disabled={!!selectingId}
+                    // na escolha de pasta, os arquivos aparecem só para orientar
+                    disabled={!!selectingId || (isFolderMode && !file.is_folder)}
                     onClick={() => void handleSelect(file)}
                     className={cn(
                       "flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-layer-transparent-hover disabled:opacity-60",
@@ -297,6 +326,7 @@ export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(p
         </div>
 
         {allowCreate &&
+          !isFolderMode &&
           (createKind ? (
             <form onSubmit={handleCreate} className="flex items-center gap-2">
               <Input
@@ -345,6 +375,33 @@ export const GoogleDrivePickerModal = observer(function GoogleDrivePickerModal(p
       </div>
       {renderBody()}
       <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-3">
+        {isFolderMode && status?.connected && (
+          <>
+            {newFolderName && (
+              <Button
+                variant="secondary"
+                size="lg"
+                prependIcon={<FolderPlus />}
+                onClick={() => void createFolderHere()}
+                disabled={isChoosingFolder}
+                className="mr-auto"
+              >
+                {t("google_drive_integration.picker.create_folder_here", { name: newFolderName })}
+              </Button>
+            )}
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => currentFolder && void chooseFolder(currentFolder)}
+              disabled={!currentFolder || isChoosingFolder}
+              loading={isChoosingFolder}
+            >
+              {currentFolder
+                ? t("google_drive_integration.picker.use_folder", { name: currentFolder.name })
+                : t("google_drive_integration.picker.open_a_folder")}
+            </Button>
+          </>
+        )}
         <Button variant="secondary" size="lg" onClick={resetAndClose}>
           {t("google_drive_integration.picker.cancel")}
         </Button>

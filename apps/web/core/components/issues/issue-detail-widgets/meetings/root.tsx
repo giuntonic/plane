@@ -7,14 +7,17 @@
 import { useMemo } from "react";
 import { observer } from "mobx-react";
 // plane imports
+import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import type { TIssueServiceType } from "@plane/types";
 import { Collapsible, CollapsibleButton } from "@plane/ui";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
+import { useUserPermissions } from "@/hooks/store/user";
 // local imports
 import { IssueMeetingsCollapsibleContent } from "./content";
 import { useIssueMeetings } from "./helper";
+import { useMeetingRecordings } from "@/components/meeting-recording/recordings-list";
 import { IssueMeetingActionButton } from "./quick-action-button";
 
 type Props = {
@@ -32,7 +35,16 @@ export const MeetingsCollapsible = observer(function MeetingsCollapsible(props: 
   const { t } = useTranslation();
   const { openWidgets, toggleOpenWidget } = useIssueDetail(issueServiceType);
   const { data: meetings } = useIssueMeetings(workspaceSlug, projectId, issueId);
-  const count = meetings?.length ?? 0;
+  const { allowPermissions } = useUserPermissions();
+  const isTeam = allowPermissions(
+    [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
+    EUserPermissionsLevel.PROJECT,
+    workspaceSlug,
+    projectId
+  );
+  const { data: recordings } = useMeetingRecordings(workspaceSlug, projectId, issueId, isTeam);
+  // reuniões marcadas; num item só com gravações (sem reunião marcada), as gravações
+  const count = meetings?.length || recordings?.length || 0;
   const isCollapsibleOpen = openWidgets.includes("meetings");
 
   const indicatorElement = useMemo(

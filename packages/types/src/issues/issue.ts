@@ -163,7 +163,9 @@ export type TWorkItemWidgets =
   | "peca-marking"
   | "google-drive"
   | "checklist"
-  | "meetings";
+  | "meetings"
+  // Pespo: tempo gasto por peça
+  | "time-tracking";
 
 export type TIssueServiceType = EIssueServiceType.ISSUES | EIssueServiceType.EPICS | EIssueServiceType.WORK_ITEMS;
 

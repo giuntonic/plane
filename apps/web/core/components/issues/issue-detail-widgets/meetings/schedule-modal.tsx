@@ -25,6 +25,7 @@ import { issueCalendarEventService } from "@/services/issue-calendar-event.servi
 import userService from "@/services/user.service";
 // local imports
 import { getGoogleCalendarErrorKey, useIssueMeetings } from "./helper";
+import { GoogleConnectPrompt } from "@/components/integration/google";
 
 type Props = {
   isOpen: boolean;
@@ -165,18 +166,9 @@ export const IssueScheduleMeetingModal = observer(function IssueScheduleMeetingM
       width={EModalWidth.XL}
     >
       {status && !status.connected ? (
-        <div className="flex flex-col items-center gap-3 px-5 py-10 text-center">
-          <CalendarPlus className="size-8 text-tertiary" />
-          <p className="max-w-sm text-body-sm-regular text-secondary">
-            {t("google_calendar_integration.schedule_modal.not_connected")}
-          </p>
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => (window.location.href = "/api/users/me/google-calendar/connect/")}
-          >
-            {t("google_calendar_integration.schedule_modal.connect")}
-          </Button>
+        <div className="p-5">
+          {/* Pespo: conecta numa janela, sem sair do item; o modal segue para o formulário quando volta */}
+          <GoogleConnectPrompt description={t("google_account.for_meetings")} />
         </div>
       ) : (
         <form onSubmit={handleSubmit}>

@@ -38,6 +38,11 @@ from plane.app.views import (
     GoogleDriveFilesEndpoint,
     GoogleDriveFileDetailEndpoint,
     GoogleDriveFilePreviewEndpoint,
+    ## Pespo: conta Google (agenda e Drive num consentimento só)
+    GoogleAccountConnectEndpoint,
+    GoogleAccountCallbackEndpoint,
+    GoogleAccountStatusEndpoint,
+    GoogleAccountDisconnectEndpoint,
     ## End Google Drive
 )
 
@@ -107,6 +112,11 @@ urlpatterns = [
         name="google-calendar-notifications",
     ),
     ## End Google Calendar
+    # Pespo: conta Google — agenda e Drive num consentimento só, conectada de onde a pessoa estiver
+    path("users/me/google/connect/", GoogleAccountConnectEndpoint.as_view(), name="google-account-connect"),
+    path("users/me/google/callback/", GoogleAccountCallbackEndpoint.as_view(), name="google-account-callback"),
+    path("users/me/google/status/", GoogleAccountStatusEndpoint.as_view(), name="google-account-status"),
+    path("users/me/google/disconnect/", GoogleAccountDisconnectEndpoint.as_view(), name="google-account-disconnect"),
     # Google Drive (personal connection — used by the work item attachments
     # widget and the Page/description embed)
     path("users/me/google-drive/connect/", GoogleDriveConnectEndpoint.as_view(), name="google-drive-connect"),

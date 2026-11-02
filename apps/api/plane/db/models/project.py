@@ -97,6 +97,20 @@ class Project(BaseModel):
     intake_view = models.BooleanField(default=False)
     # Pespo: aba "Peças" (painel de peças do cliente); ligada por padrão, como era antes de virar opção.
     pieces_view = models.BooleanField(default=True)
+    # Pespo: o cliente (convidado) vê o total do tempo gasto em cada peça (a equipe sempre vê).
+    # db_default: o api antigo ainda cria projetos durante o deploy (a coluna nasce com padrão no banco).
+    time_tracking_client_visible = models.BooleanField(default=False, db_default=False)
+    # Pespo: pasta do projeto no Google Drive (de preferência num Drive compartilhado da equipe), para onde vão
+    # os documentos criados pelos itens. Vazia: vão para o Meu Drive de quem cria.
+    google_drive_folder_id = models.CharField(max_length=255, blank=True, default="", db_default="")
+    google_drive_folder_name = models.CharField(max_length=255, blank=True, default="", db_default="")
+    # Pespo: o cliente (convidado) pede reunião pelo item, nos horários livres de quem atende (livre/ocupado do
+    # Google Calendar). {"enabled", "host_ids", "duration_minutes", "day_start", "day_end", "weekdays",
+    # "notice_hours", "window_days"}; vazio = desligado.
+    meeting_booking = models.JSONField(default=dict, blank=True, db_default={})
+    # Pespo: avisos ao cliente (peça entregue, refação pronta, contrato vencendo). {"email": bool, "events":
+    # {evento: bool}}; vazio = tudo ligado (plane.utils.client_notices).
+    client_notices = models.JSONField(default=dict, blank=True, db_default={})
     is_time_tracking_enabled = models.BooleanField(default=False)
     is_issue_type_enabled = models.BooleanField(default=False)
     guest_view_all_features = models.BooleanField(default=False)

@@ -24,7 +24,7 @@ from rest_framework.response import Response
 from plane.app.views.base import BaseAPIView
 from plane.authentication.adapter.error import AuthenticationException
 from plane.authentication.provider.oauth.google_drive import GoogleDriveOAuthProvider
-from plane.db.models import GoogleDriveConnection
+from plane.db.models import GoogleCalendarConnection, GoogleDriveConnection
 from plane.utils import google_drive as gdrive
 from plane.utils.exception_logger import log_exception
 
@@ -81,6 +81,21 @@ def not_connected_response():
     )
 
 
+def store_drive_grant(user, token_data, google_email):
+    """Grava (ou atualiza) a conexão com o Google Drive a partir de um consentimento (fluxo só do Drive ou o da
+    conta Google, ``google_account.py``)."""
+    connection, _ = GoogleDriveConnection.objects.get_or_create(user=user)
+    connection.google_email = google_email
+    connection.access_token = token_data.get("access_token")
+    # Google only returns a refresh_token on the very first consent —
+    # keep the existing one on reconnects where it's omitted.
+    if token_data.get("refresh_token"):
+        connection.refresh_token = token_data.get("refresh_token")
+    connection.token_expires_at = timezone.now() + timedelta(seconds=token_data.get("expires_in", 3600))
+    connection.save()
+    return connection
+
+
 class GoogleDriveConnectEndpoint(View):
     def get(self, request):
         if not request.user.is_authenticated:
@@ -116,16 +131,7 @@ class GoogleDriveCallbackEndpoint(View):
             provider = GoogleDriveOAuthProvider(request=request, code=code)
             token_data = provider.exchange_code_for_tokens()
             google_email = provider.fetch_google_email()
-
-            connection, _ = GoogleDriveConnection.objects.get_or_create(user=request.user)
-            connection.google_email = google_email
-            connection.access_token = token_data.get("access_token")
-            # Google only returns a refresh_token on the very first consent —
-            # keep the existing one on reconnects where it's omitted.
-            if token_data.get("refresh_token"):
-                connection.refresh_token = token_data.get("refresh_token")
-            connection.token_expires_at = timezone.now() + timedelta(seconds=token_data.get("expires_in", 3600))
-            connection.save()
+            store_drive_grant(request.user, token_data, google_email)
         except Exception as e:
             log_exception(e)
             return _frontend_redirect(request, "error", next_path)
@@ -150,7 +156,10 @@ class GoogleDriveDisconnectEndpoint(BaseAPIView):
         if not connection:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-        gdrive.revoke_token(connection)
+        # Pespo: vindo do consentimento da conta Google (o mesmo da agenda), revogar derrubaria a agenda junto.
+        calendar = GoogleCalendarConnection.objects.filter(user=request.user).first()
+        if not (calendar and connection.refresh_token and connection.refresh_token == calendar.refresh_token):
+            gdrive.revoke_token(connection)
         # Hard delete: the row holds credentials, a soft-deleted copy would
         # keep them around and block a reconnect (OneToOne on user).
         connection.delete(soft=False)

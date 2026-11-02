@@ -20,6 +20,7 @@ import { cn, generateCalendarData, renderFormattedDate, renderFormattedPayloadDa
 // components
 import { CreateUpdateIssueModal } from "@/components/issues/issue-modal/modal";
 // hooks
+import { useLabel } from "@/hooks/store/use-label";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
 import useLocalStorage from "@/hooks/use-local-storage";
 // services
@@ -40,6 +41,7 @@ import {
   eventRange,
   issueRange,
   weekDateKeys,
+  PIECE_CATEGORIES,
 } from "./helpers";
 import { CalendarMonthView } from "./month-view";
 import { CalendarSyncSidebar } from "./sidebar";
@@ -60,7 +62,13 @@ export type TDayEntry = {
 };
 
 /** Every work item due in [after, before], across all pages. */
-const fetchIssuesInRange = async (slug: string, after: string, before: string, assigneeId?: string) => {
+const fetchIssuesInRange = async (
+  slug: string,
+  after: string,
+  before: string,
+  assigneeId?: string,
+  projectId?: string
+) => {
   const issues: TBaseIssue[] = [];
   let cursor: string | undefined;
   for (let page = 0; page < MAX_PAGES; page++) {
@@ -72,6 +80,7 @@ const fetchIssuesInRange = async (slug: string, after: string, before: string, a
       order_by: "target_date",
       target_date: `${after};after,${before};before`,
       ...(assigneeId ? { assignees: assigneeId } : {}),
+      ...(projectId ? { project: projectId } : {}),
     });
     if (Array.isArray(response?.results)) issues.push(...(response.results as TBaseIssue[]));
     if (!response?.next_page_results) break;
@@ -100,6 +109,30 @@ export const WorkspaceCalendarSyncRoot = observer(function WorkspaceCalendarSync
     true
   );
   const showWorkItems = storedShowWorkItems !== false;
+  // Pespo: calendário editorial (um cliente, só as peças)
+  const { storedValue: storedProjectFilter, setValue: setProjectFilter } = useLocalStorage<string>(
+    "pespo_calendar_project",
+    ""
+  );
+  const projectFilter = storedProjectFilter ?? "";
+  const { storedValue: storedOnlyPieces, setValue: setOnlyPieces } = useLocalStorage<boolean>(
+    "pespo_calendar_only_pieces",
+    false
+  );
+  const onlyPieces = storedOnlyPieces === true;
+  const { fetchWorkspaceLabels } = useLabel();
+  // as etiquetas dizem a categoria da peça (no filtro e no cartão); a lista refaz quando elas chegam
+  const { data: workspaceLabels } = useSWR(slug ? ["workspace-labels", slug] : null, () => fetchWorkspaceLabels(slug), {
+    revalidateOnFocus: false,
+  });
+  // as etiquetas de categoria (Post, Reels…) de todos os projetos
+  const pieceLabelIds = useMemo(
+    () =>
+      new Set(
+        (workspaceLabels ?? []).filter((label) => PIECE_CATEGORIES.includes(label.name)).map((label) => label.id)
+      ),
+    [workspaceLabels]
+  );
   const [activeDate, setActiveDate] = useState(new Date());
   const [onlyMine, setOnlyMine] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => typeof window === "undefined" || window.innerWidth >= 768);
@@ -132,14 +165,20 @@ export const WorkspaceCalendarSyncRoot = observer(function WorkspaceCalendarSync
   // --- data --------------------------------------------------------------------
   const issuesKey =
     showWorkItems && slug && after && issuesBefore
-      ? ["workspace-calendar-issues", slug, after, issuesBefore, onlyMine ? currentUser?.id : "all"]
+      ? ["workspace-calendar-issues", slug, after, issuesBefore, onlyMine ? currentUser?.id : "all", projectFilter]
       : null;
   const {
     data: issues,
     mutate: mutateIssues,
     isLoading: isLoadingIssues,
   } = useSWR(issuesKey, () =>
-    fetchIssuesInRange(slug, after as string, issuesBefore as string, onlyMine ? currentUser?.id : undefined)
+    fetchIssuesInRange(
+      slug,
+      after as string,
+      issuesBefore as string,
+      onlyMine ? currentUser?.id : undefined,
+      projectFilter || undefined
+    )
   );
 
   const { data: status, mutate: mutateStatus } = useSWR("google-calendar-status", () =>
@@ -202,8 +241,10 @@ export const WorkspaceCalendarSyncRoot = observer(function WorkspaceCalendarSync
       return entry;
     };
 
+    const isPiece = (issue: TBaseIssue) => (issue.label_ids ?? []).some((id) => pieceLabelIds.has(id));
     if (showWorkItems)
       for (const issue of issues ?? []) {
+        if (onlyPieces && !isPiece(issue)) continue;
         const range = issueRange(issue);
         if (!range) continue;
         for (const day of eachDay(range, after, before)) {
@@ -226,7 +267,7 @@ export const WorkspaceCalendarSyncRoot = observer(function WorkspaceCalendarSync
       }
     }
     return map;
-  }, [issues, events, after, before, showWorkItems]);
+  }, [issues, events, after, before, showWorkItems, onlyPieces, pieceLabelIds]);
 
   // --- work item drag and drop ------------------------------------------------------
   const canDrag = useCallback(
@@ -331,6 +372,10 @@ export const WorkspaceCalendarSyncRoot = observer(function WorkspaceCalendarSync
           setShowWorkItems={setStoredShowWorkItems}
           onlyMine={onlyMine}
           setOnlyMine={setOnlyMine}
+          projectFilter={projectFilter}
+          setProjectFilter={setProjectFilter}
+          onlyPieces={onlyPieces}
+          setOnlyPieces={setOnlyPieces}
         />
         <main className="relative min-w-0 flex-1 overflow-auto">
           {isLoadingIssues && !issues ? (

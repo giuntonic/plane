@@ -8,13 +8,15 @@ import { Check, Lock, Settings } from "lucide-react";
 import { observer } from "mobx-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
-import { Button } from "@plane/propel/button";
 import { Switch } from "@plane/propel/switch";
 import { Tooltip } from "@plane/propel/tooltip";
 import type { TGoogleCalendarListEntry } from "@plane/types";
+import { CustomSelect } from "@plane/ui";
 import { cn, readableTextColor } from "@plane/utils";
 // hooks
+import { useProject } from "@/hooks/store/use-project";
 import { useAppRouter } from "@/hooks/use-app-router";
+import { GoogleConnectPrompt } from "@/components/integration/google";
 
 type Props = {
   isGoogleConnected: boolean;
@@ -26,6 +28,10 @@ type Props = {
   setShowWorkItems: (value: boolean) => void;
   onlyMine: boolean;
   setOnlyMine: (value: boolean) => void;
+  projectFilter: string;
+  setProjectFilter: (value: string) => void;
+  onlyPieces: boolean;
+  setOnlyPieces: (value: boolean) => void;
   className?: string;
 };
 
@@ -64,8 +70,18 @@ export const CalendarSyncSidebar = observer(function CalendarSyncSidebar(props: 
     setShowWorkItems,
     onlyMine,
     setOnlyMine,
+    projectFilter,
+    setProjectFilter,
+    onlyPieces,
+    setOnlyPieces,
     className,
   } = props;
+  const { workspaceProjectIds, getProjectById } = useProject();
+  const projects = (workspaceProjectIds ?? [])
+    .map((id) => getProjectById(id))
+    .filter((project): project is NonNullable<typeof project> => !!project)
+    // oxlint-disable-next-line unicorn/no-array-sort -- cópia nova do map acima
+    .sort((a, b) => a.name.localeCompare(b.name));
   const { t } = useTranslation();
   const router = useAppRouter();
 
@@ -94,6 +110,40 @@ export const CalendarSyncSidebar = observer(function CalendarSyncSidebar(props: 
           {t("google_calendar_integration.calendar_view.only_mine")}
           <Switch value={onlyMine} onChange={setOnlyMine} disabled={!showWorkItems} />
         </label>
+        {/* Pespo: calendário editorial */}
+        <label
+          className={cn("flex items-center justify-between gap-2 pl-6 text-body-xs-regular text-secondary", {
+            "opacity-50": !showWorkItems,
+          })}
+        >
+          {t("google_calendar_integration.calendar_view.only_pieces")}
+          <Switch value={onlyPieces} onChange={setOnlyPieces} disabled={!showWorkItems} />
+        </label>
+        <div className={cn("pl-6", { "pointer-events-none opacity-50": !showWorkItems })}>
+          <CustomSelect
+            value={projectFilter}
+            label={
+              <span className="truncate">
+                {projectFilter
+                  ? (getProjectById(projectFilter)?.name ?? t("google_calendar_integration.calendar_view.all_clients"))
+                  : t("google_calendar_integration.calendar_view.all_clients")}
+              </span>
+            }
+            onChange={(value: string) => setProjectFilter(value)}
+            buttonClassName="w-full rounded-md border border-subtle px-2 py-1 text-body-xs-regular"
+            className="w-full"
+            maxHeight="lg"
+          >
+            <CustomSelect.Option value="">
+              {t("google_calendar_integration.calendar_view.all_clients")}
+            </CustomSelect.Option>
+            {projects.map((project) => (
+              <CustomSelect.Option key={project.id} value={project.id}>
+                {project.name}
+              </CustomSelect.Option>
+            ))}
+          </CustomSelect>
+        </div>
       </section>
 
       <section className="flex flex-col gap-2">
@@ -104,14 +154,7 @@ export const CalendarSyncSidebar = observer(function CalendarSyncSidebar(props: 
           {googleEmail && <span className="truncate text-caption-sm-regular text-tertiary">{googleEmail}</span>}
         </div>
         {!isGoogleConnected ? (
-          <div className="flex flex-col gap-2 rounded-md border border-dashed border-subtle p-3">
-            <p className="text-body-xs-regular text-secondary">
-              {t("google_calendar_integration.calendar_view.connect_hint")}
-            </p>
-            <Button variant="secondary" size="sm" onClick={() => router.push("/settings/profile/google-calendar/")}>
-              {t("google_calendar_integration.calendar_view.connect")}
-            </Button>
-          </div>
+          <GoogleConnectPrompt size="sm" description={t("google_account.for_calendar")} />
         ) : calendars.length === 0 ? (
           <p className="text-body-xs-regular text-tertiary">
             {t("google_calendar_integration.calendar_view.no_calendars")}
@@ -153,7 +196,7 @@ export const CalendarSyncSidebar = observer(function CalendarSyncSidebar(props: 
         {isGoogleConnected && (
           <button
             type="button"
-            onClick={() => router.push("/settings/profile/google-calendar/")}
+            onClick={() => router.push("/settings/profile/google/")}
             className="mt-1 flex w-fit items-center gap-1 text-caption-sm-medium text-tertiary hover:text-secondary"
           >
             <Settings className="size-3" />

@@ -19,6 +19,7 @@ from plane.app.views import (
     ProjectArchiveUnarchiveEndpoint,
     ProjectMemberPreferenceEndpoint,
     ProjectPiecesPanelEndpoint,
+    ProjectContractEndpoint,
     ProjectPiecesRequestEndpoint,
     IssueReworkRequestEndpoint,
 )
@@ -142,6 +143,12 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/pieces/request/",
         ProjectPiecesRequestEndpoint.as_view(),
         name="project-pieces-request",
+    ),
+    # Pespo: contrato do cliente, só leitura (Configurações do projeto › Contrato)
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/contract/",
+        ProjectContractEndpoint.as_view(),
+        name="project-contract",
     ),
     path(
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/request-rework/",

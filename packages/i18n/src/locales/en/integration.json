@@ -364,7 +364,10 @@
       "new_presentation": "New Google Slides",
       "new_file_name": "Name of the new file",
       "create": "Create",
-      "modified": "Modified {date}"
+      "modified": "Modified {date}",
+      "create_folder_here": "Create the “{name}” folder here",
+      "use_folder": "Use “{name}”",
+      "open_a_folder": "Open a folder to choose it"
     },
     "widget": {
       "title": "Google Drive",
@@ -385,6 +388,15 @@
       "view_mode": "View",
       "edit_mode": "Edit",
       "blocked_hint": "Editing uses Google's own editor. If it asks you to enable cookies, click Google's button to allow it — or use \"Open in Google\"."
+    },
+    "attach": {
+      "from_computer": "From your computer",
+      "from_drive": "From Google Drive",
+      "copy_from_drive": "Copy from Google Drive (kept in the Hub)",
+      "new_document": "New Google Doc",
+      "new_spreadsheet": "New Google Sheet",
+      "new_presentation": "New Google Slides",
+      "untitled": "Untitled"
     }
   },
   "google_calendar_integration": {
@@ -450,6 +462,8 @@
     },
     "calendar_view": {
       "only_mine": "Only my work items",
+      "only_pieces": "Only pieces",
+      "all_clients": "All clients",
       "show_google": "Google events",
       "no_title": "(no title)",
       "linked_work_item": "Linked work item",
@@ -493,6 +507,139 @@
       "forbidden": "Google Calendar denied access. Try reconnecting your account.",
       "not_found": "The event wasn't found in Google Calendar.",
       "generic": "Something went wrong talking to Google Calendar."
+    },
+    "next_meeting": {
+      "label": "Meeting",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "now": "Happening now",
+      "join": "Join"
     }
+  },
+  "google_account": {
+    "title": "Google account",
+    "description": "Calendar and Drive inside Pespo Hub, with a single connection of your Google account.",
+    "calendar": "Calendar",
+    "drive": "Drive",
+    "not_connected": "Google account not connected",
+    "connected_hint": "Work items with dates show up in your calendar, and Drive files go into work item attachments.",
+    "prompt_title": "Connect your Google account",
+    "prompt_description": "Just once, to use calendar, meetings and Drive inside Pespo Hub.",
+    "connect": "Connect Google account",
+    "connecting": "Waiting for Google…",
+    "connect_missing": "Connect what's missing",
+    "connected_title": "Google account connected",
+    "disconnect": "Disconnect",
+    "disconnected": "Google account disconnected",
+    "disconnect_confirm": "Disconnect the Google account? Calendar and Drive stop working in Pespo Hub until you connect again.",
+    "not_configured": "The Google integration isn't set up in this Pespo Hub yet.",
+    "for_meetings": "To schedule Google Meet meetings right from the work item.",
+    "for_drive": "To attach Drive files and create documents right here.",
+    "for_calendar": "To see your calendars and meetings next to your work items."
+  },
+  "meeting_recording": {
+    "record": "Record",
+    "record_meeting": "Record meeting",
+    "record_tooltip": "Record this meeting from the Hub",
+    "start_title": "Record the meeting",
+    "start_intro": "The Hub records the meeting tab's audio and your microphone. The transcript and the minutes then show up here in the work item.",
+    "step_open": "Keep the meeting open in a Chrome (or Edge) tab.",
+    "step_choose": "In the next window, pick the meeting tab and keep “Share tab audio” on.",
+    "step_notice": "Tell everyone at the start that the meeting is being recorded.",
+    "step_headphones": "With headphones, the transcript comes out better.",
+    "start": "Start recording",
+    "starting": "Opening…",
+    "recording": "Recording",
+    "stop": "Stop recording",
+    "stopping": "Sending the audio…",
+    "no_mic": "No microphone: only the other participants are being recorded.",
+    "list_title": "Recordings",
+    "retry": "Try again",
+    "open": "Open",
+    "delete": "Delete recording",
+    "delete_confirm": "Delete the recording, its audio and transcript? Published minutes stay in the work item.",
+    "deleted": "Recording deleted",
+    "by": "Recorded by {name}",
+    "error": "Couldn't save.",
+    "errors": {
+      "unsupported": "This browser can't record meetings. Use Chrome or Edge on a computer.",
+      "share_cancelled": "Recording didn't start: no tab was picked.",
+      "no_tab_audio": "The tab was shared without its audio. Record again and keep “Share tab audio” on.",
+      "start_failed": "Couldn't start the recording.",
+      "upload_incomplete": "Part of the audio didn't reach the server. The transcript uses what arrived."
+    },
+    "status": {
+      "recording": "Recording",
+      "queued": "Waiting to be transcribed",
+      "transcribing": "Transcribing…",
+      "summarizing": "Drafting the minutes…",
+      "ready": "Transcript ready",
+      "failed": "Couldn't transcribe"
+    },
+    "summary_status": {
+      "none": "No minutes yet",
+      "draft": "Draft minutes",
+      "published": "Minutes published"
+    },
+    "tabs": {
+      "minutes": "Minutes",
+      "transcript": "Transcript"
+    },
+    "minutes": {
+      "summary": "Summary",
+      "summary_placeholder": "What was discussed, in a few sentences",
+      "agenda": "Agenda",
+      "decisions": "Decisions",
+      "next_steps": "Next steps",
+      "open_points": "Open points",
+      "item_placeholder": "Type and press Enter",
+      "task_placeholder": "New next step",
+      "no_assignee": "No assignee",
+      "due": "Due",
+      "remove": "Remove",
+      "subtask_created": "Subtask created",
+      "create_subtasks": "Create subtasks ({count})",
+      "subtasks_created": "{count, plural, one {# subtask created} other {# subtasks created}}",
+      "save": "Save draft",
+      "saving": "Saving…",
+      "saved": "Draft saved",
+      "unsaved": "Unsaved changes",
+      "auto_draft": "Drafted automatically from the transcript. Review it before publishing.",
+      "publish": "Publish to work item",
+      "update_publication": "Update in work item",
+      "client_visible": "Visible to the client",
+      "client_visible_hint": "Off: only the team sees the minutes.",
+      "published": "Minutes published to the work item",
+      "published_at": "Published on {date}",
+      "empty_error": "Write the minutes before publishing."
+    },
+    "transcript": {
+      "search": "Search the transcript",
+      "waiting": "The transcript shows up here when the server finishes. Long meetings can take up to an hour.",
+      "empty": "Nothing could be understood in the recording.",
+      "others": "Participants",
+      "no_results": "Nothing found.",
+      "audio_deleted": "The audio was deleted (retention period). The transcript stays.",
+      "model": "Transcribed with the {model} model"
+    }
+  },
+  "meeting_booking": {
+    "request": "Request a meeting",
+    "title": "Request a meeting",
+    "description": "Pick a time when the team is free. The invitation arrives by email, with the Google Meet link.",
+    "with": "With {names} · {minutes} min",
+    "no_slots_day": "No free times on this day.",
+    "no_slots": "No free times in these days.",
+    "note": "Subject (optional)",
+    "note_placeholder": "What you'd like to discuss",
+    "confirm": "Book for {when}",
+    "confirming": "Booking…",
+    "booked": "Meeting booked. The invitation is on its way by email.",
+    "slot_taken": "That time was just taken. Pick another one.",
+    "unavailable": "The team's calendar isn't available right now.",
+    "loading": "Looking for free times…",
+    "notice": "The meeting may be recorded and transcribed by Pespo Hub to produce the minutes.",
+    "previous": "Earlier days",
+    "next": "Later days"
   }
 }

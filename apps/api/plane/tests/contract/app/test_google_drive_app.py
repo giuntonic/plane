@@ -162,6 +162,22 @@ class TestGoogleDrivePersonalConnection:
         create_file.assert_called_once_with("access", "Briefing", "document", None)
 
     @pytest.mark.django_db
+    def test_create_folder_inside_folder(self, session_client, drive_connection):
+        folder = {**DOC, "id": "fld_1", "name": "Cliente", "mimeType": "application/vnd.google-apps.folder"}
+        with (
+            mock.patch("plane.utils.google_drive.get_valid_access_token", return_value="access"),
+            mock.patch("plane.utils.google_drive.create_file", return_value=folder) as create_file,
+        ):
+            response = session_client.post(
+                reverse("google-drive-files"),
+                {"kind": "folder", "name": "Cliente", "parent_id": "root_folder"},
+                format="json",
+            )
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data["is_folder"] is True
+        create_file.assert_called_once_with("access", "Cliente", "folder", "root_folder")
+
+    @pytest.mark.django_db
     def test_create_rejects_unknown_kind(self, session_client, drive_connection):
         response = session_client.post(reverse("google-drive-files"), {"kind": "form", "name": "x"}, format="json")
         assert response.status_code == status.HTTP_400_BAD_REQUEST

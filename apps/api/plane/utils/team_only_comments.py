@@ -3,8 +3,9 @@
 # See the LICENSE file for details.
 
 """
-Pespo: comentários só da equipe. Hoje são os sinais automáticos do briefing (Laya), que falam do cliente
-("parece insatisfeito") e não podem aparecer para o próprio cliente, que entra no Pespo Hub como convidado.
+Pespo: comentários só da equipe: os sinais automáticos do briefing (Laya), que falam do cliente ("parece
+insatisfeito"), e as atas de reunião publicadas só para a equipe. Não podem aparecer para o próprio cliente, que
+entra no Pespo Hub como convidado.
 Eles são marcados pelo ``external_source`` e somem das listas de comentários para convidados do projeto.
 """
 
@@ -12,7 +13,10 @@ Eles são marcados pelo ``external_source`` e somem das listas de comentários p
 from plane.db.models import ProjectMember
 
 LAYA_COMMENT_SOURCE = "pespo_laya"
-TEAM_ONLY_COMMENT_SOURCES = (LAYA_COMMENT_SOURCE,)
+# Ata de reunião publicada no item: só para a equipe, ou visível também para o cliente.
+MEETING_TEAM_SOURCE = "pespo_meeting_team"
+MEETING_CLIENT_SOURCE = "pespo_meeting"
+TEAM_ONLY_COMMENT_SOURCES = (LAYA_COMMENT_SOURCE, MEETING_TEAM_SOURCE)
 GUEST_ROLE = 5
 
 
