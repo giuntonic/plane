@@ -26,6 +26,7 @@ from .issue_checklist import IssueChecklist, IssueChecklistItem
 from .media_review import MediaRendition, MediaReviewComment
 from .time_tracking import IssueTimeEntry
 from .meeting_recording import MeetingRecording
+from .piece_approval import PieceApproval
 from .issue_recurrence import IssueRecurrence
 from .template import EntityTemplate
 from .intake import Intake, IntakeIssue

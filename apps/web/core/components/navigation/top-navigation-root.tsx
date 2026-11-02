@@ -22,6 +22,7 @@ import { useWorkspaceNotifications } from "@/hooks/store/notifications";
 import { useUserPermissions } from "@/hooks/store/user";
 import { RunningTimerChip } from "@/components/issues/time-tracking";
 import { MeetingRecordingChip } from "@/components/meeting-recording/recording-chip";
+import { PieceApprovalBlockedToast } from "@/components/issues/piece-approval";
 
 export const TopNavigationRoot = observer(function TopNavigationRoot() {
   const { t } = useTranslation();
@@ -78,6 +79,8 @@ export const TopNavigationRoot = observer(function TopNavigationRoot() {
         {!isGuest && workspaceSlug && <RunningTimerChip workspaceSlug={workspaceSlug.toString()} />}
         {/* Pespo: gravação de reunião em andamento */}
         {!isGuest && <MeetingRecordingChip />}
+        {/* Pespo: aviso quando a peça ainda não pode ser aprovada (clientes e equipe) */}
+        <PieceApprovalBlockedToast />
         <Tooltip tooltipContent={t("sidebar.inbox")} position="bottom">
           <AppSidebarItem
             variant="link"

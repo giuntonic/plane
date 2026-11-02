@@ -25,6 +25,7 @@ import { useUserPermissions } from "@/hooks/store/user";
 import { useAppRouter } from "@/hooks/use-app-router";
 // local components
 import { IssuePeekOverview } from "../peek-overview";
+import { isApprovalBlockedError } from "../piece-approval/helpers";
 import { workItemPropertiesPanelStore } from "../properties-panel";
 import { IssueMainContent } from "./main-content";
 import { IssueDetailsSidebar } from "./sidebar";
@@ -99,6 +100,8 @@ export const IssueDetailRoot = observer(function IssueDetailRoot(props: TIssueDe
           await updateIssue(workspaceSlug, projectId, issueId, data);
         } catch (error) {
           console.log("Error in updating issue:", error);
+          // Pespo: a peça bloqueada já tem o aviso dela (PieceApprovalBlockedToast)
+          if (isApprovalBlockedError(error)) return;
           setToast({
             title: t("common.error.label"),
             type: TOAST_TYPE.ERROR,

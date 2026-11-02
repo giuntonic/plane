@@ -325,6 +325,44 @@ export const MonthlyClientReport = observer(function MonthlyClientReport() {
             </Section>
           </div>
 
+          <Section title={t("pespo_reports.client.approvals")}>
+            {data.approvals.items.length === 0 ? (
+              <p className="text-body-sm-regular text-tertiary">{t("pespo_reports.client.no_approvals")}</p>
+            ) : (
+              <>
+                <p className="text-body-xs-regular text-tertiary">
+                  {t("pespo_reports.client.approvals_summary", {
+                    total: data.approvals.total,
+                    client: data.approvals.by_client,
+                  })}
+                </p>
+                <ul className="flex flex-col gap-1 text-body-xs-regular">
+                  {data.approvals.items.map((approval) => (
+                    <li key={approval.id} className="flex items-center gap-3">
+                      <span className="w-24 shrink-0 text-tertiary">{renderFormattedDate(approval.approved_at)}</span>
+                      <a
+                        href={`/${slug}/browse/${label(data.project.identifier, approval.sequence_id)}/`}
+                        className="truncate text-primary hover:underline"
+                      >
+                        {approval.name}
+                      </a>
+                      <span className="shrink-0 text-tertiary">
+                        {label(data.project.identifier, approval.sequence_id)}
+                      </span>
+                      {approval.role && (
+                        <span className="shrink-0 rounded-sm bg-layer-1 px-1.5 text-caption-sm-regular text-secondary">
+                          {approval.role === "client"
+                            ? t("pespo_reports.client.approved_by_client")
+                            : t("pespo_reports.client.approved_by_team")}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </Section>
+
           <Section title={t("pespo_reports.client.meetings_list")}>
             {data.meetings.items.length === 0 ? (
               <p className="text-body-sm-regular text-tertiary">{t("pespo_reports.client.no_meetings")}</p>

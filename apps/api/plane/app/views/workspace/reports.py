@@ -37,6 +37,7 @@ from plane.db.models import (
     IssueChecklistItem,
     IssueTimeEntry,
     MeetingRecording,
+    PieceApproval,
     Project,
     State,
     Workspace,
@@ -181,6 +182,24 @@ class ProjectMonthlyReportEndpoint(BaseAPIView):
             if r.summary_status == MeetingRecording.SummaryStatus.PUBLISHED
         ]
 
+        # Aprovações no mês: uma por peça (a primeira do mês), pelo botão da revisão ou pela mudança de estado
+        approvals = {}
+        for approval in (
+            PieceApproval.objects.filter(project=project, approved_at__gte=start, approved_at__lt=end)
+            .select_related("issue")
+            .order_by("approved_at")
+        ):
+            if approval.issue_id in approvals or approval.issue.deleted_at is not None:
+                continue
+            approvals[approval.issue_id] = {
+                "id": str(approval.issue_id),
+                "sequence_id": approval.issue.sequence_id,
+                "name": approval.issue.name,
+                "approved_at": approval.approved_at,
+                "role": approval.approved_by_role,
+            }
+        approval_items = sorted(approvals.values(), key=lambda a: a["approved_at"], reverse=True)
+
         # Contrato (portal)
         try:
             client = get_project_contract(project.id)
@@ -227,6 +246,11 @@ class ProjectMonthlyReportEndpoint(BaseAPIView):
                     ],
                 },
                 "meetings": {"items": meetings, "recorded": len(recordings), "minutes": minutes},
+                "approvals": {
+                    "total": len(approval_items),
+                    "by_client": sum(1 for a in approval_items if a["role"] == "client"),
+                    "items": approval_items,
+                },
             },
             status=status.HTTP_200_OK,
         )
