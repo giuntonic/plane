@@ -25,6 +25,7 @@ import { cn, getFileURL, renderFormattedDate } from "@plane/utils";
 import { useAttachmentOperations } from "@/components/issues/issue-detail-widgets/attachments/helper";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
+import { useProject } from "@/hooks/store/use-project";
 // services
 import { renditionFilePath } from "@/services/media-review.service";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
@@ -91,6 +92,7 @@ export const MediaReview = observer(function MediaReview(props: Props) {
   // store hooks
   const { data: currentUser } = useUser();
   const { allowPermissions } = useUserPermissions();
+  const { getProjectById } = useProject();
   const {
     comment: { getCommentsByIssueId, getCommentById, createComment },
     attachment: { getAttachmentsUploadStatusByIssueId },
@@ -354,10 +356,14 @@ export const MediaReview = observer(function MediaReview(props: Props) {
     }
   };
 
-  const handleApprove = async () => {
+  const handleApprove = async (channel?: string) => {
     const author = currentUser?.display_name || currentUser?.email || "Alguém";
-    // texto fixo: o n8n ("Peça Aprovada") e o painel de peças leem este formato
-    const raw = `✅ Peça aprovada por ${escapeHtml(author)} em ${formatDateBR(new Date())}`;
+    // em nome do cliente: "por <cliente> (via <canal>, lançado por <pessoa>)" (PieceApproval.on_behalf_of_client)
+    const approver = channel
+      ? `${getProjectById(projectId)?.name ?? "Cliente"} (via ${channel}, lançado por ${author})`
+      : author;
+    // texto fixo: o registro de aprovação do Hub e o painel de peças leem este formato
+    const raw = `✅ Peça aprovada por ${escapeHtml(approver)} em ${formatDateBR(new Date())}`;
     await createComment(workspaceSlug, projectId, issueId, { comment_html: `<p>${raw}</p>` });
   };
 
@@ -678,6 +684,7 @@ export const MediaReview = observer(function MediaReview(props: Props) {
       decision={decision}
       isLatest={version.attachment.id === latest?.attachment.id}
       canReview={canComment}
+      canApproveOnBehalf={isTeam}
       onApprove={handleApprove}
       onReworkRequested={refreshAfterRework}
     />

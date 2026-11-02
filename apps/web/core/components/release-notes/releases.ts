@@ -45,6 +45,7 @@ export const PESPO_RELEASES: TPespoRelease[] = [
       "Todo convite de reunião criado pelo Hub avisa que ela pode ser gravada e transcrita para gerar a ata.",
       'Aprovação de peças no próprio Hub: enquanto a peça estiver bloqueada por algo aberto (como a reunião de aprovação), ela não vai para "Aprovada - Pronta pra Ativar", e o Hub diz na hora o que falta concluir. Antes, a peça mudava e voltava uns segundos depois.',
       'Cada aprovação fica registrada (quem, quando, se foi o cliente ou a equipe), pelo botão "Aprovar peça" da revisão ou pela mudança de estado.',
+      'Quando o cliente aprova por fora (WhatsApp, e-mail, reunião), a equipe registra em "Aprovar em nome do cliente", na revisão da peça. Fica registrado quem lançou e por onde veio, e o relatório do mês conta como aprovação do cliente.',
       "Avisos ao cliente por e-mail: quando a peça é entregue, quando a refação que ele pediu fica pronta e 14 dias antes do fim do contrato. Liga e desliga em Configurações do projeto › Peças.",
       "Configurações do projeto › Contrato: o contrato do cliente, as peças contratadas, o aviso de vencimento e o histórico de contratos, só para consulta (novo cliente e renovação continuam no painel admin).",
     ],

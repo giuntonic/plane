@@ -544,6 +544,16 @@
     "show": "Mostrar propriedades"
   },
   "media_review": {
+    "on_behalf": {
+      "button": "Aprovar em nome do cliente",
+      "hint": "O cliente aprovou por fora do Hub. Por onde veio a aprovação? O seu nome fica registrado junto.",
+      "channel_whatsapp": "WhatsApp",
+      "channel_email": "E-mail",
+      "channel_meeting": "Reunião",
+      "channel_phone": "Telefone",
+      "channel_other": "Outro",
+      "submit": "Registrar aprovação"
+    },
     "title": "Revisão da peça",
     "open_expanded": "A revisão está aberta na tela ampliada.",
     "expand": "Ampliar",
@@ -707,6 +717,7 @@
       "no_approvals": "Nenhuma peça aprovada neste mês.",
       "approvals_summary": "{total, plural, one {# peça aprovada} other {# peças aprovadas}}, {client, plural, =0 {nenhuma pelo cliente} one {# pelo cliente} other {# pelo cliente}}.",
       "approved_by_client": "pelo cliente",
+      "approved_on_behalf": "pela equipe, em nome do cliente ({channel})",
       "approved_by_team": "pela equipe",
       "minutes": "Atas publicadas",
       "team_only": "Só equipe",

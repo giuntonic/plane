@@ -254,7 +254,7 @@ Correções feitas depois do merge:
 
 Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
 Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
-(`docs/deploy-plane-1.7.md`): migrations `0143` a `0148`, rebuild de api e web, o worker novo
+(`docs/deploy-plane-1.7.md`): migrations `0143` a `0149`, rebuild de api e web, o worker novo
 `plane-transcriber`, uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud e, depois do
 deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
 
@@ -412,6 +412,10 @@ deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
     estado) ou `review` (o comentário fixo "✅ Peça aprovada por … em …" que o botão "Aprovar peça" da revisão
     posta, o mesmo que o n8n ouvia; só na criação do comentário). A mesma peça pode ter os dois; o relatório
     conta peças.
+  - **Em nome do cliente** (decisão de 02/11): na revisão, a equipe tem "Aprovar em nome do cliente", com o
+    canal (WhatsApp, e-mail, reunião, telefone, outro). O comentário fica "✅ Peça aprovada por <projeto> (via
+    <canal>, lançado por <pessoa>) em <data>"; o `PieceApproval` guarda quem lançou, `on_behalf_of_client` e
+    `channel` (migration `0149`), e o Mês do cliente conta como aprovação do cliente.
   - **Tela:** o interceptor do `APIService` avisa pelo evento `pespo:approval-blocked`, e o
     `PieceApprovalBlockedToast` (montado no topo, para equipe e convidados) mostra o que falta concluir. O item,
     o painel lateral e o arrastar no quadro pulam o toast genérico de erro nesse caso (`isApprovalBlockedError`);

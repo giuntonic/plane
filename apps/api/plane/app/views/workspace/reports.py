@@ -197,6 +197,8 @@ class ProjectMonthlyReportEndpoint(BaseAPIView):
                 "name": approval.issue.name,
                 "approved_at": approval.approved_at,
                 "role": approval.approved_by_role,
+                "on_behalf": approval.on_behalf_of_client,
+                "channel": approval.channel,
             }
         approval_items = sorted(approvals.values(), key=lambda a: a["approved_at"], reverse=True)
 
@@ -248,7 +250,7 @@ class ProjectMonthlyReportEndpoint(BaseAPIView):
                 "meetings": {"items": meetings, "recorded": len(recordings), "minutes": minutes},
                 "approvals": {
                     "total": len(approval_items),
-                    "by_client": sum(1 for a in approval_items if a["role"] == "client"),
+                    "by_client": sum(1 for a in approval_items if a["role"] == "client" or a["on_behalf"]),
                     "items": approval_items,
                 },
             },
