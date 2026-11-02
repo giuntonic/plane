@@ -1,0 +1,4 @@
+# Pespo: só a imagem do worker de transcrição (Dockerfile.transcriber, base Debian). O ctranslate2 do
+# faster-whisper não tem wheel para musl, então não entra na imagem Alpine da api.
+-r production.txt
+faster-whisper==1.1.1
