@@ -254,7 +254,7 @@ Correções feitas depois do merge:
 
 Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
 Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
-(`docs/deploy-plane-1.7.md`): migrations `0143` a `0146`, rebuild de api e web, o worker novo
+(`docs/deploy-plane-1.7.md`): migrations `0143` a `0147`, rebuild de api e web, o worker novo
 `plane-transcriber`, uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud e, depois do
 deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
 
@@ -417,6 +417,28 @@ deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
     o painel lateral e o arrastar no quadro pulam o toast genérico de erro nesse caso (`isApprovalBlockedError`);
     o store já desfaz a mudança otimista.
   - A tabela `peca_aprovacoes` do portal não é migrada (o histórico antigo fica lá).
+- **Clientes e contratos no Hub, primeiro passo** (estudo em
+  `pespo-infra/docs/estudo-clientes-contratos-aprovacao-no-hub.md`). Nada muda em produção até alguém ligar:
+  - **Modelos** (`db/models/pespo_client.py`, migration `0147`): `PespoClient` (espaço de trabalho, nome,
+    projetos, `portal_client_id`), `PespoContract` (tipo FEE/FEP, início, fim, situação `active`/`renewed`/
+    `expired`, limite de urgentes, `expiry_notice_sent_at`, `portal_contract_id`) e `PespoContractCategory`
+    (categoria e quantidade contratada).
+  - **Importação** `python manage.py import_portal_clients [--dry-run]`: lê `clientes`, `contratos` e
+    `contrato_categorias` com o usuário só leitura que o Hub já usa (`PORTAL_DATABASE_URL`) e cria ou atualiza
+    no Hub, achando o mesmo cliente e contrato pelos ids do portal. Repetível; não escreve no portal. Cliente sem
+    projeto no Hub e contrato com tipo ou situação desconhecidos são avisados e pulados. `clientes_login` fica
+    de fora (o usuário do Hub não lê essa tabela, e o acesso do cliente ainda depende de decisão).
+  - **De onde o contrato é lido:** `PESPO_CONTRACTS_SOURCE` = `portal` (padrão, como antes) ou `hub`
+    (`plane.utils.portal_contracts.get_project_contract`, mesma resposta). Vale para o painel de peças, o pedido
+    de peças, o relatório do mês e a tela abaixo.
+  - **Configurações do projeto › Contrato** (`…/projects/<id>/contract/`, admin e membro, só leitura): o
+    contrato em uso (com o aviso de vencimento) e os contratos que já estão no Hub, com o histórico. Novo cliente
+    e renovação continuam no painel admin.
+  - **Contrato vencendo** (`bgtasks/pespo_contract_task.py`, beat `pespo-contract-expiry`, todo dia às 12:00
+    UTC): com `PESPO_CONTRACT_EXPIRY_ENABLED=1` (padrão desligado), cria o item "Contrato vence em dd/mm/aaaa"
+    no projeto a 14 dias do fim (`PESPO_CONTRACT_EXPIRY_DAYS`) e marca o aviso, e passa para `expired` o
+    contrato ativo que já acabou. Ligar só junto com `PESPO_CONTRACTS_SOURCE=hub` e o workflow "Vencimento de
+    Contratos" do n8n desligado.
 - **Teste local:** sem Google de verdade, as respostas do Drive foram simuladas no navegador
   (`context.route` do Playwright) para ver o seletor de pasta e a criação de documento. A gravação foi testada
   com tons sintéticos no lugar da aba e do microfone (`addInitScript`), com S3 local (moto) e a tarefa rodando
@@ -426,7 +448,8 @@ deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
   o card endpoint, as propriedades do item e do painel, a barra do topo, os widgets de anexo e de reuniões,
   `calendar_event.py` (`_create_meeting`), o serializer do projeto, `requirements/base.txt` (faster-whisper),
   as rotas das configurações do projeto, o interceptor do `APIService` e o tratamento de erro ao salvar no item,
-  no painel lateral e no arrastar (`use-group-dragndrop.ts`).
+  no painel lateral e no arrastar (`use-group-dragndrop.ts`), `portal_contracts.py` e a lista das configurações
+  do projeto (`PROJECT_SETTINGS`).
 
 ## Versão 1.6: revisão de vídeo e imagem no item, no lugar do Clapshot (2026-10-30)
 

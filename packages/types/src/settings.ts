@@ -32,6 +32,8 @@ export type TWorkspaceSettingsItem = {
 export type TProjectSettingsTabs =
   | "general"
   | "members"
+  // Pespo: contrato do cliente (só leitura)
+  | "contract"
   | "features_cycles"
   | "features_modules"
   | "features_views"

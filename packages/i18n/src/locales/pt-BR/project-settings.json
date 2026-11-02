@@ -37,6 +37,33 @@
         "select_co_worker": "Selecionar colega de trabalho"
       }
     },
+    "contract": {
+      "short_title": "Contrato",
+      "title": "Contrato",
+      "description": "O contrato do cliente deste projeto. Novo cliente e renovação continuam no painel admin.",
+      "current": "Contrato em uso",
+      "source_portal": "Lido do portal do cliente",
+      "source_hub": "Lido do Hub",
+      "portal_unavailable": "Não foi possível acessar o banco do portal do cliente.",
+      "no_client": "Este projeto não está ligado a um cliente.",
+      "no_active": "Nenhum contrato ativo.",
+      "period": "{type}, de {start} a {end}",
+      "urgent_limit": "{count, plural, one {# peça urgente por vez} other {# peças urgentes por vez}}",
+      "expires_in": "{count, plural, =0 {Vence hoje} one {Vence em # dia} other {Vence em # dias}}",
+      "expired_on": "Venceu em {date}",
+      "history": "Contratos no Hub",
+      "not_imported": "Os dados do portal do cliente ainda não foram trazidos para o Hub.",
+      "no_contracts": "Nenhum contrato deste cliente.",
+      "col_period": "Período",
+      "col_type": "Tipo",
+      "col_status": "Situação",
+      "col_categories": "Peças contratadas",
+      "status_active": "Ativo",
+      "status_renewed": "Renovado",
+      "status_expired": "Vencido",
+      "imported_at": "Atualizado do portal em {date}.",
+      "error": "Não foi possível carregar o contrato."
+    },
     "states": {
       "heading": "Estados",
       "description": "Defina e personalize os estados de fluxo de trabalho para acompanhar o progresso dos seus itens de trabalho.",

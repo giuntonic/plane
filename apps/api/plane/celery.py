@@ -63,6 +63,12 @@ app.conf.beat_schedule = {
         "task": "plane.bgtasks.meeting_recording_task.meeting_recordings_housekeeping",
         "schedule": crontab(minute="*/10"),
     },
+    # Pespo: contrato vencendo (no lugar do workflow do n8n); 12:00 UTC = 9h em Brasília. Não faz nada enquanto
+    # PESPO_CONTRACT_EXPIRY_ENABLED estiver desligado (o padrão).
+    "pespo-contract-expiry": {
+        "task": "plane.bgtasks.pespo_contract_task.contract_expiry_check",
+        "schedule": crontab(hour=12, minute=0),
+    },
     "sync-google-calendars": {
         "task": "plane.bgtasks.google_calendar_sync_task.sync_google_calendars",
         "schedule": schedule(run_every=timedelta(minutes=10)),

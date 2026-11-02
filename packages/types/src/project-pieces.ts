@@ -37,6 +37,34 @@ export type TProjectPiecesPanel = {
   };
 };
 
+// Pespo: Configurações do projeto › Contrato (…/projects/<id>/contract/), só leitura.
+export type TProjectContractView = {
+  /** De onde o Hub lê o contrato agora: o banco do portal (padrão) ou o que foi importado para o Hub. */
+  source: "portal" | "hub";
+  current_status: "ok" | "no_client" | "unavailable";
+  /** O contrato que o painel de peças, o pedido de peças e o relatório do mês usam. */
+  current: {
+    client_name: string;
+    contract: TProjectPiecesPanel["contract"];
+    expiring: TProjectPiecesPanel["expiring"];
+  } | null;
+  /** O que já foi importado do portal para o Hub, com o histórico. */
+  hub: {
+    client: { id: string; name: string; portal_client_id: string | null };
+    contracts: {
+      id: string;
+      contract_type: string;
+      start_date: string;
+      end_date: string;
+      status: "active" | "renewed" | "expired";
+      urgent_limit: number;
+      expiry_notice_sent_at: string | null;
+      categories: { category: string; contracted: number }[];
+    }[];
+    imported_at: string;
+  } | null;
+};
+
 export type TPieceRequestItem = {
   category: TPieceCategory;
   quantity: number;

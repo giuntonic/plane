@@ -37,6 +37,33 @@
         "select_co_worker": "Select co-worker"
       }
     },
+    "contract": {
+      "short_title": "Contract",
+      "title": "Contract",
+      "description": "The client's contract for this project. New clients and renewals are still done in the admin panel.",
+      "current": "Contract in use",
+      "source_portal": "Read from the client portal",
+      "source_hub": "Read from the Hub",
+      "portal_unavailable": "Couldn't reach the client portal database.",
+      "no_client": "This project isn't linked to a client.",
+      "no_active": "No active contract.",
+      "period": "{type}, from {start} to {end}",
+      "urgent_limit": "{count, plural, one {# urgent piece at a time} other {# urgent pieces at a time}}",
+      "expires_in": "{count, plural, =0 {Expires today} one {Expires in # day} other {Expires in # days}}",
+      "expired_on": "Expired on {date}",
+      "history": "Contracts in the Hub",
+      "not_imported": "The client portal data hasn't been brought into the Hub yet.",
+      "no_contracts": "No contracts for this client.",
+      "col_period": "Period",
+      "col_type": "Type",
+      "col_status": "Status",
+      "col_categories": "Contracted pieces",
+      "status_active": "Active",
+      "status_renewed": "Renewed",
+      "status_expired": "Expired",
+      "imported_at": "Last updated from the portal on {date}.",
+      "error": "Couldn't load the contract."
+    },
     "states": {
       "heading": "States",
       "description": "Define and customize workflow states to track the progress of your work items.",
