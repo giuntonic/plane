@@ -639,5 +639,47 @@
     "notice": "A reunião pode ser gravada e transcrita pelo Pespo Hub para gerar a ata.",
     "previous": "Dias anteriores",
     "next": "Próximos dias"
+  },
+  "acervo": {
+    "title": "Arquivos da peça",
+    "button": "Arquivos",
+    "client_button": "Enviar material",
+    "menu": {
+      "upload": "Link para receber material",
+      "delivery": "Link de entrega"
+    },
+    "open_folder": "Abrir pasta no Arquivos",
+    "upload": {
+      "title": "Receber material (só envio)",
+      "hint": "Quem tem o link envia arquivos, mas não vê nem baixa nada."
+    },
+    "delivery": {
+      "title": "Entrega (só leitura)",
+      "hint": "Quem tem o link vê e baixa o que estiver em Entrega."
+    },
+    "expires_on": "Vale até {date}",
+    "expired_on": "Expirou em {date}",
+    "no_expiry": "Sem validade",
+    "create_link": "Gerar link",
+    "copy_link": "Copiar link",
+    "open_link": "Abrir link",
+    "renew": "Renovar por 30 dias",
+    "change_date": "Mudar a validade",
+    "revoke": "Revogar link",
+    "revoke_confirm": "Revogar este link? Quem tiver o endereço deixa de conseguir usar. Os arquivos continuam na pasta.",
+    "link_copied": "Link copiado",
+    "link_ready": "Link pronto: copie em Arquivos da peça",
+    "link_updated": "Validade do link atualizada",
+    "link_revoked": "Link revogado",
+    "received": "Recebido",
+    "delivered": "Entrega",
+    "more_files": "e mais {count}",
+    "unavailable": "O Arquivos não respondeu agora. Os links continuam valendo; a lista de arquivos volta quando ele responder.",
+    "errors": {
+      "unavailable": "O Arquivos (Nextcloud) não respondeu. Tente de novo em instantes.",
+      "disabled": "O Acervo não está configurado neste servidor.",
+      "invalid_date": "Escolha uma data a partir de amanhã, até um ano.",
+      "generic": "Não deu certo agora. Tente de novo."
+    }
   }
 }

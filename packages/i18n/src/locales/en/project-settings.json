@@ -513,6 +513,27 @@
         "saved": "Project folder saved",
         "picker_title": "Project folder in Google Drive"
       },
+      "acervo": {
+        "title": "Acervo",
+        "short_title": "Acervo",
+        "description": "The project folder in the Acervo (arquivos.pespo.com.br). Each piece that gets a link has a subfolder with Received (material the client sends) and Delivery (what goes to the client).",
+        "disabled": "The Acervo is not configured on this server (NEXTCLOUD_URL, NEXTCLOUD_USER or NEXTCLOUD_APP_PASSWORD is missing).",
+        "no_folder": "No folder yet",
+        "no_folder_hint": "It will be created at {path} on the first link of a piece, or now with the button below.",
+        "folder_hint": "Changing the folder does not move pieces that already have one: only new ones go to the new folder.",
+        "open": "Open in Files",
+        "create": "Create the folder now",
+        "change": "Choose another folder",
+        "saved": "Project folder saved",
+        "structure_hint": "Inside it: one folder per piece, with Received and Delivery. Renaming the project or the piece later does not rename the folders.",
+        "picker_title": "Project folder in the Acervo",
+        "current_folder": "Current folder",
+        "empty_folder": "No folders in here.",
+        "new_folder_placeholder": "New folder name",
+        "new_folder": "Create here",
+        "use_folder": "Use \"{name}\"",
+        "open_a_folder": "Open a folder inside the Acervo"
+      },
       "meetings": {
         "title": "Meetings",
         "short_title": "Meetings",

@@ -639,5 +639,47 @@
     "notice": "The meeting may be recorded and transcribed by Pespo Hub to produce the minutes.",
     "previous": "Earlier days",
     "next": "Later days"
+  },
+  "acervo": {
+    "title": "Piece files",
+    "button": "Files",
+    "client_button": "Send material",
+    "menu": {
+      "upload": "Link to receive material",
+      "delivery": "Delivery link"
+    },
+    "open_folder": "Open folder in Files",
+    "upload": {
+      "title": "Receive material (upload only)",
+      "hint": "Anyone with the link can upload files but cannot see or download anything."
+    },
+    "delivery": {
+      "title": "Delivery (read only)",
+      "hint": "Anyone with the link can see and download what is in Delivery."
+    },
+    "expires_on": "Valid until {date}",
+    "expired_on": "Expired on {date}",
+    "no_expiry": "No expiry",
+    "create_link": "Create link",
+    "copy_link": "Copy link",
+    "open_link": "Open link",
+    "renew": "Renew for 30 days",
+    "change_date": "Change expiry",
+    "revoke": "Revoke link",
+    "revoke_confirm": "Revoke this link? Anyone with the address will no longer be able to use it. The files stay in the folder.",
+    "link_copied": "Link copied",
+    "link_ready": "Link ready: copy it from Piece files",
+    "link_updated": "Link expiry updated",
+    "link_revoked": "Link revoked",
+    "received": "Received",
+    "delivered": "Delivery",
+    "more_files": "and {count} more",
+    "unavailable": "Files did not respond right now. The links still work; the file list comes back when it responds.",
+    "errors": {
+      "unavailable": "Files (Nextcloud) did not respond. Try again in a moment.",
+      "disabled": "The Acervo is not configured on this server.",
+      "invalid_date": "Pick a date from tomorrow up to one year ahead.",
+      "generic": "Something went wrong. Try again."
+    }
   }
 }
