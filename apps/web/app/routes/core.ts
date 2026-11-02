@@ -332,6 +332,20 @@ export const coreRoutes: RouteConfigEntry[] = [
             ":workspaceSlug/settings/templates",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/templates/page.tsx"
           ),
+          // Pespo: funções e serviços da equipe
+          route(
+            ":workspaceSlug/settings/team",
+            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/team/page.tsx"
+          ),
+          // Pespo: clientes
+          route(
+            ":workspaceSlug/settings/clients",
+            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/clients/page.tsx"
+          ),
+          route(
+            ":workspaceSlug/settings/clients/:clientId",
+            "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/clients/[clientId]/page.tsx"
+          ),
           route(
             ":workspaceSlug/settings/webhooks",
             "./(all)/[workspaceSlug]/(settings)/settings/(workspace)/webhooks/page.tsx"

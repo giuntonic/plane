@@ -23,24 +23,39 @@ type Props = {
   /** Aprovar e pedir refação só na versão mais nova. */
   isLatest: boolean;
   canReview: boolean;
-  onApprove: () => Promise<void>;
+  /** Pespo: a equipe lança a aprovação que o cliente deu por fora (WhatsApp, e-mail, reunião…). */
+  canApproveOnBehalf?: boolean;
+  onApprove: (channel?: string) => Promise<void>;
   onReworkRequested: () => Promise<void>;
 };
 
-/** Aprovação e pedido de refação da versão. Os dois viram comentários de texto fixo, que o n8n
- * ("Peça Aprovada") e o painel de peças leem; a versão de cada decisão é a mais nova naquele momento. */
+/** Aprovação e pedido de refação da versão. Os dois viram comentários de texto fixo, que o registro de
+ * aprovação do Hub e o painel de peças leem; a versão de cada decisão é a mais nova naquele momento. */
+const ON_BEHALF_CHANNELS = ["whatsapp", "email", "meeting", "phone", "other"] as const;
+// o canal vai sempre em português no comentário (texto fixo, lido pelo registro de aprovação)
+const CHANNEL_TEXT: Record<(typeof ON_BEHALF_CHANNELS)[number], string> = {
+  whatsapp: "WhatsApp",
+  email: "e-mail",
+  meeting: "reunião",
+  phone: "telefone",
+  other: "outro canal",
+};
 export function ReviewDecisionBar(props: Props) {
-  const { workspaceSlug, projectId, issueId, decision, isLatest, canReview, onApprove, onReworkRequested } = props;
+  const { workspaceSlug, projectId, issueId, decision, isLatest, canReview, canApproveOnBehalf, onApprove } = props;
+  const { onReworkRequested } = props;
   const { t } = useTranslation();
   const [approving, setApproving] = useState(false);
+  const [onBehalfOpen, setOnBehalfOpen] = useState(false);
+  const [channel, setChannel] = useState<(typeof ON_BEHALF_CHANNELS)[number]>("whatsapp");
   const [reworkOpen, setReworkOpen] = useState(false);
   const [reason, setReason] = useState("");
   const [sending, setSending] = useState(false);
 
-  const approve = async () => {
+  const approve = async (onBehalf = false) => {
     setApproving(true);
     try {
-      await onApprove();
+      await onApprove(onBehalf ? CHANNEL_TEXT[channel] : undefined);
+      setOnBehalfOpen(false);
     } finally {
       setApproving(false);
     }
@@ -87,6 +102,46 @@ export function ReviewDecisionBar(props: Props) {
           <Button variant="neutral-primary" size="sm" onClick={() => setReworkOpen((open) => !open)}>
             {t("pieces_panel.rework.button")}
           </Button>
+          {canApproveOnBehalf && (
+            <Button variant="link-neutral" size="sm" onClick={() => setOnBehalfOpen((open) => !open)}>
+              {t("media_review.on_behalf.button")}
+            </Button>
+          )}
+        </div>
+      )}
+      {onBehalfOpen && canApproveOnBehalf && (
+        <div className="flex flex-col gap-2 rounded-md border border-subtle p-2">
+          <p className="text-12 text-tertiary">{t("media_review.on_behalf.hint")}</p>
+          <div className="flex flex-wrap gap-1.5">
+            {ON_BEHALF_CHANNELS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setChannel(option)}
+                className={
+                  option === channel
+                    ? "rounded-md border border-accent-strong bg-accent-subtle px-2 py-0.5 text-12 text-primary"
+                    : "rounded-md border border-subtle px-2 py-0.5 text-12 text-tertiary hover:text-primary"
+                }
+              >
+                {t(`media_review.on_behalf.channel_${option}`)}
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="neutral-primary" size="sm" onClick={() => setOnBehalfOpen(false)}>
+              {t("cancel")}
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => void approve(true)}
+              loading={approving}
+              disabled={approving}
+            >
+              {t("media_review.on_behalf.submit")}
+            </Button>
+          </div>
         </div>
       )}
       {reworkOpen && (

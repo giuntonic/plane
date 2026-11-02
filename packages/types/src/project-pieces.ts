@@ -37,6 +37,13 @@ export type TProjectPiecesPanel = {
   };
 };
 
+// Pespo: avisos ao cliente (convidados do projeto) por e-mail (Project.client_notices).
+export type TClientNoticeEvent = "delivered" | "rework_done" | "contract_expiring";
+export type TClientNotices = {
+  email?: boolean;
+  events?: Partial<Record<TClientNoticeEvent, boolean>>;
+};
+
 // Pespo: Configurações do projeto › Contrato (…/projects/<id>/contract/), só leitura.
 export type TProjectContractView = {
   /** De onde o Hub lê o contrato agora: o banco do portal (padrão) ou o que foi importado para o Hub. */
@@ -63,6 +70,67 @@ export type TProjectContractView = {
     }[];
     imported_at: string;
   } | null;
+};
+
+// Pespo: Configurações do espaço de trabalho › Clientes (…/pespo-clients/).
+export type TPespoContractInput = {
+  contract_type: "FEE" | "FEP";
+  start_date: string;
+  end_date: string;
+  urgent_limit: number;
+  quantities: Record<string, number>;
+};
+export type TPespoClientContract = {
+  id: string;
+  contract_type: string;
+  start_date: string;
+  end_date: string;
+  urgent_limit: number;
+  status?: "active" | "renewed" | "expired";
+  categories: { category: string; contracted: number }[];
+};
+export type TPespoClientSummary = {
+  id: string;
+  name: string;
+  portal_client_id: string | null;
+  project: { id: string; name: string; identifier: string } | null;
+  contract: TPespoClientContract | null;
+  logins: number;
+};
+export type TPespoClientDetail = TPespoClientSummary & {
+  contracts: TPespoClientContract[];
+  /** O que sobrou do contrato ativo, por categoria (para somar na renovação). */
+  balance: Record<string, number>;
+  login_list: { email: string; status: "active" | "invited" }[];
+};
+export type TPespoClientsList = {
+  clients: TPespoClientSummary[];
+  project_templates: { id: string; name: string }[];
+  categories: string[];
+};
+export type TPespoNewClient = TPespoContractInput & {
+  name: string;
+  identifier?: string;
+  template_id?: string;
+  emails: string;
+  member_ids: string[];
+};
+
+// Pespo: funções e serviços da equipe (Configurações › Equipe) e o atalho "Serviços".
+export type TTeamService = {
+  id: string;
+  name: string;
+  url: string;
+  icon: string;
+  description: string;
+  sort_order: number;
+};
+export type TTeamRole = {
+  id: string;
+  name: string;
+  description: string;
+  service_ids: string[];
+  member_ids: string[];
 };
 
 export type TPieceRequestItem = {

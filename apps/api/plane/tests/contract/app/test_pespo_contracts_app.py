@@ -153,12 +153,14 @@ class TestContractSource:
         other = Project.objects.create(name="Outro", identifier="OUT", workspace=workspace)
         assert get_project_contract(other.id) is None
 
-    def test_portal_is_still_the_default(self, project, settings):
+    def test_portal_source_needs_the_portal_database(self, project, settings):
+        settings.PESPO_CONTRACTS_SOURCE = "portal"
         settings.PORTAL_DATABASE_URL = None
         with pytest.raises(PortalUnavailable):
             get_project_contract(project.id)
 
     def test_settings_view(self, session_client, workspace, project, settings):
+        settings.PESPO_CONTRACTS_SOURCE = "portal"
         settings.PORTAL_DATABASE_URL = None
         apply_portal_rows(_rows(project, workspace))
         url = reverse("project-contract", kwargs={"slug": workspace.slug, "project_id": project.id})
@@ -190,7 +192,7 @@ class TestContractExpiry:
         PespoContractCategory.objects.create(contract=contract, category="Post", contracted=6)
         return contract
 
-    def test_disabled_by_default(self, workspace, project, settings):
+    def test_can_be_disabled(self, workspace, project, settings):
         settings.PESPO_CONTRACT_EXPIRY_ENABLED = False
         self._contract(workspace, project, date.today() + timedelta(days=5))
         assert contract_expiry_check() == {"skipped": "disabled"}

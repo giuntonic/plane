@@ -105,3 +105,29 @@ class PespoContractCategory(BaseModel):
 
     def __str__(self):
         return f"{self.category}: {self.contracted}"
+
+
+class PespoClientLogin(BaseModel):
+    """Um e-mail do cliente com acesso ao Hub (antes ``clientes_login`` do portal). O acesso é de convidado
+    (papel 5) nos projetos do cliente; quem ainda não tem conta recebe um convite e entra no projeto no primeiro
+    login (``plane.utils.pespo_clients.attach_client_logins``)."""
+
+    workspace = models.ForeignKey("db.Workspace", on_delete=models.CASCADE, related_name="pespo_client_logins")
+    client = models.ForeignKey(PespoClient, on_delete=models.CASCADE, related_name="logins")
+    email = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Pespo Client Login"
+        verbose_name_plural = "Pespo Client Logins"
+        db_table = "pespo_client_logins"
+        ordering = ("email",)
+        constraints = [
+            models.UniqueConstraint(
+                fields=["client", "email"],
+                condition=models.Q(deleted_at__isnull=True),
+                name="pespo_client_login_unique",
+            )
+        ]
+
+    def __str__(self):
+        return self.email

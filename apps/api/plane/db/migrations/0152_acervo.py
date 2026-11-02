@@ -8,7 +8,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("db", "0147_pespo_clients_contracts"),
+        ("db", "0151_pespo_team_catalog"),
     ]
 
     operations = [

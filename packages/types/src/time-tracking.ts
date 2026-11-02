@@ -137,6 +137,9 @@ export type TMonthlyReport = {
       approved_at: string;
       // "client", "team" ou "" (tarefa do sistema)
       role: string;
+      // a equipe lançou a aprovação que o cliente deu por fora, e por onde veio
+      on_behalf: boolean;
+      channel: string;
     }[];
   };
 };

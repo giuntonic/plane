@@ -14,6 +14,7 @@ import { NotAuthorizedView } from "@/components/auth-screens/not-authorized-view
 import { PageHead } from "@/components/core/page-title";
 import { SettingsContentWrapper } from "@/components/settings/content-wrapper";
 import { SettingsHeading } from "@/components/settings/heading";
+import { ClientNoticesSettings } from "@/components/project/settings/client-notices";
 import { ProjectSettingsFeatureControlItem } from "@/components/settings/project/content/feature-control-item";
 // hooks
 import { useProject } from "@/hooks/store/use-project";
@@ -56,6 +57,10 @@ function FeaturesPiecesSettingsPage({ params }: Route.ComponentProps) {
             value={!!currentProjectDetails?.pieces_view}
             workspaceSlug={workspaceSlug}
           />
+        </div>
+        {/* Pespo: avisos ao cliente por e-mail */}
+        <div className="mt-6">
+          <ClientNoticesSettings workspaceSlug={workspaceSlug} projectId={projectId} />
         </div>
       </section>
     </SettingsContentWrapper>

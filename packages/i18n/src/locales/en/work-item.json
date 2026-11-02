@@ -544,6 +544,16 @@
     "show": "Show properties"
   },
   "media_review": {
+    "on_behalf": {
+      "button": "Approve on the client's behalf",
+      "hint": "The client approved outside the Hub. Where did the approval come from? Your name is recorded with it.",
+      "channel_whatsapp": "WhatsApp",
+      "channel_email": "Email",
+      "channel_meeting": "Meeting",
+      "channel_phone": "Phone",
+      "channel_other": "Other",
+      "submit": "Record approval"
+    },
     "title": "Piece review",
     "open_expanded": "The review is open in the expanded view.",
     "expand": "Expand",
@@ -707,6 +717,7 @@
       "no_approvals": "No pieces approved this month.",
       "approvals_summary": "{total, plural, one {# piece approved} other {# pieces approved}}, {client, plural, =0 {none by the client} other {# by the client}}.",
       "approved_by_client": "by the client",
+      "approved_on_behalf": "by the team, for the client ({channel})",
       "approved_by_team": "by the team",
       "minutes": "Published minutes",
       "team_only": "Team only",

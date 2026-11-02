@@ -14,6 +14,7 @@ from django.db.models import Max
 from plane.app.serializers.workspace import WorkspaceLiteSerializer
 from plane.app.serializers.user import UserLiteSerializer, UserAdminLiteSerializer
 from plane.utils.google_drive import is_valid_drive_id
+from plane.utils.client_notices import clean_client_notices
 from plane.utils.meeting_booking import clean_booking
 from plane.db.models import (
     Project,
@@ -67,6 +68,13 @@ class ProjectSerializer(BaseSerializer):
             )
         try:
             return clean_booking(value or {}, member_ids)
+        except ValueError as e:
+            raise serializers.ValidationError(detail=str(e)) from e
+
+    def validate_client_notices(self, value):
+        # Pespo: avisos ao cliente por e-mail
+        try:
+            return clean_client_notices(value or {})
         except ValueError as e:
             raise serializers.ValidationError(detail=str(e)) from e
 

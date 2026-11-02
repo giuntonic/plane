@@ -8,6 +8,7 @@
 // portal ou do Hub, conforme PESPO_CONTRACTS_SOURCE) e o que já foi importado para o Hub, com o histórico. Novo
 // cliente e renovação continuam no painel admin até a mudança terminar.
 import { observer } from "mobx-react";
+import Link from "next/link";
 import useSWR from "swr";
 import { AlertTriangle } from "lucide-react";
 // plane imports
@@ -54,6 +55,7 @@ function ProjectContractSettingsPage({ params }: Route.ComponentProps) {
   const { t } = useTranslation();
   const { workspaceUserInfo, allowPermissions } = useUserPermissions();
   const { currentProjectDetails } = useProject();
+  const isWorkspaceAdmin = allowPermissions([EUserPermissions.ADMIN], EUserPermissionsLevel.WORKSPACE);
   const canView = allowPermissions([EUserPermissions.ADMIN, EUserPermissions.MEMBER], EUserPermissionsLevel.PROJECT);
   const { data, error, isLoading } = useSWR(canView ? ["PROJECT_CONTRACT", workspaceSlug, projectId] : null, () =>
     projectPiecesService.contract(workspaceSlug, projectId)
@@ -181,7 +183,15 @@ function ProjectContractSettingsPage({ params }: Route.ComponentProps) {
                   </table>
                 </div>
               )}
-              {data.hub && (
+              {data.hub && isWorkspaceAdmin && (
+                <Link
+                  href={`/${workspaceSlug}/settings/clients/${data.hub.client.id}/`}
+                  className="w-fit text-body-xs-medium text-accent-primary hover:underline"
+                >
+                  {t("project_settings.contract.open_client")}
+                </Link>
+              )}
+              {data.hub && data.hub.client.portal_client_id && (
                 <p className="text-caption-sm-regular text-placeholder">
                   {t("project_settings.contract.imported_at", { date: renderFormattedDate(data.hub.imported_at) })}
                 </p>

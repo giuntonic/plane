@@ -117,3 +117,13 @@ class TestPieceApproval:
         comment.comment_html = "<p>✅ Peça aprovada por Ana em 03/11/2026</p>"
         comment.save()
         assert PieceApproval.objects.count() == 1
+
+    def test_team_approves_on_behalf_of_the_client(self, session_client, project, states, create_user):
+        piece = _issue(project, "Post de Natal", states["waiting"])
+        url = f"/api/workspaces/{piece.workspace.slug}/projects/{project.id}/issues/{piece.id}/comments/"
+        text = "✅ Peça aprovada por Cliente (via WhatsApp, lançado por Giuliano) em 02/11/2026"
+        response = session_client.post(url, {"comment_html": f"<p>{text}</p>"}, format="json")
+        assert response.status_code == status.HTTP_201_CREATED
+        approval = PieceApproval.objects.get(issue=piece)
+        assert approval.on_behalf_of_client and approval.channel == "WhatsApp"
+        assert approval.approved_by_id == create_user.id and approval.approved_by_role == "team"

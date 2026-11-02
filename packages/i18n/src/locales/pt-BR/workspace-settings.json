@@ -543,5 +543,104 @@
         "description": "Encontre todas as suas importações anteriores aqui e baixe-as."
       }
     }
+  },
+  "pespo_clients": {
+    "title": "Clientes",
+    "description": "Clientes, contratos e quem de cada cliente entra no Hub.",
+    "empty": "Nenhum cliente ainda.",
+    "error": "Não foi possível carregar os clientes.",
+    "col_client": "Cliente",
+    "col_project": "Projeto",
+    "col_contract": "Contrato ativo",
+    "col_logins": "Logins",
+    "expired": "Vencido",
+    "back": "Todos os clientes",
+    "left": "sobram {count}",
+    "history": "Histórico de contratos",
+    "contract": {
+      "type": "Tipo",
+      "start": "Início",
+      "end": "Fim",
+      "urgent_limit": "Urgentes",
+      "quantities": "Peças contratadas"
+    },
+    "new": {
+      "button": "Novo cliente",
+      "title": "Novo cliente",
+      "description": "Cria o projeto do cliente, o contrato e os logins do cliente.",
+      "name": "Nome do cliente",
+      "identifier": "Sigla do projeto",
+      "identifier_auto": "Automática",
+      "template": "Modelo de projeto",
+      "no_template": "Sem modelo",
+      "template_hint": "Os estados do fluxo de peças, as etiquetas, os módulos e o checklist de onboarding vêm do modelo.",
+      "emails": "Logins do cliente",
+      "emails_hint": "Um ou mais e-mails. Cada um recebe o e-mail \"Seu acesso ao Pespo Hub\" e entra com código por e-mail ou com o Google.",
+      "team": "Equipe no projeto",
+      "team_placeholder": "Escolher pessoas",
+      "submit": "Criar cliente",
+      "created": "Cliente criado ({identifier})",
+      "logins_sent": "{count, plural, one {# e-mail de acesso enviado} other {# e-mails de acesso enviados}}"
+    },
+    "renew": {
+      "button": "Renovar contrato",
+      "new_contract": "Novo contrato",
+      "title": "Renovar contrato",
+      "keep_balance": "Somar no novo contrato o que sobrou do atual",
+      "plus_balance": "+ {count} de saldo",
+      "submit": "Salvar contrato",
+      "done": "Contrato salvo"
+    },
+    "logins": {
+      "title": "Logins do cliente",
+      "description": "Convidados do projeto do cliente. Um e-mail novo recebe o e-mail de acesso; a pessoa entra com código por e-mail ou com o Google.",
+      "active": "Com acesso",
+      "invited": "Esperando o primeiro login",
+      "add": "Liberar acesso",
+      "added": "Acesso liberado",
+      "remove": "Tirar o acesso",
+      "removed": "Acesso retirado"
+    },
+    "errors": {
+      "NAME_REQUIRED": "Preencha o nome do cliente.",
+      "PROJECT_NAME_TAKEN": "Já existe um projeto com esse nome.",
+      "IDENTIFIER_TAKEN": "A sigla {identifier} já é de outro projeto.",
+      "INVALID_CONTRACT_TYPE": "Escolha FEE ou FEP.",
+      "INVALID_DATE": "Confira as datas do contrato.",
+      "END_BEFORE_START": "O contrato termina antes de começar.",
+      "INVALID_NUMBER": "Confira os números do contrato.",
+      "INVALID_EMAIL": "{email} não é um e-mail válido.",
+      "TOO_MANY_EMAILS": "No máximo {max} e-mails por vez.",
+      "TEMPLATE_NOT_FOUND": "O modelo de projeto não foi encontrado.",
+      "EMAILS_REQUIRED": "Preencha pelo menos um e-mail."
+    }
+  },
+  "pespo_team": {
+    "title": "Equipe",
+    "description": "Os apps da Pespo e as funções da equipe: cada função vê alguns apps, e cada pessoa pode ter mais de uma função.",
+    "menu": "Apps da Pespo",
+    "services": {
+      "title": "Apps",
+      "hint": "Aparecem no atalho \"Apps da Pespo\", no topo do Hub, para as funções que os incluem. Admins veem todos.",
+      "icon": "Ícone",
+      "name": "Nome",
+      "url": "Endereço",
+      "description": "Descrição",
+      "add": "Adicionar app",
+      "delete": "Excluir app"
+    },
+    "roles": {
+      "title": "Funções",
+      "hint": "Escolha os apps que cada função vê e quem da equipe tem a função.",
+      "members": "Pessoas com esta função",
+      "new": "Nova função",
+      "add": "Adicionar função",
+      "delete": "Excluir função"
+    },
+    "errors": {
+      "NAME_REQUIRED": "Preencha o nome.",
+      "INVALID_URL": "O endereço precisa começar com https:// ou http://.",
+      "ROLE_NAME_TAKEN": "Já existe uma função com esse nome."
+    }
   }
 }

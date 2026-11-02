@@ -112,6 +112,9 @@ class Project(BaseModel):
     # "Acervo/Clientes/Padaria Bom Dia". Criada junto com o projeto; as pastas das peças ficam dentro dela.
     # Vazia: ainda não criada (nasce no primeiro link). Só muda pelo endpoint do Acervo, que confere o caminho.
     acervo_folder = models.CharField(max_length=1024, blank=True, default="", db_default="")
+    # Pespo: avisos ao cliente (peça entregue, refação pronta, contrato vencendo). {"email": bool, "events":
+    # {evento: bool}}; vazio = tudo ligado (plane.utils.client_notices).
+    client_notices = models.JSONField(default=dict, blank=True, db_default={})
     is_time_tracking_enabled = models.BooleanField(default=False)
     is_issue_type_enabled = models.BooleanField(default=False)
     guest_view_all_features = models.BooleanField(default=False)

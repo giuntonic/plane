@@ -37,10 +37,21 @@
         "select_co_worker": "Selecionar colega de trabalho"
       }
     },
+    "client_notices": {
+      "title": "Avisar o cliente por e-mail",
+      "description": "Os convidados do projeto recebem um e-mail curto com o link da peça.",
+      "delivered": "Peça entregue",
+      "delivered_hint": "Quando a peça vai para um estado de concluído.",
+      "rework_done": "Refação pronta",
+      "rework_done_hint": "Quando a peça que o cliente mandou refazer fica pronta para a revisão dele.",
+      "contract_expiring": "Contrato vencendo",
+      "contract_expiring_hint": "14 dias antes do fim do contrato."
+    },
     "contract": {
       "short_title": "Contrato",
       "title": "Contrato",
-      "description": "O contrato do cliente deste projeto. Novo cliente e renovação continuam no painel admin.",
+      "description": "O contrato do cliente deste projeto. Renovação e logins do cliente ficam em Configurações do espaço de trabalho › Clientes.",
+      "open_client": "Abrir o cliente",
       "current": "Contrato em uso",
       "source_portal": "Lido do portal do cliente",
       "source_hub": "Lido do Hub",
@@ -52,7 +63,7 @@
       "expires_in": "{count, plural, =0 {Vence hoje} one {Vence em # dia} other {Vence em # dias}}",
       "expired_on": "Venceu em {date}",
       "history": "Contratos no Hub",
-      "not_imported": "Os dados do portal do cliente ainda não foram trazidos para o Hub.",
+      "not_imported": "Este projeto não está ligado a um cliente no Hub.",
       "no_contracts": "Nenhum contrato deste cliente.",
       "col_period": "Período",
       "col_type": "Tipo",

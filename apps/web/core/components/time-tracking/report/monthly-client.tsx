@@ -351,9 +351,11 @@ export const MonthlyClientReport = observer(function MonthlyClientReport() {
                       </span>
                       {approval.role && (
                         <span className="shrink-0 rounded-sm bg-layer-1 px-1.5 text-caption-sm-regular text-secondary">
-                          {approval.role === "client"
-                            ? t("pespo_reports.client.approved_by_client")
-                            : t("pespo_reports.client.approved_by_team")}
+                          {approval.on_behalf
+                            ? t("pespo_reports.client.approved_on_behalf", { channel: approval.channel })
+                            : approval.role === "client"
+                              ? t("pespo_reports.client.approved_by_client")
+                              : t("pespo_reports.client.approved_by_team")}
                         </span>
                       )}
                     </li>

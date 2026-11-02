@@ -14,7 +14,10 @@
   - ``source="review"``: o botão "Aprovar peça" da revisão (1.6), que posta o comentário fixo
     "✅ Peça aprovada por <nome> em <dd/mm/aaaa>" (o mesmo que o n8n "Peça Aprovada" ouvia);
   - ``source="state"``: a mudança aceita para "Aprovada - Pronta pra Ativar".
-  A mesma peça pode ter os dois; o relatório conta peças, não registros."""
+  A mesma peça pode ter os dois; o relatório conta peças, não registros.
+- **Em nome do cliente:** a equipe lança, pela revisão, a aprovação que o cliente deu por fora (WhatsApp, e-mail,
+  reunião). O comentário diz "por <cliente> (via <canal>, lançado por <pessoa>)"; o registro fica com quem lançou,
+  ``on_behalf_of_client`` e o canal, e o relatório conta como aprovação do cliente."""
 
 # Python imports
 import re
@@ -39,6 +42,8 @@ from .state import State
 APPROVAL_STATE = "aprovada - pronta pra ativar"
 # texto fixo do botão "Aprovar peça" (media-review/review.tsx, handleApprove); o painel de peças lê o mesmo formato
 APPROVAL_COMMENT_RE = re.compile(r"^\s*✅ Pe[cç]a aprovada por (.+?) em (\d{2}/\d{2}/\d{4})\s*$")
+# aprovação lançada pela equipe em nome do cliente: "por <cliente> (via <canal>, lançado por <pessoa>)"
+ON_BEHALF_RE = re.compile(r"^(.+?) \(via (.+?), lan[cç]ado por (.+)\)$")
 
 
 def normalize_state_name(name):
@@ -111,6 +116,9 @@ class PieceApproval(ProjectBaseModel):
     state = models.ForeignKey("db.State", on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
     # "state" (mudou para "Aprovada - Pronta pra Ativar") ou "review" (botão "Aprovar peça" da revisão)
     source = models.CharField(max_length=16, default=SOURCE_STATE)
+    # a equipe lançou a aprovação que o cliente deu por fora (WhatsApp, e-mail, reunião…); quem lançou é approved_by
+    on_behalf_of_client = models.BooleanField(default=False, db_default=False)
+    channel = models.CharField(max_length=32, blank=True, default="", db_default="")
 
     class Meta:
         verbose_name = "Piece Approval"
@@ -126,6 +134,8 @@ class PieceApproval(ProjectBaseModel):
 @receiver(pre_save, sender=Issue)
 def pespo_approval_gate(sender, instance, **kwargs):
     instance._pespo_approved = False
+    # o estado de antes de uma mudança de estado; os avisos ao cliente (pespo_client_notice) também usam
+    instance._pespo_previous_state_id = None
     if instance._state.adding or not instance.pk or not instance.state_id:
         return
     update_fields = kwargs.get("update_fields")
@@ -134,6 +144,7 @@ def pespo_approval_gate(sender, instance, **kwargs):
     previous_state_id = Issue.all_objects.filter(pk=instance.pk).values_list("state_id", flat=True).first()
     if previous_state_id == instance.state_id:
         return
+    instance._pespo_previous_state_id = previous_state_id
     state = State.all_state_objects.filter(pk=instance.state_id).only("id", "name").first()
     if not is_approval_state(state):
         return
@@ -164,15 +175,20 @@ def pespo_record_approval(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=IssueComment)
 def pespo_record_review_approval(sender, instance, created, **kwargs):
-    if not created or not APPROVAL_COMMENT_RE.match(instance.comment_stripped or ""):
+    match = APPROVAL_COMMENT_RE.match(instance.comment_stripped or "") if created else None
+    if not match:
         return
     user = instance.actor if instance.actor_id else get_current_user()
     user = user if user is not None and not user.is_anonymous else None
+    role = _approver_role(instance.project_id, user)
+    on_behalf = ON_BEHALF_RE.match(match.group(1).strip()) if role == "team" else None
     PieceApproval.objects.create(
         issue_id=instance.issue_id,
         project_id=instance.project_id,
         workspace_id=instance.workspace_id,
         approved_by=user,
-        approved_by_role=_approver_role(instance.project_id, user),
+        approved_by_role=role,
         source=PieceApproval.SOURCE_REVIEW,
+        on_behalf_of_client=on_behalf is not None,
+        channel=on_behalf.group(2).strip()[:32] if on_behalf else "",
     )
