@@ -36,6 +36,18 @@ def _content(notice):
     """Assunto, título, parágrafos, texto do botão e link."""
     project = notice.project
     base = _web_url()
+    if notice.kind == client_notices.ACCESS:
+        return {
+            "subject": "Seu acesso ao Pespo Hub",
+            "title": "Seu acesso ao Pespo Hub está liberado",
+            "paragraphs": [
+                f"A Pespo liberou para você o projeto <strong>{_escape(project.name)}</strong> no Pespo Hub, onde "
+                "você acompanha, comenta e aprova as suas peças e pede peças novas.",
+                "Entre com este e-mail: você recebe um código para digitar, ou entra com a sua conta Google.",
+            ],
+            "button": "Entrar no Pespo Hub",
+            "url": f"{base}/",
+        }
     if notice.kind == client_notices.CONTRACT_EXPIRING:
         contract = notice.contract
         end = f"{contract.end_date:%d/%m/%Y}" if contract else ""
@@ -93,7 +105,7 @@ def _send_email(notice, recipients):
     for recipient in recipients:
         html = render_to_string(
             "emails/notifications/pespo_client_notice.html",
-            {**content, "name": recipient["name"], "project_name": notice.project.name},
+            {**content, "name": recipient["name"] or "", "project_name": notice.project.name},
         )
         message = EmailMultiAlternatives(
             subject=content["subject"],
@@ -118,7 +130,8 @@ def send_client_notice(notice_id):
     )
     if notice is None:
         return None
-    recipients = client_notices.client_recipients(notice.project_id)
+    # o aviso de acesso já nasce com o destinatário; os outros vão para os convidados do projeto agora
+    recipients = notice.recipients or client_notices.client_recipients(notice.project_id)
     notice.recipients = recipients
     sender = SENDERS.get(notice.channel)
     if not recipients or sender is None:

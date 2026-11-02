@@ -56,6 +56,14 @@ export const WORKSPACE_SETTINGS: Record<TWorkspaceSettingsTabs, TWorkspaceSettin
     access: [EUserWorkspaceRoles.ADMIN, EUserWorkspaceRoles.MEMBER],
     highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/settings/templates/`,
   },
+  // Pespo: clientes, contratos e logins do cliente (no lugar da área Clientes do painel admin)
+  clients: {
+    key: "clients",
+    i18n_label: "pespo_clients.title",
+    href: `/settings/clients`,
+    access: [EUserWorkspaceRoles.ADMIN],
+    highlight: (pathname: string, baseUrl: string) => pathname.startsWith(`${baseUrl}/settings/clients/`),
+  },
   webhooks: {
     key: "webhooks",
     i18n_label: "workspace_settings.settings.webhooks.title",
@@ -75,6 +83,6 @@ export const GROUPED_WORKSPACE_SETTINGS: Record<WORKSPACE_SETTINGS_CATEGORY, TWo
     WORKSPACE_SETTINGS["members"],
     WORKSPACE_SETTINGS["export"],
   ],
-  [WORKSPACE_SETTINGS_CATEGORY.FEATURES]: [WORKSPACE_SETTINGS["templates"]],
+  [WORKSPACE_SETTINGS_CATEGORY.FEATURES]: [WORKSPACE_SETTINGS["clients"], WORKSPACE_SETTINGS["templates"]],
   [WORKSPACE_SETTINGS_CATEGORY.DEVELOPER]: [WORKSPACE_SETTINGS["webhooks"]],
 };

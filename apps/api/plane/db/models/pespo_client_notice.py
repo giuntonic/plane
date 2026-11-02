@@ -88,6 +88,25 @@ def queue_client_notice(project, kind, issue=None, contract=None):
     return notices
 
 
+def queue_access_notice(project, email):
+    """O e-mail "Seu acesso ao Pespo Hub" para um login recém-liberado (sai sempre, com o destinatário fixo)."""
+    notice = ClientNotice(
+        project=project,
+        kind=client_notices.ACCESS,
+        channel="email",
+        recipients=[{"id": "", "email": email, "name": ""}],
+    )
+    notice.save(disable_auto_set_user=True)
+
+    def _enqueue():
+        from plane.bgtasks.pespo_client_notice_task import send_client_notice  # noqa: PLC0415
+
+        send_client_notice.delay(str(notice.id))
+
+    transaction.on_commit(_enqueue)
+    return notice
+
+
 def _is_piece(issue):
     from plane.utils.pieces import CATEGORIES  # noqa: PLC0415
 

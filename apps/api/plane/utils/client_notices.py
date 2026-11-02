@@ -14,6 +14,8 @@ DELIVERED = "delivered"
 REWORK_DONE = "rework_done"
 CONTRACT_EXPIRING = "contract_expiring"
 EVENTS = (DELIVERED, REWORK_DONE, CONTRACT_EXPIRING)
+# o e-mail "Seu acesso ao Pespo Hub", quando a equipe libera um login do cliente (sempre sai, não é um evento)
+ACCESS = "access"
 CHANNELS = ("email",)
 
 DEFAULTS = {"email": True, "events": dict.fromkeys(EVENTS, True)}

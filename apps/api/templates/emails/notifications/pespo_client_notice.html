@@ -36,7 +36,7 @@
             <table role="presentation" width="100%" class="email-content" style="background-color: #ffffff; padding: 32px 40px;">
               <tr>
                 <td style="padding: 24px; font-size: 16px; line-height: 1.5; color: #474747;">
-                  <p style="margin: 0 0 12px;">Olá, {{ name }}!</p>
+                  <p style="margin: 0 0 12px;">{% if name %}Olá, {{ name }}!{% else %}Olá!{% endif %}</p>
                   <h1 style="margin: 0 0 12px; font-size: 22px; line-height: 1.35; font-weight: 600; color: #111111;">{{ title }}</h1>
                   {% for paragraph in paragraphs %}
                   <p style="margin: 0 0 12px;">{{ paragraph|safe }}</p>

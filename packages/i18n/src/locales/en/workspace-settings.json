@@ -543,5 +543,76 @@
         "description": "Find all your previous imports here and download them."
       }
     }
+  },
+  "pespo_clients": {
+    "title": "Clients",
+    "description": "Clients, contracts and who from each client logs in to the Hub.",
+    "empty": "No clients yet.",
+    "error": "Couldn't load the clients.",
+    "col_client": "Client",
+    "col_project": "Project",
+    "col_contract": "Active contract",
+    "col_logins": "Logins",
+    "expired": "Expired",
+    "back": "All clients",
+    "left": "{count} left",
+    "history": "Contract history",
+    "contract": {
+      "type": "Type",
+      "start": "Start",
+      "end": "End",
+      "urgent_limit": "Urgent pieces",
+      "quantities": "Pieces contracted"
+    },
+    "new": {
+      "button": "New client",
+      "title": "New client",
+      "description": "Creates the client's project, the contract and the client's logins.",
+      "name": "Client name",
+      "identifier": "Project ID",
+      "identifier_auto": "Automatic",
+      "template": "Project template",
+      "no_template": "No template",
+      "template_hint": "States of the pieces flow, labels, modules and the onboarding checklist come from the template.",
+      "emails": "Client logins",
+      "emails_hint": "One or more emails. Each one gets the \"Your Pespo Hub access\" email and logs in with an email code or Google.",
+      "team": "Team on the project",
+      "team_placeholder": "Choose people",
+      "submit": "Create client",
+      "created": "Client created ({identifier})",
+      "logins_sent": "{count, plural, one {# access email sent} other {# access emails sent}}"
+    },
+    "renew": {
+      "button": "Renew contract",
+      "new_contract": "New contract",
+      "title": "Renew contract",
+      "keep_balance": "Add what's left of the current contract to the new one",
+      "plus_balance": "+ {count} left over",
+      "submit": "Save contract",
+      "done": "Contract saved"
+    },
+    "logins": {
+      "title": "Client logins",
+      "description": "Guests of the client's project. A new email gets the access email; the person logs in with an email code or Google.",
+      "active": "Has access",
+      "invited": "Waiting for first login",
+      "add": "Give access",
+      "added": "Access given",
+      "remove": "Remove access",
+      "removed": "Access removed"
+    },
+    "errors": {
+      "NAME_REQUIRED": "Fill in the client name.",
+      "PROJECT_NAME_TAKEN": "There is already a project with this name.",
+      "IDENTIFIER_TAKEN": "The ID {identifier} is already used by another project.",
+      "INVALID_CONTRACT_TYPE": "Choose FEE or FEP.",
+      "INVALID_DATE": "Check the contract dates.",
+      "END_BEFORE_START": "The contract ends before it starts.",
+      "INVALID_NUMBER": "Check the numbers of the contract.",
+      "INVALID_EMAIL": "{email} isn't a valid email.",
+      "TOO_MANY_EMAILS": "At most {max} emails at a time.",
+      "TEMPLATE_NOT_FOUND": "The project template wasn't found.",
+      "EMAILS_REQUIRED": "Fill in at least one email."
+    }
   }
 }

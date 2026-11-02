@@ -254,7 +254,7 @@ Correções feitas depois do merge:
 
 Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
 Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
-(`docs/deploy-plane-1.7.md`): migrations `0143` a `0149`, rebuild de api e web, o worker novo
+(`docs/deploy-plane-1.7.md`): migrations `0143` a `0150`, rebuild de api e web, o worker novo
 `plane-transcriber`, uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud e, depois do
 deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
 
@@ -421,28 +421,39 @@ deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
     o painel lateral e o arrastar no quadro pulam o toast genérico de erro nesse caso (`isApprovalBlockedError`);
     o store já desfaz a mudança otimista.
   - A tabela `peca_aprovacoes` do portal não é migrada (o histórico antigo fica lá).
-- **Clientes e contratos no Hub, primeiro passo** (estudo em
-  `pespo-infra/docs/estudo-clientes-contratos-aprovacao-no-hub.md`). Nada muda em produção até alguém ligar:
-  - **Modelos** (`db/models/pespo_client.py`, migration `0147`): `PespoClient` (espaço de trabalho, nome,
+- **Clientes e contratos no Hub** (decisões de 02/11: o cliente entra por código no e-mail e pelo Google, sem
+  período junto com o portal, que é desligado; estudo em `pespo-infra/docs/estudo-clientes-contratos-aprovacao-no-hub.md`):
+  - **Modelos** (`db/models/pespo_client.py`, migrations `0147` e `0150`): `PespoClient` (espaço de trabalho, nome,
     projetos, `portal_client_id`), `PespoContract` (tipo FEE/FEP, início, fim, situação `active`/`renewed`/
-    `expired`, limite de urgentes, `expiry_notice_sent_at`, `portal_contract_id`) e `PespoContractCategory`
-    (categoria e quantidade contratada).
-  - **Importação** `python manage.py import_portal_clients [--dry-run]`: lê `clientes`, `contratos` e
-    `contrato_categorias` com o usuário só leitura que o Hub já usa (`PORTAL_DATABASE_URL`) e cria ou atualiza
-    no Hub, achando o mesmo cliente e contrato pelos ids do portal. Repetível; não escreve no portal. Cliente sem
-    projeto no Hub e contrato com tipo ou situação desconhecidos são avisados e pulados. `clientes_login` fica
-    de fora (o usuário do Hub não lê essa tabela, e o acesso do cliente ainda depende de decisão).
-  - **De onde o contrato é lido:** `PESPO_CONTRACTS_SOURCE` = `portal` (padrão, como antes) ou `hub`
+    `expired`, limite de urgentes, `expiry_notice_sent_at`, `portal_contract_id`), `PespoContractCategory`
+    (categoria e quantidade contratada) e `PespoClientLogin` (os e-mails do cliente, no lugar de `clientes_login`).
+  - **Configurações do espaço de trabalho › Clientes** (só admins; `app/views/workspace/pespo_clients.py`, regras em
+    `utils/pespo_clients.py`, tela em `components/pespo-clients/`), no lugar da área Clientes do painel admin:
+    - **Novo cliente:** cria o projeto (público, com Peças ligado e `guest_view_all_features`), aplica o modelo de
+      projeto escolhido (estados, etiquetas, módulos e itens, como "Novo projeto a partir de modelo"), põe a equipe
+      escolhida, cria o cliente, o contrato e as categorias e libera os logins. A sigla sai das iniciais do nome
+      quando não é preenchida (`suggest_identifier`).
+    - **Renovar:** o ativo vira `renewed` e nasce outro; com "somar o saldo", o que sobrou de cada categoria
+      (contratado menos o pedido desde o início, sem os cancelados, somando os projetos do cliente) entra no novo.
+      Um item "Contrato renovado — data" fica no projeto, como o painel admin fazia.
+    - **Logins do cliente:** cada e-mail vira convidado (papel 5) nos projetos do cliente. Quem já tem conta entra na
+      hora. Quem não tem ganha um `WorkspaceMemberInvite` já aceito, então o primeiro login (código por e-mail ou
+      Google; o convite também libera o cadastro com `ENABLE_SIGNUP=0`) cria o membro, e `attach_client_logins` põe
+      a pessoa no projeto. Ele roda depois de todo login (`post_user_auth_workflow`) e ao aceitar convite pela
+      tela ou pelo link. Nos dois casos sai o e-mail "Seu acesso ao Pespo Hub" (`ClientNotice` de tipo `access`); o
+      e-mail de convite do Plane não sai. Tirar o acesso deixa o membro do projeto inativo e apaga o convite
+      pendente.
+  - **De onde o contrato é lido:** `PESPO_CONTRACTS_SOURCE` = `hub` (padrão) ou `portal`
     (`plane.utils.portal_contracts.get_project_contract`, mesma resposta). Vale para o painel de peças, o pedido
-    de peças, o relatório do mês e a tela abaixo.
-  - **Configurações do projeto › Contrato** (`…/projects/<id>/contract/`, admin e membro, só leitura): o
-    contrato em uso (com o aviso de vencimento) e os contratos que já estão no Hub, com o histórico. Novo cliente
-    e renovação continuam no painel admin.
+    de peças, o relatório do mês e Configurações do projeto › Contrato (só leitura, com o link para o cliente).
+  - **Importação** `python manage.py import_portal_clients [--dry-run]`: copia `clientes`, `contratos` e
+    `contrato_categorias` do portal com o usuário só leitura (`PORTAL_DATABASE_URL`), achando o mesmo cliente e
+    contrato pelos ids do portal. Repetível; não escreve no portal. Serve para trazer o que o painel admin já
+    cadastrou antes de desligar o portal.
   - **Contrato vencendo** (`bgtasks/pespo_contract_task.py`, beat `pespo-contract-expiry`, todo dia às 12:00
-    UTC): com `PESPO_CONTRACT_EXPIRY_ENABLED=1` (padrão desligado), cria o item "Contrato vence em dd/mm/aaaa"
-    no projeto a 14 dias do fim (`PESPO_CONTRACT_EXPIRY_DAYS`) e marca o aviso, e passa para `expired` o
-    contrato ativo que já acabou. Ligar só junto com `PESPO_CONTRACTS_SOURCE=hub` e o workflow "Vencimento de
-    Contratos" do n8n desligado.
+    UTC, ligado por padrão; `PESPO_CONTRACT_EXPIRY_ENABLED=0` desliga): cria o item "Contrato vence em
+    dd/mm/aaaa" no projeto a 14 dias do fim (`PESPO_CONTRACT_EXPIRY_DAYS`), avisa o cliente por e-mail e passa
+    para `expired` o contrato ativo que já acabou. No lugar do workflow "Vencimento de Contratos" do n8n.
 - **Avisos ao cliente por e-mail** (decisão de 02/11: peça entregue, refação pronta e contrato vencendo; o WhatsApp
   entra depois como outro canal):
   - **Gatilhos** (`db/models/pespo_client_notice.py`, sinal `post_save` do `Issue`, com o estado anterior que a

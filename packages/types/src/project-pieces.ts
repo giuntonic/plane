@@ -72,6 +72,50 @@ export type TProjectContractView = {
   } | null;
 };
 
+// Pespo: Configurações do espaço de trabalho › Clientes (…/pespo-clients/).
+export type TPespoContractInput = {
+  contract_type: "FEE" | "FEP";
+  start_date: string;
+  end_date: string;
+  urgent_limit: number;
+  quantities: Record<string, number>;
+};
+export type TPespoClientContract = {
+  id: string;
+  contract_type: string;
+  start_date: string;
+  end_date: string;
+  urgent_limit: number;
+  status?: "active" | "renewed" | "expired";
+  categories: { category: string; contracted: number }[];
+};
+export type TPespoClientSummary = {
+  id: string;
+  name: string;
+  portal_client_id: string | null;
+  project: { id: string; name: string; identifier: string } | null;
+  contract: TPespoClientContract | null;
+  logins: number;
+};
+export type TPespoClientDetail = TPespoClientSummary & {
+  contracts: TPespoClientContract[];
+  /** O que sobrou do contrato ativo, por categoria (para somar na renovação). */
+  balance: Record<string, number>;
+  login_list: { email: string; status: "active" | "invited" }[];
+};
+export type TPespoClientsList = {
+  clients: TPespoClientSummary[];
+  project_templates: { id: string; name: string }[];
+  categories: string[];
+};
+export type TPespoNewClient = TPespoContractInput & {
+  name: string;
+  identifier?: string;
+  template_id?: string;
+  emails: string;
+  member_ids: string[];
+};
+
 export type TPieceRequestItem = {
   category: TPieceCategory;
   quantity: number;

@@ -228,6 +228,11 @@ class WorkspaceJoinEndpoint(BaseAPIView):
                     user.last_workspace_id = workspace_invite.workspace.id
                     user.save()
 
+                    # Pespo: o login do cliente liberado no Hub entra nos projetos do cliente
+                    from plane.utils.pespo_clients import attach_client_logins  # noqa: PLC0415
+
+                    attach_client_logins(user)
+
                     # Delete the invitation
                     workspace_invite.delete()
 
@@ -299,6 +304,11 @@ class UserWorkspaceInvitationsViewSet(BaseViewSet):
             ],
             ignore_conflicts=True,
         )
+
+        # Pespo: o login do cliente liberado no Hub entra nos projetos do cliente
+        from plane.utils.pespo_clients import attach_client_logins  # noqa: PLC0415
+
+        attach_client_logins(request.user)
 
         # Delete joined workspace invites
         workspace_invitations.delete()

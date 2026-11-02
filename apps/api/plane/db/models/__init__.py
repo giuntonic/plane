@@ -27,7 +27,7 @@ from .media_review import MediaRendition, MediaReviewComment
 from .time_tracking import IssueTimeEntry
 from .meeting_recording import MeetingRecording
 from .piece_approval import PieceApproval
-from .pespo_client import PespoClient, PespoContract, PespoContractCategory
+from .pespo_client import PespoClient, PespoClientLogin, PespoContract, PespoContractCategory
 from .pespo_client_notice import ClientNotice
 from .issue_recurrence import IssueRecurrence
 from .template import EntityTemplate
