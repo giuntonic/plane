@@ -6,7 +6,7 @@
 
 // plane imports
 import { API_BASE_URL } from "@plane/constants";
-import type { TPieceRequestItem, TProjectPiecesPanel } from "@plane/types";
+import type { TPieceRequestItem, TProjectContractView, TProjectPiecesPanel } from "@plane/types";
 // services
 import { APIService } from "@/services/api.service";
 
@@ -18,6 +18,15 @@ export class ProjectPiecesService extends APIService {
 
   async panel(workspaceSlug: string, projectId: string): Promise<TProjectPiecesPanel> {
     return this.get(`/api/workspaces/${workspaceSlug}/projects/${projectId}/pieces/`)
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  // Configurações do projeto › Contrato (só leitura)
+  async contract(workspaceSlug: string, projectId: string): Promise<TProjectContractView> {
+    return this.get(`/api/workspaces/${workspaceSlug}/projects/${projectId}/contract/`)
       .then((response) => response?.data)
       .catch((error) => {
         throw error?.response?.data;

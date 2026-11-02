@@ -29,6 +29,7 @@ from .project.pieces import (
     ProjectPiecesRequestEndpoint,
     IssueReworkRequestEndpoint,
 )
+from .project.contract import ProjectContractEndpoint
 
 from .user.base import (
     UserEndpoint,

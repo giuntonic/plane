@@ -128,6 +128,9 @@ def pespo_approval_gate(sender, instance, **kwargs):
     instance._pespo_approved = False
     if instance._state.adding or not instance.pk or not instance.state_id:
         return
+    update_fields = kwargs.get("update_fields")
+    if update_fields is not None and not {"state", "state_id"} & set(update_fields):
+        return  # salvamento parcial sem o estado: nada a conferir (evita uma consulta a cada save)
     previous_state_id = Issue.all_objects.filter(pk=instance.pk).values_list("state_id", flat=True).first()
     if previous_state_id == instance.state_id:
         return

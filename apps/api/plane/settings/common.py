@@ -348,6 +348,7 @@ CELERY_IMPORTS = (
     "plane.bgtasks.media_review_task",
     "plane.bgtasks.time_tracking_task",
     "plane.bgtasks.meeting_recording_task",
+    "plane.bgtasks.pespo_contract_task",
 )
 
 # Pespo: a conversão de vídeo da revisão roda numa fila só dela, num worker com uma tarefa por vez.
@@ -600,6 +601,13 @@ if ENABLE_DRF_SPECTACULAR:
 # Ex.: postgresql://plane_portal_ro:<senha>@portal-db:5432/portal. Sem ele o painel mostra as peças
 # sem o saldo do contrato. (O embed do Metabase que ficava aqui saiu junto com o Metabase.)
 PORTAL_DATABASE_URL = os.environ.get("PORTAL_DATABASE_URL")
+# Pespo: de onde vem o contrato do cliente (painel de peças, pedido de peças, relatório do mês): "portal" (padrão,
+# o banco acima) ou "hub" (os modelos PespoClient/PespoContract, preenchidos por ``import_portal_clients``).
+PESPO_CONTRACTS_SOURCE = os.environ.get("PESPO_CONTRACTS_SOURCE", "portal")
+# Pespo: aviso de contrato vencendo pelo beat do Hub (no lugar do workflow "Vencimento de Contratos" do n8n).
+# Desligado por padrão; só faz sentido com PESPO_CONTRACTS_SOURCE=hub e o workflow do n8n desligado.
+PESPO_CONTRACT_EXPIRY_ENABLED = os.environ.get("PESPO_CONTRACT_EXPIRY_ENABLED", "0") == "1"
+PESPO_CONTRACT_EXPIRY_DAYS = int(os.environ.get("PESPO_CONTRACT_EXPIRY_DAYS", "14"))
 # Pespo: Laya, o classificador da VPS (rede interna), lê urgência e humor no briefing das peças
 # solicitadas. Ex.: http://laya:8000. Sem ele a solicitação funciona igual, só sem os sinais.
 LAYA_URL = os.environ.get("LAYA_URL")

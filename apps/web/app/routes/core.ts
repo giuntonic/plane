@@ -401,6 +401,11 @@ export const coreRoutes: RouteConfigEntry[] = [
               ":workspaceSlug/settings/projects/:projectId/features/acervo",
               "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/acervo/page.tsx"
             ),
+            // Pespo: contrato do cliente (só leitura)
+            route(
+              ":workspaceSlug/settings/projects/:projectId/contract",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/contract/page.tsx"
+            ),
             route(
               ":workspaceSlug/settings/projects/:projectId/features/meetings",
               "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/meetings/page.tsx"

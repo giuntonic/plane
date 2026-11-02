@@ -61,6 +61,7 @@ export const PESPO_RELEASES: TPespoRelease[] = [
       "Todo convite de reunião criado pelo Hub avisa que ela pode ser gravada e transcrita para gerar a ata.",
       'Aprovação de peças no próprio Hub: enquanto a peça estiver bloqueada por algo aberto (como a reunião de aprovação), ela não vai para "Aprovada - Pronta pra Ativar", e o Hub diz na hora o que falta concluir. Antes, a peça mudava e voltava uns segundos depois.',
       'Cada aprovação fica registrada (quem, quando, se foi o cliente ou a equipe), pelo botão "Aprovar peça" da revisão ou pela mudança de estado.',
+      "Configurações do projeto › Contrato: o contrato do cliente, as peças contratadas, o aviso de vencimento e o histórico de contratos, só para consulta (novo cliente e renovação continuam no painel admin).",
     ],
     fixes: ["O seletor do Google Drive refazia a busca sem parar enquanto estava aberto."],
   },
