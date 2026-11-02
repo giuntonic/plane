@@ -39,6 +39,7 @@ from plane.db.models import (
     MeetingRecording,
     PieceApproval,
     Project,
+    ProjectMember,
     State,
     Workspace,
     WorkspaceMember,
@@ -257,7 +258,10 @@ class ProjectMonthlyReportEndpoint(BaseAPIView):
 
 
 class WorkspaceWorkloadEndpoint(BaseAPIView):
-    """A carga da equipe agora. ``?project=<id>`` limita a um cliente."""
+    """A carga da equipe agora. ``?project=<id>`` limita a um cliente.
+
+    Admin do espaço de trabalho vê todos os projetos (como no relatório de horas); membro vê só os projetos de que
+    participa, para os itens de um projeto privado não aparecerem a quem não está nele."""
 
     @allow_permission([ROLE.ADMIN, ROLE.MEMBER], level="WORKSPACE")
     def get(self, request, slug):
@@ -268,13 +272,22 @@ class WorkspaceWorkloadEndpoint(BaseAPIView):
         today = timezone.now().astimezone(zone).date()
         week_start = today - timedelta(days=today.weekday())
         soon = today + timedelta(days=7)
-        project_filter = Q()
+        is_admin = WorkspaceMember.objects.filter(
+            workspace=workspace, member=request.user, is_active=True, role=ROLE.ADMIN.value
+        ).exists()
+        my_projects = ProjectMember.objects.filter(
+            workspace=workspace, member=request.user, is_active=True, project__deleted_at__isnull=True
+        ).values("project_id")
+        project_filter = Q() if is_admin else Q(project_id__in=my_projects)
         project_id = request.GET.get("project")
         if project_id:
             try:
-                project_filter = Q(project_id=uuid.UUID(project_id))
+                project_uuid = uuid.UUID(project_id)
             except ValueError:
                 return Response({"error": "INVALID_FILTER"}, status=status.HTTP_400_BAD_REQUEST)
+            if not is_admin and not my_projects.filter(project_id=project_uuid).exists():
+                return Response({"error": "Project not found"}, status=status.HTTP_404_NOT_FOUND)
+            project_filter &= Q(project_id=project_uuid)
 
         members = {
             m.member_id: m.member
