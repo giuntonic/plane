@@ -108,6 +108,9 @@ class Project(BaseModel):
     # Google Calendar). {"enabled", "host_ids", "duration_minutes", "day_start", "day_end", "weekdays",
     # "notice_hours", "window_days"}; vazio = desligado.
     meeting_booking = models.JSONField(default=dict, blank=True, db_default={})
+    # Pespo: avisos ao cliente (peça entregue, refação pronta, contrato vencendo). {"email": bool, "events":
+    # {evento: bool}}; vazio = tudo ligado (plane.utils.client_notices).
+    client_notices = models.JSONField(default=dict, blank=True, db_default={})
     is_time_tracking_enabled = models.BooleanField(default=False)
     is_issue_type_enabled = models.BooleanField(default=False)
     guest_view_all_features = models.BooleanField(default=False)

@@ -37,6 +37,13 @@ export type TProjectPiecesPanel = {
   };
 };
 
+// Pespo: avisos ao cliente (convidados do projeto) por e-mail (Project.client_notices).
+export type TClientNoticeEvent = "delivered" | "rework_done" | "contract_expiring";
+export type TClientNotices = {
+  email?: boolean;
+  events?: Partial<Record<TClientNoticeEvent, boolean>>;
+};
+
 // Pespo: Configurações do projeto › Contrato (…/projects/<id>/contract/), só leitura.
 export type TProjectContractView = {
   /** De onde o Hub lê o contrato agora: o banco do portal (padrão) ou o que foi importado para o Hub. */

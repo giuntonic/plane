@@ -254,7 +254,7 @@ Correções feitas depois do merge:
 
 Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
 Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
-(`docs/deploy-plane-1.7.md`): migrations `0143` a `0147`, rebuild de api e web, o worker novo
+(`docs/deploy-plane-1.7.md`): migrations `0143` a `0148`, rebuild de api e web, o worker novo
 `plane-transcriber`, uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud e, depois do
 deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
 
@@ -439,6 +439,22 @@ deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
     no projeto a 14 dias do fim (`PESPO_CONTRACT_EXPIRY_DAYS`) e marca o aviso, e passa para `expired` o
     contrato ativo que já acabou. Ligar só junto com `PESPO_CONTRACTS_SOURCE=hub` e o workflow "Vencimento de
     Contratos" do n8n desligado.
+- **Avisos ao cliente por e-mail** (decisão de 02/11: peça entregue, refação pronta e contrato vencendo; o WhatsApp
+  entra depois como outro canal):
+  - **Gatilhos** (`db/models/pespo_client_notice.py`, sinal `post_save` do `Issue`, com o estado anterior que a
+    trava de aprovação já lê): peça (item com etiqueta de categoria) entrando num estado do grupo concluído
+    (`delivered`); peça saindo de "Reprovado Cliente - Retrabalho" para um estado que não é de refação nem
+    cancelado (`rework_done`; a refação interna não avisa). O aviso de contrato (`contract_expiring`) sai da
+    tarefa de vencimento, junto com o item.
+  - **Registro** `ClientNotice` (tabela `pespo_client_notices`, migration `0148`): evento, canal, destinatários
+    no momento do envio, situação (`queued`, `sent`, `failed`, `skipped`) e o erro. O mesmo aviso para o mesmo
+    item não sai de novo em 12 horas.
+  - **Envio** (`bgtasks/pespo_client_notice_task.py`, depois do commit): um e-mail por convidado ativo do projeto
+    (ninguém vê o endereço dos outros), com o SMTP configurado no god-mode e o modelo
+    `templates/emails/notifications/pespo_client_notice.html`. Sem convidado, o aviso fica `skipped`. O WhatsApp
+    entra como outro remetente em `SENDERS` e outro canal em `utils/client_notices.py`.
+  - **Opção por projeto** `Project.client_notices` (migration `0148`; vazio = tudo ligado), em Configurações do
+    projeto › Peças: liga e desliga o e-mail e cada evento.
 - **Teste local:** sem Google de verdade, as respostas do Drive foram simuladas no navegador
   (`context.route` do Playwright) para ver o seletor de pasta e a criação de documento. A gravação foi testada
   com tons sintéticos no lugar da aba e do microfone (`addInitScript`), com S3 local (moto) e a tarefa rodando

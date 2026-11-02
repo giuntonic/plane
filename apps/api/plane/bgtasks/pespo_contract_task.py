@@ -10,7 +10,9 @@ Desligado por padrão (``PESPO_CONTRACT_EXPIRY_ENABLED``): só faz sentido com o
 - contrato ativo que vence nos próximos ``PESPO_CONTRACT_EXPIRY_DAYS`` dias (14) e ainda sem aviso: cria um item
   no projeto do cliente ("Contrato vence em dd/mm/aaaa", no estado padrão, com o prazo no dia do fim) e marca o
   aviso como enviado, para não repetir;
-- contrato ativo que já passou do fim: vira "vencido"."""
+- contrato ativo que já passou do fim: vira "vencido".
+
+Junto com o item, o cliente recebe o aviso "contrato vencendo" (``ClientNotice``), se o projeto deixar."""
 
 # Python imports
 import logging
@@ -27,6 +29,8 @@ from django.utils.html import escape
 
 # Module imports
 from plane.db.models import Issue, PespoContract
+from plane.db.models.pespo_client_notice import queue_client_notice
+from plane.utils.client_notices import CONTRACT_EXPIRING
 
 logger = logging.getLogger("plane.worker")
 
@@ -82,5 +86,6 @@ def contract_expiry_check():
         issue.save(disable_auto_set_user=True)
         contract.expiry_notice_sent_at = timezone.now()
         contract.save(update_fields=["expiry_notice_sent_at", "updated_at"], disable_auto_set_user=True)
+        queue_client_notice(project, CONTRACT_EXPIRING, contract=contract)
         notices += 1
     return {"expired": expired, "notices": notices}

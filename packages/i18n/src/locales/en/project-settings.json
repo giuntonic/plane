@@ -37,6 +37,16 @@
         "select_co_worker": "Select co-worker"
       }
     },
+    "client_notices": {
+      "title": "Email the client",
+      "description": "The project's guests get a short email with the link to the piece.",
+      "delivered": "Piece delivered",
+      "delivered_hint": "When a piece moves to a completed state.",
+      "rework_done": "Rework ready",
+      "rework_done_hint": "When a piece the client sent back for rework is ready for review again.",
+      "contract_expiring": "Contract expiring",
+      "contract_expiring_hint": "14 days before the contract ends."
+    },
     "contract": {
       "short_title": "Contract",
       "title": "Contract",

@@ -126,6 +126,8 @@ class PieceApproval(ProjectBaseModel):
 @receiver(pre_save, sender=Issue)
 def pespo_approval_gate(sender, instance, **kwargs):
     instance._pespo_approved = False
+    # o estado de antes de uma mudança de estado; os avisos ao cliente (pespo_client_notice) também usam
+    instance._pespo_previous_state_id = None
     if instance._state.adding or not instance.pk or not instance.state_id:
         return
     update_fields = kwargs.get("update_fields")
@@ -134,6 +136,7 @@ def pespo_approval_gate(sender, instance, **kwargs):
     previous_state_id = Issue.all_objects.filter(pk=instance.pk).values_list("state_id", flat=True).first()
     if previous_state_id == instance.state_id:
         return
+    instance._pespo_previous_state_id = previous_state_id
     state = State.all_state_objects.filter(pk=instance.state_id).only("id", "name").first()
     if not is_approval_state(state):
         return

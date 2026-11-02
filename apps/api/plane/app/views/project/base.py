@@ -193,6 +193,7 @@ class ProjectViewSet(BaseViewSet):
             "google_drive_folder_id",
             "google_drive_folder_name",
             "meeting_booking",
+            "client_notices",
             "guest_view_all_features",
             "project_lead",
             "network",
