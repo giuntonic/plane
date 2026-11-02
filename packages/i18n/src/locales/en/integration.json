@@ -596,7 +596,7 @@
       "remove": "Remove",
       "subtask_created": "Subtask created",
       "create_subtasks": "Create subtasks ({count})",
-      "subtasks_created": "{count} subtasks created",
+      "subtasks_created": "{count, plural, one {# subtask created} other {# subtasks created}}",
       "save": "Save draft",
       "saving": "Saving…",
       "saved": "Draft saved",

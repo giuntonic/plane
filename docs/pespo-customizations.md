@@ -250,12 +250,12 @@ Correções feitas depois do merge:
 
 ---
 
-## Versão 1.7: tempo gasto por peça e o Google como parte do Hub (2026-11-01)
+## Versão 1.7: tempo gasto por peça, reuniões gravadas e o Google como parte do Hub (2026-11-02)
 
 Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
 Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
-(`docs/deploy-plane-1.7.md`): migrations `0143` e `0144`, rebuild de api e web, e uma URI de
-redirecionamento nova no client OAuth "Interno" do Google Cloud.
+(`docs/deploy-plane-1.7.md`): migrations `0143`, `0144` e `0145`, rebuild de api e web, o worker novo
+`plane-transcriber` e uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud.
 
 - **Tempo gasto: modelo.** `IssueTimeEntry` (`db/models/time_tracking.py`, migration `0143`): item,
   pessoa, `started_at`, `stopped_at` (vazio = cronômetro correndo), `duration_seconds` (lançamento à mão),
@@ -331,11 +331,67 @@ redirecionamento nova no client OAuth "Interno" do Google Cloud.
 - **Correção no i18n:** `useTranslation` devolvia um `t` novo a cada renderização. O seletor do Drive tinha
   `t` nas dependências da busca, e cada resposta disparava outra busca, sem parar. Agora `t` vem de um
   `useCallback` e só muda com o idioma (`packages/i18n/src/hooks/use-translation.ts`).
+- **Reuniões gravadas, transcritas e com ata** (pedido de 01/11 para entrar na 1.7). Estudo das opções em
+  `pespo-infra/docs/estudo-reunioes-gravacao-transcricao.md`: o plano Business Starter do Workspace não grava
+  nem transcreve no Meet, e a decisão foi não ter custo novo. Então o Hub grava no navegador e transcreve na VPS.
+  - **Gravação** (`components/meeting-recording/recorder.ts`): `getDisplayMedia` (a aba do Meet, com "Compartilhar
+    áudio da aba"; a imagem é descartada) e `getUserMedia` (microfone), cada um num `MediaRecorder`
+    (`audio/webm;codecs=opus`, 32 kbps) cortado em pedaços de 10 s, enviados em ordem, com nova tentativa. O
+    gravador fica fora dos componentes (um por aba), então navegar no Hub não para. Indicador no topo
+    (`recording-chip.tsx`), aviso ao fechar a aba, e "Parar de compartilhar" no navegador também encerra.
+  - **Modelo** `MeetingRecording` (`db/models/meeting_recording.py`, migration `0145`): item, reunião do Google
+    (opcional), estado (`recording` → `queued` → `transcribing` → `summarizing` → `ready`/`failed`), contagem de
+    pedaços por faixa, `audio_keys` (`mic`, `tab` e `mix`), transcrição (`[{start, end, speaker, text}]`, com
+    `speaker` `recorder` ou `others`) e ata (`summary`: `resumo`, `pauta`, `decisoes`, `proximos_passos`,
+    `pendencias`).
+  - **API** (`app/views/issue/meeting_recording.py`, só admin e membro): criar (uma gravação aberta por pessoa;
+    a tela fecha sozinha a anterior que ficou aberta), pedaço (`track`, `seq`, até
+    `MEETING_CHUNK_MAX_BYTES`), finalizar (sem nenhum pedaço, apaga), detalhe e ata (PATCH, limpa em
+    `utils/meeting_summary.clean_summary`), publicar, subtarefas, nova tentativa, áudio (URL assinada de 6 h) e
+    apagar (quem gravou ou admin).
+  - **Publicar:** a ata vira comentário do item (`summary_html`, com escape). Só para a equipe:
+    `external_source = "pespo_meeting_team"`, escondido de convidados por `team_only_comments` e sem
+    `issue_activity` (a notificação por e-mail chegaria ao cliente). Para o cliente: `"pespo_meeting"`, com
+    histórico e notificação. Publicar de novo atualiza o mesmo comentário.
+  - **Subtarefas:** cada próximo passo escolhido vira `IssueChecklistItem` na lista "Subtarefas", com
+    responsável (se for da equipe) e prazo; o passo guarda o `subtask_id` e não duplica.
+  - **Worker** (`bgtasks/meeting_recording_task.py`, fila `transcribe`, container `plane-transcriber`): junta os
+    pedaços de cada faixa (o WebM do MediaRecorder é contínuo, basta concatenar), guarda o arquivo inteiro,
+    apaga os pedaços, mistura as faixas para ouvir (`mix_tracks`), converte para WAV 16 kHz e transcreve com o
+    faster-whisper em CPU (`utils/meeting_transcription.py`, `int8`, VAD, modelo carregado uma vez no processo).
+    O eco (a voz dos outros captada pelo microfone sem fone) sai em `merge_tracks`.
+  - **Configuração:** `TRANSCRIBE_MODEL` (padrão `small`, até a medição na VPS escolher), `TRANSCRIBE_THREADS`
+    (2), `TRANSCRIBE_MODEL_DIR`, `TRANSCRIBE_LANGUAGE` (`pt`), `TRANSCRIBE_TMP_DIR`. Rascunho automático da ata:
+    `MEETING_SUMMARY_ENGINE=ollama` com `OLLAMA_URL`/`OLLAMA_MODEL` (padrão `none`: a equipe escreve).
+    `MEETING_AUDIO_RETENTION_DAYS` (180).
+  - **Beat** `pespo-meeting-recordings-housekeeping` (10 min): fecha gravações sem pedaço novo há 30 min (aba
+    fechada no meio) com o que chegou, e apaga o áudio passado do prazo (a transcrição fica).
+  - **Cuidado no worker:** sem usuário logado, o `save()` do `BaseModel` apaga o `created_by` (quem gravou); todo
+    `save` da tarefa usa `disable_auto_set_user=True`.
+  - **Tela:** "Gravar" na reunião do item (de 15 min antes a 1 h depois) e na propriedade "Reunião"
+    (`record-button.tsx`), com a explicação antes (`start-modal.tsx`); "Gravações" na seção de reuniões
+    (`recordings-list.tsx`); a ata e a transcrição num modal (`recording-modal.tsx`, `minutes-editor.tsx`,
+    `transcript-view.tsx`, clique na fala leva o áudio até ela).
+- **Solicitar reunião** (`utils/meeting_booking.py`, endpoints `…/meeting-slots/` e `…/meeting-requests/` em
+  `app/views/issue/calendar_event.py`).
+  - `Project.meeting_booking` (JSON, migration `0145`): ligado, quem atende, duração, horário, dias,
+    antecedência e janela. Validado no serializer (`clean_booking`: quem atende precisa ser da equipe).
+    Tela em Configurações do projeto › Reuniões (`features/meetings`).
+  - Horários: os possíveis pelas regras (`candidate_slots`, no fuso do espaço de trabalho) menos os ocupados de
+    todas as pessoas que atendem (`gcal.free_busy`, só início e fim). Pedir confere de novo o horário (`SLOT_TAKEN`
+    se alguém pegou) e cria o evento na agenda da primeira pessoa, com Meet, convidando as outras e quem pediu
+    (`_create_meeting` com `organizer`, que vira o `created_by` da reunião).
+  - Na tela, só o convidado vê "Solicitar reunião" (`request-meeting.tsx`), e só com o projeto ligado.
+  - Todo convite criado pelo Hub leva `RECORDING_NOTICE` na descrição.
 - **Teste local:** sem Google de verdade, as respostas do Drive foram simuladas no navegador
-  (`context.route` do Playwright) para ver o seletor de pasta e a criação de documento.
+  (`context.route` do Playwright) para ver o seletor de pasta e a criação de documento. A gravação foi testada
+  com tons sintéticos no lugar da aba e do microfone (`addInitScript`), com S3 local (moto) e a tarefa rodando
+  com o ffmpeg de verdade; só o reconhecimento de fala foi simulado (o Hugging Face, de onde vêm os modelos, não
+  abre na sessão).
 - **Risco de upgrade:** médio-baixo. Arquivos novos na maior parte. Fora isso: `useTranslation` (upstream),
-  o card endpoint, as propriedades do item e do painel, a barra do topo, os widgets de anexo e as rotas
-  das configurações do projeto.
+  o card endpoint, as propriedades do item e do painel, a barra do topo, os widgets de anexo e de reuniões,
+  `calendar_event.py` (`_create_meeting`), o serializer do projeto, `requirements/base.txt` (faster-whisper) e
+  as rotas das configurações do projeto.
 
 ## Versão 1.6: revisão de vídeo e imagem no item, no lugar do Clapshot (2026-10-30)
 

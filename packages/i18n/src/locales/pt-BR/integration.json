@@ -596,7 +596,7 @@
       "remove": "Tirar",
       "subtask_created": "Virou subtarefa",
       "create_subtasks": "Criar subtarefas ({count})",
-      "subtasks_created": "{count} subtarefas criadas",
+      "subtasks_created": "{count, plural, one {# subtarefa criada} other {# subtarefas criadas}}",
       "save": "Salvar rascunho",
       "saving": "Salvando…",
       "saved": "Rascunho salvo",

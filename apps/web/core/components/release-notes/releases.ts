@@ -24,7 +24,7 @@ export const PESPO_RELEASES: TPespoRelease[] = [
     version: "1.7",
     date: "2026-11-01",
     summary:
-      "Tempo gasto por peça e o Google como parte do Hub: uma conta só para agenda e Drive, documentos criados no próprio item e a próxima reunião à vista.",
+      "Tempo gasto por peça, reuniões gravadas e transcritas no item, o cliente pedindo reunião pelo Hub e o Google como parte do sistema.",
     features: [
       "Tempo gasto por peça: cronômetro no item (Propriedades › Tempo), com o tempo correndo na barra do topo. Cada pessoa tem um cronômetro só: ao iniciar em outro item, o Hub pergunta antes de parar o que está correndo.",
       "Lançar tempo à mão (duração, dia e observação) e corrigir ou apagar os próprios lançamentos. O total aparece no item e nos cards da lista e do quadro.",
@@ -37,6 +37,11 @@ export const PESPO_RELEASES: TPespoRelease[] = [
       'Os arquivos do Drive aparecem dentro de "Anexos", junto com os outros.',
       "Pasta do projeto no Drive (Configurações do projeto › Google Drive): os documentos novos vão para ela. Dá para escolher uma pasta ou criar uma com o nome do projeto.",
       'A próxima reunião do item aparece nas propriedades, com o botão "Entrar" quando tem Google Meet.',
+      'Gravar a reunião pelo Hub: "Gravar" na reunião do item grava o áudio da aba do Meet e o seu microfone, no Chrome ou no Edge. O indicador fica no topo enquanto grava, e dá para navegar no Hub sem parar a gravação.',
+      "A transcrição chega sozinha no item, com o que você falou separado do que os outros falaram, busca e o áudio para ouvir de qualquer ponto.",
+      "Ata da reunião: resumo, pauta, decisões, próximos passos e pendências. Os próximos passos viram subtarefas com responsável e prazo, e a ata é publicada no item só para a equipe ou também para o cliente.",
+      "Solicitar reunião: o cliente escolhe, dentro do item, um horário em que a equipe está livre, e o Hub marca no Google Calendar com Meet. Liga em Configurações do projeto › Reuniões, onde ficam quem atende, os dias, o horário e a duração.",
+      "Todo convite de reunião criado pelo Hub avisa que ela pode ser gravada e transcrita para gerar a ata.",
     ],
     fixes: ["O seletor do Google Drive refazia a busca sem parar enquanto estava aberto."],
   },
