@@ -126,6 +126,19 @@ export type TMonthlyReport = {
       resumo: string;
     }[];
   };
+  // Pespo: peças aprovadas no mês (uma por peça), pelo botão da revisão ou pela mudança de estado
+  approvals: {
+    total: number;
+    by_client: number;
+    items: {
+      id: string;
+      sequence_id: number | null;
+      name: string;
+      approved_at: string;
+      // "client", "team" ou "" (tarefa do sistema)
+      role: string;
+    }[];
+  };
 };
 
 /** Pespo: workload/ — the team's load right now. */

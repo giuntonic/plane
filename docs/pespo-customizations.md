@@ -256,11 +256,11 @@ Fase 2 do Nextcloud (`arquivos.pespo.com.br`, implantado em 01–02/11; `/Acervo
 Decisão do Giuliano: a automação fica dentro do Hub, não no portal do cliente nem no painel admin. Escopo fechado
 em 02/11: pastas projeto › peça, links visíveis para a equipe e para o cliente, 30 dias renováveis, lista do que
 chegou, aviso de material novo, pasta junto com o projeto e "Abrir no Arquivos". Deploy no `pespo-infra`
-(`docs/deploy-plane-1.8.md`): migration `0146`, rebuild de api e web, o `bgworker` na rede `portal-cliente_proxy`,
+(`docs/deploy-plane-1.8.md`): migration `0147` (depois da `0146` da 1.7), rebuild de api e web, o `bgworker` na rede `portal-cliente_proxy`,
 o usuário de serviço `pespo-hub` no Nextcloud e as variáveis `NEXTCLOUD_*`.
 
 - **Pastas.** `NEXTCLOUD_ROOT/<projeto>/<peça>/{Recebido,Entrega}`, com `NEXTCLOUD_ROOT=Acervo/Clientes`.
-  - `Project.acervo_folder` (migration `0146`, com `db_default` para a API antiga durante o deploy): só leitura no
+  - `Project.acervo_folder` (migration `0147`, com `db_default` para a API antiga durante o deploy): só leitura no
     serializer do projeto, muda pelo endpoint do Acervo, que confere o caminho (dentro de `Acervo/`, sem `..`).
   - Projeto novo (tela, API do painel admin ou modelo) dispara `create_project_folder` pelo `post_save`
     (`db/models/acervo.py`), em `on_commit`, só com o Nextcloud configurado. Os de antes: comando
@@ -317,8 +317,9 @@ folder-picker-modal.tsx`).
 
 Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
 Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-infra`
-(`docs/deploy-plane-1.7.md`): migrations `0143`, `0144` e `0145`, rebuild de api e web, o worker novo
-`plane-transcriber` e uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud.
+(`docs/deploy-plane-1.7.md`): migrations `0143` a `0146`, rebuild de api e web, o worker novo
+`plane-transcriber`, uma URI de redirecionamento nova no client OAuth "Interno" do Google Cloud e, depois do
+deploy, desligar os workflows "Gate de Aprovação" e "Peça Aprovada" do n8n.
 
 - **Tempo gasto: modelo.** `IssueTimeEntry` (`db/models/time_tracking.py`, migration `0143`): item,
   pessoa, `started_at`, `stopped_at` (vazio = cronômetro correndo), `duration_seconds` (lançamento à mão),
@@ -356,7 +357,8 @@ Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-
   - **Mês do cliente** (`…/projects/<id>/monthly-report/?month=AAAA-MM`): peças pedidas e entregues no mês
     (regras de `plane.utils.pieces`), no prazo (entregue até o `target_date`, no fuso do espaço de trabalho),
     refações do mês (entradas em estado de retrabalho), horas, reuniões (`IssueCalendarEvent`) e atas
-    publicadas, e o saldo do contrato do portal. "Imprimir / PDF" abre só o relatório numa janela nova com os
+    publicadas, aprovações do mês (uma por peça, com quantas foram do cliente) e o saldo do contrato do portal.
+    "Imprimir / PDF" abre só o relatório numa janela nova com os
     estilos do Hub (`printReport`), sem as atas só da equipe e, por padrão, sem as horas se o projeto não as
     mostra ao cliente.
   - **Carga da equipe** (`…/workload/?project=`): por pessoa da equipe, itens abertos (e em produção),
@@ -461,6 +463,23 @@ Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-
     (`_create_meeting` com `organizer`, que vira o `created_by` da reunião).
   - Na tela, só o convidado vê "Solicitar reunião" (`request-meeting.tsx`), e só com o projeto ligado.
   - Todo convite criado pelo Hub leva `RECORDING_NOTICE` na descrição.
+- **Aprovação de peças no Hub** (no lugar dos workflows "Gate de Aprovação" e "Peça Aprovada" do n8n; estudo em
+  `pespo-infra/docs/estudo-clientes-contratos-aprovacao-no-hub.md`). Tudo em `db/models/piece_approval.py`:
+  - **Trava na hora** (sinal `pre_save` do `Issue`): mudar para "Aprovada - Pronta pra Ativar" (nome comparado
+    sem acento, caixa ou estilo de traço) com algum "bloqueado por" ainda aberto (bloqueador fora dos grupos
+    concluído/cancelado e não apagado) devolve 400 `{"error": "APPROVAL_BLOCKED", "blockers": [...]}`. Vale
+    para todo caminho com usuário na requisição (item, quadro, lista, API); tarefas do sistema não são
+    travadas. O n8n deixava mudar e desfazia uns segundos depois.
+  - **Registro** `PieceApproval` (tabela `piece_approvals`, migration `0146`): item, quem, quando, papel
+    (`client` para convidado do projeto, `team` para membro e admin) e `source`: `state` (mudança aceita para o
+    estado) ou `review` (o comentário fixo "✅ Peça aprovada por … em …" que o botão "Aprovar peça" da revisão
+    posta, o mesmo que o n8n ouvia; só na criação do comentário). A mesma peça pode ter os dois; o relatório
+    conta peças.
+  - **Tela:** o interceptor do `APIService` avisa pelo evento `pespo:approval-blocked`, e o
+    `PieceApprovalBlockedToast` (montado no topo, para equipe e convidados) mostra o que falta concluir. O item,
+    o painel lateral e o arrastar no quadro pulam o toast genérico de erro nesse caso (`isApprovalBlockedError`);
+    o store já desfaz a mudança otimista.
+  - A tabela `peca_aprovacoes` do portal não é migrada (o histórico antigo fica lá).
 - **Teste local:** sem Google de verdade, as respostas do Drive foram simuladas no navegador
   (`context.route` do Playwright) para ver o seletor de pasta e a criação de documento. A gravação foi testada
   com tons sintéticos no lugar da aba e do microfone (`addInitScript`), com S3 local (moto) e a tarefa rodando
@@ -468,8 +487,9 @@ Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-
   abre na sessão).
 - **Risco de upgrade:** médio-baixo. Arquivos novos na maior parte. Fora isso: `useTranslation` (upstream),
   o card endpoint, as propriedades do item e do painel, a barra do topo, os widgets de anexo e de reuniões,
-  `calendar_event.py` (`_create_meeting`), o serializer do projeto, `requirements/base.txt` (faster-whisper) e
-  as rotas das configurações do projeto.
+  `calendar_event.py` (`_create_meeting`), o serializer do projeto, `requirements/base.txt` (faster-whisper),
+  as rotas das configurações do projeto, o interceptor do `APIService` e o tratamento de erro ao salvar no item,
+  no painel lateral e no arrastar (`use-group-dragndrop.ts`).
 
 ## Versão 1.6: revisão de vídeo e imagem no item, no lugar do Clapshot (2026-10-30)
 

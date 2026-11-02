@@ -21,6 +21,7 @@ from plane.db.models import (
     IssueLabel,
     IssueTimeEntry,
     Label,
+    PieceApproval,
     Project,
     ProjectMember,
     State,
@@ -81,6 +82,11 @@ class TestMonthlyReport:
             start=now,
             end=now + timedelta(hours=1),
         )
+        # a mesma peça aprovada pela revisão e pela mudança de estado conta uma vez
+        for source in (PieceApproval.SOURCE_REVIEW, PieceApproval.SOURCE_STATE):
+            PieceApproval.objects.create(
+                issue=on_time, project=project, approved_by=create_user, approved_by_role="client", source=source
+            )
         url = reverse("project-monthly-report", kwargs={"slug": workspace.slug, "project_id": project.id})
         response = session_client.get(url, {"month": now.astimezone(ZoneInfo("America/Sao_Paulo")).strftime("%Y-%m")})
         assert response.status_code == status.HTTP_200_OK
@@ -91,6 +97,8 @@ class TestMonthlyReport:
         assert data["pieces"]["requested_total"] == 3
         assert data["hours"]["total_seconds"] == 3600
         assert data["meetings"]["items"][0]["summary"] == "Alinhamento"
+        assert data["approvals"]["total"] == 1 and data["approvals"]["by_client"] == 1
+        assert data["approvals"]["items"][0]["name"] == "Post 1"
         assert data["contract_status"] in ("unavailable", "no_client")
 
     def test_guest_cannot_open(self, workspace, project):

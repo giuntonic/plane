@@ -703,6 +703,11 @@
       "state_backlog": "Backlog",
       "meetings_list": "Meetings this month",
       "no_meetings": "No meetings this month.",
+      "approvals": "Approvals this month",
+      "no_approvals": "No pieces approved this month.",
+      "approvals_summary": "{total, plural, one {# piece approved} other {# pieces approved}}, {client, plural, =0 {none by the client} other {# by the client}}.",
+      "approved_by_client": "by the client",
+      "approved_by_team": "by the team",
       "minutes": "Published minutes",
       "team_only": "Team only",
       "hours_by_person": "Hours by person",
@@ -732,6 +737,13 @@
       "no_upcoming": "No open items with a due date.",
       "empty": "No one on the team yet.",
       "error": "Couldn't load the workload."
+    }
+  },
+  "piece_approval": {
+    "blocked": {
+      "title": "This piece can't be approved yet",
+      "message": "Finish what's still blocking it first: {items}.",
+      "message_more": "Finish what's still blocking it first: {items} and {count, plural, one {# more} other {# more}}."
     }
   }
 }

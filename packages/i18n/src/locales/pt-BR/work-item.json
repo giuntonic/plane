@@ -703,6 +703,11 @@
       "state_backlog": "Backlog",
       "meetings_list": "Reuniões do mês",
       "no_meetings": "Nenhuma reunião neste mês.",
+      "approvals": "Aprovações do mês",
+      "no_approvals": "Nenhuma peça aprovada neste mês.",
+      "approvals_summary": "{total, plural, one {# peça aprovada} other {# peças aprovadas}}, {client, plural, =0 {nenhuma pelo cliente} one {# pelo cliente} other {# pelo cliente}}.",
+      "approved_by_client": "pelo cliente",
+      "approved_by_team": "pela equipe",
       "minutes": "Atas publicadas",
       "team_only": "Só equipe",
       "hours_by_person": "Horas por pessoa",
@@ -732,6 +737,13 @@
       "no_upcoming": "Nenhum item aberto com prazo.",
       "empty": "Ninguém na equipe ainda.",
       "error": "Não foi possível carregar a carga da equipe."
+    }
+  },
+  "piece_approval": {
+    "blocked": {
+      "title": "A peça ainda não pode ser aprovada",
+      "message": "Antes, conclua o que ainda bloqueia a peça: {items}.",
+      "message_more": "Antes, conclua o que ainda bloqueia a peça: {items} e mais {count, plural, one {# item} other {# itens}}."
     }
   }
 }
