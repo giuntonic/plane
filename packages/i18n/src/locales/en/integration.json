@@ -537,6 +537,7 @@
   },
   "meeting_recording": {
     "record": "Record",
+    "record_meeting": "Record meeting",
     "record_tooltip": "Record this meeting from the Hub",
     "start_title": "Record the meeting",
     "start_intro": "The Hub records the meeting tab's audio and your microphone. The transcript and the minutes then show up here in the work item.",

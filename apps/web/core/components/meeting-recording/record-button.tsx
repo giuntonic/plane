@@ -7,6 +7,7 @@
 import { useState } from "react";
 import { observer } from "mobx-react";
 import { Circle } from "lucide-react";
+import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Tooltip } from "@plane/propel/tooltip";
 import type { TIssueCalendarEvent } from "@plane/types";
@@ -14,8 +15,9 @@ import { cn } from "@plane/utils";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useProject } from "@/hooks/store/use-project";
+import { useUserPermissions } from "@/hooks/store/user";
 // local imports
-import { useMeetingRecorder } from "./recorder";
+import { meetingRecorder, useMeetingRecorder } from "./recorder";
 import { StartRecordingModal } from "./start-modal";
 
 // O botão aparece de 15 min antes do começo até 1 h depois do fim marcado.
@@ -90,6 +92,58 @@ export const MeetingRecordButton = observer(function MeetingRecordButton(props: 
         issueId={issueId}
         issueLabel={label}
         calendarEventId={meeting?.id}
+      />
+    </>
+  );
+});
+
+type ActionProps = {
+  workspaceSlug: string;
+  projectId: string;
+  issueId: string;
+  customButton: React.ReactNode;
+};
+
+/** Pespo: "Gravar reunião" na barra de ações do item, para uma reunião que não foi marcada pelo Hub (uma
+ * ligação, uma reunião presencial com o notebook, o Meet de outra pessoa). Só a equipe vê. */
+export const RecordMeetingActionButton = observer(function RecordMeetingActionButton(props: ActionProps) {
+  const { workspaceSlug, projectId, issueId, customButton } = props;
+  const [isOpen, setIsOpen] = useState(false);
+  const state = useMeetingRecorder();
+  const { getProjectById } = useProject();
+  const { allowPermissions } = useUserPermissions();
+  const {
+    issue: { getIssueById },
+    setLastWidgetAction,
+  } = useIssueDetail();
+  const isTeam = allowPermissions(
+    [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
+    EUserPermissionsLevel.PROJECT,
+    workspaceSlug,
+    projectId
+  );
+  if (!isTeam) return null;
+  const issue = getIssueById(issueId);
+  const project = getProjectById(projectId);
+  const label = issue && project ? `${project.identifier}-${issue.sequence_id}` : "";
+  const busy = state.status !== "idle";
+
+  return (
+    <>
+      <button type="button" disabled={busy} onClick={() => setIsOpen(true)} className="disabled:opacity-50">
+        {customButton}
+      </button>
+      <StartRecordingModal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          // começou a gravar: abre a seção de reuniões, onde a gravação aparece
+          if (meetingRecorder.getSnapshot().status === "recording") setLastWidgetAction("meetings");
+        }}
+        workspaceSlug={workspaceSlug}
+        projectId={projectId}
+        issueId={issueId}
+        issueLabel={label}
       />
     </>
   );

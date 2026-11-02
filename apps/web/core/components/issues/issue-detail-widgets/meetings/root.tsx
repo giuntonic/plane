@@ -43,7 +43,8 @@ export const MeetingsCollapsible = observer(function MeetingsCollapsible(props: 
     projectId
   );
   const { data: recordings } = useMeetingRecordings(workspaceSlug, projectId, issueId, isTeam);
-  const count = meetings?.length ?? 0;
+  // reuniões marcadas; num item só com gravações (sem reunião marcada), as gravações
+  const count = meetings?.length || recordings?.length || 0;
   const isCollapsibleOpen = openWidgets.includes("meetings");
 
   const indicatorElement = useMemo(
@@ -55,7 +56,7 @@ export const MeetingsCollapsible = observer(function MeetingsCollapsible(props: 
     [count]
   );
 
-  if (count === 0 && !recordings?.length) return null;
+  if (count === 0) return null;
 
   return (
     <Collapsible

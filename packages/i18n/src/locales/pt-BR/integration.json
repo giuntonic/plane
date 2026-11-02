@@ -537,6 +537,7 @@
   },
   "meeting_recording": {
     "record": "Gravar",
+    "record_meeting": "Gravar reunião",
     "record_tooltip": "Gravar esta reunião pelo Hub",
     "start_title": "Gravar a reunião",
     "start_intro": "O Hub grava o áudio da aba da reunião e o seu microfone. Depois, a transcrição e a ata aparecem aqui no item.",

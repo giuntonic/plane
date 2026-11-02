@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { CalendarPlus, ListChecks, Paperclip, Video, ListTodo, CalendarClock } from "lucide-react";
+import { CalendarPlus, ListChecks, Paperclip, Video, ListTodo, CalendarClock, Mic } from "lucide-react";
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, ViewsIcon, RelationPropertyIcon } from "@plane/propel/icons";
 // plane imports
@@ -14,6 +14,7 @@ import type { TIssueServiceType, TWorkItemWidgets } from "@plane/types";
 import { IssueAttachMenu } from "./attachments/attach-menu";
 import { IssueChecklistActionButton, IssueNamedChecklistActionButton } from "./checklist";
 import { IssueLinksActionButton } from "./links";
+import { RecordMeetingActionButton } from "@/components/meeting-recording/record-button";
 import { RequestMeetingButton } from "@/components/meeting-recording/request-meeting";
 import { IssueMeetingActionButton, IssueMeetNowButton } from "./meetings";
 import { RelationActionButton } from "./relations";
@@ -156,6 +157,20 @@ export function IssueDetailWidgetActionButtons(props: Props) {
           }
           disabled={disabled}
           issueServiceType={issueServiceType}
+        />
+      )}
+      {/* Pespo: gravar uma reunião que não foi marcada pelo Hub (só a equipe) */}
+      {!hideWidgets?.includes("meetings") && (
+        <RecordMeetingActionButton
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          customButton={
+            <IssueDetailWidgetButton
+              title={t("meeting_recording.record_meeting")}
+              icon={<Mic className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
+            />
+          }
         />
       )}
       {/* Pespo: o cliente (convidado) pede reunião nos horários livres da equipe */}
