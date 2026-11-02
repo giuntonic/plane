@@ -215,15 +215,32 @@ class TestTeamLinks:
         response = session_client.post(_url("project-issue-acervo-links", issue), {"kind": "edit"}, format="json")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_same_name_gets_a_numbered_folder_and_names_are_cleaned(self, session_client, issue, project, state, nextcloud):
+    def test_same_name_gets_a_numbered_folder_and_names_are_cleaned(
+        self, session_client, issue, project, state, nextcloud
+    ):
         twin = Issue.objects.create(name="Post Natal", project=project, workspace=project.workspace, state=state)
-        odd = Issue.objects.create(name="Reels 1/2: estreia?", project=project, workspace=project.workspace, state=state)
+        odd = Issue.objects.create(
+            name="Reels 1/2: estreia?", project=project, workspace=project.workspace, state=state
+        )
         for item in (issue, twin, odd):
             session_client.post(_url("project-issue-acervo-folder", item))
         paths = dict(IssueAcervoFolder.objects.values_list("issue_id", "path"))
         assert paths[issue.id] == "Acervo/Clientes/Padaria Bom Dia/Post Natal"
         assert paths[twin.id] == "Acervo/Clientes/Padaria Bom Dia/Post Natal (2)"
         assert paths[odd.id] == "Acervo/Clientes/Padaria Bom Dia/Reels 1-2- estreia-"
+
+    def test_a_folder_made_by_hand_is_never_reused(self, issue, workspace, project, nextcloud):
+        # pasta criada à mão no Acervo com o nome da peça: o Hub não aproveita (o cliente veria o que tem nela)
+        nextcloud.make_folder("Acervo/Clientes/Padaria Bom Dia/Post Natal/Entrega")
+        nextcloud.add_file("Acervo/Clientes/Padaria Bom Dia/Post Natal/Entrega/contrato.pdf")
+        project.guest_view_all_features = True
+        project.save()
+        guest, _ = _member(workspace, project, 5, "cliente@padaria.com")
+
+        created = guest.post(_url("project-issue-acervo-links", issue), {"kind": "upload"}, format="json")
+        assert created.status_code == status.HTTP_201_CREATED
+        assert IssueAcervoFolder.objects.get(issue=issue).path == "Acervo/Clientes/Padaria Bom Dia/Post Natal (2)"
+        assert guest.get(_url("project-issue-acervo", issue)).data["delivery"] == []
 
     def test_get_lists_links_and_files(self, session_client, issue, nextcloud):
         session_client.post(_url("project-issue-acervo-links", issue), {"kind": "upload"}, format="json")
@@ -330,9 +347,7 @@ class TestClient:
         project.save()
 
         delivery = session_client.post(_url("project-issue-acervo-links", issue), {"kind": "delivery"}, format="json")
-        IssueAcervoLink.objects.filter(pk=delivery.data["id"]).update(
-            expires_on=_today(project) - timedelta(days=1)
-        )
+        IssueAcervoLink.objects.filter(pk=delivery.data["id"]).update(expires_on=_today(project) - timedelta(days=1))
         assert guest.get(_url("project-issue-acervo", issue)).data["links"] == []
 
         forbidden = guest.post(_url("project-issue-acervo-links", issue), {"kind": "delivery"}, format="json")
@@ -348,9 +363,12 @@ class TestClient:
         assert "files_url" not in data["links"][0]
 
         link_id = upload.data["id"]
-        assert guest.patch(
-            _url("project-issue-acervo-link-detail", issue, pk=link_id), {"renew": True}, format="json"
-        ).status_code == status.HTTP_403_FORBIDDEN
+        assert (
+            guest.patch(
+                _url("project-issue-acervo-link-detail", issue, pk=link_id), {"renew": True}, format="json"
+            ).status_code
+            == status.HTTP_403_FORBIDDEN
+        )
         assert guest.delete(_url("project-issue-acervo-link-detail", issue, pk=link_id)).status_code == (
             status.HTTP_403_FORBIDDEN
         )
@@ -371,7 +389,9 @@ class TestClient:
 
 @pytest.mark.contract
 class TestProjectFolder:
-    def test_new_project_schedules_its_folder(self, db, workspace, create_user, nextcloud, django_capture_on_commit_callbacks):
+    def test_new_project_schedules_its_folder(
+        self, db, workspace, create_user, nextcloud, django_capture_on_commit_callbacks
+    ):
         with mock.patch("plane.bgtasks.acervo_task.create_project_folder.delay") as delay:
             with django_capture_on_commit_callbacks(execute=True):
                 project = Project.objects.create(name="Café Central", identifier="CAF", workspace=workspace)
@@ -423,7 +443,9 @@ class TestProjectFolder:
         assert [f["name"] for f in listed.data["folders"]] == ["alfa", "Zeta"]
 
         created = session_client.post(
-            _project_url("project-acervo-browse", project), {"path": "Acervo/Clientes", "name": "Nova/Pasta"}, format="json"
+            _project_url("project-acervo-browse", project),
+            {"path": "Acervo/Clientes", "name": "Nova/Pasta"},
+            format="json",
         )
         assert created.status_code == status.HTTP_201_CREATED
         assert created.data["path"] == "Acervo/Clientes/Nova-Pasta"
@@ -435,7 +457,10 @@ class TestProjectFolder:
 
     def test_the_folder_is_not_writable_through_the_project(self, project):
         serializer = ProjectSerializer(
-            project, data={"acervo_folder": "Acervo/Outro"}, partial=True, context={"workspace_id": project.workspace_id}
+            project,
+            data={"acervo_folder": "Acervo/Outro"},
+            partial=True,
+            context={"workspace_id": project.workspace_id},
         )
         assert serializer.is_valid(), serializer.errors
         assert "acervo_folder" not in serializer.validated_data
@@ -481,7 +506,8 @@ class TestReceivedMaterial:
     def test_files_already_there_do_not_notify(self, session_client, issue, project, state, nextcloud):
         other = Issue.objects.create(name="Reels", project=project, workspace=project.workspace, state=state)
         base = "Acervo/Clientes/Padaria Bom Dia/Reels/Recebido"
-        nextcloud.make_folder(base)
+        # a equipe abriu a pasta da peça e pôs um arquivo antes de gerar o link de envio
+        session_client.post(_url("project-issue-acervo-folder", other))
         nextcloud.add_file(f"{base}/antigo.mov")
         session_client.post(_url("project-issue-acervo-links", other), {"kind": "upload"}, format="json")
         assert check_received_material() == 0

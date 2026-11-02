@@ -60,6 +60,7 @@ RECEIVED_FOLDER = "Recebido"
 DELIVERY_FOLDER = "Entrega"
 MAX_NAME_LENGTH = 80
 MAX_LINK_DAYS = 365
+MAX_SAME_NAME = 200
 TEAM_ROLES = (20, 15)
 ACERVO_BOT_USERNAME = "pespo_acervo_bot"
 ACERVO_BOT_EMAIL = "acervo-bot@pespo-hub.invalid"
@@ -205,16 +206,21 @@ def get_issue_folder(issue):
 
 
 def ensure_issue_folder(issue, client):
-    """A pasta da peça, com ``Recebido/`` e ``Entrega/``. Duas peças com o mesmo nome ganham `` (2)``, `` (3)``…;
-    uma pasta que já existia no Nextcloud com o nome da peça (e não é de outra peça) é aproveitada."""
+    """A pasta da peça, com ``Recebido/`` e ``Entrega/``. É sempre uma pasta nova: se já existe uma com o nome da
+    peça no Nextcloud (de outra peça ou criada à mão), a peça ganha `` (2)``, `` (3)``… Aproveitar uma pasta que já
+    existia mostraria o que está nela para quem tem acesso à peça, inclusive o cliente."""
     folder = get_issue_folder(issue)
     if folder is None:
         project_path = ensure_project_folder(issue.project, client)
-        taken = set(IssueAcervoFolder.objects.filter(project_id=issue.project_id).values_list("path", flat=True))
+        taken = set(IssueAcervoFolder.all_objects.filter(project_id=issue.project_id).values_list("path", flat=True))
         base = safe_name(issue.name, "Peça")
-        path, number = f"{project_path}/{base}", 2
-        while path in taken:
-            path, number = f"{project_path}/{base} ({number})", number + 1
+        for number in range(1, MAX_SAME_NAME + 1):
+            path = f"{project_path}/{base}" if number == 1 else f"{project_path}/{base} ({number})"
+            # make_folder devolve False quando a pasta já existia
+            if path not in taken and client.make_folder(path):
+                break
+        else:
+            raise NextcloudError(f"No free folder name for {base!r}")
         try:
             with transaction.atomic():
                 folder = IssueAcervoFolder.objects.create(issue=issue, project_id=issue.project_id, path=path)

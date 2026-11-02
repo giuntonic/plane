@@ -267,8 +267,9 @@ o usuário de serviço `pespo-hub` no Nextcloud e as variáveis `NEXTCLOUD_*`.
     `acervo_criar_pastas` (padrão: só os ligados a um cliente no portal, `clientes.plane_project_id`; `--todos`,
     `--simular`).
   - `IssueAcervoFolder`: a pasta da peça, criada no primeiro link. Nome limpo (`safe_name`: sem `\ / : * ? " < > |`,
-    até 80 caracteres); peças com o mesmo nome ganham ` (2)`, ` (3)`. Uma pasta que já existia no Nextcloud com o
-    nome da peça é aproveitada. Renomear depois não move nada.
+    até 80 caracteres). É sempre uma pasta nova: se já existe uma com o nome (de outra peça ou criada à mão), a peça
+    ganha ` (2)`, ` (3)` (o `MKCOL` que responde "já existe" conta como ocupado). Aproveitar uma pasta que já existia
+    mostraria o que está nela a quem vê a peça, inclusive o cliente. Renomear depois não move nada.
 - **Links** (`IssueAcervoLink`, `utils/acervo.py`): `upload` (só envio, `Recebido/`, permissão 4) e `delivery`
   (leitura, `Entrega/`, permissão 1), um ativo por tipo e peça (pedir de novo devolve o ativo; trava por
   `pg_advisory_xact_lock` para dois cliques não gerarem dois links). Validade `NEXTCLOUD_LINK_DAYS` (30), renovar
