@@ -4,8 +4,8 @@
 
 """
 Pespo: comentários só da equipe: os sinais automáticos do briefing (Laya), que falam do cliente ("parece
-insatisfeito"), e as atas de reunião publicadas só para a equipe. Não podem aparecer para o próprio cliente, que
-entra no Pespo Hub como convidado.
+insatisfeito"), as atas de reunião publicadas só para a equipe e o aviso de material recebido no Acervo. Não
+podem aparecer para o próprio cliente, que entra no Pespo Hub como convidado.
 Eles são marcados pelo ``external_source`` e somem das listas de comentários para convidados do projeto.
 """
 
@@ -16,7 +16,9 @@ LAYA_COMMENT_SOURCE = "pespo_laya"
 # Ata de reunião publicada no item: só para a equipe, ou visível também para o cliente.
 MEETING_TEAM_SOURCE = "pespo_meeting_team"
 MEETING_CLIENT_SOURCE = "pespo_meeting"
-TEAM_ONLY_COMMENT_SOURCES = (LAYA_COMMENT_SOURCE, MEETING_TEAM_SOURCE)
+# Aviso do Acervo: chegou material do cliente em Recebido/ (bot "Arquivos").
+ACERVO_TEAM_SOURCE = "pespo_acervo_team"
+TEAM_ONLY_COMMENT_SOURCES = (LAYA_COMMENT_SOURCE, MEETING_TEAM_SOURCE, ACERVO_TEAM_SOURCE)
 GUEST_ROLE = 5
 
 

@@ -91,3 +91,20 @@ def get_project_contract(project_id):
             else None
         ),
     }
+
+
+def client_project_ids():
+    """Ids (texto) dos projetos do Plane ligados a um cliente no portal (o Acervo cria a pasta deles no deploy)."""
+    if not settings.PORTAL_DATABASE_URL:
+        raise PortalUnavailable("PORTAL_DATABASE_URL is not set")
+    try:
+        with psycopg.connect(settings.PORTAL_DATABASE_URL, connect_timeout=3, row_factory=dict_row) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT DISTINCT plane_project_id::text AS project_id FROM clientes "
+                    "WHERE plane_project_id IS NOT NULL"
+                )
+                return [row["project_id"] for row in cur.fetchall()]
+    except psycopg.Error as e:
+        logger.warning("portal-db unavailable: %s", e)
+        raise PortalUnavailable(str(e)) from e

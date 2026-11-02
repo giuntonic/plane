@@ -53,6 +53,8 @@ class BotTypeEnum(models.TextChoices):
     WORKSPACE_SEED = "WORKSPACE_SEED", "Workspace Seed"
     # Pespo: bot que assina os sinais automáticos do briefing (Laya) nas peças solicitadas.
     PESPO_LAYA = "PESPO_LAYA", "Pespo Laya"
+    # Pespo: bot "Arquivos", que avisa no item quando o cliente manda material pelo link do Acervo.
+    PESPO_ACERVO = "PESPO_ACERVO", "Pespo Acervo"
 
 
 class User(AbstractBaseUser, PermissionsMixin):

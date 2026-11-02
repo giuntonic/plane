@@ -63,6 +63,11 @@ app.conf.beat_schedule = {
         "task": "plane.bgtasks.meeting_recording_task.meeting_recordings_housekeeping",
         "schedule": crontab(minute="*/10"),
     },
+    # Pespo: material novo em Recebido/ no Acervo (Nextcloud) vira aviso no item para a equipe
+    "pespo-acervo-check-received": {
+        "task": "plane.bgtasks.acervo_task.check_received_material",
+        "schedule": crontab(minute="*/10"),
+    },
     "sync-google-calendars": {
         "task": "plane.bgtasks.google_calendar_sync_task.sync_google_calendars",
         "schedule": schedule(run_every=timedelta(minutes=10)),
