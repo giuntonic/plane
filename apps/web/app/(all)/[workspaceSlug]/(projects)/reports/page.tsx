@@ -8,23 +8,21 @@ import { observer } from "mobx-react";
 import { useTranslation } from "@plane/i18n";
 // components
 import { PageHead } from "@/components/core/page-title";
-import { TimeReportRoot } from "@/components/time-tracking/report";
+import { ReportsRoot } from "@/components/time-tracking/report";
 // hooks
 import { useWorkspace } from "@/hooks/store/use-workspace";
 
-function WorkspaceTimeReportPage() {
+function WorkspaceReportsPage() {
   const { t } = useTranslation();
   const { currentWorkspace } = useWorkspace();
-  const pageTitle = currentWorkspace?.name
-    ? `${currentWorkspace.name} - ${t("time_tracking.report.title")}`
-    : undefined;
+  const pageTitle = currentWorkspace?.name ? `${currentWorkspace.name} - ${t("pespo_reports.title")}` : undefined;
 
   return (
     <>
       <PageHead title={pageTitle} />
-      <TimeReportRoot />
+      <ReportsRoot />
     </>
   );
 }
 
-export default observer(WorkspaceTimeReportPage);
+export default observer(WorkspaceReportsPage);

@@ -12,8 +12,10 @@ import type {
   TIssueTimeEntryPayload,
   TRunningTimeEntry,
   TStartedTimeEntry,
+  TMonthlyReport,
   TTimeReport,
   TTimeReportParams,
+  TWorkload,
 } from "@plane/types";
 // services
 import { APIService } from "@/services/api.service";
@@ -110,6 +112,22 @@ export class TimeTrackingService extends APIService {
       Object.entries(params).filter((entry): entry is [string, string] => !!entry[1])
     ).toString();
     return `${API_BASE_URL}/api/workspaces/${workspaceSlug}/time-report/export/?${query}`;
+  }
+
+  async monthlyReport(workspaceSlug: string, projectId: string, month: string): Promise<TMonthlyReport> {
+    return this.get(`/api/workspaces/${workspaceSlug}/projects/${projectId}/monthly-report/`, { params: { month } })
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
+  }
+
+  async workload(workspaceSlug: string, projectId?: string): Promise<TWorkload> {
+    return this.get(`/api/workspaces/${workspaceSlug}/workload/`, { params: projectId ? { project: projectId } : {} })
+      .then((response) => response?.data)
+      .catch((error) => {
+        throw error?.response?.data;
+      });
   }
 }
 

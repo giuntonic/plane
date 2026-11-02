@@ -4,6 +4,7 @@
 
 from django.urls import path
 
+from plane.app.views.workspace.reports import ProjectMonthlyReportEndpoint, WorkspaceWorkloadEndpoint
 from plane.app.views.workspace.time_report import WorkspaceTimeReportEndpoint, WorkspaceTimeReportExportEndpoint
 
 
@@ -296,5 +297,16 @@ urlpatterns = [
         "workspaces/<str:slug>/time-report/export/",
         WorkspaceTimeReportExportEndpoint.as_view(),
         name="workspace-time-report-export",
+    ),
+    # Pespo: relatórios (mês do cliente e carga da equipe)
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/monthly-report/",
+        ProjectMonthlyReportEndpoint.as_view(),
+        name="project-monthly-report",
+    ),
+    path(
+        "workspaces/<str:slug>/workload/",
+        WorkspaceWorkloadEndpoint.as_view(),
+        name="workspace-workload",
     ),
 ]

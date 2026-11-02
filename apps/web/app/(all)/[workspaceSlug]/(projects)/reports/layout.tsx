@@ -7,12 +7,12 @@
 import { Outlet } from "react-router";
 import { AppHeader } from "@/components/core/app-header";
 import { ContentWrapper } from "@/components/core/content-wrapper";
-import { WorkspaceTimeReportHeader } from "./header";
+import { WorkspaceReportsHeader } from "./header";
 
-export default function WorkspaceTimeReportLayout() {
+export default function WorkspaceReportsLayout() {
   return (
     <>
-      <AppHeader header={<WorkspaceTimeReportHeader />} />
+      <AppHeader header={<WorkspaceReportsHeader />} />
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>
