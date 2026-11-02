@@ -184,152 +184,147 @@ export const TimeReportRoot = observer(function TimeReportRoot() {
     : t("time_tracking.report.all_people");
 
   return (
-    <div className="vertical-scrollbar scrollbar-md size-full overflow-y-auto">
-      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-6 sm:px-8">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-h4-medium text-primary">{t("time_tracking.report.title")}</h2>
-          <p className="text-body-sm-regular text-tertiary">
-            {data && !data.is_admin ? t("time_tracking.report.only_mine") : t("time_tracking.report.description")}
-          </p>
-        </div>
+    <div className="flex flex-col gap-6">
+      <p className="text-body-sm-regular text-tertiary">
+        {data && !data.is_admin ? t("time_tracking.report.only_mine") : t("time_tracking.report.description")}
+      </p>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex flex-wrap gap-1 rounded-md bg-layer-1 p-0.5">
-            {PRESETS.map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => {
-                  if (option === "custom" && preset !== "custom") setCustom(period);
-                  setPreset(option);
-                }}
-                className={cn(
-                  "rounded-sm px-2 py-1 text-body-xs-medium",
-                  preset === option ? "bg-layer-3 text-primary shadow-raised-100" : "text-tertiary hover:text-primary"
-                )}
-              >
-                {t(`time_tracking.report.${option}`)}
-              </button>
-            ))}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap gap-1 rounded-md bg-layer-1 p-0.5">
+          {PRESETS.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => {
+                if (option === "custom" && preset !== "custom") setCustom(period);
+                setPreset(option);
+              }}
+              className={cn(
+                "rounded-sm px-2 py-1 text-body-xs-medium",
+                preset === option ? "bg-layer-3 text-primary shadow-raised-100" : "text-tertiary hover:text-primary"
+              )}
+            >
+              {t(`time_tracking.report.${option}`)}
+            </button>
+          ))}
+        </div>
+        {preset === "custom" && (
+          <div className="flex items-center gap-1 text-body-xs-regular text-tertiary">
+            <label className="flex items-center gap-1">
+              {t("time_tracking.report.from")}
+              <input
+                type="date"
+                value={custom.start}
+                max={custom.end}
+                onChange={(event) => setCustom((prev) => ({ ...prev, start: event.target.value }))}
+                className={cn(selectButton, "bg-transparent text-primary")}
+              />
+            </label>
+            <label className="flex items-center gap-1">
+              {t("time_tracking.report.to")}
+              <input
+                type="date"
+                value={custom.end}
+                min={custom.start}
+                onChange={(event) => setCustom((prev) => ({ ...prev, end: event.target.value }))}
+                className={cn(selectButton, "bg-transparent text-primary")}
+              />
+            </label>
           </div>
-          {preset === "custom" && (
-            <div className="flex items-center gap-1 text-body-xs-regular text-tertiary">
-              <label className="flex items-center gap-1">
-                {t("time_tracking.report.from")}
-                <input
-                  type="date"
-                  value={custom.start}
-                  max={custom.end}
-                  onChange={(event) => setCustom((prev) => ({ ...prev, start: event.target.value }))}
-                  className={cn(selectButton, "bg-transparent text-primary")}
-                />
-              </label>
-              <label className="flex items-center gap-1">
-                {t("time_tracking.report.to")}
-                <input
-                  type="date"
-                  value={custom.end}
-                  min={custom.start}
-                  onChange={(event) => setCustom((prev) => ({ ...prev, end: event.target.value }))}
-                  className={cn(selectButton, "bg-transparent text-primary")}
-                />
-              </label>
-            </div>
-          )}
+        )}
+        <CustomSelect
+          value={projectId}
+          label={<span className="truncate">{projectLabel}</span>}
+          onChange={(value: string) => setProjectId(value)}
+          buttonClassName={selectButton}
+          maxHeight="lg"
+        >
+          <CustomSelect.Option value="">{t("time_tracking.report.all_projects")}</CustomSelect.Option>
+          {projectOptions.map((project) => (
+            <CustomSelect.Option key={project.id} value={project.id}>
+              {project.name}
+            </CustomSelect.Option>
+          ))}
+        </CustomSelect>
+        {data?.is_admin && (
           <CustomSelect
-            value={projectId}
-            label={<span className="truncate">{projectLabel}</span>}
-            onChange={(value: string) => setProjectId(value)}
+            value={userId}
+            label={<span className="truncate">{memberLabel}</span>}
+            onChange={(value: string) => setUserId(value)}
             buttonClassName={selectButton}
             maxHeight="lg"
           >
-            <CustomSelect.Option value="">{t("time_tracking.report.all_projects")}</CustomSelect.Option>
-            {projectOptions.map((project) => (
-              <CustomSelect.Option key={project.id} value={project.id}>
-                {project.name}
+            <CustomSelect.Option value="">{t("time_tracking.report.all_people")}</CustomSelect.Option>
+            {memberOptions.map((member) => (
+              <CustomSelect.Option key={member.member.id} value={member.member.id}>
+                {member.member.display_name}
               </CustomSelect.Option>
             ))}
           </CustomSelect>
-          {data?.is_admin && (
-            <CustomSelect
-              value={userId}
-              label={<span className="truncate">{memberLabel}</span>}
-              onChange={(value: string) => setUserId(value)}
-              buttonClassName={selectButton}
-              maxHeight="lg"
-            >
-              <CustomSelect.Option value="">{t("time_tracking.report.all_people")}</CustomSelect.Option>
-              {memberOptions.map((member) => (
-                <CustomSelect.Option key={member.member.id} value={member.member.id}>
-                  {member.member.display_name}
-                </CustomSelect.Option>
-              ))}
-            </CustomSelect>
-          )}
-          <a
-            href={isValidPeriod ? timeTrackingService.exportUrl(slug, params) : undefined}
-            aria-disabled={!isValidPeriod || !total}
-            className={cn(getButtonStyling("secondary", "base"), "ml-auto gap-1.5", {
-              "pointer-events-none opacity-60": !isValidPeriod || !total,
-            })}
-          >
-            <Download className="size-3.5" />
-            {t("time_tracking.report.export")}
-          </a>
-        </div>
-
-        {!isValidPeriod ? (
-          <p className="text-body-sm-regular text-danger-primary">{t("time_tracking.report.invalid_period")}</p>
-        ) : error ? (
-          <p className="text-body-sm-regular text-danger-primary">
-            {error?.error === "PERIOD_TOO_LONG"
-              ? t("time_tracking.report.invalid_period")
-              : t("time_tracking.report.error")}
-          </p>
-        ) : isLoading && !data ? (
-          <Loader className="flex flex-col gap-3">
-            <Loader.Item height="72px" />
-            <Loader.Item height="160px" />
-          </Loader>
-        ) : data ? (
-          <>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <StatTile label={t("time_tracking.report.total")} value={formatDuration(total)} />
-              <StatTile label={t("time_tracking.report.items")} value={String(data.by_issue.length)} />
-              <StatTile label={t("time_tracking.report.projects")} value={String(data.by_project.length)} />
-              <StatTile label={t("time_tracking.report.people")} value={String(data.by_user.length)} />
-            </div>
-            {total === 0 ? (
-              <p className="rounded-lg border border-dashed border-subtle px-4 py-10 text-center text-body-sm-regular text-tertiary">
-                {t("time_tracking.report.empty")}
-              </p>
-            ) : (
-              <div className={cn("flex flex-col gap-6", { "opacity-60": isLoading })}>
-                {data.is_admin && (
-                  <ReportTable
-                    title={t("time_tracking.report.by_person")}
-                    column={t("time_tracking.report.person")}
-                    rows={personRows}
-                    total={total}
-                  />
-                )}
-                <ReportTable
-                  title={t("time_tracking.report.by_project")}
-                  column={t("time_tracking.report.project")}
-                  rows={projectRows}
-                  total={total}
-                />
-                <ReportTable
-                  title={t("time_tracking.report.by_item")}
-                  column={t("time_tracking.report.item")}
-                  rows={itemRows}
-                  total={total}
-                />
-              </div>
-            )}
-          </>
-        ) : null}
+        )}
+        <a
+          href={isValidPeriod ? timeTrackingService.exportUrl(slug, params) : undefined}
+          aria-disabled={!isValidPeriod || !total}
+          className={cn(getButtonStyling("secondary", "base"), "ml-auto gap-1.5", {
+            "pointer-events-none opacity-60": !isValidPeriod || !total,
+          })}
+        >
+          <Download className="size-3.5" />
+          {t("time_tracking.report.export")}
+        </a>
       </div>
+
+      {!isValidPeriod ? (
+        <p className="text-body-sm-regular text-danger-primary">{t("time_tracking.report.invalid_period")}</p>
+      ) : error ? (
+        <p className="text-body-sm-regular text-danger-primary">
+          {error?.error === "PERIOD_TOO_LONG"
+            ? t("time_tracking.report.invalid_period")
+            : t("time_tracking.report.error")}
+        </p>
+      ) : isLoading && !data ? (
+        <Loader className="flex flex-col gap-3">
+          <Loader.Item height="72px" />
+          <Loader.Item height="160px" />
+        </Loader>
+      ) : data ? (
+        <>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <StatTile label={t("time_tracking.report.total")} value={formatDuration(total)} />
+            <StatTile label={t("time_tracking.report.items")} value={String(data.by_issue.length)} />
+            <StatTile label={t("time_tracking.report.projects")} value={String(data.by_project.length)} />
+            <StatTile label={t("time_tracking.report.people")} value={String(data.by_user.length)} />
+          </div>
+          {total === 0 ? (
+            <p className="rounded-lg border border-dashed border-subtle px-4 py-10 text-center text-body-sm-regular text-tertiary">
+              {t("time_tracking.report.empty")}
+            </p>
+          ) : (
+            <div className={cn("flex flex-col gap-6", { "opacity-60": isLoading })}>
+              {data.is_admin && (
+                <ReportTable
+                  title={t("time_tracking.report.by_person")}
+                  column={t("time_tracking.report.person")}
+                  rows={personRows}
+                  total={total}
+                />
+              )}
+              <ReportTable
+                title={t("time_tracking.report.by_project")}
+                column={t("time_tracking.report.project")}
+                rows={projectRows}
+                total={total}
+              />
+              <ReportTable
+                title={t("time_tracking.report.by_item")}
+                column={t("time_tracking.report.item")}
+                rows={itemRows}
+                total={total}
+              />
+            </div>
+          )}
+        </>
+      ) : null}
     </div>
   );
 });

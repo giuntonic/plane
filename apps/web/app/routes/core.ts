@@ -99,9 +99,9 @@ export const coreRoutes: RouteConfigEntry[] = [
           route(":workspaceSlug/calendar", "./(all)/[workspaceSlug]/(projects)/calendar/page.tsx"),
         ]),
 
-        // Pespo: relatório de horas
-        layout("./(all)/[workspaceSlug]/(projects)/time-report/layout.tsx", [
-          route(":workspaceSlug/time-report", "./(all)/[workspaceSlug]/(projects)/time-report/page.tsx"),
+        // Pespo: relatórios (horas, mês do cliente e carga da equipe)
+        layout("./(all)/[workspaceSlug]/(projects)/reports/layout.tsx", [
+          route(":workspaceSlug/reports", "./(all)/[workspaceSlug]/(projects)/reports/page.tsx"),
         ]),
 
         // Drafts

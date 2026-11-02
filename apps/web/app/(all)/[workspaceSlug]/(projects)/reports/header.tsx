@@ -5,14 +5,14 @@
  */
 
 import { observer } from "mobx-react";
-import { Timer } from "lucide-react";
+import { ChartColumn } from "lucide-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { Breadcrumbs, Header } from "@plane/ui";
 // components
 import { BreadcrumbLink } from "@/components/common/breadcrumb-link";
 
-export const WorkspaceTimeReportHeader = observer(function WorkspaceTimeReportHeader() {
+export const WorkspaceReportsHeader = observer(function WorkspaceReportsHeader() {
   const { t } = useTranslation();
   return (
     <Header>
@@ -21,8 +21,8 @@ export const WorkspaceTimeReportHeader = observer(function WorkspaceTimeReportHe
           <Breadcrumbs.Item
             component={
               <BreadcrumbLink
-                label={t("time_tracking.report.title")}
-                icon={<Timer className="h-4 w-4 text-tertiary" />}
+                label={t("pespo_reports.title")}
+                icon={<ChartColumn className="h-4 w-4 text-tertiary" />}
               />
             }
             isLast
