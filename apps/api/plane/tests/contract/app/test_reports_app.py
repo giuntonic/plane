@@ -149,3 +149,28 @@ class TestWorkload:
         assert [u["name"] for u in row["upcoming"]] == ["Atrasado", "Vence logo"]
         bad = session_client.get(reverse("workspace-workload", kwargs={"slug": workspace.slug}), {"project": "x"})
         assert bad.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_member_sees_only_own_projects(self, session_client, workspace, project, create_user):
+        """Membro (não admin) não vê a carga de projeto privado de que não participa; o admin vê."""
+        member = User.objects.create(email="equipe@plane.so", username="equipe", display_name="equipe")
+        WorkspaceMember.objects.create(workspace=workspace, member=member, role=15)
+        ProjectMember.objects.create(project=project, member=member, role=15, is_active=True)
+        secret = Project.objects.create(name="Privado", identifier="PRV", workspace=workspace, network=0)
+        ProjectMember.objects.create(project=secret, member=create_user, role=20, is_active=True)
+        today = timezone.localdate()
+        visible = _piece(project, "Post do cliente", _state(project, "A fazer", "unstarted"), target_date=today)
+        hidden = _piece(secret, "Item secreto", _state(secret, "A fazer", "unstarted"), target_date=today)
+        for issue in (visible, hidden):
+            IssueAssignee.objects.create(issue=issue, assignee=create_user, project=issue.project, workspace=workspace)
+
+        client = APIClient()
+        client.force_authenticate(user=member)
+        url = reverse("workspace-workload", kwargs={"slug": workspace.slug})
+        row = next(p for p in client.get(url).data["people"] if p["id"] == str(create_user.id))
+        assert row["open"] == 1
+        assert [u["name"] for u in row["upcoming"]] == ["Post do cliente"]
+        assert row["projects"] == [{"identifier": "CLI", "count": 1}]
+        assert client.get(url, {"project": str(secret.id)}).status_code == status.HTTP_404_NOT_FOUND
+
+        admin_row = next(p for p in session_client.get(url).data["people"] if p["id"] == str(create_user.id))
+        assert admin_row["open"] == 2
