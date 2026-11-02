@@ -4,7 +4,7 @@
 
 """Pespo: tarefas do Acervo (Nextcloud): a pasta do projeto que acabou de nascer e a olhada em ``Recebido/`` das
 peças com link de envio ativo, a cada 10 min (``pespo-acervo-check-received`` no beat). Rodam no bgworker, que
-precisa alcançar o Nextcloud pela rede ``portal-cliente_proxy``."""
+alcança o Nextcloud pela rede ``nextcloud_hub`` (só o Nextcloud, a api e o bgworker)."""
 
 # Python imports
 import logging

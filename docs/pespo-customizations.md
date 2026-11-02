@@ -256,8 +256,9 @@ Fase 2 do Nextcloud (`arquivos.pespo.com.br`, implantado em 01–02/11; `/Acervo
 Decisão do Giuliano: a automação fica dentro do Hub, não no portal do cliente nem no painel admin. Escopo fechado
 em 02/11: pastas projeto › peça, links visíveis para a equipe e para o cliente, 30 dias renováveis, lista do que
 chegou, aviso de material novo, pasta junto com o projeto e "Abrir no Arquivos". Deploy no `pespo-infra`
-(`docs/deploy-plane-1.8.md`): migration `0147` (depois da `0146` da 1.7), rebuild de api e web, o `bgworker` na rede `portal-cliente_proxy`,
-o usuário de serviço `pespo-hub` no Nextcloud e as variáveis `NEXTCLOUD_*`.
+(`docs/deploy-plane-1.8.md`): migration `0147` (depois da `0146` da 1.7), rebuild de api e web, a rede interna
+`nextcloud_hub` (só o Nextcloud, a `api` e o `bgworker`; o worker, que também busca URLs de links e webhooks, fica
+fora da `portal-cliente_proxy`), o usuário de serviço `pespo-hub` no Nextcloud e as variáveis `NEXTCLOUD_*`.
 
 - **Pastas.** `NEXTCLOUD_ROOT/<projeto>/<peça>/{Recebido,Entrega}`, com `NEXTCLOUD_ROOT=Acervo/Clientes`.
   - `Project.acervo_folder` (migration `0147`, com `db_default` para a API antiga durante o deploy): só leitura no
