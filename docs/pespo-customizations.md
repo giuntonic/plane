@@ -287,8 +287,22 @@ Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-
     do computador.
   - Badge do total nos cards da lista e do quadro.
   - Configurações do projeto › Tempo gasto (`features/time-tracking`): liga "Mostrar o tempo aos clientes".
-- **Relatório de horas** (`app/views/workspace/time_report.py`, página `/<slug>/time-report/`, item
-  "Relatório de horas" na barra lateral, logo abaixo do Calendário).
+- **Relatórios** (página `/<slug>/reports/?tab=hours|client|workload`, item "Relatórios" na barra lateral,
+  logo abaixo do Calendário; `components/time-tracking/report/reports-root.tsx`). Três abas: horas (abaixo),
+  mês do cliente e carga da equipe (`app/views/workspace/reports.py`, só admin e membro).
+  - **Mês do cliente** (`…/projects/<id>/monthly-report/?month=AAAA-MM`): peças pedidas e entregues no mês
+    (regras de `plane.utils.pieces`), no prazo (entregue até o `target_date`, no fuso do espaço de trabalho),
+    refações do mês (entradas em estado de retrabalho), horas, reuniões (`IssueCalendarEvent`) e atas
+    publicadas, e o saldo do contrato do portal. "Imprimir / PDF" abre só o relatório numa janela nova com os
+    estilos do Hub (`printReport`), sem as atas só da equipe e, por padrão, sem as horas se o projeto não as
+    mostra ao cliente.
+  - **Carga da equipe** (`…/workload/?project=`): por pessoa da equipe, itens abertos (e em produção),
+    atrasados, vencendo em 7 dias, subtarefas abertas (e atrasadas), horas da semana (segunda a domingo) e os
+    próximos prazos.
+- **Calendário editorial** (`components/workspace/calendar-sync/`): filtro por cliente (vai para o servidor
+  como `project`) e "Só peças" (etiqueta de categoria, `PIECE_CATEGORIES`, pelas etiquetas do espaço de
+  trabalho); o cartão mostra a categoria. As escolhas ficam no navegador.
+- **Horas** (`app/views/workspace/time_report.py`).
   - `…/time-report/?start&end&project&user`: totais por pessoa, por projeto e por item (e por dia, ainda
     sem uso na tela). Até 366 dias; o dia de um lançamento é o dia em que começou, no fuso do espaço de
     trabalho. O cronômetro rodando entra com o tempo até agora.
@@ -369,7 +383,8 @@ Google parecer parte do sistema, não uma adaptação. O deploy está no `pespo-
   - **Cuidado no worker:** sem usuário logado, o `save()` do `BaseModel` apaga o `created_by` (quem gravou); todo
     `save` da tarefa usa `disable_auto_set_user=True`.
   - **Tela:** "Gravar" na reunião do item (de 15 min antes a 1 h depois) e na propriedade "Reunião"
-    (`record-button.tsx`), com a explicação antes (`start-modal.tsx`); "Gravações" na seção de reuniões
+    (`record-button.tsx`), e "Gravar reunião" na barra do item para o que não foi marcado pelo Hub (sem
+    `calendar_event`), com a explicação antes (`start-modal.tsx`); "Gravações" na seção de reuniões
     (`recordings-list.tsx`); a ata e a transcrição num modal (`recording-modal.tsx`, `minutes-editor.tsx`,
     `transcript-view.tsx`, clique na fala leva o áudio até ela).
 - **Solicitar reunião** (`utils/meeting_booking.py`, endpoints `…/meeting-slots/` e `…/meeting-requests/` em
