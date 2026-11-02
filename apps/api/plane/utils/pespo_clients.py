@@ -226,8 +226,15 @@ def _add_guest(project, user, actor):
     if member is None:
         ProjectMember.objects.create(project=project, member=user, role=GUEST, created_by=actor)
     elif not member.is_active:
+        # O papel antigo só volta para quem ainda é da equipe no espaço de trabalho; um ex-membro desativado volta
+        # como convidado, não como membro ou admin do projeto.
+        workspace_role = (
+            WorkspaceMember.objects.filter(workspace_id=project.workspace_id, member=user, is_active=True)
+            .values_list("role", flat=True)
+            .first()
+        )
         member.is_active = True
-        member.role = GUEST if member.role < 15 else member.role
+        member.role = member.role if (workspace_role or 0) >= 15 and member.role >= 15 else GUEST
         member.save(update_fields=["is_active", "role", "updated_at"])
 
 
@@ -247,8 +254,10 @@ def grant_access(client, emails, actor):
                     workspace_id=client.workspace_id, member=user, role=GUEST, created_by=actor
                 )
             elif not workspace_member.is_active:
+                # Ex-membro da equipe desativado volta só como convidado (o papel antigo daria acesso a tudo).
                 workspace_member.is_active = True
-                workspace_member.save(update_fields=["is_active", "updated_at"])
+                workspace_member.role = GUEST
+                workspace_member.save(update_fields=["is_active", "role", "updated_at"])
             for project in projects:
                 _add_guest(project, user, actor)
             status = "active"
@@ -278,7 +287,9 @@ def revoke_access(client, email):
     PespoClientLogin.objects.filter(client=client, email=email).delete(soft=False)
     projects = client.projects.all()
     ProjectMember.objects.filter(project__in=projects, member__email__iexact=email, role__lt=15).update(is_active=False)
-    WorkspaceMemberInvite.objects.filter(workspace_id=client.workspace_id, email=email).delete()
+    # O convite de convidado só sai se o e-mail não estiver liberado em outro cliente; convite da equipe fica.
+    if not PespoClientLogin.objects.filter(workspace_id=client.workspace_id, email=email).exists():
+        WorkspaceMemberInvite.objects.filter(workspace_id=client.workspace_id, email=email, role=GUEST).delete()
 
 
 def attach_client_logins(user):

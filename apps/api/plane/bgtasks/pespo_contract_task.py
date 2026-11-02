@@ -4,7 +4,7 @@
 
 """Pespo: contrato vencendo, pelo beat do Hub (no lugar do workflow "Vencimento de Contratos" do n8n).
 
-Desligado por padrão (``PESPO_CONTRACT_EXPIRY_ENABLED``): só faz sentido com os contratos no Hub
+Ligado por padrão (``PESPO_CONTRACT_EXPIRY_ENABLED=0`` desliga): só faz sentido com os contratos no Hub
 (``PESPO_CONTRACTS_SOURCE=hub``) e o workflow do n8n desligado, senão o aviso sai duas vezes. A regra é a do n8n:
 
 - contrato ativo que vence nos próximos ``PESPO_CONTRACT_EXPIRY_DAYS`` dias (14) e ainda sem aviso: cria um item

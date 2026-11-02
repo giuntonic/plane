@@ -157,6 +157,18 @@ class TestPespoClients:
             project_id=project_id, member=existing_client_user, is_active=True
         ).exists()
 
+    def test_former_team_member_comes_back_as_guest(self, session_client, workspace):
+        former = User.objects.create(email="ex@acme.com", username="ex_equipe")
+        WorkspaceMember.objects.create(workspace=workspace, member=former, role=20, is_active=False)
+        response = session_client.post(self._url(workspace), _payload(emails=[]), format="json")
+        client_id = response.data["client"]["id"]
+        project_id = response.data["project"]["id"]
+        ProjectMember.objects.create(project_id=project_id, member=former, role=20, is_active=False)
+        url = self._url(workspace, "workspace-pespo-client-logins", pk=client_id)
+        session_client.post(url, {"emails": ["ex@acme.com"]}, format="json")
+        assert WorkspaceMember.objects.get(workspace=workspace, member=former).role == 5
+        assert ProjectMember.objects.get(project_id=project_id, member=former).role == 5
+
     def test_only_workspace_admins(self, workspace):
         member = User.objects.create(email="equipe@pespo.com.br", username="equipe")
         WorkspaceMember.objects.create(workspace=workspace, member=member, role=15)
