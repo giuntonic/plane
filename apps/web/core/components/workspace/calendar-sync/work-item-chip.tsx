@@ -9,10 +9,11 @@ import { observer } from "mobx-react";
 import type { TBaseIssue } from "@plane/types";
 import { cn } from "@plane/utils";
 // hooks
+import { useLabel } from "@/hooks/store/use-label";
 import { useProject } from "@/hooks/store/use-project";
 import { useAppRouter } from "@/hooks/use-app-router";
 // local imports
-import { DRAG_MIME } from "./helpers";
+import { DRAG_MIME, PIECE_CATEGORIES } from "./helpers";
 
 const PRIORITY_COLORS: Record<string, string> = {
   urgent: "#dc2626",
@@ -37,6 +38,11 @@ export const CalendarWorkItemChip = observer(function CalendarWorkItemChip(props
   const router = useAppRouter();
   const { getProjectIdentifierById } = useProject();
   const identifier = getProjectIdentifierById(issue.project_id);
+  const { getLabelById } = useLabel();
+  // Pespo: a categoria da peça (Post, Reels…) na frente do nome, para o calendário editorial
+  const category = (issue.label_ids ?? [])
+    .map((id) => getLabelById(id)?.name)
+    .find((name): name is string => !!name && PIECE_CATEGORIES.includes(name));
   const isCompleted = (issue as TBaseIssue & { state__group?: string }).state__group === "completed";
 
   return (
@@ -58,8 +64,11 @@ export const CalendarWorkItemChip = observer(function CalendarWorkItemChip(props
         }
       )}
       style={{ borderLeftColor: PRIORITY_COLORS[issue.priority ?? ""] ?? undefined }}
-      title={issue.name}
+      title={category ? `${category} · ${issue.name}` : issue.name}
     >
+      {category && !issue.name.toLowerCase().startsWith(category.toLowerCase()) && (
+        <span className="mr-1 text-tertiary">{category}</span>
+      )}
       {issue.name}
     </button>
   );

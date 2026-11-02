@@ -94,3 +94,6 @@ export const dateFromKey = (dateKey: string) => {
 
 export const formatTime = (iso: string) =>
   new Date(iso).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+
+/** Pespo: categorias de peça (as mesmas do painel de peças): a etiqueta do item diz se ele é uma peça. */
+export const PIECE_CATEGORIES = ["Post", "Reels", "Artigo", "Anuncio"];

@@ -462,6 +462,8 @@
     },
     "calendar_view": {
       "only_mine": "Only my work items",
+      "only_pieces": "Only pieces",
+      "all_clients": "All clients",
       "show_google": "Google events",
       "no_title": "(no title)",
       "linked_work_item": "Linked work item",
