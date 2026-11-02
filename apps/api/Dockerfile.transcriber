@@ -1,0 +1,32 @@
+# Pespo: worker de transcrição das reuniões gravadas pelo Hub (container plane-transcriber, fila "transcribe").
+# Mesmo código da api, mas em Debian (glibc): o ctranslate2 do faster-whisper não tem wheel para Alpine (musl).
+# O comando vem do compose do Plane.
+FROM python:3.12.10-slim-bookworm
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /code
+
+# ffmpeg: junção e conversão das faixas de áudio antes da transcrição
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libpq5 libxslt1.1 libxmlsec1-openssl ca-certificates ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt ./
+COPY requirements ./requirements
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc g++ libc6-dev libpq-dev make \
+    && pip install -r requirements/transcriber.txt --compile --no-cache-dir \
+    && apt-get purge -y gcc g++ libc6-dev libpq-dev make \
+    && apt-get autoremove -y \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY manage.py manage.py
+COPY plane plane/
+COPY templates templates/
+COPY package.json package.json
+COPY ./bin ./bin/
+
+RUN mkdir -p /code/plane/logs && chmod +x ./bin/* && chmod -R 777 /code
