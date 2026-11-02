@@ -21,6 +21,22 @@ export type TPespoRelease = {
 
 export const PESPO_RELEASES: TPespoRelease[] = [
   {
+    version: "1.8",
+    date: "2026-11-02",
+    summary:
+      "O Acervo (arquivos.pespo.com.br) dentro do Hub: pasta por cliente e por peça, link para o cliente mandar o material bruto e link de entrega.",
+    features: [
+      "Cada projeto ganha uma pasta no Acervo assim que é criado, e cada peça, uma subpasta com Recebido (o que o cliente manda) e Entrega (o que vai para o cliente).",
+      '"Arquivos" nos botões do item: gerar e copiar o link para receber material (só envio: quem tem o link manda arquivos, mas não vê nem baixa nada) ou o link de entrega (só leitura), e abrir a pasta da peça no Arquivos.',
+      "Os links valem 30 dias. Em Arquivos da peça dá para copiar, renovar, mudar a validade ou revogar.",
+      '"Arquivos da peça" no item mostra os links e o que já chegou em Recebido e está em Entrega, com tamanho e data.',
+      'O cliente vê os links ativos na peça e tem o botão "Enviar material", que abre a página de envio do Acervo, mesmo sem link gerado antes.',
+      "Quando chega material novo em Recebido, a equipe recebe um aviso no item (só para a equipe) e uma notificação no Hub, para os responsáveis e quem segue o item.",
+      "Configurações do projeto › Acervo: abrir a pasta do projeto, criar se ainda não existir ou escolher outra pasta do Acervo.",
+    ],
+    fixes: [],
+  },
+  {
     version: "1.7",
     date: "2026-11-01",
     summary:

@@ -250,6 +250,68 @@ Correções feitas depois do merge:
 
 ---
 
+## Versão 1.8: o Acervo (Nextcloud) dentro do Hub (2026-11-02)
+
+Fase 2 do Nextcloud (`arquivos.pespo.com.br`, implantado em 01–02/11; `/Acervo` é o bucket R2 `pespo-acervo`).
+Decisão do Giuliano: a automação fica dentro do Hub, não no portal do cliente nem no painel admin. Escopo fechado
+em 02/11: pastas projeto › peça, links visíveis para a equipe e para o cliente, 30 dias renováveis, lista do que
+chegou, aviso de material novo, pasta junto com o projeto e "Abrir no Arquivos". Deploy no `pespo-infra`
+(`docs/deploy-plane-1.8.md`): migration `0146`, rebuild de api e web, o `bgworker` na rede `portal-cliente_proxy`,
+o usuário de serviço `pespo-hub` no Nextcloud e as variáveis `NEXTCLOUD_*`.
+
+- **Pastas.** `NEXTCLOUD_ROOT/<projeto>/<peça>/{Recebido,Entrega}`, com `NEXTCLOUD_ROOT=Acervo/Clientes`.
+  - `Project.acervo_folder` (migration `0146`, com `db_default` para a API antiga durante o deploy): só leitura no
+    serializer do projeto, muda pelo endpoint do Acervo, que confere o caminho (dentro de `Acervo/`, sem `..`).
+  - Projeto novo (tela, API do painel admin ou modelo) dispara `create_project_folder` pelo `post_save`
+    (`db/models/acervo.py`), em `on_commit`, só com o Nextcloud configurado. Os de antes: comando
+    `acervo_criar_pastas` (padrão: só os ligados a um cliente no portal, `clientes.plane_project_id`; `--todos`,
+    `--simular`).
+  - `IssueAcervoFolder`: a pasta da peça, criada no primeiro link. Nome limpo (`safe_name`: sem `\ / : * ? " < > |`,
+    até 80 caracteres); peças com o mesmo nome ganham ` (2)`, ` (3)`. Uma pasta que já existia no Nextcloud com o
+    nome da peça é aproveitada. Renomear depois não move nada.
+- **Links** (`IssueAcervoLink`, `utils/acervo.py`): `upload` (só envio, `Recebido/`, permissão 4) e `delivery`
+  (leitura, `Entrega/`, permissão 1), um ativo por tipo e peça (pedir de novo devolve o ativo; trava por
+  `pg_advisory_xact_lock` para dois cliques não gerarem dois links). Validade `NEXTCLOUD_LINK_DAYS` (30), renovar
+  (+30 a partir de hoje), mudar a data (amanhã até 1 ano) e revogar (apaga no Nextcloud). Se o Nextcloud já apagou
+  o link vencido, renovar cria outro na mesma pasta (o endereço muda). O link leva um recado (`note`) que a página
+  do Nextcloud mostra.
+  - Cliente do Nextcloud em `utils/nextcloud.py`: WebDAV (`MKCOL` criando as pastas de cima no 409, `PROPFIND`
+    lido com `lxml` sem entidades nem rede) e OCS. **Nunca manda `publicUpload`** (com ele o Nextcloud grava 31,
+    edição completa); e se o link voltar com outra permissão, apaga na hora e dá erro.
+- **API** (`app/views/issue/acervo.py`, `app/views/project/acervo.py`).
+  - `…/issues/<id>/acervo/` (GET): links, pasta (só equipe) e o que tem em `Recebido/` e `Entrega/` (sem arquivos
+    ocultos nem `.part`). Nextcloud fora do ar: 200 com `unavailable`. Sem pasta, não chama o Nextcloud.
+  - `…/acervo/links/` (POST `kind`), `…/acervo/links/<id>/` (PATCH `renew` ou `expires_on`; DELETE),
+    `…/acervo/folder/` (POST, cria a pasta para o "Abrir no Arquivos").
+  - Cliente (convidado): vê só os links ativos, nunca a pasta; gera sozinho só o de envio; não renova nem revoga.
+    Sem "ver tudo" (`guest_view_all_features`), só nos itens que criou.
+  - `projects/<id>/acervo/` (GET equipe; POST admin: cria a padrão ou usa `folder`) e `…/acervo/browse/` (GET
+    subpastas, POST pasta nova), para Configurações › Acervo.
+  - Erros: `ACERVO_DISABLED` (400, sem `NEXTCLOUD_URL`/`USER`/`APP_PASSWORD`) e `ACERVO_UNAVAILABLE` (503).
+- **Aviso de material novo** (`bgtasks/acervo_task.py`, beat `pespo-acervo-check-received` a cada 10 min, no
+  bgworker): olha `Recebido/` das peças com link de envio ativo (ou vencido há um dia) e compara os `oc:fileid` com
+  os já vistos. O que estava lá quando o link nasceu não avisa. Arquivo novo vira comentário do bot "Arquivos"
+  (`BotTypeEnum.PESPO_ACERVO`, `external_source = "pespo_acervo_team"`, escondido de convidados por
+  `team_only_comments`, sem `issue_activity`) e notificação no Hub para responsáveis e inscritos que são admin ou
+  membro (o cliente que segue o item não recebe). Nextcloud fora do ar: para e tenta na próxima rodada.
+- **Tela.**
+  - "Arquivos" nos botões do item (`issue-detail-widgets/acervo/action-button.tsx`): link para receber material,
+    link de entrega (gera, copia e abre a seção) e "Abrir pasta no Arquivos". Para o cliente, "Enviar material",
+    que abre a página de envio numa aba (aberta no clique, senão o navegador bloqueia).
+  - Seção "Arquivos da peça" (`acervo/root.tsx`, widget `acervo`): os dois links com validade, copiar, abrir,
+    renovar, mudar a data e revogar; as listas de Recebido e Entrega; "Abrir pasta no Arquivos".
+  - Configurações do projeto › Acervo (`features/acervo`), com o seletor de pasta (`components/acervo/
+folder-picker-modal.tsx`).
+- **Configuração** (`settings/common.py`): `NEXTCLOUD_URL` (`http://nextcloud`, rede interna; o `X-Forwarded-For`
+  seria ignorado, o Nextcloud só confia no IP do Caddy), `NEXTCLOUD_PUBLIC_URL`, `NEXTCLOUD_USER`,
+  `NEXTCLOUD_APP_PASSWORD`, `NEXTCLOUD_ROOT`, `NEXTCLOUD_LINK_DAYS`. Sem URL, usuário ou senha, nada aparece.
+- **Teste local:** o Nextcloud é um falso em memória nos testes de contrato (`test_acervo_app.py`) e uma sessão
+  falsa nos de unidade (`test_nextcloud.py`, inclusive XML com entidade externa). Sem Nextcloud de verdade na
+  sessão: a primeira conferência real é a do roteiro de deploy.
+- **Risco de upgrade:** baixo. Arquivos novos quase todos. Fora isso: `Project` (um campo), o serializer do projeto
+  (`read_only_fields`), `TWorkItemWidgets`, os widgets e botões do item, as rotas e constantes das configurações do
+  projeto, `team_only_comments` e o beat.
+
 ## Versão 1.7: tempo gasto por peça, reuniões gravadas e o Google como parte do Hub (2026-11-02)
 
 Pedido do Giuliano (31/10): medir o tempo gasto por peça, com a opção de mostrar ao cliente, e fazer o
