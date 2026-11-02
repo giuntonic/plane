@@ -4,6 +4,7 @@
  * See the LICENSE file for details.
  */
 
+import type { TMeetingBooking } from "../meeting-recording";
 import type { TLogoProps } from "../common";
 import type { TUserPermissions } from "../enums";
 import type { TStateGroups } from "../state";
@@ -37,6 +38,7 @@ export interface IPartialProject {
   /** Pespo: pasta do projeto no Google Drive (documentos criados pelos itens vão para ela). */
   google_drive_folder_id?: string;
   google_drive_folder_name?: string;
+  meeting_booking?: TMeetingBooking;
   guest_view_all_features?: boolean;
   project_lead?: IUserLite | string | null;
   network?: number;

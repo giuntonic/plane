@@ -21,6 +21,7 @@ import useSWR from "swr";
 import { useWorkspaceNotifications } from "@/hooks/store/notifications";
 import { useUserPermissions } from "@/hooks/store/user";
 import { RunningTimerChip } from "@/components/issues/time-tracking";
+import { MeetingRecordingChip } from "@/components/meeting-recording/recording-chip";
 
 export const TopNavigationRoot = observer(function TopNavigationRoot() {
   const { t } = useTranslation();
@@ -75,6 +76,8 @@ export const TopNavigationRoot = observer(function TopNavigationRoot() {
       <div className="flex flex-1 shrink-0 items-center justify-end gap-1">
         {/* Pespo: cronômetro do tempo gasto, quando há um rodando */}
         {!isGuest && workspaceSlug && <RunningTimerChip workspaceSlug={workspaceSlug.toString()} />}
+        {/* Pespo: gravação de reunião em andamento */}
+        {!isGuest && <MeetingRecordingChip />}
         <Tooltip tooltipContent={t("sidebar.inbox")} position="bottom">
           <AppSidebarItem
             variant="link"

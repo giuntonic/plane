@@ -347,12 +347,31 @@ CELERY_IMPORTS = (
     "plane.bgtasks.issue_recurrence_task",
     "plane.bgtasks.media_review_task",
     "plane.bgtasks.time_tracking_task",
+    "plane.bgtasks.meeting_recording_task",
 )
 
 # Pespo: a conversão de vídeo da revisão roda numa fila só dela, num worker com uma tarefa por vez.
 CELERY_TASK_ROUTES = {
     "plane.bgtasks.media_review_task.process_media_asset": {"queue": "media"},
+    # Pespo: transcrição das reuniões, no worker plane-transcriber (uma reunião por vez)
+    "plane.bgtasks.meeting_recording_task.transcribe_meeting": {"queue": "transcribe"},
 }
+
+# Pespo: reuniões gravadas pelo Hub. Transcrição local com faster-whisper (modelo "small" até a medição na VPS
+# decidir outro); a ata é escrita pela equipe, ou pré-preenchida por um modelo local no Ollama
+# (MEETING_SUMMARY_ENGINE=ollama).
+TRANSCRIBE_MODEL = os.environ.get("TRANSCRIBE_MODEL", "small")
+TRANSCRIBE_THREADS = int(os.environ.get("TRANSCRIBE_THREADS", 2))
+TRANSCRIBE_MODEL_DIR = os.environ.get("TRANSCRIBE_MODEL_DIR") or None
+TRANSCRIBE_LANGUAGE = os.environ.get("TRANSCRIBE_LANGUAGE", "pt")
+TRANSCRIBE_TMP_DIR = os.environ.get("TRANSCRIBE_TMP_DIR") or None
+MEETING_SUMMARY_ENGINE = os.environ.get("MEETING_SUMMARY_ENGINE", "none")
+OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://ollama:11434")
+OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")
+OLLAMA_NUM_CTX = int(os.environ.get("OLLAMA_NUM_CTX", 16384))
+OLLAMA_THREADS = int(os.environ.get("OLLAMA_THREADS", 3))
+MEETING_AUDIO_RETENTION_DAYS = int(os.environ.get("MEETING_AUDIO_RETENTION_DAYS", 180))
+MEETING_CHUNK_MAX_BYTES = int(os.environ.get("MEETING_CHUNK_MAX_BYTES", 5 * 1024 * 1024))
 
 FILE_SIZE_LIMIT = int(os.environ.get("FILE_SIZE_LIMIT", 5242880))
 # Pespo: vídeos da revisão da peça podem ser bem maiores que os outros anexos (padrão 5 GB, o máximo de

@@ -396,6 +396,10 @@ export const coreRoutes: RouteConfigEntry[] = [
               ":workspaceSlug/settings/projects/:projectId/features/google-drive",
               "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/google-drive/page.tsx"
             ),
+            route(
+              ":workspaceSlug/settings/projects/:projectId/features/meetings",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/meetings/page.tsx"
+            ),
             // Project States
             route(
               ":workspaceSlug/settings/projects/:projectId/states",

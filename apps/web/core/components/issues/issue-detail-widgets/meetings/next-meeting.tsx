@@ -6,11 +6,15 @@
 
 import { observer } from "mobx-react";
 import { Video } from "lucide-react";
+import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import type { TIssueCalendarEvent } from "@plane/types";
 import { cn } from "@plane/utils";
 // components
 import { SidebarPropertyListItem } from "@/components/common/layout/sidebar/property-list-item";
+import { MeetingRecordButton, isRecordable } from "@/components/meeting-recording/record-button";
+// hooks
+import { useUserPermissions } from "@/hooks/store/user";
 // local imports
 import { useIssueMeetings } from "./helper";
 
@@ -40,6 +44,13 @@ export const IssueNextMeetingProperty = observer(function IssueNextMeetingProper
   const { workspaceSlug, projectId, issueId } = props;
   const { t } = useTranslation();
   const { data: meetings } = useIssueMeetings(workspaceSlug, projectId, issueId);
+  const { allowPermissions } = useUserPermissions();
+  const isTeam = allowPermissions(
+    [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
+    EUserPermissionsLevel.PROJECT,
+    workspaceSlug,
+    projectId
+  );
   const now = Date.now();
   const meeting = nextMeeting(meetings, now);
   if (!meeting) return null;
@@ -69,6 +80,14 @@ export const IssueNextMeetingProperty = observer(function IssueNextMeetingProper
         >
           {isLive ? t("google_calendar_integration.next_meeting.now") : `${day}${time}`}
         </a>
+        {isTeam && isRecordable(meeting) && (
+          <MeetingRecordButton
+            workspaceSlug={workspaceSlug}
+            projectId={projectId}
+            issueId={issueId}
+            meeting={meeting}
+          />
+        )}
         {meeting.meet_link && (
           <a
             href={meeting.meet_link}

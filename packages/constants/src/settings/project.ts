@@ -103,6 +103,13 @@ export const PROJECT_SETTINGS: Record<TProjectSettingsTabs, TProjectSettingsItem
     access: [EUserProjectRoles.ADMIN],
     highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/features/google-drive/`,
   },
+  features_meetings: {
+    key: "features_meetings",
+    i18n_label: "project_settings.features.meetings.short_title",
+    href: `/features/meetings`,
+    access: [EUserProjectRoles.ADMIN],
+    highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/features/meetings/`,
+  },
   states: {
     key: "states",
     i18n_label: "common.states",
@@ -153,6 +160,7 @@ export const GROUPED_PROJECT_SETTINGS: Record<PROJECT_SETTINGS_CATEGORY, TProjec
     PROJECT_SETTINGS["features_pieces"],
     PROJECT_SETTINGS["features_time_tracking"],
     PROJECT_SETTINGS["features_google_drive"],
+    PROJECT_SETTINGS["features_meetings"],
   ],
   [PROJECT_SETTINGS_CATEGORY.WORK_STRUCTURE]: [
     PROJECT_SETTINGS["states"],

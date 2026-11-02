@@ -43,6 +43,7 @@ export type TProjectSettingsTabs =
   | "features_time_tracking"
   // Pespo: pasta do projeto no Google Drive
   | "features_google_drive"
+  | "features_meetings"
   | "states"
   | "labels"
   | "estimates"

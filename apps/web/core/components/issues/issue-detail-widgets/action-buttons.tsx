@@ -5,7 +5,7 @@
  */
 
 import React from "react";
-import { CalendarPlus, ListChecks, Paperclip, Video, ListTodo } from "lucide-react";
+import { CalendarPlus, ListChecks, Paperclip, Video, ListTodo, CalendarClock } from "lucide-react";
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, ViewsIcon, RelationPropertyIcon } from "@plane/propel/icons";
 // plane imports
@@ -14,6 +14,7 @@ import type { TIssueServiceType, TWorkItemWidgets } from "@plane/types";
 import { IssueAttachMenu } from "./attachments/attach-menu";
 import { IssueChecklistActionButton, IssueNamedChecklistActionButton } from "./checklist";
 import { IssueLinksActionButton } from "./links";
+import { RequestMeetingButton } from "@/components/meeting-recording/request-meeting";
 import { IssueMeetingActionButton, IssueMeetNowButton } from "./meetings";
 import { RelationActionButton } from "./relations";
 import { SubIssuesActionButton } from "./sub-issues";
@@ -155,6 +156,20 @@ export function IssueDetailWidgetActionButtons(props: Props) {
           }
           disabled={disabled}
           issueServiceType={issueServiceType}
+        />
+      )}
+      {/* Pespo: o cliente (convidado) pede reunião nos horários livres da equipe */}
+      {!hideWidgets?.includes("meetings") && (
+        <RequestMeetingButton
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          customButton={
+            <IssueDetailWidgetButton
+              title={t("meeting_booking.request")}
+              icon={<CalendarClock className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
+            />
+          }
         />
       )}
     </div>

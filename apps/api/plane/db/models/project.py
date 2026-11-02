@@ -104,6 +104,10 @@ class Project(BaseModel):
     # os documentos criados pelos itens. Vazia: vão para o Meu Drive de quem cria.
     google_drive_folder_id = models.CharField(max_length=255, blank=True, default="", db_default="")
     google_drive_folder_name = models.CharField(max_length=255, blank=True, default="", db_default="")
+    # Pespo: o cliente (convidado) pede reunião pelo item, nos horários livres de quem atende (livre/ocupado do
+    # Google Calendar). {"enabled", "host_ids", "duration_minutes", "day_start", "day_end", "weekdays",
+    # "notice_hours", "window_days"}; vazio = desligado.
+    meeting_booking = models.JSONField(default=dict, blank=True, db_default={})
     is_time_tracking_enabled = models.BooleanField(default=False)
     is_issue_type_enabled = models.BooleanField(default=False)
     guest_view_all_features = models.BooleanField(default=False)

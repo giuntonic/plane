@@ -7,13 +7,18 @@
 import { observer } from "mobx-react";
 import { CalendarDays, ExternalLink, Link2Off, Trash2, Video } from "lucide-react";
 // plane imports
+import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import { Tooltip } from "@plane/propel/tooltip";
 import type { TIssueCalendarEvent, TIssueServiceType } from "@plane/types";
 import { cn } from "@plane/utils";
+// components
+import { MeetingRecordButton, isRecordable } from "@/components/meeting-recording/record-button";
+import { IssueMeetingRecordings } from "@/components/meeting-recording/recordings-list";
 // hooks
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
+import { useUserPermissions } from "@/hooks/store/user";
 // services
 import { issueCalendarEventService } from "@/services/issue-calendar-event.service";
 // local imports
@@ -47,6 +52,13 @@ export const IssueMeetingsCollapsibleContent = observer(function IssueMeetingsCo
   const { t } = useTranslation();
   const { fetchActivities } = useIssueDetail(issueServiceType);
   const { data: meetings = [], mutate } = useIssueMeetings(workspaceSlug, projectId, issueId);
+  const { allowPermissions } = useUserPermissions();
+  const isTeam = allowPermissions(
+    [EUserPermissions.ADMIN, EUserPermissions.MEMBER],
+    EUserPermissionsLevel.PROJECT,
+    workspaceSlug,
+    projectId
+  );
   const upcoming = meetings.filter((m) => !isPast(m));
   // Most recent first. filter() already returns a copy; toSorted() isn't in the web app's ES2022 lib.
   // oxlint-disable-next-line unicorn/no-array-sort
@@ -90,6 +102,15 @@ export const IssueMeetingsCollapsibleContent = observer(function IssueMeetingsCo
           </span>
         </div>
         <div className="flex flex-shrink-0 items-center gap-0.5">
+          {isTeam && isRecordable(meeting) && (
+            <MeetingRecordButton
+              workspaceSlug={workspaceSlug}
+              projectId={projectId}
+              issueId={issueId}
+              meeting={meeting}
+              className="mr-1"
+            />
+          )}
           {meeting.meet_link && !past_ && (
             <a
               href={meeting.meet_link}
@@ -142,6 +163,7 @@ export const IssueMeetingsCollapsibleContent = observer(function IssueMeetingsCo
           <ul className="flex flex-col gap-1">{past.map(renderMeeting)}</ul>
         </>
       )}
+      <IssueMeetingRecordings workspaceSlug={workspaceSlug} projectId={projectId} issueId={issueId} />
     </div>
   );
 });

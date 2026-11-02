@@ -14,6 +14,7 @@ from django.db.models import Max
 from plane.app.serializers.workspace import WorkspaceLiteSerializer
 from plane.app.serializers.user import UserLiteSerializer, UserAdminLiteSerializer
 from plane.utils.google_drive import is_valid_drive_id
+from plane.utils.meeting_booking import clean_booking
 from plane.db.models import (
     Project,
     ProjectMember,
@@ -55,6 +56,18 @@ class ProjectSerializer(BaseSerializer):
             )
 
         return name
+
+    def validate_meeting_booking(self, value):
+        # Pespo: "Solicitar reunião". Quem atende precisa ser da equipe do projeto.
+        member_ids = []
+        if self.instance:
+            member_ids = ProjectMember.objects.filter(project=self.instance, is_active=True, role__gte=15).values_list(
+                "member_id", flat=True
+            )
+        try:
+            return clean_booking(value or {}, member_ids)
+        except ValueError as e:
+            raise serializers.ValidationError(detail=str(e)) from e
 
     def validate_google_drive_folder_id(self, value):
         # Pespo: só um id de pasta do Drive (ou vazio, para tirar a pasta)

@@ -12,6 +12,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 
 # Third Party imports
 import requests
@@ -24,6 +25,7 @@ from plane.app.permissions import allow_permission, ROLE
 from plane.bgtasks.issue_activities_task import issue_activity
 from plane.db.models import GoogleCalendarConnection, Issue, IssueAssignee, IssueCalendarEvent
 from plane.utils import google_calendar as gcal
+from plane.utils import meeting_booking as booking
 from plane.utils.exception_logger import log_exception
 from plane.utils.host import base_host
 
@@ -32,6 +34,8 @@ MAX_ATTENDEES = 100
 REFRESH_INTERVAL = timedelta(minutes=5)
 # Default length of a "Meet agora" meeting.
 INSTANT_MEETING_MINUTES = 30
+# Pespo: aviso no convite de toda reunião marcada pelo Hub (LGPD): ela pode ser gravada pelo Hub.
+RECORDING_NOTICE = "Esta reunião pode ser gravada e transcrita pelo Pespo Hub para gerar a ata."
 
 
 def _issue_url(issue):
@@ -290,12 +294,15 @@ class IssueCalendarEventInstantEndpoint(BaseAPIView):
         )
 
 
-def _create_meeting(request, issue, connection, *, summary, description, start, end, emails, with_meet, calendar_id):
+def _create_meeting(
+    request, issue, connection, *, summary, description, start, end, emails, with_meet, calendar_id, organizer=None
+):
     """Creates the Google event (with Meet and invitations) and links it to
-    the work item. Shared by the scheduling form and "Meet agora"."""
+    the work item. Shared by the scheduling form, "Meet agora" and the client's
+    "Solicitar reunião" (where ``organizer`` is the host whose calendar gets the event)."""
     body = {
         "summary": summary,
-        "description": f"{description}\n\n{_issue_url(issue)}".strip(),
+        "description": f"{description}\n\n{RECORDING_NOTICE}\n\n{_issue_url(issue)}".strip(),
         "start": start,
         "end": end,
         "attendees": [{"email": e} for e in emails],
@@ -325,7 +332,8 @@ def _create_meeting(request, issue, connection, *, summary, description, start, 
         calendar_id=calendar_id,
     )
     _fill_from_event(row, event)
-    row.save()
+    # O dono da reunião é quem tem o evento na agenda (no "Solicitar reunião", quem atende, não o cliente).
+    row.save(created_by_id=organizer.id if organizer else None)
     _log_activity(request, issue, "created", row.html_link)
     return Response(_serialize(row, request.user), status=status.HTTP_201_CREATED)
 
@@ -409,3 +417,122 @@ class IssueCalendarEventDetailEndpoint(BaseAPIView):
             _log_activity(request, issue, "deleted", row.html_link)
         row.delete(soft=False)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def _booking_hosts(project, config):
+    """Quem atende, na ordem configurada, com a agenda do Google conectada: [(usuário, conexão)]."""
+    connections = {
+        str(c.user_id): c
+        for c in GoogleCalendarConnection.objects.filter(user_id__in=config["host_ids"]).select_related("user")
+    }
+    return [(connections[h].user, connections[h]) for h in config["host_ids"] if h in connections]
+
+
+def _booking_slots(project, config, hosts, start_date, days, now):
+    zone = booking.project_zone(project)
+    candidates = booking.candidate_slots(config, zone, start_date, days, now)
+    if not candidates:
+        return []
+    busy = []
+    for _user, connection in hosts:
+        access_token = gcal.get_valid_access_token(connection)
+        busy += gcal.free_busy(access_token, candidates[0][0], candidates[-1][1])
+    return booking.free_slots(candidates, busy)
+
+
+def _booking_issue(slug, project_id, issue_id):
+    issue = (
+        Issue.issue_objects.filter(workspace__slug=slug, project_id=project_id, pk=issue_id)
+        .select_related("project", "project__workspace", "workspace")
+        .first()
+    )
+    if not issue:
+        return None, None, Response({"error": "Work item not found"}, status=status.HTTP_404_NOT_FOUND)
+    config = booking.booking_config(issue.project)
+    if not config["enabled"]:
+        return None, None, Response({"error": "BOOKING_DISABLED"}, status=status.HTTP_403_FORBIDDEN)
+    return issue, config, None
+
+
+class IssueMeetingSlotsEndpoint(BaseAPIView):
+    """Pespo: horários livres para o "Solicitar reunião" (todas as pessoas que atendem livres ao mesmo tempo)."""
+
+    @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])
+    def get(self, request, slug, project_id, issue_id):
+        issue, config, error = _booking_issue(slug, project_id, issue_id)
+        if error:
+            return error
+        hosts = _booking_hosts(issue.project, config)
+        if not hosts:
+            return Response({"error": "NO_HOST_CALENDAR"}, status=status.HTTP_409_CONFLICT)
+        zone = booking.project_zone(issue.project)
+        now = timezone.now()
+        try:
+            start_date = date.fromisoformat(request.GET.get("from") or now.astimezone(zone).date().isoformat())
+        except ValueError:
+            return Response({"error": "Invalid date"}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            days = int(request.GET.get("days") or 7)
+        except ValueError:
+            days = 7
+        days = min(max(days, 1), 14)
+        try:
+            slots = _booking_slots(issue.project, config, hosts, start_date, days, now)
+        except Exception as e:
+            return _google_error(e)
+        return Response(
+            {
+                "timezone": str(zone),
+                "duration_minutes": config["duration_minutes"],
+                "window_days": config["window_days"],
+                "hosts": [user.display_name or user.first_name for user, _c in hosts],
+                "slots": [{"start": start.isoformat(), "end": end.isoformat()} for start, end in slots],
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class IssueMeetingRequestEndpoint(BaseAPIView):
+    """Pespo: o cliente (ou alguém da equipe) marca a reunião num horário livre. O evento nasce na agenda da
+    primeira pessoa que atende, com Google Meet, convidando as outras e quem pediu, vinculado ao item."""
+
+    @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])
+    def post(self, request, slug, project_id, issue_id):
+        issue, config, error = _booking_issue(slug, project_id, issue_id)
+        if error:
+            return error
+        hosts = _booking_hosts(issue.project, config)
+        if not hosts:
+            return Response({"error": "NO_HOST_CALENDAR"}, status=status.HTTP_409_CONFLICT)
+        start = parse_datetime(str(request.data.get("start") or ""))
+        if not start or start.tzinfo is None:
+            return Response({"error": "Invalid start"}, status=status.HTTP_400_BAD_REQUEST)
+        zone = booking.project_zone(issue.project)
+        try:
+            slots = _booking_slots(issue.project, config, hosts, start.astimezone(zone).date(), 1, timezone.now())
+        except Exception as e:
+            return _google_error(e)
+        slot = next(((s, e) for s, e in slots if s == start), None)
+        if not slot:
+            return Response({"error": "SLOT_TAKEN"}, status=status.HTTP_409_CONFLICT)
+        organizer, connection = hosts[0]
+        emails = []
+        for user in [h for h, _c in hosts[1:]] + [request.user]:
+            if user.email and user.id != organizer.id and user.email.lower() not in {e.lower() for e in emails}:
+                emails.append(user.email)
+        requester = request.user.display_name or request.user.first_name or request.user.email
+        note = str(request.data.get("note") or "").strip()[:2000]
+        description = f"Pedida por {requester} pelo Pespo Hub." + (f"\n\n{note}" if note else "")
+        return _create_meeting(
+            request,
+            issue,
+            connection,
+            summary=f"{issue.project.identifier}-{issue.sequence_id} · {issue.name}"[:1024],
+            description=description,
+            start={"dateTime": slot[0].isoformat()},
+            end={"dateTime": slot[1].isoformat()},
+            emails=emails,
+            with_meet=True,
+            calendar_id="primary",
+            organizer=organizer,
+        )
