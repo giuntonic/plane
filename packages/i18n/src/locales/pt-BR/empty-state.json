@@ -1,25 +1,25 @@
 {
   "common_empty_state": {
     "progress": {
-      "title": "Ainda não há métricas de progresso para mostrar.",
-      "description": "Comece definindo valores de propriedades em itens de trabalho para ver as métricas de progresso aqui."
+      "title": "Sem métricas de progresso",
+      "description": "Preencha as propriedades dos itens de trabalho — estado, prioridade, responsável — e as métricas aparecem aqui."
     },
     "updates": {
-      "title": "Ainda não há atualizações.",
-      "description": "Quando os membros do projeto adicionarem atualizações, elas aparecerão aqui"
+      "title": "Nenhuma atualização ainda",
+      "description": "Quando alguém publicar uma atualização no projeto, ela aparece aqui."
     },
     "search": {
-      "title": "Nenhum resultado correspondente.",
-      "description": "Nenhum resultado encontrado. Tente ajustar seus termos de pesquisa."
+      "title": "Nada encontrado",
+      "description": "Tente outras palavras, remova os filtros ou busque pelo identificador do item."
     },
     "not_found": {
-      "title": "Ops! Algo parece errado",
+      "title": "Não foi possível carregar",
       "description": "Não conseguimos buscar sua conta Pespo Hub no momento. Pode ser um erro de rede.",
       "cta_primary": "Tentar recarregar"
     },
     "server_error": {
-      "title": "Erro do servidor",
-      "description": "Não conseguimos conectar e buscar dados do nosso servidor. Não se preocupe, estamos trabalhando nisso.",
+      "title": "Não foi possível conectar",
+      "description": "A conexão com o servidor falhou. Tente de novo em alguns instantes.",
       "cta_primary": "Tentar recarregar"
     }
   },
@@ -36,35 +36,35 @@
       "description": "O projeto que você está procurando não existe."
     },
     "work_items": {
-      "title": "Comece com seu primeiro item de trabalho.",
-      "description": "Os itens de trabalho são os blocos de construção do seu projeto — atribua proprietários, defina prioridades e acompanhe o progresso facilmente.",
-      "cta_primary": "Criar seu primeiro item de trabalho"
+      "title": "Nenhum item de trabalho ainda",
+      "description": "Crie o primeiro para começar. Cada item guarda responsável, prazo, prioridade e o histórico do que mudou.",
+      "cta_primary": "Criar item de trabalho"
     },
     "cycles": {
-      "title": "Agrupe e defina prazos para seu trabalho em Ciclos.",
-      "description": "Divida o trabalho em blocos com prazo definido, trabalhe de trás para frente a partir do prazo do projeto para definir datas e faça progresso tangível como equipe.",
-      "cta_primary": "Definir seu primeiro ciclo"
+      "title": "Nenhum ciclo ainda",
+      "description": "Ciclos agrupam o trabalho num período com começo e fim. Defina o primeiro para acompanhar o que entra e o que sai.",
+      "cta_primary": "Criar ciclo"
     },
     "cycle_work_items": {
-      "title": "Nenhum item de trabalho para mostrar neste ciclo",
-      "description": "Crie itens de trabalho para começar a monitorar o progresso da sua equipe neste ciclo e atingir seus objetivos no prazo.",
+      "title": "Nenhum item neste ciclo",
+      "description": "Adicione itens para acompanhar o que a equipe entrega até o fim do ciclo.",
       "cta_primary": "Criar item de trabalho",
       "cta_secondary": "Adicionar item de trabalho existente"
     },
     "modules": {
-      "title": "Mapeie as metas do seu projeto para Módulos e acompanhe facilmente.",
-      "description": "Os módulos são compostos por itens de trabalho interconectados. Eles auxiliam no monitoramento do progresso através das fases do projeto, cada uma com prazos e análises específicas para indicar o quão perto você está de alcançar essas fases.",
-      "cta_primary": "Definir seu primeiro módulo"
+      "title": "Nenhum módulo ainda",
+      "description": "Módulos agrupam itens por fase ou frente do projeto. Use quando as partes avançam em ritmos diferentes.",
+      "cta_primary": "Criar módulo"
     },
     "module_work_items": {
-      "title": "Nenhum item de trabalho para mostrar neste Módulo",
-      "description": "Crie itens de trabalho para começar a monitorar este módulo.",
+      "title": "Nenhum item neste módulo",
+      "description": "Adicione itens para acompanhar esta frente do projeto.",
       "cta_primary": "Criar item de trabalho",
       "cta_secondary": "Adicionar item de trabalho existente"
     },
     "views": {
-      "title": "Salve visualizações personalizadas para seu projeto",
-      "description": "As visualizações são filtros salvos que ajudam você a acessar rapidamente as informações que mais usa. Colabore sem esforço enquanto os colegas de equipe compartilham e adaptam as visualizações às suas necessidades específicas.",
+      "title": "Nenhuma visualização salva",
+      "description": "Visualizações guardam um conjunto de filtros e a forma de exibir. Crie uma para o que você consulta toda semana.",
       "cta_primary": "Criar visualização"
     },
     "no_work_items_in_project": {
@@ -73,8 +73,8 @@
       "cta_primary": "Adicionar item de trabalho"
     },
     "work_item_filter": {
-      "title": "Nenhum item de trabalho encontrado",
-      "description": "Seu filtro atual não retornou nenhum resultado. Tente alterar os filtros.",
+      "title": "Nenhum item com esses filtros",
+      "description": "Os filtros atuais não retornaram nada. Remova algum ou ajuste o período.",
       "cta_primary": "Adicionar item de trabalho"
     },
     "pages": {
@@ -101,8 +101,8 @@
       "cta_secondary": "Documentação"
     },
     "epic_work_items": {
-      "title": "Você ainda não adicionou itens de trabalho a este épico.",
-      "description": "Comece adicionando alguns itens de trabalho a este épico e acompanhe-os aqui.",
+      "title": "Nenhum item neste épico",
+      "description": "Adicione itens para acompanhar o que este épico entrega.",
       "cta_secondary": "Adicionar itens de trabalho"
     }
   },
@@ -145,13 +145,13 @@
       "cta_primary": "Adicionar item de trabalho"
     },
     "drafts": {
-      "title": "Itens de trabalho semi-escritos",
-      "description": "Para experimentar isso, comece a adicionar um item de trabalho e deixe-o no meio do caminho ou crie seu primeiro rascunho abaixo. 😉",
+      "title": "Nenhum rascunho",
+      "description": "Rascunhos são itens começados e não enviados. Ficam aqui até você terminar.",
       "cta_primary": "Criar item de trabalho de rascunho"
     },
     "projects_archived": {
       "title": "Nenhum projeto arquivado",
-      "description": "Parece que todos os seus projetos ainda estão ativos — ótimo trabalho!"
+      "description": "Todos os seus projetos estão ativos."
     },
     "analytics_projects": {
       "title": "Crie projetos para visualizar as métricas do projeto aqui."
