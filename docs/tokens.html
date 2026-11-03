@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tokens da Pespo — amostras</title>
+<style>
+  :root {
+    --papel: #faf8f5; --tinta: #23222b; --suave: #6d6b78;
+    --pespo-piece-post: oklch(0.72 0.13 200);
+    --pespo-piece-artigo: oklch(0.75 0.15 140);
+    --pespo-piece-reels: oklch(0.8 0.16 85);
+    --pespo-piece-anuncio: oklch(0.66 0.17 330);
+    --pespo-doodle-ink: oklch(0.45 0.03 285);
+    --pespo-surface-warm: oklch(0.985 0.006 85);
+    --brand-atual: #6c5ce7;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 40px 24px 80px; background: var(--papel); color: var(--tinta);
+         font: 16px/1.6 -apple-system, "Segoe UI", Inter, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.02em; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--suave);
+       margin: 46px 0 14px; font-weight: 600; }
+  p.lead { color: var(--suave); margin: 0 0 8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+  .card { background: #fff; border: 1px solid #e7e3dd; border-radius: 12px; overflow: hidden; }
+  .swatch { height: 78px; }
+  .meta { padding: 10px 12px; font-size: 13px; }
+  .meta code { display: block; font-size: 11.5px; color: var(--suave); margin-top: 3px; word-break: break-all; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #eee9e2; }
+  .row:last-child { border-bottom: 0; }
+  .dot { width: 26px; height: 26px; border-radius: 50%; border: 1px solid #e2ddd6; flex: 0 0 auto; }
+  .motion { width: 120px; height: 10px; border-radius: 6px; background: #fff; border: 1px solid #e7e3dd;
+            position: relative; overflow: hidden; }
+  .ball { position: absolute; top: 1px; left: 1px; width: 6px; height: 6px; border-radius: 50%;
+          background: var(--brand-atual); }
+  .nota { background: #fff; border-left: 3px solid var(--brand-atual); padding: 14px 16px; border-radius: 8px;
+          font-size: 14px; color: #4a4854; }
+  footer { margin-top: 56px; font-size: 13px; color: var(--suave); border-top: 1px solid #eee9e2; padding-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Tokens da Pespo</h1>
+  <p class="lead">Amostras para escolher olhando. Nada aqui muda o app sozinho — é o catálogo do que a
+  2.0 vai usar. Gerado em 02/11/2026.</p>
+
+  <h2>1. Cores por categoria de peça</h2>
+  <div class="grid">
+    <div class="card"><div class="swatch" style="background:var(--pespo-piece-post)"></div>
+      <div class="meta">Post<code>--pespo-piece-post</code></div></div>
+    <div class="card"><div class="swatch" style="background:var(--pespo-piece-artigo)"></div>
+      <div class="meta">Artigo<code>--pespo-piece-artigo</code></div></div>
+    <div class="card"><div class="swatch" style="background:var(--pespo-piece-reels)"></div>
+      <div class="meta">Reels<code>--pespo-piece-reels</code></div></div>
+    <div class="card"><div class="swatch" style="background:var(--pespo-piece-anuncio)"></div>
+      <div class="meta">Anúncio<code>--pespo-piece-anuncio</code></div></div>
+  </div>
+
+  <h2>2. Tinta dos desenhos e superfície</h2>
+  <div class="card" style="padding: 4px 16px;">
+    <div class="row"><span class="dot" style="background:var(--pespo-doodle-ink)"></span>
+      <div>Tinta do rabisco<code style="color:var(--suave);font-size:11.5px">--pespo-doodle-ink · usada com opacidade</code></div></div>
+    <div class="row"><span class="dot" style="background:var(--pespo-surface-warm)"></span>
+      <div>Superfície quente (candidata)<code style="color:var(--suave);font-size:11.5px">--pespo-surface-warm</code></div></div>
+    <div class="row"><span class="dot" style="background:var(--brand-atual)"></span>
+      <div>Marca atual — <strong>placeholder</strong><code style="color:var(--suave);font-size:11.5px">#6C5CE7 · trocar na 2.0</code></div></div>
+  </div>
+
+  <h2>3. Movimento</h2>
+  <div class="card" style="padding: 4px 16px;">
+    <div class="row"><span class="motion"><span class="ball" style="animation: andar 1.2s ease-in-out infinite"></span></span>
+      <div>120 ms · micro-interação<code style="color:var(--suave);font-size:11.5px">--pespo-duration-fast</code></div></div>
+    <div class="row"><span class="motion"><span class="ball" style="animation: andar 1.8s ease-in-out infinite"></span></span>
+      <div>180 ms · padrão<code style="color:var(--suave);font-size:11.5px">--pespo-duration-base</code></div></div>
+    <div class="row"><span class="motion"><span class="ball" style="animation: andar 2.4s ease-in-out infinite"></span></span>
+      <div>240 ms · entrada de tela<code style="color:var(--suave);font-size:11.5px">--pespo-duration-slow</code></div></div>
+  </div>
+  <p class="lead" style="margin-top:10px;font-size:13px">As barras acima só ilustram a diferença de ritmo.
+  Com “reduzir movimento” ligado no sistema, as três viram 0 ms.</p>
+
+  <h2>4. O que ainda não foi decidido</h2>
+  <div class="nota">
+    <strong>A cor da marca ainda é provisória.</strong> O <code>#6C5CE7</code> está no código como
+    placeholder e é um roxo genérico — o mesmo território de Linear, Notion e Vercel. A 2.0 precisa escolher
+    uma cor herói de verdade, e a decisão é do Giuliano olhando, não da IA descrevendo.
+  </div>
+
+  <footer>
+    Este arquivo é autocontido: abre no navegador sem servidor. O contrato técnico (qual variável controla
+    qual utilidade) está em <code>docs/tokens-pespo.md</code>; a camada viva, em
+    <code>packages/tailwind-config/pespo-theme.css</code>.
+  </footer>
+</main>
+<style>
+  @keyframes andar { 0%{left:1px} 50%{left:calc(100% - 8px)} 100%{left:1px} }
+  @media (prefers-reduced-motion: reduce) { .ball { animation: none !important; left: calc(50% - 3px); } }
+</style>
+</body>
+</html>
