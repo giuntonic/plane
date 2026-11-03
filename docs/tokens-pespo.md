@@ -99,3 +99,33 @@ convincente que existe e leva 5 minutos — mas faça na homologação, nunca em
 
 `docs/tokens.html` — página autocontida (abre no navegador, sem servidor) com as cores e os nomes, para
 escolher a paleta olhando em vez de lendo.
+
+## Verificação executada (02/11/2026, 23:10, na homologação)
+
+O teste do verde foi feito de verdade, não no papel.
+
+1. Troquei `--bg-surface-1` para `lime` dentro do `pespo-theme.css`.
+2. Build do web, imagem `:homolog`, publicada em `/opt/plane-homolog`.
+3. No CSS final servido, a declaração aparece **três vezes**, nesta ordem:
+
+```
+linha  608  --bg-surface-1: var(--neutral-white)   ← Propel, tema claro
+linha  879  --bg-surface-1: var(--neutral-100)     ← Propel, tema escuro
+linha 1175  --bg-surface-1: lime                   ← nossa camada
+```
+
+Como a nossa vem **depois**, ela vence a cascata. Era exatamente isso que precisava ser provado: a
+camada não é decorativa, ela manda na tela.
+
+4. Revertido, rebuild, redeploy: `lime` passou a **0** ocorrências no CSS final, os tokens da Pespo
+   continuam presentes e a homologação responde `200`.
+
+**Conclusão:** a 2.0 pode trocar a paleta por `pespo-theme.css`. Se um dia o app não reagir a uma mudança
+feita ali, o problema é outro (build velho ou cache de CDN), não a camada.
+
+## Onde a homologação é buildada
+
+O stack de homologação usa imagens `plane-*-pespo:homolog`, construídas a partir de
+**`/opt/pespo/plane-integration-homolog`** (worktree criada em 02/11/2026). Nunca buildar homologação a
+partir da worktree de produção (`/opt/pespo/plane-integration`): as tags são diferentes justamente para
+que um build não sobrescreva o outro.
