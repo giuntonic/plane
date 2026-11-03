@@ -28,6 +28,8 @@
 /* Pespo 1.9: padrao de movimento e fundacao do shell responsivo (classes opt-in). */
 @import "./pespo-motion.css";
 @import "./pespo-shell.css";
+/* Pespo: casca no celular (dvh, overscroll, zoom do iOS). Regras fora de @layer. */
+@import "./pespo-mobile.css";
 @source "../**/*.{ts,tsx}";
 
 * {

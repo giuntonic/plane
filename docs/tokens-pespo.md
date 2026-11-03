@@ -210,3 +210,38 @@ propagar. A receita está no fim de `pespo-shell.css`, em comentário.
 O app **já usa** `@container` em 3 lugares (`stickies/widget`, `settings/profile/modal`,
 `settings/content-wrapper`). Ou seja, a técnica não é novidade no código — o que faltava era a escala de
 texto e o alvo de toque consistentes.
+
+## Casca no celular (02/11/2026)
+
+`packages/tailwind-config/pespo-mobile.css`. Três defeitos reais de uso no celular, corrigidos **só com
+CSS**, sem tocar em componente do upstream. As regras ficam **fora de `@layer`** de propósito: CSS sem
+camada vence qualquer camada, inclusive as utilidades do Tailwind — e assim não precisa de `!important`.
+
+| Defeito | O que acontecia | Correção |
+|---|---|---|
+| Altura | `h-screen` = `100vh`, que no celular inclui a barra de endereço: o rodapé ficava atrás dela e a tela "pulava" quando a barra sumia | `100dvh` (altura visível real), com `100vh` de fallback |
+| Puxar para atualizar | arrastar o conteúdo recarregava a página no meio de um arrasto de card | `overscroll-behavior-y: none` no container do app |
+| Zoom do iOS | ao focar um campo com fonte < 16 px, o Safari amplia e não desfaz — a pessoa precisa pinçar para voltar | `font-size: max(16px, 1em)` em campos, só em tela ≤ 640 px |
+
+Também ficaram prontas as variáveis de **área segura** (`--pespo-safe-top/bottom/left/right`), hoje valendo
+0 px.
+
+### O próximo passo de uma linha
+
+Para a área segura valer de verdade (notch e barra inferior do iPhone), falta declarar
+`viewport-fit=cover` no meta viewport:
+
+```tsx
+// apps/web/app/root.tsx, linha 63
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+```
+
+**Não fiz agora de propósito:** sem barra fixa no rodapé, reservar a área segura só encolhe a tela sem
+ganho. Faz sentido junto com a navegação inferior da 2.0 — é uma linha, no mesmo PR.
+
+### O que ainda não foi mexido
+
+- **Navegação inferior no celular.** É componente novo (rotas, ícones, estado ativo), não CSS. Vai para a
+  2.0, junto da decisão de marca.
+- **Tipografia fluida aplicada nas telas.** As classes `.pespo-text-*` existem, mas aplicar muda o layout de
+  várias telas de uma vez — precisa de alguém olhando, uma tela por vez.

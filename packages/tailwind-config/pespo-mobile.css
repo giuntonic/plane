@@ -1,0 +1,63 @@
+/*
+ * Pespo — casca no celular (02/11/2026)
+ *
+ * Três defeitos que todo app web herdado tem no celular, corrigidos sem tocar em componente do upstream.
+ *
+ * IMPORTANTE: estas regras ficam FORA de @layer de propósito. CSS sem camada vence qualquer @layer —
+ * inclusive as utilidades do Tailwind — e assim não é preciso `!important` em nada.
+ *
+ * Isto NÃO é a 2.0 visual: é conserto de casca. Não muda cor, não muda espaçamento de conteúdo.
+ */
+
+/* ---------------------------------------------------------------------------------------------
+ * 1. Altura real do visor
+ *
+ * O shell usa `h-screen`, que é 100vh. No celular, 100vh inclui a barra de endereço do navegador que
+ * aparece e some: o rodapé do app fica escondido atrás dela, e o conteúdo "salta" quando a barra some.
+ * `100dvh` é a altura visível de verdade e acompanha a barra.
+ * ------------------------------------------------------------------------------------------- */
+.desktop-app-container {
+  height: 100vh; /* navegador antigo que não conhece dvh */
+  height: 100dvh;
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 2. Puxar para atualizar
+ *
+ * No celular, arrastar o conteúdo para baixo recarrega a página — e no meio de um arrasto de card isso
+ * faz perder o que estava fazendo. `overscroll-behavior` desliga só o gesto de recarga; a rolagem
+ * interna continua normal.
+ * ------------------------------------------------------------------------------------------- */
+.desktop-app-container {
+  overscroll-behavior-y: none;
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 3. Zoom involuntário no iOS
+ *
+ * O Safari do iPhone dá zoom sozinho ao focar campo com fonte menor que 16px, e não desfaz: o layout
+ * fica ampliado e a pessoa tem que pinçar para voltar. A correção é o campo ter 16px no celular.
+ * `max()` garante que um campo que já é maior continue maior.
+ * ------------------------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  input,
+  textarea,
+  select {
+    font-size: max(16px, 1em);
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * 4. Área segura (notch e barra inferior do iPhone)
+ *
+ * Variáveis prontas para quando existir navegação inferior na 2.0. Hoje valem 0px, porque o app ainda
+ * não declara `viewport-fit=cover` no meta viewport — é uma linha em apps/web/app/root.tsx, que fica
+ * para o momento em que houver barra fixa no rodapé (senão não faz sentido reservar espaço).
+ * ------------------------------------------------------------------------------------------- */
+:root,
+:host {
+  --pespo-safe-top: env(safe-area-inset-top, 0px);
+  --pespo-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --pespo-safe-left: env(safe-area-inset-left, 0px);
+  --pespo-safe-right: env(safe-area-inset-right, 0px);
+}
