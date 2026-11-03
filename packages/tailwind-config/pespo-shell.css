@@ -1,0 +1,94 @@
+/*
+ * Pespo — fundação do shell responsivo (1.9, 2026-11-02)
+ *
+ * O app nasceu para desktop: tabela, arrastar, sidebar fixa. No celular, três coisas quebram primeiro:
+ * texto que não escala, alvo de toque pequeno e layout que só reage à largura da JANELA (não à do bloco).
+ *
+ * Este arquivo entrega as três ferramentas. Nenhuma é aplicada sozinha: são classes opt-in, e por isso
+ * a 1.9 continua sem mudança visual. A 2.0 aplica nos componentes, tela por tela.
+ */
+
+@layer base {
+  :root,
+  :host {
+    /*
+     * Escala de texto fluida. Em vez de "16px no celular e 16px no monitor", o tamanho cresce com a
+     * largura (clamp = mínimo, ideal, máximo). O miolo em `vw` faz a transição; os limites impedem
+     * texto minúsculo no celular e gigante no monitor.
+     */
+    --pespo-text-page: clamp(1.25rem, 1.05rem + 0.9vw, 1.75rem); /* título de página */
+    --pespo-text-section: clamp(1.05rem, 0.98rem + 0.35vw, 1.25rem); /* título de seção */
+    --pespo-text-body: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem); /* corpo */
+    --pespo-text-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem); /* legenda */
+
+    /* Alvo de toque mínimo recomendado (WCAG 2.2). Dedo não é ponteiro de mouse. */
+    --pespo-touch-min: 44px;
+  }
+
+  /* Em tela pequena o mínimo manda; em tela grande o máximo. O vw só interpola entre os dois. */
+  @media (max-width: 640px) {
+    :root,
+    :host {
+      --pespo-text-page: 1.25rem;
+      --pespo-text-section: 1.0625rem;
+    }
+  }
+}
+
+@layer utilities {
+  /*
+   * Marca um bloco como "container": os filhos passam a poder reagir à largura DELE, não da janela.
+   * É o que resolve o caso clássico de sidebar aberta encolhendo o conteúdo no desktop, e o mesmo
+   * componente numa coluna estreita no celular.
+   */
+  .pespo-container {
+    container-type: inline-size;
+  }
+
+  .pespo-text-page {
+    font-size: var(--pespo-text-page);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .pespo-text-section {
+    font-size: var(--pespo-text-section);
+    line-height: 1.3;
+  }
+
+  .pespo-text-body {
+    font-size: var(--pespo-text-body);
+    line-height: 1.55;
+  }
+
+  .pespo-text-small {
+    font-size: var(--pespo-text-small);
+    line-height: 1.45;
+  }
+
+  /* Alvo de toque: garante área mínima sem mexer no visual (o padding já existente costuma bastar). */
+  .pespo-touch {
+    min-height: var(--pespo-touch-min);
+    min-width: var(--pespo-touch-min);
+  }
+
+  /* Empilhado no estreito, lado a lado no largo — por container, não por viewport. */
+  @container (min-width: 640px) {
+    .pespo-stack\@sm {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+}
+
+/*
+ * Exemplo de uso (não aplicado ainda):
+ *
+ *   <div class="pespo-container">
+ *     <h1 class="pespo-text-page">Clientes</h1>
+ *     <div class="flex flex-col gap-2 pespo-stack@sm"> ... </div>
+ *   </div>
+ *
+ * A 2.0 aplica isso no shell principal e nas telas de lista. O ganho no celular vem daí, não daqui —
+ * aqui está só a ferramenta.
+ */

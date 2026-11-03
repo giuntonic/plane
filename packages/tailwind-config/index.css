@@ -25,6 +25,9 @@
 @import "./pespo-brand.css";
 /* Pespo 1.9: camada de tema (painel de controle da 2.0 + extras). Ver o cabecalho do arquivo. */
 @import "./pespo-theme.css";
+/* Pespo 1.9: padrao de movimento e fundacao do shell responsivo (classes opt-in). */
+@import "./pespo-motion.css";
+@import "./pespo-shell.css";
 @source "../**/*.{ts,tsx}";
 
 * {
