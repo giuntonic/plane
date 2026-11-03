@@ -1,0 +1,78 @@
+/*
+ * Pespo — densidade e respiro (02/11/2026)
+ *
+ * O app é apertado no celular: as telas herdadas usam espaçamento fixo pensado para monitor grande. No
+ * bolso, aperto vira toque errado.
+ *
+ * Aqui ficam só a escala e o fator. A aplicação é por componente, tela por tela — este arquivo não muda
+ * nada sozinho (as classes são opt-in).
+ *
+ * Por que um FATOR e não valores fixos: no celular o respiro precisa ser MAIOR, não menor (dedo é
+ * impreciso). Em tela grande o fator fica em 1 e nada muda. Se um dia a equipe quiser densidade compacta
+ * no desktop, é só baixar o fator — sem tocar em componente.
+ */
+
+@layer base {
+  :root,
+  :host {
+    --pespo-space-1: 4px;
+    --pespo-space-2: 8px;
+    --pespo-space-3: 12px;
+    --pespo-space-4: 16px;
+    --pespo-space-5: 24px;
+    --pespo-space-6: 32px;
+
+    --pespo-density: 1;
+  }
+
+  /* No celular, 15% mais respiro. O valor é proposital: o suficiente para o dedo, discreto o bastante
+     para não virar rolagem infinita. */
+  @media (max-width: 640px) {
+    :root,
+    :host {
+      --pespo-density: 1.15;
+    }
+  }
+}
+
+@layer utilities {
+  .pespo-stack-1 {
+    gap: calc(var(--pespo-space-1) * var(--pespo-density));
+  }
+  .pespo-stack-2 {
+    gap: calc(var(--pespo-space-2) * var(--pespo-density));
+  }
+  .pespo-stack-3 {
+    gap: calc(var(--pespo-space-3) * var(--pespo-density));
+  }
+  .pespo-stack-4 {
+    gap: calc(var(--pespo-space-4) * var(--pespo-density));
+  }
+  .pespo-stack-5 {
+    gap: calc(var(--pespo-space-5) * var(--pespo-density));
+  }
+  .pespo-stack-6 {
+    gap: calc(var(--pespo-space-6) * var(--pespo-density));
+  }
+
+  .pespo-pad-2 {
+    padding: calc(var(--pespo-space-2) * var(--pespo-density));
+  }
+  .pespo-pad-3 {
+    padding: calc(var(--pespo-space-3) * var(--pespo-density));
+  }
+  .pespo-pad-4 {
+    padding: calc(var(--pespo-space-4) * var(--pespo-density));
+  }
+  .pespo-pad-5 {
+    padding: calc(var(--pespo-space-5) * var(--pespo-density));
+  }
+}
+
+/*
+ * Exemplo de uso (aplicar na 2.0, tela por tela):
+ *
+ *   <div class="flex flex-col pespo-stack-3 pespo-pad-4"> ... </div>
+ *
+ * Em vez de `flex flex-col gap-3 p-4`, que é fixo em qualquer tela.
+ */
