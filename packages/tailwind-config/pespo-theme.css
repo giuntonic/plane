@@ -1,0 +1,92 @@
+/*
+ * Pespo — camada de tema (1.9, 2026-11-02)
+ *
+ * PARA QUE SERVE
+ * O @makeplane/propel define 1004 variáveis CSS e o app inteiro já pinta a tela por elas. A Pespo
+ * controla, hoje, só a escala de marca (pespo-brand.css). Este arquivo é o lugar onde a identidade
+ * da 2.0 vai morar, sem espalhar cor em componente.
+ *
+ * COMO O APP ESCOLHE COR (o contrato, para não errar o alvo)
+ *   utilidade Tailwind   →  alias do @theme          →  variável de verdade (é aqui que se mexe)
+ *   text-primary         →  --text-color-primary     →  --txt-primary
+ *   text-secondary       →  --text-color-secondary   →  --txt-secondary
+ *   text-tertiary        →  --text-color-tertiary    →  --txt-tertiary
+ *   bg-surface-1         →  --background-color-surface-1 → --bg-surface-1
+ *   bg-surface-2         →  --background-color-surface-2 → --bg-surface-2
+ *   bg-layer-1/2/3       →  --background-color-layer-N   → --bg-layer-1/2/3
+ *   border-subtle        →  --border-color-subtle    →  --border-subtle
+ *   bg-accent-primary    →  --background-color-accent-primary → --bg-accent-primary (usa --brand-*)
+ *
+ * Ou seja: NÃO se mexe no alias nem na utilidade. Mexe-se na variável de baixo (--txt-*, --bg-*,
+ * --border-*), que é o que este arquivo passa a declarar quando a 2.0 começar.
+ *
+ * REGRA (decidida na estratégia da 2.0)
+ * Componente de marca não mora dentro de arquivo do upstream. Este arquivo é o único ponto de marca:
+ * se precisar de um componente novo, ele vive em packages/pespo-ui e importa daqui.
+ *
+ * ESTADO HOJE (1.9): este arquivo NÃO muda nenhuma cor. Ele só acrescenta tokens novos, que ninguém
+ * usa ainda, e documenta o painel de controle. A tela tem que continuar idêntica — se mudou, é bug.
+ */
+
+@layer base {
+  :root,
+  :host {
+    /*
+     * PAINEL DE CONTROLE (2.0) — descomentar quando a paleta estiver aprovada.
+     * Os valores abaixo são os do Propel hoje, para não haver surpresa: trocar o valor é o que muda
+     * a tela; descomentar sem trocar não muda nada.
+     *
+     *   --bg-surface-1: var(--neutral-white);
+     *   --bg-surface-2: var(--neutral-100);
+     *   --bg-layer-1:   var(--neutral-200);
+     *   --bg-layer-2:   var(--neutral-white);
+     *   --bg-layer-3:   var(--neutral-300);
+     *   --txt-primary:   <valor do propel>;
+     *   --txt-secondary: <valor do propel>;
+     *   --txt-tertiary:  <valor do propel>;
+     *   --border-subtle: var(--neutral-400);
+     *   --border-strong: var(--neutral-600);
+     *
+     * No tema escuro as mesmas variáveis são redefinidas em [data-theme*="dark"] — ver variables.css
+     * do Propel. Ao mexer no claro, mexer no escuro junto, senão a 2.0 fica pela metade.
+     */
+
+    /* ---- Extras da Pespo (novos, ainda sem consumidor) ---------------------------------- */
+
+    /* Cores das categorias de peça. São identidade funcional: o cartão da peça se identifica pela
+       cor da categoria, não por enfeite. Nomes semânticos de propósito (nada de "roxo"). */
+    --pespo-piece-post: oklch(0.72 0.13 200);
+    --pespo-piece-artigo: oklch(0.75 0.15 140);
+    --pespo-piece-reels: oklch(0.8 0.16 85);
+    --pespo-piece-anuncio: oklch(0.66 0.17 330);
+
+    /* Tinta dos desenhos (doodles). Usada com opacidade: é rabisco, não bloco de cor. */
+    --pespo-doodle-ink: oklch(0.45 0.03 285);
+
+    /* Superfície levemente quente, para quando a 2.0 sair do branco-azulado padrão de SaaS.
+       Ninguém usa ainda; fica como candidata, avaliada com a paleta. */
+    --pespo-surface-warm: oklch(0.985 0.006 85);
+
+    /* Movimento: durações e curvas. O padrão é discreto; a 2.0 usa, a 1.9 só declara. */
+    --pespo-duration-fast: 120ms;
+    --pespo-duration-base: 180ms;
+    --pespo-duration-slow: 240ms;
+    --pespo-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @variant dark {
+    /* Rabisco no escuro precisa de mais luz para não sumir. */
+    --pespo-doodle-ink: oklch(0.78 0.02 285);
+    --pespo-surface-warm: oklch(0.19 0.008 85);
+  }
+
+  /* Respeito a quem pediu menos movimento no sistema. Vale para tudo que usar as durações acima. */
+  @media (prefers-reduced-motion: reduce) {
+    :root,
+    :host {
+      --pespo-duration-fast: 0ms;
+      --pespo-duration-base: 0ms;
+      --pespo-duration-slow: 0ms;
+    }
+  }
+}

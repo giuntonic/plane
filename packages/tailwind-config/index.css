@@ -23,6 +23,8 @@
 @import "@makeplane/propel/styles/animations";
 /* Pespo: brand colour override, must stay below the propel variables import */
 @import "./pespo-brand.css";
+/* Pespo 1.9: camada de tema (painel de controle da 2.0 + extras). Ver o cabecalho do arquivo. */
+@import "./pespo-theme.css";
 @source "../**/*.{ts,tsx}";
 
 * {
