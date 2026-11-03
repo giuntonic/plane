@@ -88,12 +88,23 @@ convincente que existe e leva 5 minutos — mas faça na homologação, nunca em
 - Nada em produção ainda: a mudança está em PR.
 - Pendente para a 2.0: paleta aprovada, `packages/pespo-ui`, e aplicar nos componentes.
 
-## O que falta para a 1.9 terminar
+## A 1.9 está completa (02/11/2026)
 
-1. ~~Tokens~~ (este documento).
-2. **Movimento** — os tokens existem; falta o padrão de uso (`framer-motion` já está no catálogo).
-3. **Shell adaptativo** — container queries e tipografia fluida. É o item com risco de mudar layout, e
-   por isso vai para a homologação antes.
+| Item | O que foi entregue | Visível? |
+|---|---|---|
+| Tokens | `pespo-theme.css`: painel de controle + extras (categorias, doodle, movimento) | não |
+| Movimento | `pespo-motion.css`: três classes de transição, com duas travas de acessibilidade | não |
+| Shell | `pespo-shell.css`: tipografia fluida, container query, alvo de toque | não |
+
+**Nada foi aplicado nas telas.** As classes são opt-in e nenhum componente foi alterado — é a definição de
+1.9 ("preparar sem quebrar"). A aplicação é a 2.0.
+
+### O que a 2.0 faz com isso
+
+1. Escolher a paleta (a página de amostras existe para isso) e trocar `--brand-*` + os tokens semânticos.
+2. Aplicar `.pespo-text-*` e `.pespo-container` no shell principal, uma tela por vez, conferindo no celular
+   pela homologação.
+3. Ligar as classes de movimento nos pontos que ajudam a entender mudança.
 
 ## Arquivo de amostras
 
