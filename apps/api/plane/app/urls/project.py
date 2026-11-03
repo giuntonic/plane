@@ -4,6 +4,8 @@
 
 from django.urls import path
 
+from plane.app.views.project.acervo import ProjectAcervoBrowseEndpoint, ProjectAcervoEndpoint
+
 from plane.app.views import (
     ProjectViewSet,
     DeployBoardViewSet,
@@ -154,5 +156,16 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/request-rework/",
         IssueReworkRequestEndpoint.as_view(),
         name="project-issue-request-rework",
+    ),
+    # Pespo: pasta do projeto no Acervo (Nextcloud) e o seletor de pasta
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/acervo/",
+        ProjectAcervoEndpoint.as_view(),
+        name="project-acervo",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/acervo/browse/",
+        ProjectAcervoBrowseEndpoint.as_view(),
+        name="project-acervo-browse",
     ),
 ]

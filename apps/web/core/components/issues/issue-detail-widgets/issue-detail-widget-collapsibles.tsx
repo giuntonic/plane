@@ -12,6 +12,7 @@ import type { TIssueServiceType, TWorkItemWidgets } from "@plane/types";
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useTimeLineRelationOptions } from "@/components/relations";
 // local imports
+import { AcervoCollapsible } from "./acervo";
 import { AttachmentsCollapsible } from "./attachments";
 import { ChecklistCollapsible } from "./checklist";
 import { useIssueGoogleDriveFiles } from "./google-drive/helper";
@@ -115,6 +116,16 @@ export const IssueDetailWidgetCollapsibles = observer(function IssueDetailWidget
       )}
       {!hideWidgets?.includes("peca-marking") && (
         <PecaMarkingCollapsible
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          disabled={disabled}
+          issueServiceType={issueServiceType}
+        />
+      )}
+      {/* Pespo: Acervo da peça no Nextcloud (links de envio e de entrega, Recebido/ e Entrega/) */}
+      {!hideWidgets?.includes("acervo") && (
+        <AcervoCollapsible
           workspaceSlug={workspaceSlug}
           projectId={projectId}
           issueId={issueId}

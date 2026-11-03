@@ -410,6 +410,11 @@ export const coreRoutes: RouteConfigEntry[] = [
               ":workspaceSlug/settings/projects/:projectId/features/google-drive",
               "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/google-drive/page.tsx"
             ),
+            // Pespo: pasta do projeto no Acervo (Nextcloud)
+            route(
+              ":workspaceSlug/settings/projects/:projectId/features/acervo",
+              "./(all)/[workspaceSlug]/(settings)/settings/projects/[projectId]/features/acervo/page.tsx"
+            ),
             // Pespo: contrato do cliente (só leitura)
             route(
               ":workspaceSlug/settings/projects/:projectId/contract",

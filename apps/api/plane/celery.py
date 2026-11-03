@@ -63,6 +63,11 @@ app.conf.beat_schedule = {
         "task": "plane.bgtasks.meeting_recording_task.meeting_recordings_housekeeping",
         "schedule": crontab(minute="*/10"),
     },
+    # Pespo: material novo em Recebido/ no Acervo (Nextcloud) vira aviso no item para a equipe
+    "pespo-acervo-check-received": {
+        "task": "plane.bgtasks.acervo_task.check_received_material",
+        "schedule": crontab(minute="*/10"),
+    },
     # Pespo: contrato vencendo (no lugar do workflow do n8n); 12:00 UTC = 9h em Brasília. Não faz nada enquanto
     # PESPO_CONTRACT_EXPIRY_ENABLED estiver desligado (o padrão).
     "pespo-contract-expiry": {

@@ -165,7 +165,9 @@ export type TWorkItemWidgets =
   | "checklist"
   | "meetings"
   // Pespo: tempo gasto por peça
-  | "time-tracking";
+  | "time-tracking"
+  // Pespo: Acervo da peça no Nextcloud (links de envio e de entrega)
+  | "acervo";
 
 export type TIssueServiceType = EIssueServiceType.ISSUES | EIssueServiceType.EPICS | EIssueServiceType.WORK_ITEMS;
 

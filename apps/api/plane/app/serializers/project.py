@@ -37,7 +37,8 @@ class ProjectSerializer(BaseSerializer):
     class Meta:
         model = Project
         fields = "__all__"
-        read_only_fields = ["workspace", "deleted_at"]
+        # Pespo: a pasta do Acervo só muda pelo endpoint do Acervo, que confere o caminho e cria no Nextcloud.
+        read_only_fields = ["workspace", "deleted_at", "acervo_folder"]
 
     def validate_name(self, name):
         project_id = self.instance.id if self.instance else None

@@ -4,6 +4,12 @@
 
 from django.urls import path
 
+from plane.app.views.issue.acervo import (
+    IssueAcervoEndpoint,
+    IssueAcervoFolderEndpoint,
+    IssueAcervoLinkDetailEndpoint,
+    IssueAcervoLinkEndpoint,
+)
 from plane.app.views.issue.calendar_event import IssueMeetingRequestEndpoint, IssueMeetingSlotsEndpoint
 from plane.app.views.issue.meeting_recording import (
     IssueMeetingRecordingEndpoint,
@@ -196,6 +202,27 @@ urlpatterns = [
         "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/google-drive-files/<uuid:pk>/",
         IssueGoogleDriveFileDetailEndpoint.as_view(),
         name="project-issue-google-drive-file-detail",
+    ),
+    # Pespo: Acervo da peça no Nextcloud (links de envio e de entrega, pastas)
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/acervo/",
+        IssueAcervoEndpoint.as_view(),
+        name="project-issue-acervo",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/acervo/folder/",
+        IssueAcervoFolderEndpoint.as_view(),
+        name="project-issue-acervo-folder",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/acervo/links/",
+        IssueAcervoLinkEndpoint.as_view(),
+        name="project-issue-acervo-links",
+    ),
+    path(
+        "workspaces/<str:slug>/projects/<uuid:project_id>/issues/<uuid:issue_id>/acervo/links/<uuid:pk>/",
+        IssueAcervoLinkDetailEndpoint.as_view(),
+        name="project-issue-acervo-link-detail",
     ),
     # Pespo: subtarefas leves (checklist em árvore) de um item de trabalho
     path(

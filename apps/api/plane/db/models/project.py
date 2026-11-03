@@ -108,6 +108,10 @@ class Project(BaseModel):
     # Google Calendar). {"enabled", "host_ids", "duration_minutes", "day_start", "day_end", "weekdays",
     # "notice_hours", "window_days"}; vazio = desligado.
     meeting_booking = models.JSONField(default=dict, blank=True, db_default={})
+    # Pespo: pasta do projeto no Acervo (Nextcloud), relativa à raiz do usuário de serviço do Hub, ex.:
+    # "Acervo/Clientes/Padaria Bom Dia". Criada junto com o projeto; as pastas das peças ficam dentro dela.
+    # Vazia: ainda não criada (nasce no primeiro link). Só muda pelo endpoint do Acervo, que confere o caminho.
+    acervo_folder = models.CharField(max_length=1024, blank=True, default="", db_default="")
     # Pespo: avisos ao cliente (peça entregue, refação pronta, contrato vencendo). {"email": bool, "events":
     # {evento: bool}}; vazio = tudo ligado (plane.utils.client_notices).
     client_notices = models.JSONField(default=dict, blank=True, db_default={})

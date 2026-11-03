@@ -612,3 +612,13 @@ PESPO_CONTRACT_EXPIRY_DAYS = int(os.environ.get("PESPO_CONTRACT_EXPIRY_DAYS", "1
 # Pespo: Laya, o classificador da VPS (rede interna), lê urgência e humor no briefing das peças
 # solicitadas. Ex.: http://laya:8000. Sem ele a solicitação funciona igual, só sem os sinais.
 LAYA_URL = os.environ.get("LAYA_URL")
+# Pespo: Acervo no Nextcloud (arquivos.pespo.com.br). O Hub cria a pasta do projeto e da peça em NEXTCLOUD_ROOT e
+# gera os links públicos (só envio e entrega). Fala com o Nextcloud pela rede interna (NEXTCLOUD_URL, ex.:
+# http://nextcloud) com o usuário de serviço do Hub e uma senha de app. Sem URL, usuário ou senha, a seção
+# "Arquivos" some do item e nada é chamado.
+NEXTCLOUD_URL = os.environ.get("NEXTCLOUD_URL", "")
+NEXTCLOUD_PUBLIC_URL = os.environ.get("NEXTCLOUD_PUBLIC_URL", "https://arquivos.pespo.com.br")
+NEXTCLOUD_USER = os.environ.get("NEXTCLOUD_USER", "")
+NEXTCLOUD_APP_PASSWORD = os.environ.get("NEXTCLOUD_APP_PASSWORD", "")
+NEXTCLOUD_ROOT = os.environ.get("NEXTCLOUD_ROOT", "Acervo/Clientes")
+NEXTCLOUD_LINK_DAYS = int(os.environ.get("NEXTCLOUD_LINK_DAYS", 30))

@@ -5,12 +5,13 @@
  */
 
 import React from "react";
-import { CalendarPlus, ListChecks, Paperclip, Video, ListTodo, CalendarClock, Mic } from "lucide-react";
+import { CalendarPlus, FolderUp, ListChecks, Paperclip, Video, ListTodo, CalendarClock, Mic } from "lucide-react";
 import { useTranslation } from "@plane/i18n";
 import { LinkIcon, ViewsIcon, RelationPropertyIcon } from "@plane/propel/icons";
 // plane imports
 import type { TIssueServiceType, TWorkItemWidgets } from "@plane/types";
 // local imports
+import { AcervoActionButton } from "./acervo";
 import { IssueAttachMenu } from "./attachments/attach-menu";
 import { IssueChecklistActionButton, IssueNamedChecklistActionButton } from "./checklist";
 import { IssueLinksActionButton } from "./links";
@@ -121,6 +122,29 @@ export function IssueDetailWidgetActionButtons(props: Props) {
               title={t("common.attach")}
               icon={<Paperclip className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
               disabled={disabled}
+            />
+          }
+          disabled={disabled}
+          issueServiceType={issueServiceType}
+        />
+      )}
+      {/* Pespo: Acervo da peça no Nextcloud: links para a equipe, "Enviar material" para o cliente */}
+      {!hideWidgets?.includes("acervo") && (
+        <AcervoActionButton
+          workspaceSlug={workspaceSlug}
+          projectId={projectId}
+          issueId={issueId}
+          teamButton={
+            <IssueDetailWidgetButton
+              title={t("acervo.button")}
+              icon={<FolderUp className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
+              disabled={disabled}
+            />
+          }
+          clientButton={
+            <IssueDetailWidgetButton
+              title={t("acervo.client_button")}
+              icon={<FolderUp className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2} />}
             />
           }
           disabled={disabled}

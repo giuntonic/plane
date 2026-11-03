@@ -103,6 +103,14 @@ export const PROJECT_SETTINGS: Record<TProjectSettingsTabs, TProjectSettingsItem
     access: [EUserProjectRoles.ADMIN],
     highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/features/google-drive/`,
   },
+  // Pespo: pasta do projeto no Acervo (Nextcloud)
+  features_acervo: {
+    key: "features_acervo",
+    i18n_label: "project_settings.features.acervo.short_title",
+    href: `/features/acervo`,
+    access: [EUserProjectRoles.ADMIN],
+    highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/features/acervo/`,
+  },
   // Pespo: contrato do cliente, só leitura (o painel admin ainda cria e renova)
   contract: {
     key: "contract",
@@ -172,6 +180,7 @@ export const GROUPED_PROJECT_SETTINGS: Record<PROJECT_SETTINGS_CATEGORY, TProjec
     PROJECT_SETTINGS["features_pieces"],
     PROJECT_SETTINGS["features_time_tracking"],
     PROJECT_SETTINGS["features_google_drive"],
+    PROJECT_SETTINGS["features_acervo"],
     PROJECT_SETTINGS["features_meetings"],
   ],
   [PROJECT_SETTINGS_CATEGORY.WORK_STRUCTURE]: [

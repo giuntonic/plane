@@ -54,6 +54,8 @@ export type TProjectSettingsTabs =
   | "features_time_tracking"
   // Pespo: pasta do projeto no Google Drive
   | "features_google_drive"
+  // Pespo: pasta do projeto no Acervo (Nextcloud)
+  | "features_acervo"
   | "features_meetings"
   | "states"
   | "labels"

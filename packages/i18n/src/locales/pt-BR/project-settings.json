@@ -551,6 +551,27 @@
         "saved": "Pasta do projeto salva",
         "picker_title": "Pasta do projeto no Google Drive"
       },
+      "acervo": {
+        "title": "Acervo",
+        "short_title": "Acervo",
+        "description": "A pasta do projeto no Acervo (arquivos.pespo.com.br). Cada peça que ganha um link tem uma subpasta com Recebido (o material que o cliente manda) e Entrega (o que vai para o cliente).",
+        "disabled": "O Acervo não está configurado neste servidor (faltam NEXTCLOUD_URL, NEXTCLOUD_USER ou NEXTCLOUD_APP_PASSWORD).",
+        "no_folder": "Ainda sem pasta",
+        "no_folder_hint": "Será criada em {path} no primeiro link de uma peça, ou agora pelo botão abaixo.",
+        "folder_hint": "Trocar a pasta não move as peças que já têm pasta: só as novas vão para a pasta nova.",
+        "open": "Abrir no Arquivos",
+        "create": "Criar a pasta agora",
+        "change": "Escolher outra pasta",
+        "saved": "Pasta do projeto salva",
+        "structure_hint": "Dentro dela: uma pasta por peça, com Recebido e Entrega. Renomear o projeto ou a peça depois não muda os nomes das pastas.",
+        "picker_title": "Pasta do projeto no Acervo",
+        "current_folder": "Pasta atual",
+        "empty_folder": "Nenhuma pasta aqui dentro.",
+        "new_folder_placeholder": "Nome da pasta nova",
+        "new_folder": "Criar aqui",
+        "use_folder": "Usar \"{name}\"",
+        "open_a_folder": "Abra uma pasta dentro do Acervo"
+      },
       "meetings": {
         "title": "Reuniões",
         "short_title": "Reuniões",

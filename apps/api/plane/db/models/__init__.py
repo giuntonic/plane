@@ -30,6 +30,7 @@ from .piece_approval import PieceApproval
 from .pespo_client import PespoClient, PespoClientLogin, PespoContract, PespoContractCategory
 from .pespo_client_notice import ClientNotice
 from .pespo_team import TeamRole, TeamService
+from .acervo import IssueAcervoFolder, IssueAcervoLink
 from .issue_recurrence import IssueRecurrence
 from .template import EntityTemplate
 from .intake import Intake, IntakeIssue
