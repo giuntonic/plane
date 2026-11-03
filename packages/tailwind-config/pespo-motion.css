@@ -1,0 +1,67 @@
+/*
+ * Pespo — movimento (1.9, 2026-11-02)
+ *
+ * As durações e a curva vivem em pespo-theme.css (--pespo-duration-*, --pespo-ease-out) e são zeradas
+ * quando o sistema pede "reduzir movimento". Este arquivo só expõe o jeito padrão de usar.
+ *
+ * Nada aqui é aplicado sozinho: são classes opt-in. A 1.9 não muda nenhum visual; a 2.0 aplica nos
+ * componentes (e aí a animação aparece).
+ *
+ * Regra: animar só o que ajuda a entender a mudança (algo entrou, saiu, foi aprovado). Nunca animar lista
+ * longa, tabela ou texto que a pessoa está lendo.
+ */
+
+@layer utilities {
+  /* Transição curta: hover, foco, cor de estado. O caso de 90% do app. */
+  .pespo-transition {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: var(--pespo-duration-fast);
+    transition-timing-function: var(--pespo-ease-out);
+  }
+
+  /* Entrada de elemento: painel abrindo, item aparecendo. */
+  .pespo-transition-enter {
+    transition-property: opacity, transform;
+    transition-duration: var(--pespo-duration-base);
+    transition-timing-function: var(--pespo-ease-out);
+  }
+
+  /* Troca de tela / conteúdo grande. */
+  .pespo-transition-screen {
+    transition-property: opacity;
+    transition-duration: var(--pespo-duration-slow);
+    transition-timing-function: var(--pespo-ease-out);
+  }
+}
+
+/*
+ * Segunda trava, além das variáveis zeradas: se alguém escrever uma duração na mão (px/ms fixos), isto
+ * ainda desliga. Quem pediu menos movimento no sistema não recebe animação.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .pespo-transition,
+  .pespo-transition-enter,
+  .pespo-transition-screen {
+    transition: none !important;
+  }
+  .pespo-anim-pulse {
+    animation: none !important;
+  }
+}
+
+@keyframes pespo-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@layer utilities {
+  /* Pulso lento para "cronômetro rodando": respira, não pisca. */
+  .pespo-anim-pulse {
+    animation: pespo-pulse 2.4s var(--pespo-ease-out) infinite;
+  }
+}

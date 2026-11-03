@@ -129,3 +129,73 @@ O stack de homologação usa imagens `plane-*-pespo:homolog`, construídas a par
 **`/opt/pespo/plane-integration-homolog`** (worktree criada em 02/11/2026). Nunca buildar homologação a
 partir da worktree de produção (`/opt/pespo/plane-integration`): as tags são diferentes justamente para
 que um build não sobrescreva o outro.
+
+## Movimento (1.9)
+
+`packages/tailwind-config/pespo-motion.css`. Durações e curva vêm de `pespo-theme.css`
+(`--pespo-duration-fast/base/slow`, `--pespo-ease-out`).
+
+Três classes, opt-in:
+
+| Classe | Uso |
+|---|---|
+| `.pespo-transition` | hover, foco, mudança de cor — o caso de 90% |
+| `.pespo-transition-enter` | entrada de painel, item aparecendo |
+| `.pespo-transition-screen` | troca de tela |
+
+Só `color`, `background`, `border`, `box-shadow`, `opacity` e `transform` animam. Nunca `all` — `all` anima
+layout e trava em tela cheia.
+
+**Reduzir movimento tem duas travas:** as variáveis de duração viram `0ms` e as classes recebem
+`transition: none !important`. Quem escrever uma duração na mão ainda não escapa.
+
+**Regra de conteúdo:** animar só o que ajuda a entender a mudança (algo entrou, saiu, foi aprovado). Nunca
+animar lista longa, tabela ou texto que a pessoa está lendo.
+
+### Usar no React (2.0)
+
+O `framer-motion` 12 já está no catálogo. O padrão:
+
+```tsx
+import { motion, useReducedMotion } from "framer-motion";
+
+const semMovimento = useReducedMotion();
+<motion.div
+  initial={{ opacity: 0, y: semMovimento ? 0 : 6 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: semMovimento ? 0 : 0.18, ease: [0.22, 1, 0.36, 1] }}
+/>
+```
+
+Os números batem com os tokens; se a 2.0 mudar o ritmo, mude aqui e lá.
+
+## Shell responsivo (1.9)
+
+`packages/tailwind-config/pespo-shell.css`. Entrega a **ferramenta**, não o redesenho — nada é aplicado
+sozinho.
+
+**1. Tipografia fluida.** Quatro tamanhos com `clamp()` (mínimo, cresce com a largura, máximo):
+`--pespo-text-page`, `--pespo-text-section`, `--pespo-text-body`, `--pespo-text-small`. Em tela ≤ 640 px o
+mínimo manda; em tela grande, o máximo. Classes `.pespo-text-*`.
+
+**2. Container queries.** `.pespo-container` marca um bloco para os filhos reagirem à largura **dele**, não
+da janela. É o que resolve o caso clássico: a mesma tela numa sidebar estreita e num monitor largo.
+Utilitário de exemplo: `.pespo-stack@sm` (empilha no estreito, lado a lado no largo).
+
+**3. Alvo de toque.** `.pespo-touch` garante 44 px (WCAG 2.2). O padding que já existe costuma bastar; a
+classe existe para não depender de sorte.
+
+### Por que não aplicar já
+
+A 1.9 é invisível de propósito: arrumar o encanamento antes de trocar a louça. Aplicar tipografia fluida no
+shell inteiro muda o layout de várias telas de uma vez — sem alguém olhando, é trocar um risco pequeno por
+um grande.
+
+**Ordem da 2.0:** shell principal primeiro (uma tela), conferir no celular pela homologação, e só então
+propagar. A receita está no fim de `pespo-shell.css`, em comentário.
+
+### O que já existe e não precisa ser criado
+
+O app **já usa** `@container` em 3 lugares (`stickies/widget`, `settings/profile/modal`,
+`settings/content-wrapper`). Ou seja, a técnica não é novidade no código — o que faltava era a escala de
+texto e o alvo de toque consistentes.
