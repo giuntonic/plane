@@ -27,6 +27,9 @@ _XML_PARSER = etree.XMLParser(resolve_entities=False, no_network=True, load_dtd=
 SHARE_TYPE_PUBLIC_LINK = 3
 PERMISSION_READ = 1
 PERMISSION_CREATE = 4
+# O Nextcloud acrescenta "compartilhar" ao link público de uma pasta (link só-leitura volta como 17 = 1 | 16).
+# Esse bit não deixa ninguém escrever, então ele não entra na conferência.
+PERMISSION_SHARE = 16
 
 _DAV = "{DAV:}"
 _OC = "{http://owncloud.org/ns}"
@@ -191,7 +194,10 @@ class NextcloudClient:
         token = (data or {}).get("token") or ""
         if not share_id or not token:
             raise NextcloudError("Share without id or token")
-        if int(data.get("permissions") or 0) != permissions:
+        # O que não pode aparecer num link é escrita (2 atualizar, 4 criar, 8 apagar). O bit de compartilhar,
+        # que o Nextcloud põe sozinho em pasta, não conta — sem isso, todo link de entrega era recusado.
+        gravada = int(data.get("permissions") or 0) & ~PERMISSION_SHARE
+        if gravada != permissions:
             self.delete_link(share_id)
             raise NextcloudError(f"Share created with permissions {data.get('permissions')} instead of {permissions}")
         return {"id": share_id, "token": token}

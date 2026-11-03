@@ -166,6 +166,14 @@ class TestLinks:
             nc.create_link("Acervo/P/Recebido", PERMISSION_CREATE, date(2026, 12, 2))
         assert session.calls[1][0] == "DELETE" and session.calls[1][1].endswith("/shares/8")
 
+    def test_read_only_link_accepts_the_share_bit(self):
+        # Em pasta, o Nextcloud devolve o link só-leitura como 17 (1 | 16, "compartilhar"). O bit de compartilhar
+        # não deixa ninguém escrever, então o link vale — antes disso, todo link de entrega era recusado.
+        nc, session = client(ocs(200, {"id": 9, "token": "tok", "permissions": 17}))
+        share = nc.create_link("Acervo/Clientes/P/Post/Entrega", PERMISSION_READ, date(2026, 12, 2), label="entrega")
+        assert share == {"id": "9", "token": "tok"}
+        assert session.calls[0][2]["data"]["permissions"] == 1
+
     def test_update_and_delete(self):
         nc, session = client(ocs(200, {"id": 7}), ocs(404, statuscode=404, message="Wrong share ID"))
         nc.update_link("7", expires_on=date(2027, 1, 10), note="Envie aqui")
