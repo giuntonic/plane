@@ -30,6 +30,8 @@
 @import "./pespo-shell.css";
 /* Pespo: casca no celular (dvh, overscroll, zoom do iOS). Regras fora de @layer. */
 @import "./pespo-mobile.css";
+/* Pespo: escala de espaco e fator de densidade (classes opt-in). */
+@import "./pespo-density.css";
 @source "../**/*.{ts,tsx}";
 
 * {

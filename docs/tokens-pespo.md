@@ -245,3 +245,39 @@ ganho. Faz sentido junto com a navegação inferior da 2.0 — é uma linha, no 
   2.0, junto da decisão de marca.
 - **Tipografia fluida aplicada nas telas.** As classes `.pespo-text-*` existem, mas aplicar muda o layout de
   várias telas de uma vez — precisa de alguém olhando, uma tela por vez.
+
+## Densidade e respiro (02/11/2026)
+
+`packages/tailwind-config/pespo-density.css`. O app é apertado no celular: as telas herdadas usam
+espaçamento fixo (`gap-2`, `p-4`) pensado para monitor de 27 polegadas. No bolso, isso vira toque errado.
+
+### O que entra
+
+Uma escala de espaço e um fator de densidade:
+
+```
+--pespo-space-1:  4px     --pespo-space-4: 16px
+--pespo-space-2:  8px     --pespo-space-5: 24px
+--pespo-space-3: 12px     --pespo-space-6: 32px
+--pespo-density: 1        (<= 640px: 1.15)
+```
+
+O fator existe porque **no celular o respiro precisa ser maior**, não menor: dedo é impreciso. Em tela
+grande ele fica em `1` e nada muda.
+
+Utilitários: `.pespo-stack-1` a `.pespo-stack-6` (gap), `.pespo-pad-*` (padding).
+
+### Por que não aplico agora
+
+Igual à tipografia fluida: substituir `gap-2` por `.pespo-stack-2` em cada tela é edição de componente do
+upstream, e cada troca muda o layout. Sem alguém olhando, é trocar risco pequeno por grande.
+
+**Ordem de adoção:** uma tela por vez, começando pelas listas (onde o aperto mais incomoda), conferindo na
+homologação no celular.
+
+### O que isso resolve quando aplicado
+
+- alvo de toque confortável nas listas;
+- respiro consistente entre cards e seções;
+- e, no desktop, a possibilidade de uma densidade mais compacta para quem trabalha em tabela o dia inteiro
+  (a variável `--pespo-density` permite isso sem tocar em componente).
