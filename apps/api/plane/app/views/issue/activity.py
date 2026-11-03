@@ -18,7 +18,7 @@ from rest_framework import status
 from .. import BaseAPIView
 from .relation import issue_in_project
 from plane.app.serializers import IssueActivitySerializer, IssueCommentSerializer
-from plane.app.permissions import ProjectEntityPermission, allow_permission, ROLE
+from plane.app.permissions import ProjectEntityPermission, allow_permission, issue_hidden_from_guest, ROLE
 from plane.db.models import IssueActivity, IssueComment, CommentReaction, IntakeIssue
 from plane.utils.team_only_comments import hide_team_only_comments
 
@@ -38,6 +38,13 @@ class IssueActivityEndpoint(BaseAPIView):
         # rows below are keyed by it. Archived and intake issues keep their history.
         if not issue_in_project(issue_id, slug, project_id, include_archived=True):
             return Response({"error": "Issue not found"}, status=status.HTTP_404_NOT_FOUND)
+        # A restricted guest may only see the activity/comments of issues they
+        # created, mirroring the issue-detail visibility rule.
+        if issue_hidden_from_guest(request, slug, project_id, issue_id):
+            return Response(
+                {"error": "You are not allowed to view this issue"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         issue_activities = (
             IssueActivity.objects.filter(issue_id=issue_id)
@@ -47,6 +54,7 @@ class IssueActivityEndpoint(BaseAPIView):
                 project__project_projectmember__is_active=True,
                 project__archived_at__isnull=True,
                 workspace__slug=slug,
+                project_id=project_id,
             )
             .filter(**filters)
             .select_related("actor", "workspace", "issue", "project")
@@ -58,6 +66,7 @@ class IssueActivityEndpoint(BaseAPIView):
                 project__project_projectmember__is_active=True,
                 project__archived_at__isnull=True,
                 workspace__slug=slug,
+                project_id=project_id,
             )
             .filter(**filters)
             .order_by("created_at")
