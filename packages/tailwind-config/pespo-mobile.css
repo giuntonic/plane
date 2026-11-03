@@ -32,6 +32,12 @@
   overscroll-behavior-y: none;
 }
 
+/* Com viewport-fit=cover (root.tsx), a pagina ocupa tambem a area do notch. Sem este respiro no topo, o
+   conteudo do app comeca atras da barra de status do iPhone. Em desktop env() vale 0 e nada muda. */
+.desktop-app-container {
+  padding-top: var(--pespo-safe-top, 0px);
+}
+
 /* ---------------------------------------------------------------------------------------------
  * 3. Zoom involuntário no iOS
  *
